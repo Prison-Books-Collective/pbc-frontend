@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style/styles.css">
+    <title>Prison Books Collective Database</title>
+</head>
+<body>
+<div id="find_inmate" style="text-align: center;">
+    <label for="find_inmate_id_field">Find inmate:</label>
+    <input type="text" id="find_inmate_id_field">
+    <br>
+    <button id="find_inmate_button" onclick="inmateFunctions.findInmate()">Find inmate record</button>   
+</div>
+<!-- The Modal -->
+<div id="modal" class="modal">
+
+    <!-- Modal content -->
+    <div id="modal-content" class="modal-content">
+      <span class="close">&times;</span>
+    </div>
+  
+  </div>
+<hr>
+<div id="inmate_results" style="text-align: center;">
+
+</div>
+<script src="js/inmates.js"></script>
+<script  src="js/addPackage.js"></script>
+<script  src="js/helper.js"></script>
+</body>
+</html>
