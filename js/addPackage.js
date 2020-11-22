@@ -9,6 +9,8 @@ packageFunctions = function(){
     const zineCheckboxesName = "zine"
     const zineAttribute = "data-zine"
     const bookAttribute = "data-book"
+    const resourceAttribute = "data-resource"
+
 
     function getAddPackageContentContainer() {
         let packageContainer = document.getElementById(packageContentContainerId)
@@ -181,9 +183,37 @@ packageFunctions = function(){
         helperFunctions.createLabelAndField(container, "Scan book ISBN: ", searchIsbnField, "", "click here, then scan")
         document.getElementById(searchIsbnField).focus()
         createSearchForBookButton(container)
+        const noIsbnButton = helperFunctions.createButton("No ISBN?")
+        noIsbnButton.style.background = "LightCoral"
+        noIsbnButton.onclick = () => {
+            createResource()
+        }
+        container.appendChild(noIsbnButton)
         createCancelButton_returnToStep1(container)
     }
 
+    function createResource(){
+        let resultsContainer =  getAddPackageContentContainer()
+    
+        helperFunctions.createAndAddParagraphElement(resultsContainer, "Fill out the information below and save book (or resource) <br><br>")
+    
+        helperFunctions.createLabelAndField(resultsContainer, "Title", addBookTitleId, "", "Type title")
+        helperFunctions.createLabelAndField(resultsContainer, "Author", addBookAuthorId, "", "Type author")
+    
+        let saveNewBookButton = helperFunctions.createButton("Save book and add to package")
+    
+        saveNewBookButton.onclick = () =>{
+            let author = document.getElementById(addBookAuthorId).value
+            let title = document.getElementById(addBookTitleId).value
+    
+           
+            let resource = `{"title": "${title}", "authors": ["${author}"]}`
+            saveResource(resource)
+        }
+    
+        resultsContainer.appendChild(saveNewBookButton)
+        createCancelButton_returnToStep1(resultsContainer)
+    }
    
 
     function createSearchForBookButton(container){
@@ -216,10 +246,11 @@ packageFunctions = function(){
             }
             return response.json();
         }).then(function(data){
-            bookInfo_confirmBook(data)
+            bookInfo_confirmBook(data, isbnTarget)
         }).catch(error => {
             if (error == "204"){
-                promptCreateBook(isbnTarget)
+                let notFoundText = `We could not find the book with <b>ISBN# ${isbnTarget}</b> in our database. Please add the title and author of the book and add it to the package. <br><br>`
+                editOrCreateBook(notFoundText, isbnTarget,"","", true)
             } else{
                 console.log("other error")
             }
@@ -227,42 +258,50 @@ packageFunctions = function(){
 
 }
 
+function editOrCreateBook(text, originalIsbn, originalTitle, originalAuthor, isNew){
 
+    let resultsContainer =  getAddPackageContentContainer()
 
-    function promptCreateBook(isbnTarget){
+    helperFunctions.createAndAddParagraphElement(resultsContainer, text)
 
-        let resultsContainer =  getAddPackageContentContainer()
+    helperFunctions.createLabelAndField(resultsContainer, "ISBN", addBookISBNId, originalIsbn, "")
+    if(originalIsbn == ""){
+        const isbnField = document.getElementById(addBookISBNId)
+        isbnField.disabled = true
+    }
 
-        let notFoundText = `We could not find the book with <b>ISBN# ${isbnTarget}</b> in our database. Please add the title and author of the book and add it to the package. <br><br>`
-        helperFunctions.createAndAddParagraphElement(resultsContainer, notFoundText)
+    helperFunctions.createLabelAndField(resultsContainer, "Book title", addBookTitleId, originalTitle, "Type title")
+    helperFunctions.createLabelAndField(resultsContainer, "Book author", addBookAuthorId, originalAuthor, "Type author")
 
-        helperFunctions.createLabelAndField(resultsContainer, "ISBN", addBookISBNId, isbnTarget, "")
-        helperFunctions.createLabelAndField(resultsContainer, "Book title", addBookTitleId, "", "Type title")
-        helperFunctions.createLabelAndField(resultsContainer, "Book author", addBookAuthorId, "", "Type author")
+    let saveNewBookButton = helperFunctions.createButton("Save book and add to package")
 
-        let saveNewBookButton = helperFunctions.createButton("Save book and add to package")
+    saveNewBookButton.onclick = () =>{
+        let author = document.getElementById(addBookAuthorId).value
+        let title = document.getElementById(addBookTitleId).value
+        let isbn = document.getElementById(addBookISBNId).value
 
-        saveNewBookButton.onclick = () =>{
-            let author = document.getElementById(addBookAuthorId).value
-            let title = document.getElementById(addBookTitleId).value
-            let isbn = document.getElementById(addBookISBNId).value
-
-            let bothISBNs = ""
-            if (isbn.length == 10){
-                bothISBNs = `"isbn10": "${isbn}", "isbn13": "978${isbn}"`
-            } 
-            if (isbn.length == 13){
-                let isbn10 = isbn.substring(3)
-                bothISBNs = `"isbn10": "${isbn10}", "isbn13": "${isbn}"`
-            }
-
-            let book = `{"title": "${title}", "authors": ["${author}"], ${bothISBNs}}`
-            saveBook(book)
+        let bothISBNs = ""
+        if (isbn.length == 10){
+            bothISBNs = `"isbn10": "${isbn}", "isbn13": "NO-13-${isbn}"`
+        } 
+        if (isbn.length == 13){
+            bothISBNs = `"isbn10": "NO-10-${isbn}", "isbn13": "${isbn}"`
+        }
+        if (isbn.length == 0){
+            bothISBNs = `"isbn10":"", "isbn13":""`
         }
 
-        resultsContainer.appendChild(saveNewBookButton)
-        createCancelButton_returnToStep1(resultsContainer)
+        let book = `{"title": "${title}", "authors": ["${author}"], ${bothISBNs}}`
+        if (isNew){
+            saveBook(book)
+        } else{ 
+            updateBook(book)
+        }
     }
+
+    resultsContainer.appendChild(saveNewBookButton)
+    createCancelButton_returnToStep1(resultsContainer)
+}
 
     function saveBook(book){
         
@@ -294,6 +333,65 @@ packageFunctions = function(){
 
 }
 
+function saveResource(resource){
+        
+    fetch(`http://localhost:8080/addResource`, {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: resource
+    }).then(function(response){
+        if(response.status == 302){
+            throw "302";
+        } else if(response.status == 400){
+            throw "400";
+        }
+        return response.json();
+    }).then(function(data){
+        addResourceToPackage(data)
+        displayPackage()
+        step1_bookOrZine(true)
+
+    }).catch(error => {
+        if (error == "302"){
+            console.log("book already exists")
+        } else{
+            
+        }
+})
+
+}
+
+function updateBook(book){
+        
+    fetch(`http://localhost:8080/updateBook`, {
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: book
+    }).then(function(response){
+        if(response.status == 302){
+            throw "302";
+        } else if(response.status == 400){
+            throw "400";
+        }
+        return response.json();
+    }).then(function(data){
+        addBookToPackage(data)
+        displayPackage()
+        step1_bookOrZine(true)
+
+    }).catch(error => {
+        if (error == "302"){
+            console.log("book already exists")
+        } else{
+            
+        }
+})
+
+}
 function displayPackage(){
     let package = getPackage() 
     package.style.display = "block"
@@ -310,6 +408,15 @@ function addBookToPackage(bookData){
     bookListItem.setAttribute(bookAttribute, JSON.stringify(bookData));
     packageContentList.appendChild(bookListItem);
 }
+
+function addResourceToPackage(resourceData){
+    let  packageContentList = getPackageContentListElement()
+    resourceListItem = document.createElement("li");
+    resourceListItem.innerHTML = `<b>${resourceData.title}</b>, <i>${resourceData.authors[0]}</i>`;
+    resourceListItem.setAttribute(resourceAttribute, JSON.stringify(resourceData));
+    packageContentList.appendChild(resourceListItem);
+}
+
 function addZinesToPackage(){
     let  packageContentList = getPackageContentListElement()
 
@@ -356,6 +463,7 @@ function getPackageContentListElement(){
 
 function createAddBookToPackageButton(container, bookData) {
     let addBookButton = helperFunctions.createButton("Add book to package");
+    addBookButton.style.background= "DarkSeaGreen"
     addBookButton.onclick = () => {
         addBookToPackage(bookData)
         displayPackage()
@@ -398,7 +506,7 @@ function generateZinesJson(){
     let zineJson = `"zines": [`
     let zineExists = false
     packageContentListElement.childNodes.forEach(zineItem => {
-        if (zineItem.getAttribute(bookAttribute)==null){
+        if (zineItem.getAttribute(zineAttribute)!=null){
             zineExists = true
             zineJson = zineJson + zineItem.getAttribute(zineAttribute) + `, `
         }
@@ -411,14 +519,32 @@ function generateZinesJson(){
     return zineJson
 }
 
+function generateResourcesJson(){
+    const packageContentListElement = document.getElementById(packageContentListId)
+    let resourcesJson = `"resources": [`
+    let resourceExists = false
+    packageContentListElement.childNodes.forEach(resourceItem => {
+        if (resourceItem.getAttribute(resourceAttribute)!=null){
+            resourceExists = true
+            resourcesJson = resourcesJson + resourceItem.getAttribute(resourceAttribute) + `, `
+        }
+    });
+    if (resourceExists){
+        resourcesJson = resourcesJson.substring(0,resourcesJson.length - 2)
+
+    }
+    resourcesJson = resourcesJson + `]`
+    return resourcesJson
+}
+
 
 function savePackage(){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
+    let resourcesJson = generateResourcesJson()
 
-    let packageJson = `{${booksJson}, ${zinesJson}}`
-    console.log(packageJson)
-    //BREAKPOINBT
+    let packageJson = `{${booksJson}, ${zinesJson}, ${resourcesJson}}`
+    
     const inmateId = inmateFunctions.getInmateId()
     
     fetch(`http://localhost:8080/addPackage?id=${inmateId}`, {
@@ -447,7 +573,19 @@ function savePackage(){
 
 }
 
-function bookInfo_confirmBook(bookData) {
+function createEditBookButton(container, isbn, title, author){
+    const editButton = helperFunctions.createButton("Edit book info")
+    editButton.style.background = "LightCoral"
+
+    editButton.onclick = () => {
+        let editText = `Edit the book information below, and then save book. <br><br>`
+        editOrCreateBook(editText, isbn, title, author, false)
+    }
+    container.appendChild(editButton)
+
+}
+
+function bookInfo_confirmBook(bookData, isbnTarget) {
     let container = getAddPackageContentContainer()
 
     const bookTitle = bookData.title;
@@ -469,6 +607,7 @@ function bookInfo_confirmBook(bookData) {
     
         helperFunctions.createAndAddParagraphElement(container, bookMatchText)
     createAddBookToPackageButton(container, bookData);
+    createEditBookButton(container, isbnTarget, bookTitle, author)
     createAddBookButton(container, "Nevermind, search for different book")
     createCancelButton_returnToStep1(container)
 

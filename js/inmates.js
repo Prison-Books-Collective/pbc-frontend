@@ -144,6 +144,27 @@ inmateFunctions = function(){
             tableElement.appendChild(zineRow)
         })
 
+        package.resources.forEach(resource => {
+            
+                const resourceRow = document.createElement('tr');
+                const date = document.createElement('td');
+                const title = document.createElement('td');
+                const author = document.createElement('td');
+    
+                date.textContent = package.date
+                title.innerHTML = `${resource.title}`
+                author.textContent = `${resource.authors[0]}`
+    
+                title.style.fontStyle = 'italic'
+    
+                resourceRow.appendChild(date)
+                resourceRow.appendChild(title)
+                resourceRow.appendChild(author)
+                tableElement.appendChild(resourceRow)
+            }
+
+        )
+
 
 
         });
