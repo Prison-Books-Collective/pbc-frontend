@@ -9,22 +9,21 @@
 
 inmateFunctions = function(){
    
-    const id_field = "find_inmate_id_field"
-    const results_container_div = "inmate_results"
-    const addIdNumber = "addIdNumber";
-    const addFirstName = "addFirstName";
-    const addLastName = "addLastName";
+    const siteContentId = "site_content"
+    const inmateIdField = "inmateIdField";
+    const inmateFirstNameField = "inmateFirstNameField";
+    const inmateLastNameField = "inmateLastNameField";
    
     const packageTableId = "packageTable"
+    const inmateIdElementId = "inmateIdNumber"
     
     function getInmateId() {
-        return document.getElementById(id_field).value;
-
+        return document.getElementById(inmateIdElementId).textContent;
     }
 
-    function findInmate(){
-        var inmate_id = getInmateId();
-        fetch(`http://localhost:8080/get?id=${inmate_id}`, {
+    
+    function findInmate(inmate_id){
+        fetch(`http://localhost:8080/getInmate?id=${inmate_id}`, {
             method: 'get'
         }).then(function(response){
              if(response.status == 204){
@@ -65,14 +64,30 @@ inmateFunctions = function(){
 
         displayPackages(inmateInfo, tableElement);
     }
+    function displaySearchButton(container){
+        const div = document.createElement("div")
+        div.style.textAlign = "left"
+        div.style.paddingTop = "10px"
+        div.style.paddingLeft = "10px"
+        let search = document.createElement("img")
+        search.src = "style/search.png"
+        search.id = "searchIcon"
+        search.width = "40"
+        search.height = "40" 
+        search.onclick = () => {
+            homepageFunctions.displayHomepage()
+        } 
+        div.appendChild(search)
+        container.appendChild(div)  
+     }
 
     function displayAddPackageButton(container){
         const addPackageButton = document.createElement('button');
         addPackageButton.textContent = "Add a new package (books or zines)"
         container.appendChild(addPackageButton)
-        const modal = document.getElementById("modal")
+        
         addPackageButton.onclick = () => {
-            modal.style.display = "block"
+            helperFunctions.displayModal()
             packageFunctions.setupAddPackageModal()
         }
     }
@@ -172,24 +187,48 @@ inmateFunctions = function(){
     }
 
     function displayNameAndId(inmateInfo, resultsContainer) {
-        const name = document.createElement('h3');
-        name.textContent = inmateInfo.firstName + " " + inmateInfo.lastName;
-    
-        const id = document.createElement('p');
-        id.textContent = `ID #: ${inmateInfo.id}`;
-    
-        resultsContainer.appendChild(name);
-        resultsContainer.appendChild(id);
+        const div = document.createElement("div")
+        const name = document.createElement('h1');
+        name.style.display = "inline"
+        name.innerHTML = `${inmateInfo.firstName} ${inmateInfo.lastName}, <small style="color:DarkSlateGray">ID#: <p style="display:inline" id="${inmateIdElementId}">${inmateInfo.id}</p></small>`
+        div.appendChild(name)
+        
+        createEditInmateIcon(div, inmateInfo)
+        resultsContainer.appendChild(div);
+    }
+
+    function createEditInmateIcon(container, inmateInfo) {
+        const editIcon = document.createElement("img")
+        editIcon.src = "style/edit.png"
+        editIcon.id = "editIcon"
+        editIcon.width = "20"
+        editIcon.height = "20" 
+        editIcon.style.marginLeft = "10px"
+        editIcon.onclick = () => {
+            editInmate(inmateInfo)
+        }
+        
+        container.appendChild(editIcon)
     }
 
     function addInmate(idNumber){
         const resultsContainer = getAndClearInmateResultsElement();
         createInmateNotFoundMessage(resultsContainer, idNumber)
-        helperFunctions.createLabelAndField(resultsContainer, "ID Number", addIdNumber, idNumber, "")
-        helperFunctions.createLabelAndField(resultsContainer, "First Name", addFirstName, "", "")
-        helperFunctions.createLabelAndField(resultsContainer, "Last Name", addLastName, "", "")
+        createInmateInfoFields(resultsContainer, idNumber, "", "")
         createAddInmateButton(resultsContainer)
-        
+    }
+
+    function createInmateInfoFields(container, id, firstName, lastName){
+        helperFunctions.createLabelAndField(container, "ID Number", inmateIdField, id, "")
+        helperFunctions.createLabelAndField(container, "First Name", inmateFirstNameField, firstName, "")
+        helperFunctions.createLabelAndField(container, "Last Name", inmateLastNameField, lastName, "")
+    }
+    function editInmate(inmateInfo){
+        helperFunctions.displayModal()
+        let modal = helperFunctions.getModalContainer()
+        modal.innerHTML =""
+        createInmateInfoFields(modal,inmateInfo.id, inmateInfo.firstName, inmateInfo.lastName)
+        createEditInmateButton(modal, inmateInfo)
     }
 
     function createInmateNotFoundMessage(container, idNumber){
@@ -204,10 +243,22 @@ inmateFunctions = function(){
         container.appendChild(br)
     }
 
+    function createEditInmateButton(container, originalInmateInfo){
+
+        const button = document.createElement("button");
+        button.textContent = "Edit inmate record"
+        
+        container.appendChild(button)
+
+        button.onclick = () => {
+            editInmateRecord(originalInmateInfo)
+        }
+    }
+
     function createAddInmateButton(container){
 
         const button = document.createElement("button");
-        button.textContent = "Create record"
+        button.textContent = "Create inmate record"
         
         container.appendChild(button)
 
@@ -217,17 +268,18 @@ inmateFunctions = function(){
     }
 
     function getAndClearInmateResultsElement(){
-        const container = document.getElementById(results_container_div);
+        const container = document.getElementById(siteContentId);
         container.innerHTML = ""
+        displaySearchButton(container)
         return container;
     }
 
     function createInmateRecord(){
-        var inmate_id = document.getElementById(addIdNumber).value;
-        var firstName = document.getElementById(addFirstName).value;
-        var lastName = document.getElementById(addLastName).value;
+        var inmate_id = document.getElementById(inmateIdField).value;
+        var firstName = document.getElementById(inmateFirstNameField).value;
+        var lastName = document.getElementById(inmateLastNameField).value;
 
-        fetch(`http://localhost:8080/add?firstName=${firstName}&lastName=${lastName}&id=${inmate_id}`, {
+        fetch(`http://localhost:8080/addInmate?firstName=${firstName}&lastName=${lastName}&id=${inmate_id}`, {
             method: 'post'
         }).then(function(response){
             return response.json();
@@ -237,6 +289,21 @@ inmateFunctions = function(){
     }
 
    
+    function editInmateRecord(originalInmateInfo){
+        var inmate_id = document.getElementById(inmateIdField).value;
+        var firstName = document.getElementById(inmateFirstNameField).value;
+        var lastName = document.getElementById(inmateLastNameField).value;
+
+        fetch(`http://localhost:8080/updateInmate?originalId=${originalInmateInfo.id}&firstName=${firstName}&lastName=${lastName}&id=${inmate_id}`, {
+            method: 'put'
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            helperFunctions.hideModal()
+
+            displayInmate(data)
+        })
+    }
 
     return{
         findInmate:findInmate,

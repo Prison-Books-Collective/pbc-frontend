@@ -16,7 +16,7 @@ packageFunctions = function(){
         let packageContainer = document.getElementById(packageContentContainerId)
         if (packageContainer == null) {
             packageContainer = document.createElement("div");
-            const modalContentContainer = getModalContainer()
+            const modalContentContainer = helperFunctions.getModalContainer()
             modalContentContainer.appendChild(packageContainer)
             packageContainer.id = packageContentContainerId;
     
@@ -26,20 +26,11 @@ packageFunctions = function(){
         return packageContainer
     }
 
-    function getModalContainer(){
-        return document.getElementById("modal-content")
-    }
+    
 
     function setupAddPackageModal() {
-        const modalContentContainer = getModalContainer()
-        modalContentContainer.innerHTML = ""
-        const span = document.createElement("span")
-        span.className = "close"
-        span.innerHTML = "&times;"
-        span.onclick = ()=> {
-            modal.style.display = "none";
-          }
-        modalContentContainer.appendChild(span)
+        let modal = helperFunctions.getModalContainer()
+        modal.innerHTML = ""
         initializePackageContentList()
         step1_bookOrZine()
     }
@@ -442,7 +433,7 @@ function getCheckedZines(){
 }
 
 function initializePackageContentList(){
-    let modal = getModalContainer()
+    let modal = helperFunctions.getModalContainer()
     let container = document.createElement("div")
     container.id = packageId
 
@@ -561,7 +552,7 @@ function savePackage(){
         }
         return response.json();
     }).then(function(data){
-        inmateFunctions.findInmate()
+        inmateFunctions.findInmate(inmateFunctions.getInmateId())
         modal.style.display = "none";
         
     }).catch(error => {

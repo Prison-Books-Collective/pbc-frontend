@@ -19,6 +19,11 @@ helperFunctions = function(){
         container.appendChild(br)
 
     }
+    function getModalContainer(){
+        let modal = document.getElementById("modal-content")
+
+        return modal
+    }
 
     function createButton(text){
         const button = document.createElement("button")
@@ -32,10 +37,22 @@ helperFunctions = function(){
         container.appendChild(paraElement)
     }
 
+    function hideModal(){
+        const modal = document.getElementById("modal")
+        modal.style.display = "none"
+    }
+
+    function displayModal(){
+        const modal = document.getElementById("modal")
+        modal.style.display = "block"
+    }
     return{
         createLabelAndField:createLabelAndField,
         createButton:createButton,
-        createAndAddParagraphElement:createAndAddParagraphElement
+        createAndAddParagraphElement:createAndAddParagraphElement,
+        getModalContainer:getModalContainer,
+        displayModal:displayModal,
+        hideModal:hideModal
     }
 
     

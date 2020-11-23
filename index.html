@@ -5,28 +5,27 @@
     <link rel="stylesheet" href="style/styles.css">
     <title>Prison Books Collective Database</title>
 </head>
-<body>
-<div id="find_inmate" style="text-align: center;">
-    <label for="find_inmate_id_field">Find inmate:</label>
-    <input type="text" id="find_inmate_id_field">
-    <br>
-    <button id="find_inmate_button" onclick="inmateFunctions.findInmate()">Find inmate record</button>   
-</div>
+<body onload="homepageFunctions.displayHomepage()">
+<div id="site_content" style="text-align: center;"></div>
+
 <!-- The Modal -->
 <div id="modal" class="modal">
 
     <!-- Modal content -->
-    <div id="modal-content" class="modal-content">
-      <span class="close">&times;</span>
+    <div id="modal-container" class="modal-content">
+      <span class="close" onclick="document.getElementById(`modal`).style.display = `none`">&times;</span>
+      <div id="modal-content">
+
+      </div>
     </div>
   
   </div>
-<hr>
-<div id="inmate_results" style="text-align: center;">
 
-</div>
+
 <script src="js/inmates.js"></script>
 <script  src="js/addPackage.js"></script>
 <script  src="js/helper.js"></script>
+<script src="js/homepage.js"></script>
+
 </body>
 </html>
