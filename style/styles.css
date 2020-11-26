@@ -1,29 +1,68 @@
+*{
+  font-family: roboto;
+}
+
 table {
   border-collapse: collapse;
   margin-left: auto;
   margin-right: auto;
-  width: 90%
+  width: auto
 }
 
-body {
-  background-color: #e8e7e2;
-  font-family: roboto;
+
+@media print {
+  #page1 {page-break-after: always;}
+
+
 }
+
 
 @font-face {
   font-family: roboto;
-  src: url('roboto/Roboto-Regular.ttf')
+  src: url('roboto/Roboto-Regular.ttf') format("truetype");
+  font-style: normal;
 }
 
 @font-face{
   font-family: roboto;
-  src: url('roboto/Roboto-Bold.ttf');
+  src: url('roboto/Roboto-Bold.ttf') format("truetype");
   font-weight: bold;
+  font-style: normal;
 }
-#editIcon, #searchIcon {
+
+@font-face {
+  font-family: gentium;
+  src: url('Gentium_Basic/GentiumBasic-Regular.ttf') format("truetype");
+  font-style: normal;
+}
+
+@font-face{
+  font-family: gentium;
+  src: url('Gentium_Basic/GentiumBasic-Bold.ttf') format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: gentium;
+  src: url('Gentium_Basic/GentiumBasic-BoldItalic.ttf') format("truetype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face{
+  font-family: gentium;
+  src: url('Gentium_Basic/GentiumBasic-Italic.ttf') format("truetype");
+  font-weight: italic;
+  font-style: normal;
+}
+body {
+  background-color: #e8e7e2;
+}
+#editIcon, #searchIcon, #printIcon {
   opacity: .5;
 }
-#editIcon:hover , #searchIcon:hover {
+#editIcon:hover , #searchIcon:hover, #printIcon:hover {
   opacity: .9;
 }
 table, th, td {
@@ -41,6 +80,7 @@ height: 30px
 table {
   margin-top: 20px;
 }
+
 input[type="text"]#find_inmate_id_field{
   border: none;
   outline: 0;

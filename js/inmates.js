@@ -16,7 +16,8 @@ inmateFunctions = function(){
    
     const packageTableId = "packageTable"
     const inmateIdElementId = "inmateIdNumber"
-    
+    const editOrPrintButtonId = "editOrPrintButton"
+    const seeAllBooksButtonId = "seeAllBooksButton"
     function getInmateId() {
         return document.getElementById(inmateIdElementId).textContent;
     }
@@ -43,7 +44,17 @@ inmateFunctions = function(){
                 displayError()
             }
     })
+}
 
+
+async function getPackages(inmate_id){
+    let data = await fetch(`http://localhost:8080/getPackages?id=${inmate_id}`, {
+        method: 'get'
+    }).then((response)=>response.json())
+    .then(data => {
+        return data
+    })
+    return data
 }
 
     function displayError(){
@@ -59,10 +70,11 @@ inmateFunctions = function(){
         displayNameAndId(inmateInfo, resultsContainer);
 
         displayAddPackageButton(resultsContainer);
-        const tableElement = createPackageTable(resultsContainer)
-        
-
-        displayPackages(inmateInfo, tableElement);
+        if (inmateInfo.packages.length > 0){
+        displayEditOrPrintInvoiceButton(resultsContainer, inmateInfo.id)
+        }
+        const tableElement = createPackageTableElementAndHeader(resultsContainer)
+        displayPackagesByBook(inmateInfo.packages, tableElement);
     }
     function displaySearchButton(container){
         const div = document.createElement("div")
@@ -82,8 +94,8 @@ inmateFunctions = function(){
      }
 
     function displayAddPackageButton(container){
-        const addPackageButton = document.createElement('button');
-        addPackageButton.textContent = "Add a new package (books or zines)"
+        const addPackageButton = helperFunctions.createButton(`Add a <b><u>new package</b></u> (books or zines)`)
+        addPackageButton.style.background = "DarkSeaGreen"
         container.appendChild(addPackageButton)
         
         addPackageButton.onclick = () => {
@@ -92,11 +104,138 @@ inmateFunctions = function(){
         }
     }
 
-    function createPackageTable(resultsContainer){
+    function displayEditOrPrintInvoiceButton(container, id){
+        const editOrPrintPackage = helperFunctions.createButton("Edit or print old package")
+        editOrPrintPackage.id = editOrPrintButtonId
+        editOrPrintPackage.style.background = "LightCoral"
+        let buttonToDelete = document.getElementById(seeAllBooksButtonId)
+        if (buttonToDelete != null){
+             buttonToDelete.parentNode.replaceChild(editOrPrintPackage, buttonToDelete)
+        } else {
+            container.appendChild(editOrPrintPackage)
+        }
+        editOrPrintPackage.onclick = () => {
+            let packages = getPackages(id)
+            packages.then((data)=>{
+                            createEditOrPrintPackageTable(container, data)
+
+            })
+            displaySeeAllBooksButton(container, id)  
+        }
+    }
+
+    function displaySeeAllBooksButton(container, id){
+        const seeAllBooks = helperFunctions.createButton("See all books/zines received")
+        seeAllBooks.id = seeAllBooksButtonId
+
+        let buttonToDelete = document.getElementById(editOrPrintButtonId)
+        if (buttonToDelete != null){
+             buttonToDelete.parentNode.replaceChild(seeAllBooks, buttonToDelete)
+        }
+        seeAllBooks.onclick = () => {
+            const tableElement = createPackageTableElementAndHeader(container)
+            let packages = getPackages(id)
+            packages.then((data) => {
+                displayPackagesByBook(data, tableElement);
+            })
+            displayEditOrPrintInvoiceButton(container, id)
+        }
+    }
+
+    function createEditOrPrintPackageTable(container, packages){
+
+        let tableElement = document.getElementById(packageTableId)
+        tableElement.innerHTML = ""
+
+        const headerRow = document.createElement('tr')
+
+        const packageContents = document.createElement('th')
+        const edit = document.createElement('th')
+        const print = document.createElement('th')
+        packageContents.textContent = 'Package'
+        edit.textContent = 'Edit'
+        print.textContent = 'Print'
+
+        headerRow.appendChild(packageContents)
+        headerRow.appendChild(edit)
+        headerRow.appendChild(print)
+
+        tableElement.appendChild(headerRow)        
+        let count = 0;
+
+        packages.slice().reverse().forEach(package => {
+            let packageElement = generatePackageContentText(package);
+
+            const packageRow = document.createElement('tr')
+            if (count%2 == 0){
+                packageRow.style.background = "Gainsboro"
+            }
+            count++
+            const packageCell = document.createElement('td')
+          
+
+            packageCell.appendChild(packageElement)
+            packageRow.appendChild(packageCell)
+ 
+            let editIcon = createEditBaseIcon()
+            editIcon.onclick = ()  => {
+                packageFunctions.editPackage(package)
+            }
+
+            const editElement = document.createElement('td')
+            editElement.appendChild(editIcon)
+
+            let printIcon = createPrintIcon()
+            printIcon.onclick = () => {
+                helperFunctions.generateInvoice(package)
+            }
+            const printElement = document.createElement('td')
+            printElement.appendChild(printIcon)
+
+            packageRow.appendChild(editElement)
+            packageRow.appendChild(printElement)
+            tableElement.appendChild(packageRow)
+        })
+        container.appendChild(tableElement)
+
+      
+    }
+  function generatePackageContentText(package) {
+            let div = document.createElement("div")
+            div.style.textAlign = "left"
+            div.style.paddingLeft = "20px"
+            let date = document.createElement("span")
+            date.innerHTML = `<b>${package.date}</b>:`;
+            div.appendChild(date)
+            let list = document.createElement("ul")
+
+
+            package.books.forEach(book => {
+                let item = document.createElement("li")
+                item.innerHTML = `<i>${book.title}</i> - ${book.authors[0]}`;
+                list.appendChild(item)
+            });
+            package.zines.forEach(zine => {
+                let item = document.createElement("li")
+                item.innerHTML = `<b>${zine.threeLetterCode}</b> - ${zine.title}`;
+                list.appendChild(item)
+            });
+            package.resources.forEach(resource => {
+                let item = document.createElement("li")
+                item.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`;
+                list.appendChild(item);
+            })
+            div.appendChild(list)
+            return div
+        }
+
+    function createPackageTableElementAndHeader(resultsContainer){
         let tableElement = document.getElementById(packageTableId)
         if (tableElement == null){
             tableElement = document.createElement('table');
             tableElement.id = packageTableId
+        } else {
+            tableElement.innerHTML = ""
         }
        
         const headerRow = document.createElement('tr');
@@ -119,11 +258,17 @@ inmateFunctions = function(){
         return tableElement
     }
 
-    function displayPackages(inmateInfo, tableElement){
-        inmateInfo.packages.slice().reverse().forEach(package => {
+    function displayPackagesByBook(packages, tableElement){
+        let count = 0
+        packages.slice().reverse().forEach(package => {
             package.books.forEach(book => {
             
             const bookRow = document.createElement('tr');
+            if (count %2 == 0){
+                bookRow.style.background = "Gainsboro"
+            }
+            count++
+
             const date = document.createElement('td');
             const title = document.createElement('td');
             const author = document.createElement('td');
@@ -143,6 +288,10 @@ inmateFunctions = function(){
         package.zines.forEach(zine => {
             
             const zineRow = document.createElement('tr');
+            if(count%2 == 0){
+                zineRow.style.background = "Gainsboro"
+            }
+            count++
             const date = document.createElement('td');
             const title = document.createElement('td');
             const author = document.createElement('td');
@@ -162,6 +311,9 @@ inmateFunctions = function(){
         package.resources.forEach(resource => {
             
                 const resourceRow = document.createElement('tr');
+                if (count%2 == 0){
+                    resourceRow.style.background= "Gainsboro"
+                }
                 const date = document.createElement('td');
                 const title = document.createElement('td');
                 const author = document.createElement('td');
@@ -198,11 +350,7 @@ inmateFunctions = function(){
     }
 
     function createEditInmateIcon(container, inmateInfo) {
-        const editIcon = document.createElement("img")
-        editIcon.src = "style/edit.png"
-        editIcon.id = "editIcon"
-        editIcon.width = "20"
-        editIcon.height = "20" 
+        let editIcon = createEditBaseIcon()
         editIcon.style.marginLeft = "10px"
         editIcon.onclick = () => {
             editInmate(inmateInfo)
@@ -211,6 +359,23 @@ inmateFunctions = function(){
         container.appendChild(editIcon)
     }
 
+    function createEditBaseIcon(){
+        const editIcon = document.createElement("img")
+        editIcon.src = "style/edit.png"
+        editIcon.id = "editIcon"
+        editIcon.width = "20"
+        editIcon.height = "20" 
+        return editIcon
+    }
+
+    function createPrintIcon(){
+        const printIcon = document.createElement("img")
+        printIcon.src = "style/print.png"
+        printIcon.id = "printIcon"
+        printIcon.width = "20"
+        printIcon.height = "20" 
+        return printIcon
+    }
     function addInmate(idNumber){
         const resultsContainer = getAndClearInmateResultsElement();
         createInmateNotFoundMessage(resultsContainer, idNumber)

@@ -29,8 +29,7 @@ packageFunctions = function(){
     
 
     function setupAddPackageModal() {
-        let modal = helperFunctions.getModalContainer()
-        modal.innerHTML = ""
+        helperFunctions.getAndClearModalContainer()
         initializePackageContentList()
         step1_bookOrZine()
     }
@@ -206,15 +205,166 @@ packageFunctions = function(){
         createCancelButton_returnToStep1(resultsContainer)
     }
    
+    function editPackage(package){
+        helperFunctions.displayModal()
+        let container = helperFunctions.getAndClearModalContainer()
+        container.appendChild(createEditOrDeleteInfo())
+        container.appendChild(createPackageContentChecklist(package))
 
+        let buttonsDiv = document.createElement("div")
+        buttonsDiv.id = "editPackageButtonsDiv"
+        createEditPackageButtonPanel(buttonsDiv)
+
+        container.appendChild(buttonsDiv)
+        
+    }
+
+    function createEditPackageButtonPanel(buttonsDiv){
+        buttonsDiv.appendChild(createEditItemButton())
+        buttonsDiv.appendChild(createDeleteItemButton()) 
+        buttonsDiv.appendChild(createDeletePackageButton())
+    }
+
+    function createDeleteItemButton(){
+        let deleteItemsButton = helperFunctions.createButton("Delete selected item(s)")
+        return deleteItemsButton
+    }    
+
+    function createEditItemButton(){
+        let editItemsButton = helperFunctions.createButton("Edit selected item(s)")
+        return editItemsButton
+    }    
+
+    function createDeletePackageButton(){
+        let deletePackageButton = helperFunctions.createButton("Delete entire package")
+        deletePackageButton.style.background = "LightCoral"
+        deletePackageButton.onclick = () => {
+            let buttonsDiv = getAndClearEditPackageButtonsDiv()
+            buttonsDiv.appendChild(createConfirmDeletePackageButton())
+            buttonsDiv.appendChild(createCancelDeletePackageButton())
+        }
+        return deletePackageButton
+    }    
+
+    function createConfirmDeletePackageButton(){
+        let confirmDeletePackageButton = helperFunctions.createButton("Yes, delete entire package")
+        confirmDeletePackageButton.style.background = "LightCoral"
+        confirmDeletePackageButton.onclick = () => {
+        }
+        return confirmDeletePackageButton
+    }  
+
+    function getAndClearEditPackageButtonsDiv(){
+        let buttonsDiv = document.getElementById("editPackageButtonsDiv")
+            buttonsDiv.innerHTML = ""
+            return buttonsDiv
+    }
+    
+    function createCancelDeletePackageButton(){
+        let cancelDeletePackageButton = helperFunctions.createButton("Cancel")
+        cancelDeletePackageButton.onclick = () => {
+            createEditPackageButtonPanel(getAndClearEditPackageButtonsDiv())
+        }
+        return cancelDeletePackageButton
+    }   
+
+    function createEditOrDeleteInfo(){
+        let div = document.createElement("div")
+        div.style.textAlign = "center"
+
+        let span = document.createElement("span")
+        span.innerHTML = `Select the item(s) that you would like to either edit or delete (or delete the whole package). <br><small>Changes you make to the titles or authors of items will affect the entire database.</small>`
+        span.style.fontSize = "20px"
+        div.appendChild(span)
+        div.appendChild(document.createElement("hr"))
+
+        return div
+    }
+
+    function createPackageContentChecklist(package){
+        const leftAlignDiv = document.createElement("div")
+        leftAlignDiv.style.textAlign = "left"
+        leftAlignDiv.style.paddingTop = "20px"
+        leftAlignDiv.style.paddingLeft = "20px"
+
+        addBooksToEditChecklist(package, leftAlignDiv);
+        addZinesToEditChecklist(package, leftAlignDiv);
+        addResourcesToEditChecklist(package, leftAlignDiv);
+        return leftAlignDiv
+    
+
+        
+    }
+    function addResourcesToEditChecklist(package, div) {
+        package.resources.forEach(resource => {
+            const resourceCheckbox = document.createElement("input");
+            resourceCheckbox.type = "checkbox";
+            resourceCheckbox.name = "resourceCheckbox";
+            resourceCheckbox.value = JSON.stringify(resource);
+            resourceCheckbox.id = resource.id;
+
+            const label = document.createElement("label");
+            label.htmlFor = resourceCheckbox.id;
+            label.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`;
+
+            div.appendChild(resourceCheckbox);
+            div.appendChild(label);
+            div.appendChild(document.createElement("br"));
+        });
+    }
+
+    function addZinesToEditChecklist(package, div) {
+        package.zines.forEach(zine => {
+            const zineCheckbox = document.createElement("input");
+            zineCheckbox.type = "checkbox";
+            zineCheckbox.name = "zineCheckbox";
+            zineCheckbox.value = JSON.stringify(zine);
+            zineCheckbox.id = zine.id;
+
+            const label = document.createElement("label");
+            label.htmlFor = zineCheckbox.id;
+            label.innerHTML = `<b>${zine.threeLetterCode}</b> - ${zine.title}`;
+
+            div.appendChild(zineCheckbox);
+            div.appendChild(label);
+            div.appendChild(document.createElement("br"));
+        });
+    }
+
+    function addBooksToEditChecklist(package, div) {
+        package.books.forEach(book => {
+            const bookCheckbox = document.createElement("input");
+            bookCheckbox.type = "checkbox";
+            bookCheckbox.name = "bookCheckbox";
+            bookCheckbox.value = JSON.stringify(book);
+            bookCheckbox.id = book.id;
+
+            const label = document.createElement("label");
+            label.htmlFor = bookCheckbox.id;
+            label.innerHTML = `<i>${book.title}</i> - ${book.authors[0]}`;
+
+            div.appendChild(bookCheckbox);
+            div.appendChild(label);
+            div.appendChild(document.createElement("br"));
+        });
+    }
     function createSearchForBookButton(container){
         const searchButton = helperFunctions.createButton("Search for book")
         searchButton.onclick = () =>{
             const isbnField = document.getElementById(searchIsbnField)
             if (isbnField.value == "") {
                 //error message to add isbn
-            }else{
+            }else if (isbnField.value.length == 10 || isbnField.value.length == 13){
                 searchForBook(isbnField.value)
+            } else {
+                let error =  document.getElementById("isbnError")
+                if (error == null){
+                    error = document.createElement("p")
+                    error.id = "isbnError"
+                    error.innerHTML = `Hmm..that number doesn't seem to be an ISBN. Find the ISBN either in the barcode area, or inside the first few pages of the book.`
+                    error.style.background = "LightCoral"
+                    container.appendChild(error)
+                }
             }
         }
         container.appendChild(searchButton)
@@ -552,8 +702,10 @@ function savePackage(){
         }
         return response.json();
     }).then(function(data){
-        inmateFunctions.findInmate(inmateFunctions.getInmateId())
-        modal.style.display = "none";
+        let container = getAddPackageContentContainer()
+        addPrintInvoiceButton(container, data)
+        addDoneButton(container)
+        
         
     }).catch(error => {
         if (error == "204"){
@@ -562,6 +714,24 @@ function savePackage(){
         }
 })
 
+}
+
+function addDoneButton(container){
+    let done = helperFunctions.createButton("Done")
+    done.onclick = () => {
+        inmateFunctions.findInmate(inmateFunctions.getInmateId())
+        helperFunctions.hideModal()
+    }
+    container.appendChild(done)
+}
+function addPrintInvoiceButton(container, data){
+    let printButton = helperFunctions.createButton("Print invoice?")
+    printButton.onclick = () => {
+        helperFunctions.generateInvoice(data)
+        inmateFunctions.findInmate(inmateFunctions.getInmateId())
+        helperFunctions.hideModal()
+    }
+    container.appendChild(printButton)
 }
 
 function createEditBookButton(container, isbn, title, author){
@@ -605,7 +775,8 @@ function bookInfo_confirmBook(bookData, isbnTarget) {
 }
 
     return{
-        setupAddPackageModal:setupAddPackageModal
+        setupAddPackageModal:setupAddPackageModal,
+        editPackage:editPackage
     }
 
     
