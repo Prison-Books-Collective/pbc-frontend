@@ -123,6 +123,7 @@ inmateFunctions = function(){
             const packageCell = document.createElement('td')
             packageCell.style.paddingTop = "10px"
             packageCell.style.paddingBottom = "10px"
+            packageCell.style.paddingRight = "15px"
 
             packageCell.appendChild(packageElement)
             packageRow.appendChild(packageCell)
@@ -134,6 +135,7 @@ inmateFunctions = function(){
 
             const editElement = document.createElement('td')
             editElement.appendChild(editIcon)
+            editElement.style.width = "40px"
 
             let printIcon = createPrintIcon()
             printIcon.onclick = () => {
@@ -141,6 +143,7 @@ inmateFunctions = function(){
             }
             const printElement = document.createElement('td')
             printElement.appendChild(printIcon)
+            printElement.style.width = "40px"
 
             packageRow.appendChild(editElement)
             packageRow.appendChild(printElement)
