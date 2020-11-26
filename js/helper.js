@@ -35,7 +35,7 @@ helperFunctions = function () {
             openWindow.document.close()
             openWindow.focus()
             openWindow.print()
-            //   openWindow.close()
+            openWindow.close()
 
         }, 750)
     }
