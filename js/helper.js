@@ -162,7 +162,7 @@ helperFunctions = function () {
 
         package.zines.forEach(zine => {
             let item = document.createElement("li")
-            item.innerHTML = `${zine.title}`
+            item.innerHTML = `<b>ZINE</b> - ${zine.title}`
             packageList.appendChild(item)
         })
 

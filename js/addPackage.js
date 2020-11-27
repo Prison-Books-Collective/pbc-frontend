@@ -304,6 +304,7 @@ packageFunctions = function(){
             resourceCheckbox.id = resource.id;
 
             const label = document.createElement("label");
+            label.style.paddingLeft = "5px"
             label.htmlFor = resourceCheckbox.id;
             label.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`;
 
@@ -323,6 +324,8 @@ packageFunctions = function(){
 
             const label = document.createElement("label");
             label.htmlFor = zineCheckbox.id;
+            label.style.paddingLeft = "5px"
+
             label.innerHTML = `<b>${zine.threeLetterCode}</b> - ${zine.title}`;
 
             div.appendChild(zineCheckbox);
@@ -341,6 +344,8 @@ packageFunctions = function(){
 
             const label = document.createElement("label");
             label.htmlFor = bookCheckbox.id;
+            label.style.paddingLeft = "5px"
+
             label.innerHTML = `<i>${book.title}</i> - ${book.authors[0]}`;
 
             div.appendChild(bookCheckbox);
