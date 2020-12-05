@@ -1,4 +1,5 @@
 helperFunctions = function () {
+    const siteContentId = "site_content"
 
     function createLabelAndField(container, labelContent, fieldId, fieldContent, hint) {
 
@@ -186,7 +187,7 @@ helperFunctions = function () {
         nameDateDiv.style.fontSize = "10px"
 
         let nameInput = document.createElement("span")
-        nameInput.textContent = `___________________________________`
+        nameInput.textContent = `______________________________________________________`
 
         let dateInput = document.createElement("span")
         dateInput.innerHTML = `_______ <span style="font-size: 20px">/</span>_______ <span style="font-size: 20px">/</span>______________`
@@ -223,6 +224,12 @@ helperFunctions = function () {
         modal.style.display = "block"
     }
 
+    function getAndClearSiteContent(){
+            const container = document.getElementById(siteContentId);
+            container.innerHTML = ""
+            return container;
+        
+    }
     function getAndClearModalContainer(){
         let  container = getModalContainer()
         container.innerHTML = ""
@@ -236,7 +243,8 @@ helperFunctions = function () {
         displayModal: displayModal,
         hideModal: hideModal,
         generateInvoice: generateInvoice,
-        getAndClearModalContainer:getAndClearModalContainer
+        getAndClearModalContainer:getAndClearModalContainer,
+        getAndClearSiteContent:getAndClearSiteContent
     }
 
 

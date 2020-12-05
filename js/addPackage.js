@@ -688,8 +688,18 @@ function savePackage(){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
     let resourcesJson = generateResourcesJson()
+    let date = new Date();
+    let year = date.getFullYear()
+    let month =date.getMonth()
+    let day = date.getDate()
 
-    let packageJson = `{${booksJson}, ${zinesJson}, ${resourcesJson}}`
+    if (month<10){
+        month = '0'+month
+    }
+    if (day < 10) {
+        day = '0'+day
+    }
+    let packageJson = `{${booksJson}, ${zinesJson}, ${resourcesJson}, "date": "${year}-${month}-${day}"}`
     
     const inmateId = inmateFunctions.getInmateId()
     
@@ -731,6 +741,7 @@ function addDoneButton(container){
 }
 function addPrintInvoiceButton(container, data){
     let printButton = helperFunctions.createButton("Print invoice?")
+    printButton.style.background = "DarkSeaGreen"
     printButton.onclick = () => {
         helperFunctions.generateInvoice(data)
         inmateFunctions.findInmate(inmateFunctions.getInmateId())

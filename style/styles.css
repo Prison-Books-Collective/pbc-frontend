@@ -63,10 +63,10 @@ ul{
 body {
   background-color: #e8e7e2;
 }
-#editIcon, #searchIcon, #printIcon {
+#editIcon, #searchIcon, #printIcon, #gearIcon{
   opacity: .5;
 }
-#editIcon:hover , #searchIcon:hover, #printIcon:hover {
+#editIcon:hover , #searchIcon:hover, #printIcon:hover, #gearIcon:hover{
   opacity: .9;
 }
 table, th, td {

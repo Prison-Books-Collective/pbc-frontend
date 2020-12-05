@@ -9,15 +9,13 @@
 
 inmateFunctions = function(){
    
-    const siteContentId = "site_content"
     const inmateIdField = "inmateIdField";
     const inmateFirstNameField = "inmateFirstNameField";
     const inmateLastNameField = "inmateLastNameField";
    
     const packageTableId = "packageTable"
     const inmateIdElementId = "inmateIdNumber"
-    const editOrPrintButtonId = "editOrPrintButton"
-    const seeAllBooksButtonId = "seeAllBooksButton"
+ 
     function getInmateId() {
         return document.getElementById(inmateIdElementId).textContent;
     }
@@ -55,7 +53,7 @@ inmateFunctions = function(){
     }
     
     function displayInmate(inmateInfo){
-        const resultsContainer = getAndClearInmateResultsElement();
+        const resultsContainer = helperFunctions.getAndClearSiteContent();
         displayNameAndId(inmateInfo, resultsContainer);
 
         displayAddPackageButton(resultsContainer);
@@ -63,23 +61,6 @@ inmateFunctions = function(){
             createEditOrPrintPackageTable(resultsContainer, inmateInfo.packages);
         }
     }
-
-    function displaySearchButton(container){
-        const div = document.createElement("div")
-        div.style.textAlign = "left"
-        div.style.paddingTop = "10px"
-        div.style.paddingLeft = "10px"
-        let search = document.createElement("img")
-        search.src = "style/search.png"
-        search.id = "searchIcon"
-        search.width = "40"
-        search.height = "40" 
-        search.onclick = () => {
-            homepageFunctions.displayHomepage()
-        } 
-        div.appendChild(search)
-        container.appendChild(div)  
-     }
 
     function displayAddPackageButton(container){
         const addPackageButton = helperFunctions.createButton(`Add a <b><u>new package</b></u> (books or zines)`)
@@ -285,13 +266,6 @@ inmateFunctions = function(){
         button.onclick = () => {
             createInmateRecord()
         }
-    }
-
-    function getAndClearInmateResultsElement(){
-        const container = document.getElementById(siteContentId);
-        container.innerHTML = ""
-        displaySearchButton(container)
-        return container;
     }
 
     function createInmateRecord(){
