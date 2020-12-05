@@ -167,9 +167,9 @@ helperFunctions = function () {
             packageList.appendChild(item)
         })
 
-        package.resources.forEach(resource => {
+        package.noISBNBooks.forEach(noISBNBook => {
             let item = document.createElement("li")
-            item.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`
+            item.innerHTML = `<i>${noISBNBook.title}</i> - ${noISBNBook.authors[0]}`
             packageList.appendChild(item)
         })
         packageListDiv.appendChild(packageList)

@@ -1,4 +1,4 @@
-packageFunctions = function(){
+addPackageFunctions = function(){
     const packageContentListId = "packageContentList"
     const searchIsbnField = "searchIsbn";
     const addBookISBNId = "addBookISBN"
@@ -9,7 +9,7 @@ packageFunctions = function(){
     const zineCheckboxesName = "zine"
     const zineAttribute = "data-zine"
     const bookAttribute = "data-book"
-    const resourceAttribute = "data-resource"
+    const noISBNBookAttribute = "data-noISBNBook"
 
 
     function getAddPackageContentContainer() {
@@ -96,15 +96,6 @@ packageFunctions = function(){
 
     }
 
-    function seeAllZinesButton(container){
-        const seeAllZinesButton = helperFunctions.createButton("Select from Full Zine List")
-        seeAllZinesButton.onclick = () => {
-            getAndDisplayZines()
-        }
-        container.appendChild(seeAllZinesButton)
-    }
-
-
     function displayZines(zines){
         const container = getAddPackageContentContainer()
         let explanationText = `<b>Select the zine(s) you are sending from the following list, then click the "Add zine(s) to package" button.</b>`
@@ -176,13 +167,13 @@ packageFunctions = function(){
         const noIsbnButton = helperFunctions.createButton("No ISBN?")
         noIsbnButton.style.background = "LightCoral"
         noIsbnButton.onclick = () => {
-            createResource()
+            createNoISBNBook()
         }
         container.appendChild(noIsbnButton)
         createCancelButton_returnToStep1(container)
     }
 
-    function createResource(){
+    function createNoISBNBook(){
         let resultsContainer =  getAddPackageContentContainer()
     
         helperFunctions.createAndAddParagraphElement(resultsContainer, "Fill out the information below and save book (or resource) <br><br>")
@@ -197,162 +188,15 @@ packageFunctions = function(){
             let title = document.getElementById(addBookTitleId).value
     
            
-            let resource = `{"title": "${title}", "authors": ["${author}"]}`
-            saveResource(resource)
+            let noISBNBook = `{"title": "${title}", "authors": ["${author}"]}`
+            saveNoISBNBook(noISBNBook)
         }
     
         resultsContainer.appendChild(saveNewBookButton)
         createCancelButton_returnToStep1(resultsContainer)
     }
-   
-    function editPackage(package){
-        helperFunctions.displayModal()
-        let container = helperFunctions.getAndClearModalContainer()
-        container.appendChild(createEditOrDeleteInfo())
-        container.appendChild(createPackageContentChecklist(package))
 
-        let buttonsDiv = document.createElement("div")
-        buttonsDiv.id = "editPackageButtonsDiv"
-        createEditPackageButtonPanel(buttonsDiv)
-
-        container.appendChild(buttonsDiv)
-        
-    }
-
-    function createEditPackageButtonPanel(buttonsDiv){
-        buttonsDiv.appendChild(createEditItemButton())
-        buttonsDiv.appendChild(createDeleteItemButton()) 
-        buttonsDiv.appendChild(createDeletePackageButton())
-    }
-
-    function createDeleteItemButton(){
-        let deleteItemsButton = helperFunctions.createButton("Delete selected item(s)")
-        return deleteItemsButton
-    }    
-
-    function createEditItemButton(){
-        let editItemsButton = helperFunctions.createButton("Edit selected item(s)")
-        return editItemsButton
-    }    
-
-    function createDeletePackageButton(){
-        let deletePackageButton = helperFunctions.createButton("Delete entire package")
-        deletePackageButton.style.background = "LightCoral"
-        deletePackageButton.onclick = () => {
-            let buttonsDiv = getAndClearEditPackageButtonsDiv()
-            buttonsDiv.appendChild(createConfirmDeletePackageButton())
-            buttonsDiv.appendChild(createCancelDeletePackageButton())
-        }
-        return deletePackageButton
-    }    
-
-    function createConfirmDeletePackageButton(){
-        let confirmDeletePackageButton = helperFunctions.createButton("Yes, delete entire package")
-        confirmDeletePackageButton.style.background = "LightCoral"
-        confirmDeletePackageButton.onclick = () => {
-        }
-        return confirmDeletePackageButton
-    }  
-
-    function getAndClearEditPackageButtonsDiv(){
-        let buttonsDiv = document.getElementById("editPackageButtonsDiv")
-            buttonsDiv.innerHTML = ""
-            return buttonsDiv
-    }
     
-    function createCancelDeletePackageButton(){
-        let cancelDeletePackageButton = helperFunctions.createButton("Cancel")
-        cancelDeletePackageButton.onclick = () => {
-            createEditPackageButtonPanel(getAndClearEditPackageButtonsDiv())
-        }
-        return cancelDeletePackageButton
-    }   
-
-    function createEditOrDeleteInfo(){
-        let div = document.createElement("div")
-        div.style.textAlign = "center"
-
-        let span = document.createElement("span")
-        span.innerHTML = `Select the item(s) that you would like to either edit or delete (or delete the whole package). <br><small>Changes you make to the titles or authors of items will affect the entire database.</small>`
-        span.style.fontSize = "20px"
-        div.appendChild(span)
-        div.appendChild(document.createElement("hr"))
-
-        return div
-    }
-
-    function createPackageContentChecklist(package){
-        const leftAlignDiv = document.createElement("div")
-        leftAlignDiv.style.textAlign = "left"
-        leftAlignDiv.style.paddingTop = "20px"
-        leftAlignDiv.style.paddingLeft = "20px"
-
-        addBooksToEditChecklist(package, leftAlignDiv);
-        addZinesToEditChecklist(package, leftAlignDiv);
-        addResourcesToEditChecklist(package, leftAlignDiv);
-        return leftAlignDiv
-    
-
-        
-    }
-    function addResourcesToEditChecklist(package, div) {
-        package.resources.forEach(resource => {
-            const resourceCheckbox = document.createElement("input");
-            resourceCheckbox.type = "checkbox";
-            resourceCheckbox.name = "resourceCheckbox";
-            resourceCheckbox.value = JSON.stringify(resource);
-            resourceCheckbox.id = resource.id;
-
-            const label = document.createElement("label");
-            label.style.paddingLeft = "5px"
-            label.htmlFor = resourceCheckbox.id;
-            label.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`;
-
-            div.appendChild(resourceCheckbox);
-            div.appendChild(label);
-            div.appendChild(document.createElement("br"));
-        });
-    }
-
-    function addZinesToEditChecklist(package, div) {
-        package.zines.forEach(zine => {
-            const zineCheckbox = document.createElement("input");
-            zineCheckbox.type = "checkbox";
-            zineCheckbox.name = "zineCheckbox";
-            zineCheckbox.value = JSON.stringify(zine);
-            zineCheckbox.id = zine.id;
-
-            const label = document.createElement("label");
-            label.htmlFor = zineCheckbox.id;
-            label.style.paddingLeft = "5px"
-
-            label.innerHTML = `<b>${zine.threeLetterCode}</b> - ${zine.title}`;
-
-            div.appendChild(zineCheckbox);
-            div.appendChild(label);
-            div.appendChild(document.createElement("br"));
-        });
-    }
-
-    function addBooksToEditChecklist(package, div) {
-        package.books.forEach(book => {
-            const bookCheckbox = document.createElement("input");
-            bookCheckbox.type = "checkbox";
-            bookCheckbox.name = "bookCheckbox";
-            bookCheckbox.value = JSON.stringify(book);
-            bookCheckbox.id = book.id;
-
-            const label = document.createElement("label");
-            label.htmlFor = bookCheckbox.id;
-            label.style.paddingLeft = "5px"
-
-            label.innerHTML = `<i>${book.title}</i> - ${book.authors[0]}`;
-
-            div.appendChild(bookCheckbox);
-            div.appendChild(label);
-            div.appendChild(document.createElement("br"));
-        });
-    }
     function createSearchForBookButton(container){
         const searchButton = helperFunctions.createButton("Search for book")
         searchButton.onclick = () =>{
@@ -479,14 +323,14 @@ function editOrCreateBook(text, originalIsbn, originalTitle, originalAuthor, isN
 
 }
 
-function saveResource(resource){
+function saveNoISBNBook(noISBNBook){
         
-    fetch(`http://localhost:8080/addResource`, {
+    fetch(`http://localhost:8080/addNoISBNBook`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
-        body: resource
+        body: noISBNBook
     }).then(function(response){
         if(response.status == 302){
             throw "302";
@@ -495,7 +339,7 @@ function saveResource(resource){
         }
         return response.json();
     }).then(function(data){
-        addResourceToPackage(data)
+        addNoISBNBookToPackage(data)
         displayPackage()
         step1_bookOrZine(true)
 
@@ -555,12 +399,12 @@ function addBookToPackage(bookData){
     packageContentList.appendChild(bookListItem);
 }
 
-function addResourceToPackage(resourceData){
+function addNoISBNBookToPackage(noISBNBookData){
     let  packageContentList = getPackageContentListElement()
-    resourceListItem = document.createElement("li");
-    resourceListItem.innerHTML = `<b>${resourceData.title}</b>, <i>${resourceData.authors[0]}</i>`;
-    resourceListItem.setAttribute(resourceAttribute, JSON.stringify(resourceData));
-    packageContentList.appendChild(resourceListItem);
+    noISBNBookListItem = document.createElement("li");
+    noISBNBookListItem.innerHTML = `<b>${noISBNBookData.title}</b>, <i>${noISBNBookData.authors[0]}</i>`;
+    noISBNBookListItem.setAttribute(noISBNBookAttribute, JSON.stringify(noISBNBookData));
+    packageContentList.appendChild(noISBNBookListItem);
 }
 
 function addZinesToPackage(){
@@ -665,32 +509,32 @@ function generateZinesJson(){
     return zineJson
 }
 
-function generateResourcesJson(){
+function generateNoISBNBooksJson(){
     const packageContentListElement = document.getElementById(packageContentListId)
-    let resourcesJson = `"resources": [`
-    let resourceExists = false
-    packageContentListElement.childNodes.forEach(resourceItem => {
-        if (resourceItem.getAttribute(resourceAttribute)!=null){
-            resourceExists = true
-            resourcesJson = resourcesJson + resourceItem.getAttribute(resourceAttribute) + `, `
+    let noISBNBooksJson = `"noISBNBooks": [`
+    let noISBNBookExists = false
+    packageContentListElement.childNodes.forEach(noISBNBookItem => {
+        if (noISBNBookItem.getAttribute(noISBNBookAttribute)!=null){
+            noISBNBookExists = true
+            noISBNBooksJson = noISBNBooksJson + noISBNBookItem.getAttribute(noISBNBookAttribute) + `, `
         }
     });
-    if (resourceExists){
-        resourcesJson = resourcesJson.substring(0,resourcesJson.length - 2)
+    if (noISBNBookExists){
+        noISBNBooksJson = noISBNBooksJson.substring(0,noISBNBooksJson.length - 2)
 
     }
-    resourcesJson = resourcesJson + `]`
-    return resourcesJson
+    noISBNBooksJson = noISBNBooksJson + `]`
+    return noISBNBooksJson
 }
 
 
 function savePackage(){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
-    let resourcesJson = generateResourcesJson()
+    let noISBNBooksJson = generateNoISBNBooksJson()
     let date = new Date();
     let year = date.getFullYear()
-    let month =date.getMonth()
+    let month =date.getMonth()+1
     let day = date.getDate()
 
     if (month<10){
@@ -699,7 +543,7 @@ function savePackage(){
     if (day < 10) {
         day = '0'+day
     }
-    let packageJson = `{${booksJson}, ${zinesJson}, ${resourcesJson}, "date": "${year}-${month}-${day}"}`
+    let packageJson = `{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${year}-${month}-${day}"}`
     
     const inmateId = inmateFunctions.getInmateId()
     
@@ -791,9 +635,8 @@ function bookInfo_confirmBook(bookData, isbnTarget) {
 }
 
     return{
-        setupAddPackageModal:setupAddPackageModal,
-        editPackage:editPackage
-    }
+        setupAddPackageModal:setupAddPackageModal
+        }
 
     
 }();

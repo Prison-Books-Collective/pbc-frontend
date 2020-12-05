@@ -45,7 +45,7 @@ inmateFunctions = function(){
 }
 
     function displayError(){
-        const resultsContainer = getAndClearInmateResultsElement();
+        const resultsContainer = helperFunctions.getAndClearSiteContent();
         const errorMessage = "Input not understood. Please check ID#."
         const messageElement = document.createElement('h3')
         messageElement.textContent = errorMessage
@@ -69,7 +69,7 @@ inmateFunctions = function(){
         
         addPackageButton.onclick = () => {
             helperFunctions.displayModal()
-            packageFunctions.setupAddPackageModal()
+            addPackageFunctions.setupAddPackageModal()
         }
     }
 
@@ -111,7 +111,7 @@ inmateFunctions = function(){
  
             let editIcon = createEditBaseIcon()
             editIcon.onclick = ()  => {
-                packageFunctions.editPackage(package)
+                editPackageFunctions.editPackage(package)
             }
 
             const editElement = document.createElement('td')
@@ -154,9 +154,9 @@ inmateFunctions = function(){
                 item.innerHTML = `<b>${zine.threeLetterCode}</b> - ${zine.title}`;
                 list.appendChild(item)
             });
-            package.resources.forEach(resource => {
+            package.noISBNBooks.forEach(noISBNBook => {
                 let item = document.createElement("li")
-                item.innerHTML = `<i>${resource.title}</i> - ${resource.authors[0]}`;
+                item.innerHTML = `<i>${noISBNBook.title}</i> - ${noISBNBook.authors[0]}`;
                 list.appendChild(item);
             })
             div.appendChild(list)
@@ -213,7 +213,7 @@ inmateFunctions = function(){
         return printIcon
     }
     function addInmate(idNumber){
-        const resultsContainer = getAndClearInmateResultsElement();
+        const resultsContainer = helperFunctions.getAndClearSiteContent();
         createInmateNotFoundMessage(resultsContainer, idNumber)
         createInmateInfoFields(resultsContainer, idNumber, "", "")
         createAddInmateButton(resultsContainer)
