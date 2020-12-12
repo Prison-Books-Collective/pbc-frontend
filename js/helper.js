@@ -21,24 +21,51 @@ helperFunctions = function () {
 
     }
 
-    function generateInvoice(packageInfo) {
+    function getDate() {
+        let date = new Date();
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+
+        if (month < 10) {
+            month = '0' + month
+        }
+        if (day < 10) {
+            day = '0' + day
+        }
+        return `${year}-${month}-${day}`
+    }
+
+    async function generateInvoice(packageInfo) {
         let invoice = document.createElement("div")
         let page1 = invoicePage1(packageInfo);
+        page1.class =  "pageBreakAfter"
         invoice.appendChild(page1);
 
         let page2 = document.createElement("img")
         page2.src = "style/invoicePage2.svg"
         invoice.appendChild(page2)
 
-        let openWindow = window.open("", "title", "attributes")
-        openWindow.document.write(invoice.innerHTML)
-        setTimeout(() => {
-            openWindow.document.close()
-            openWindow.focus()
-            openWindow.print()
-            openWindow.close()
 
-        }, 750)
+        let openWindow = await writeInvoiceContent(invoice.innerHTML)
+        openWindow.document.close()
+        openWindow.focus()
+        openWindow.print()
+        openWindow.close()
+
+
+    }
+
+    function writeInvoiceContent(innerHTML) {
+        return new Promise(
+            (resolve) => {
+                let openWindow = window.open("", "title", "attributes")
+                openWindow.document.write(innerHTML)
+                setTimeout(() => {
+                    resolve(openWindow)
+                }, 1000)
+            }
+        )
     }
 
     function createFontStyleSection_Invoice() {
@@ -106,7 +133,6 @@ helperFunctions = function () {
 
         let page1 = document.createElement("div");
         page1.style.fontFamily = "gentium"
-        page1.id = "page1";
 
         page1.appendChild(createFontStyleSection_Invoice())
         page1.appendChild(createHeaderLogoAndTitle_Invoice())
@@ -119,7 +145,7 @@ helperFunctions = function () {
         return page1
     }
 
-    function createLineBreak(width, style){
+    function createLineBreak(width, style) {
         let miniBreak = document.createElement("div")
         miniBreak.style.borderWidth = "1px"
         miniBreak.style.borderStyle = style
@@ -127,7 +153,8 @@ helperFunctions = function () {
         miniBreak.style.margin = "auto"
         return miniBreak
     }
-    function createInvoiceLabel(){
+
+    function createInvoiceLabel() {
         let div = document.createElement("div")
         div.style.textAlign = "center"
         div.style.paddingTop = "20px"
@@ -140,7 +167,7 @@ helperFunctions = function () {
         return div
     }
 
-    function createInformation_Invoice(){
+    function createInformation_Invoice() {
         let info = document.createElement("p")
         info.style.fontSize = "18px"
         info.style.padding = "0px 85px 10px 85px"
@@ -151,7 +178,7 @@ helperFunctions = function () {
         return info
     }
 
-    function createPackageList_Invoice(package){
+    function createPackageList_Invoice(package) {
         let packageListDiv = document.createElement("div")
         packageListDiv.style.padding = "7px 0px 0px 95px"
         let packageList = document.createElement("ol")
@@ -176,7 +203,7 @@ helperFunctions = function () {
         return packageListDiv
     }
 
-    function createNameDateInput_Invoice(){
+    function createNameDateInput_Invoice() {
         let nameDateDiv = document.createElement("div")
         nameDateDiv.style.fontFamily = "arial"
         nameDateDiv.style.display = "flex"
@@ -191,11 +218,12 @@ helperFunctions = function () {
 
         let dateInput = document.createElement("span")
         dateInput.innerHTML = `_______ <span style="font-size: 20px">/</span>_______ <span style="font-size: 20px">/</span>______________`
-        
+
         nameDateDiv.appendChild(nameInput)
         nameDateDiv.appendChild(dateInput)
         return nameDateDiv
     }
+
     function getModalContainer() {
         let modal = document.getElementById("modal-content")
 
@@ -224,14 +252,15 @@ helperFunctions = function () {
         modal.style.display = "block"
     }
 
-    function getAndClearSiteContent(){
-            const container = document.getElementById(siteContentId);
-            container.innerHTML = ""
-            return container;
-        
+    function getAndClearSiteContent() {
+        const container = document.getElementById(siteContentId);
+        container.innerHTML = ""
+        return container;
+
     }
-    function getAndClearModalContainer(){
-        let  container = getModalContainer()
+
+    function getAndClearModalContainer() {
+        let container = getModalContainer()
         container.innerHTML = ""
         return container
     }
@@ -243,8 +272,9 @@ helperFunctions = function () {
         displayModal: displayModal,
         hideModal: hideModal,
         generateInvoice: generateInvoice,
-        getAndClearModalContainer:getAndClearModalContainer,
-        getAndClearSiteContent:getAndClearSiteContent
+        getAndClearModalContainer: getAndClearModalContainer,
+        getAndClearSiteContent: getAndClearSiteContent,
+        getDate: getDate
     }
 
 

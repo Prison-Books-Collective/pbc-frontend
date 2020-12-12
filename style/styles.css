@@ -11,7 +11,7 @@ table {
 
 
 @media print {
-  #page1 {page-break-after: always;}
+  .pageBreakAfter {page-break-after: always;}
 
 
 }
@@ -128,6 +128,10 @@ button {
 .button:active {
 	position:relative;
 	top:1px;
+}
+button:disabled{
+  background-color: #838383;
+  background: #838383;
 }
 
 

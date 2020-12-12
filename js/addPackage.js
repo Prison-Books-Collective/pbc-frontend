@@ -532,18 +532,8 @@ function savePackage(){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
     let noISBNBooksJson = generateNoISBNBooksJson()
-    let date = new Date();
-    let year = date.getFullYear()
-    let month =date.getMonth()+1
-    let day = date.getDate()
-
-    if (month<10){
-        month = '0'+month
-    }
-    if (day < 10) {
-        day = '0'+day
-    }
-    let packageJson = `{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${year}-${month}-${day}"}`
+    let date = helperFunctions.getDate()
+    let packageJson = `{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}"}`
     
     const inmateId = inmateFunctions.getInmateId()
     
