@@ -1,5 +1,7 @@
 adminFunctions = function(){
-   
+    let threeLetterCodeId = "newZineThreeLetterCode"
+    let zineTitleId = "newZineTitle"
+
      async function displayAdminPage(){
         let container = helperFunctions.getAndClearSiteContent()
         let adminDiv = document.createElement("div")
@@ -19,9 +21,13 @@ adminFunctions = function(){
         return response.json()
     }
 
-   function addZine(){
+   function addZine(zine){
     fetch(`http://localhost:8080/addZine`, {
-        method: 'post'
+        method: 'post',
+        body:  zine,
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
     }).then(function(response){
         return response.json();
     }).then(function(data){
@@ -51,10 +57,18 @@ adminFunctions = function(){
         let  zineTitle = document.createElement("h3")
         zineTitle.innerHTML = "Zines"
         zinesDiv.appendChild(zineTitle)
-        helperFunctions.createLabelAndField(zinesDiv, "Three letter code", "newZineThreeLetterCode","", "Enter three letter code")
-        helperFunctions.createLabelAndField(zinesDiv, "Title", "newZineTitle","", "Enter zine title")
+        helperFunctions.createLabelAndField(zinesDiv, "Three letter code", threeLetterCodeId,"", "Enter three letter code")
+        helperFunctions.createLabelAndField(zinesDiv, "Title", zineTitleId,"", "Enter zine title")
 
         let addZineButton = helperFunctions.createButton("Add Zine")
+        addZineButton.onclick = () => {
+            let title = document.getElementById(zineTitleId).value
+            let threeLetterCode = document.getElementById(threeLetterCodeId).value
+
+            zineJson = `{"title": "${title}", "threeLetterCode": "${threeLetterCode}"}`
+
+            addZine(zineJson)
+        }
         zinesDiv.appendChild(addZineButton)
         return zinesDiv
     }
