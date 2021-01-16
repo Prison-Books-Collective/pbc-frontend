@@ -161,7 +161,7 @@ addPackageFunctions = function(){
 
     function step2_addBook(){
         const container = getAddPackageContentContainer()
-        helperFunctions.createLabelAndField(container, "Scan book ISBN: ", searchIsbnField, "", "click here, then scan")
+        container.appendChild(helperFunctions.createLabelAndField("Scan book ISBN: ", searchIsbnField, "", "click here, then scan"))
         document.getElementById(searchIsbnField).focus()
         createSearchForBookButton(container)
         const noIsbnButton = helperFunctions.createButton("No ISBN?")
@@ -178,8 +178,8 @@ addPackageFunctions = function(){
     
         helperFunctions.createAndAddParagraphElement(resultsContainer, "Fill out the information below and save book (or resource) <br><br>")
     
-        helperFunctions.createLabelAndField(resultsContainer, "Title", addBookTitleId, "", "Type title")
-        helperFunctions.createLabelAndField(resultsContainer, "Author", addBookAuthorId, "", "Type author")
+        resultsContainer.appendChild(helperFunctions.createLabelAndField("Title", addBookTitleId, "", "Type title"))
+        resultsContainer.appendChild(helperFunctions.createLabelAndField("Author", addBookAuthorId, "", "Type author"))
     
         let saveNewBookButton = helperFunctions.createButton("Save book and add to package")
     
@@ -199,6 +199,7 @@ addPackageFunctions = function(){
     
     function createSearchForBookButton(container){
         const searchButton = helperFunctions.createButton("Search for book")
+        searchButton.style.background  =  "DarkSeaGreen"
         searchButton.onclick = () =>{
             const isbnField = document.getElementById(searchIsbnField)
             if (isbnField.value == "") {
@@ -254,14 +255,14 @@ function editOrCreateBook(text, originalIsbn, originalTitle, originalAuthor, isN
 
     helperFunctions.createAndAddParagraphElement(resultsContainer, text)
 
-    helperFunctions.createLabelAndField(resultsContainer, "ISBN", addBookISBNId, originalIsbn, "")
+    resultsContainer.appendChild(helperFunctions.createLabelAndField( "ISBN", addBookISBNId, originalIsbn, ""))
     if(originalIsbn == ""){
         const isbnField = document.getElementById(addBookISBNId)
         isbnField.disabled = true
     }
 
-    helperFunctions.createLabelAndField(resultsContainer, "Book title", addBookTitleId, originalTitle, "Type title")
-    helperFunctions.createLabelAndField(resultsContainer, "Book author", addBookAuthorId, originalAuthor, "Type author")
+    resultsContainer.appendChild(helperFunctions.createLabelAndField( "Book title", addBookTitleId, originalTitle, "Type title"))
+    resultsContainer.appendChild(helperFunctions.createLabelAndField("Book author", addBookAuthorId, originalAuthor, "Type author"))
 
     let saveNewBookButton = helperFunctions.createButton("Save book and add to package")
 
@@ -467,7 +468,7 @@ function createAddBookToPackageButton(container, bookData) {
 
 function createCompletePackageButton(container){
     const savePackageButton = helperFunctions.createButton("Complete package")
-
+    savePackageButton.style.background =   "DarkSeaGreen"
     savePackageButton.onclick = () =>{
         savePackage()
     }
@@ -535,9 +536,19 @@ function savePackage(){
     let date = helperFunctions.getDate()
     let packageJson = `{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}"}`
     
-    const inmateId = inmateFunctions.getInmateId()
+    let inmateId = inmateHelperFunctions.getInmateDatabaseID()
+    if (inmateHelperFunctions.inmateHasPrisonID())  {
+        savePackageToInmate("addPackage",packageJson, inmateId)
+    } else {
+        savePackageToInmate("addPackageInmateNoID", packageJson, inmateId)
+    }
     
-    fetch(`http://localhost:8080/addPackage?id=${inmateId}`, {
+   
+
+}
+
+function savePackageToInmate(url ,packageJson, inmateId){
+    fetch(`http://localhost:8080/${url}?id=${inmateId}`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -556,19 +567,19 @@ function savePackage(){
         addDoneButton(container)
         
         
-    }).catch(error => {
-        if (error == "204"){
-        } else{
-            
-        }
-})
-
+    })
 }
+
+
 
 function addDoneButton(container){
     let done = helperFunctions.createButton("Done")
     done.onclick = () => {
-        inmateFunctions.findInmate(inmateFunctions.getInmateId())
+        let inmateId = inmateHelperFunctions.getInmateDatabaseID()
+        if(inmateHelperFunctions.inmateHasPrisonID()){
+            inmateFunctions.findInmate(inmateId)
+        } else {
+           let info= inmateNoIDFunctions.findInmateNoIDByDatabaseID(inmateId)        }
         helperFunctions.hideModal()
     }
     container.appendChild(done)

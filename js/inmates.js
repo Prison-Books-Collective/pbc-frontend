@@ -12,14 +12,6 @@ inmateFunctions = function(){
     const inmateIdField = "inmateIdField";
     const inmateFirstNameField = "inmateFirstNameField";
     const inmateLastNameField = "inmateLastNameField";
-   
-    const packageTableId = "packageTable"
-    const inmateIdElementId = "inmateIdNumber"
- 
-    function getInmateId() {
-        return document.getElementById(inmateIdElementId).textContent;
-    }
-
     
     function findInmate(inmate_id){
         fetch(`http://localhost:8080/getInmate?id=${inmate_id}`, {
@@ -103,9 +95,9 @@ inmateFunctions = function(){
     }
 
     function createInmateInfoFields(container, id, firstName, lastName){
-        helperFunctions.createLabelAndField(container, "ID Number", inmateIdField, id, "")
-        helperFunctions.createLabelAndField(container, "First Name", inmateFirstNameField, firstName, "")
-        helperFunctions.createLabelAndField(container, "Last Name", inmateLastNameField, lastName, "")
+        container.appendChild(helperFunctions.createLabelAndField( "ID Number", inmateIdField, id, ""))
+        container.appendChild(helperFunctions.createLabelAndField( "First Name", inmateFirstNameField, firstName, ""))
+        container.appendChild(helperFunctions.createLabelAndField("Last Name", inmateLastNameField, lastName, ""))
     }
 
     function editInmate(inmateInfo){
@@ -147,8 +139,7 @@ inmateFunctions = function(){
 
     return{
         findInmate:findInmate,
-        editInmate:editInmate,
-        getInmateId:getInmateId
+        editInmate:editInmate
     }
 
     

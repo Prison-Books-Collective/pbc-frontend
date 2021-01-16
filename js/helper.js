@@ -5,8 +5,8 @@ helperFunctions = function () {
         return document.createElement("br")
     }
 
-    function createLabelAndField(container, labelContent, fieldId, fieldContent, hint) {
-
+    function createLabelAndField(labelContent, fieldId, fieldContent, hint) {
+        let container = document.createElement("div")
         const br = document.createElement("br");
 
         const label = document.createElement("label");
@@ -22,7 +22,7 @@ helperFunctions = function () {
         container.appendChild(label)
         container.appendChild(field)
         container.appendChild(br)
-
+        return container
     }
 
     function getDate() {

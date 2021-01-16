@@ -57,8 +57,8 @@ adminFunctions = function(){
         let  zineTitle = document.createElement("h3")
         zineTitle.innerHTML = "Zines"
         zinesDiv.appendChild(zineTitle)
-        helperFunctions.createLabelAndField(zinesDiv, "Three letter code", threeLetterCodeId,"", "Enter three letter code")
-        helperFunctions.createLabelAndField(zinesDiv, "Title", zineTitleId,"", "Enter zine title")
+        zinesDiv.appendChild(helperFunctions.createLabelAndField("Three letter code", threeLetterCodeId,"", "Enter three letter code"))
+        zinesDiv.appendChild(helperFunctions.createLabelAndField( "Title", zineTitleId,"", "Enter zine title"))
 
         let addZineButton = helperFunctions.createButton("Add Zine")
         addZineButton.onclick = () => {

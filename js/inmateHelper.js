@@ -2,10 +2,7 @@
 
 inmateHelperFunctions = function(){
    
-    const inmateIdField = "inmateIdField";
-    const inmateFirstNameField = "inmateFirstNameField";
-    const inmateLastNameField = "inmateLastNameField";
-   
+    const idNumberAttribute = "data-id"
     const packageTableId = "packageTable"
     const inmateIdElementId = "inmateIdNumber"
  
@@ -16,7 +13,7 @@ inmateHelperFunctions = function(){
     
     function displayInmate(inmateInfo){
         const resultsContainer = helperFunctions.getAndClearSiteContent();
-        displayNameAndId(inmateInfo, resultsContainer);
+        displayInmateInformation(inmateInfo, resultsContainer);
 
         displayAddPackageButton(resultsContainer);
         if(inmateInfo.packages.length > 0  ){
@@ -136,11 +133,16 @@ inmateHelperFunctions = function(){
     }
 
 
-    function displayNameAndId(inmateInfo, resultsContainer) {
+    function displayInmateInformation(inmateInfo, resultsContainer) {
         const div = document.createElement("div")
         const name = document.createElement('h1');
         name.style.display = "inline"
-        name.innerHTML = `${inmateInfo.firstName} ${inmateInfo.lastName}, <small style="color:DarkSlateGray">ID#: <p style="display:inline" id="${inmateIdElementId}">${inmateInfo.id}</p></small>`
+
+        if (inmateInfo.hasOwnProperty('location')){
+            name.innerHTML = `${inmateInfo.firstName} ${inmateInfo.lastName}, <small style="color:DarkSlateGray">Location: <p style="display:inline" id="${inmateIdElementId}" ${idNumberAttribute}="${inmateInfo.id}">${inmateInfo.location}</p></small>`
+        } else {
+            name.innerHTML = `${inmateInfo.firstName} ${inmateInfo.lastName}, <small style="color:DarkSlateGray">ID#: <p style="display:inline" id="${inmateIdElementId}">${inmateInfo.id}</p></small>`
+        }
         div.appendChild(name)
         
         createEditInmateIcon(div, inmateInfo)
@@ -154,7 +156,7 @@ inmateHelperFunctions = function(){
             if(inmateInfo.hasOwnProperty('location')){
 
             }else {
-                            inmateFunctions.editInmate(inmateInfo)
+                inmateFunctions.editInmate(inmateInfo)
             }
         }
         
@@ -180,11 +182,37 @@ inmateHelperFunctions = function(){
     }
 
 
- 
+    function inmateHasPrisonID(){
+        let inmateInfo = document.getElementById(inmateIdElementId)
+        if (inmateInfo.hasAttribute(idNumberAttribute)){
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function getInmatePrisonID(){
+        return document.getElementById(inmateIdElementId).textContent
+    }
+
+    function getDatabaseIDForInmateNoPrisonID(){
+        return document.getElementById(inmateIdElementId).getAttribute(idNumberAttribute)
+    }
+
+    function getInmateDatabaseID(){
+        if (inmateHasPrisonID()){
+            return getInmatePrisonID()
+        }else {
+            return getDatabaseIDForInmateNoPrisonID()
+        }
+    }
 
     return{
         displayInmate:displayInmate,
-        getInmateId:getInmateId
+        getInmatePrisonID:getInmatePrisonID,
+        inmateHasPrisonID:inmateHasPrisonID,
+        getDatabaseIDForInmateNoPrisonID:getDatabaseIDForInmateNoPrisonID,
+        getInmateDatabaseID:getInmateDatabaseID
     }
 
     
