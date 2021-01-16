@@ -1,9 +1,26 @@
 homepageFunctions = function(){
     const findInmateIdFieldId = "find_inmate_id_field"
     function displayHomepage(){
-        const container = document.getElementById("site_content")
-        container.innerHTML = ""
-        let input = document.createElement("input")
+        const container = helperFunctions.getAndClearSiteContent()
+        let div = document.createElement("div")
+        div.id = "inmate"
+        
+
+        let inputField = createInmateInputField()
+        
+        div.appendChild(inputField)
+        div.appendChild(helperFunctions.createBreakElement())
+        div.appendChild(helperFunctions.createBreakElement())
+        div.appendChild(helperFunctions.createBreakElement())
+        div.appendChild(helperFunctions.createBreakElement())
+        div.appendChild(createNoIDLink())
+        container.appendChild(div)
+        inputField.focus
+        
+    }
+
+    function createInmateInputField(){
+      let input = document.createElement("input")
         
         input.type = "text"
         input.id = findInmateIdFieldId
@@ -15,10 +32,19 @@ homepageFunctions = function(){
               inmateFunctions.findInmate(document.getElementById(findInmateIdFieldId).value)
             }
           });
-        container.appendChild(input)
-        input.focus()
+      return input
     }
 
+    function createNoIDLink(){
+      let link = document.createElement("a")
+      link.href = "#"
+      link.textContent = "Don't have an ID?"
+      link.style.fontSize = "12px"
+      link.onclick = () => {
+        inmateNoIDFunctions.displaySearchForInmateNoID()
+      }
+      return link
+    }
     return{
         displayHomepage:displayHomepage
     }

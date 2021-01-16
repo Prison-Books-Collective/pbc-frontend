@@ -1,6 +1,10 @@
 helperFunctions = function () {
     const siteContentId = "site_content"
 
+    function createBreakElement(){
+        return document.createElement("br")
+    }
+
     function createLabelAndField(container, labelContent, fieldId, fieldContent, hint) {
 
         const br = document.createElement("br");
@@ -274,7 +278,8 @@ helperFunctions = function () {
         generateInvoice: generateInvoice,
         getAndClearModalContainer: getAndClearModalContainer,
         getAndClearSiteContent: getAndClearSiteContent,
-        getDate: getDate
+        getDate: getDate,
+        createBreakElement:createBreakElement
     }
 
 
