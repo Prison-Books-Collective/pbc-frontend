@@ -118,7 +118,7 @@ editPackageFunctions = function(){
     }  
 
     function deletePackage(packageId){
-        inmateId = inmateFunctions.getInmateId()
+        inmateId = inmateHelperFunctions.getInmateDatabaseID()
         url = `http://localhost:8080/deletePackage?inmateId=${inmateId}&packageId=${packageId}`
         fetch(url, {
             method: 'put'

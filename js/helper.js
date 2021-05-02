@@ -40,6 +40,10 @@ helperFunctions = function () {
         return `${year}-${month}-${day}`
     }
 
+    function getDate_invoiceFormat(){
+        let date = new Date().toLocaleDateString('default', {month:'long', day: '2-digit', year:'numeric'});
+        return date
+    }
     async function generateInvoice(packageInfo) {
         let invoice = document.createElement("div")
         let page1 = invoicePage1(packageInfo);
@@ -175,7 +179,7 @@ helperFunctions = function () {
         let info = document.createElement("p")
         info.style.fontSize = "18px"
         info.style.padding = "0px 85px 10px 85px"
-        info.innerHTML = `Thank you for your letter, and our apologies for the delay! Due to the number of requests our group receives we are currently a month or two behind on filling requests. We are currently limited to sending <u>only 2 books</u> per package, and 1 package every 2 months.
+        info.innerHTML = `Thank you for your letter, and our apologies for the delay! Due to the number of requests our group receives we are currently a month or two behind on filling requests. We are currently limited to sending <u>only 2 books and up to 5 zines</u> per package, and 1 package every 2 months.
         <br><br>
                 I’ve done my best to find the books you've requested, but since our selection is based on donations, we usually can’t find specific titles. However, I've included books that I hope you’ll enjoy!`
 
@@ -209,7 +213,7 @@ helperFunctions = function () {
 
     function createNameDateInput_Invoice() {
         let nameDateDiv = document.createElement("div")
-        nameDateDiv.style.fontFamily = "arial"
+        nameDateDiv.style.fontFamily = "gentium"
         nameDateDiv.style.display = "flex"
         nameDateDiv.style.flexFlow = "row nowrap"
         nameDateDiv.style.alignItems = "center"
@@ -221,7 +225,8 @@ helperFunctions = function () {
         nameInput.textContent = `______________________________________________________`
 
         let dateInput = document.createElement("span")
-        dateInput.innerHTML = `_______ <span style="font-size: 20px">/</span>_______ <span style="font-size: 20px">/</span>______________`
+        dateInput.innerHTML = getDate_invoiceFormat()
+        dateInput.style.fontSize = "16px"
 
         nameDateDiv.appendChild(nameInput)
         nameDateDiv.appendChild(dateInput)

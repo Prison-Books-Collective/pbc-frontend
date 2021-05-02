@@ -589,7 +589,7 @@ function addPrintInvoiceButton(container, data){
     printButton.style.background = "DarkSeaGreen"
     printButton.onclick = () => {
         helperFunctions.generateInvoice(data)
-        inmateFunctions.findInmate(inmateFunctions.getInmateId())
+        inmateFunctions.findInmate(inmateHelperFunctions.getInmateDatabaseID())
         helperFunctions.hideModal()
     }
     container.appendChild(printButton)
