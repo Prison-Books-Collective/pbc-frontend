@@ -89,6 +89,7 @@ editPackageFunctions = function(){
             //         }
             //     })
             // }
+            
               package["zines"] = newZines
               package["books"] = newBooks
               package["noISBNBooks"] = newNoISBNBooks
