@@ -37,53 +37,63 @@ editPackageFunctions = function(){
             booksChecked = []
             noISBNBooksChecked = []
 
+            newZines = []
+            newBooks = []
+            newNoISBNBooks = []
+
             zines.forEach(checkbox =>{ 
                 if(checkbox.checked){
-                    zinesChecked.push(checkbox)
+                    zinesChecked.push(checkbox.id)
                 }
             })
             
             books.forEach(checkbox =>{ 
                 if(checkbox.checked){
-                    booksChecked.push(checkbox)
+                    booksChecked.push(checkbox.id)
                 }
             })
 
             noISBNBooks.forEach(checkbox =>{ 
                 if(checkbox.checked){
-                    noISBNBooksChecked.push(checkbox)
+                    noISBNBooksChecked.push(checkbox.id)
                 }
             })
+
             let packageZines = package["zines"]
-            let packageBooks = package["books"]
-            let packageNoISBNBooks = package["noISBNBooks"]
+            let packageBooksIds = package["books"].map(book => book.id)
+            let packageNoISBNBooksIds = package["noISBNBooks"].map(noISBN => noISBN.id)
 
-            for (i = 0; i< packageZines.length; i++){
+            
                 zinesChecked.forEach(checked => {
-                    if (packageZines[i]["id"] == checked.id){
-                        delete packageZines[i]
+                    for (i = 0; i < packageZines.length; i++){
+                    if (packageZines[i]["id"] == checked){
+                        packageZines.splice(i,1)
                     }
+                } 
                 })
-            }
+                newZines = packageZines
+            
            
-            for (i = 0; i< packageBooks.length; i++){
-                booksChecked.forEach(checked => {
-                    if (packageBooks[i]["id"] == checked.id){
-                        delete packageBooks[i]
-                    }
-                })
-            }
+            // for (i = 0; i< packageBooks.length; i++){
+            //     booksChecked.forEach(checked => {
+            //         if (packageBooks[i]["id"] != checked.id){
+            //             newBooks.push(packageBooks[i])
+            //         }
+            //     })
+            // }
 
-            for (i = 0; i< packageNoISBNBooks.length; i++){
-                noISBNBooksChecked.forEach(checked => {
-                    if (packageNoISBNBooks[i]["id"] == checked.id){
-                        delete packageNoISBNBooks[i]
-                    }
-                })
-            }
-              
+            // for (i = 0; i< packageNoISBNBooks.length; i++){
+            //     noISBNBooksChecked.forEach(checked => {
+            //         if (packageNoISBNBooks[i]["id"] != checked.id){
+            //             newNoISBNBooks.push(packageNoISBNBooks[i])
+            //         }
+            //     })
+            // }
+              package["zines"] = newZines
+              package["books"] = newBooks
+              package["noISBNBooks"] = newNoISBNBooks
             console.log(package)
-            //UPDATE PACKAGE
+            updatePackage(package)
         }
         return deleteItemsButton
     }    
@@ -128,8 +138,33 @@ editPackageFunctions = function(){
             }
             return response.json();
         }).then(function(data){
-            inmateFunctions.findInmate(inmateId)
             helperFunctions.hideModal()
+            inmateFunctions.findInmate(inmateId)
+        }).catch(error => {
+            if (error == "400"){
+                console.log("error")
+            }
+    })
+}
+
+    function updatePackage(package){
+        url = `http://localhost:8080/updatePackage`
+
+        fetch(url, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(package)
+        }).then(function(response){
+            if(response.status == 400){
+                throw "400";
+            }
+            return response.json();
+        }).then(function(data){
+            inmateId = inmateHelperFunctions.getInmateDatabaseID()
+            helperFunctions.hideModal()
+            inmateFunctions.findInmate(inmateId)
         }).catch(error => {
             if (error == "400"){
                 console.log("error")
@@ -137,6 +172,7 @@ editPackageFunctions = function(){
     })
 
     }
+
     function getAndClearEditPackageButtonsDiv(){
         let buttonsDiv = document.getElementById("editPackageButtonsDiv")
             buttonsDiv.innerHTML = ""
@@ -174,10 +210,8 @@ editPackageFunctions = function(){
         addZinesToEditChecklist(package, leftAlignDiv);
         addNoISBNBooksToEditChecklist(package, leftAlignDiv);
         return leftAlignDiv
-    
-
-        
     }
+
     function addNoISBNBooksToEditChecklist(package, div) {
         package.noISBNBooks.forEach(noISBNBook => {
             const noISBNBookCheckbox = document.createElement("input");
@@ -250,8 +284,3 @@ editPackageFunctions = function(){
 
     
 }();
-
-
-
-
-
