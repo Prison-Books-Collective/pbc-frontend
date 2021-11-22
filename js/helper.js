@@ -182,7 +182,6 @@ helperFunctions = function () {
         info.innerHTML = `Thank you for your letter, and our apologies for the delay! Due to the number of requests our group receives we are currently a month or two behind on filling requests. We are currently limited to sending <u>only 2 books and up to 5 zines</u> per package, and 1 package every 2 months.
         <br><br>
                 I’ve done my best to find the books you've requested, but since our selection is based on donations, we usually can’t find specific titles. However, I've included books that I hope you’ll enjoy!`
-
         return info
     }
 
