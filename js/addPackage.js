@@ -10,7 +10,8 @@ addPackageFunctions = function(){
     const zineAttribute = "data-zine"
     const bookAttribute = "data-book"
     const noISBNBookAttribute = "data-noISBNBook"
-
+    let editingPackage = false 
+    let editingPackageId
 
     function getAddPackageContentContainer() {
         let packageContainer = document.getElementById(packageContentContainerId)
@@ -26,9 +27,37 @@ addPackageFunctions = function(){
         return packageContainer
     }
 
+   
+    function importPackageToAddItemsTo(package){
+        let zines = package["zines"]
+        let books = package["books"]
+        let noISBNBooks = package["noISBNBooks"]
+        books.forEach(book => {
+            addBookToPackage(book)
+        })
+        addImportedZinesToPackage(zines)
     
+        noISBNBooks.forEach(noISBNBook => {
+            addNoISBNBookToPackage(noISBNBook)
+        })
+        displayPackage()
+    }
+
+    function setupEditPackageModal(package) {
+        editingPackage = true
+        editingPackageId = package["id"]
+
+        helperFunctions.getAndClearModalContainer()
+        initializePackageContentList()
+        importPackageToAddItemsTo(package)
+        step1_bookOrZine()
+    }
+
 
     function setupAddPackageModal() {
+        editingPackage = false
+        editingPackageId = undefined
+
         helperFunctions.getAndClearModalContainer()
         initializePackageContentList()
         step1_bookOrZine()
@@ -46,7 +75,7 @@ addPackageFunctions = function(){
         step1_AddZineButton(modalContentContainer)
         
         if(notFirstItem){
-            explanation.innerHTML = `Would you like to add another book, or zine(s)? Or if you're done, click Complete Package`
+            explanation.innerHTML = `Would you like to add another book, or zine(s)? Or if you're done, click Complete Package (or Update Package)`
             createCompletePackageButton(modalContentContainer)
         } else{
             explanation.innerHTML = `Would you like to add a book, or zine(s)?`
@@ -90,8 +119,6 @@ addPackageFunctions = function(){
     function step2_addZine(){
         const container = getAddPackageContentContainer()
         getAndDisplayZines()
-        //seeAllZinesButton(container)
-        //searchZinesByKeywordButton(container)
         createCancelButton_returnToStep1(container)
 
     }
@@ -110,7 +137,7 @@ addPackageFunctions = function(){
     function createAddZinesToPackageButton(container){
         const addZinesToPackageButton = helperFunctions.createButton("Add zine(s) to package")
         addZinesToPackageButton.onclick = () =>{
-            addZinesToPackage()
+            addCheckedZinesToPackage(getCheckedZines())
             displayPackage()
             step1_bookOrZine(true)
         }
@@ -408,17 +435,30 @@ function addNoISBNBookToPackage(noISBNBookData){
     packageContentList.appendChild(noISBNBookListItem);
 }
 
-function addZinesToPackage(){
+function addCheckedZinesToPackage(checkedZines){
     let  packageContentList = getPackageContentListElement()
-
-    const checkedZines = getCheckedZines()
     checkedZines.forEach(zine => {
         zineListItem = document.createElement("li");
         const zineJson = JSON.parse(zine.value)
         zineListItem.innerHTML = `<b>${zine.id}</b> - ${zineJson['title']}`;
         zineListItem.setAttribute(zineAttribute, zine.value)
+        console.log("checked zine \n" + zine)
+        console.log("checked zine value \n" + zine.value)
         packageContentList.appendChild(zineListItem);  
     })
+}
+
+function addImportedZinesToPackage(zines){
+    let  packageContentList = getPackageContentListElement()
+    zines.forEach(zine => {
+        zineListItem = document.createElement("li");
+        zineListItem.innerHTML = `<b>${zine["threeLetterCode"]}</b> - ${zine['title']}`;
+        zineListItem.setAttribute(zineAttribute, JSON.stringify(zine))
+        console.log("imported zine \n" + zine)
+        console.log("imported zine value \n" + zine.value)
+        packageContentList.appendChild(zineListItem); 
+    })
+
 }
 
 function getCheckedZines(){
@@ -431,6 +471,8 @@ function getCheckedZines(){
     })
     return checkedZines
 }
+
+
 
 function initializePackageContentList(){
     let modal = helperFunctions.getModalContainer()
@@ -448,6 +490,7 @@ function initializePackageContentList(){
     container.appendChild(document.createElement("hr"))
     modal.appendChild(container)
 }
+
 function getPackageContentListElement(){
     return document.getElementById(packageContentListId)
 }
@@ -467,10 +510,18 @@ function createAddBookToPackageButton(container, bookData) {
 }
 
 function createCompletePackageButton(container){
-    const savePackageButton = helperFunctions.createButton("Complete package")
+    let buttonText = "Complete package"
+    if (editingPackage){
+        buttonText = "Update package"
+    }
+    const savePackageButton = helperFunctions.createButton(buttonText)
     savePackageButton.style.background =   "DarkSeaGreen"
     savePackageButton.onclick = () =>{
-        savePackage()
+        if (editingPackage){
+            updatePackage()
+        } else {
+            savePackage()
+        }
     }
     container.appendChild(savePackageButton)
 }
@@ -510,6 +561,8 @@ function generateZinesJson(){
     return zineJson
 }
 
+
+
 function generateNoISBNBooksJson(){
     const packageContentListElement = document.getElementById(packageContentListId)
     let noISBNBooksJson = `"noISBNBooks": [`
@@ -528,27 +581,49 @@ function generateNoISBNBooksJson(){
     return noISBNBooksJson
 }
 
+function updatePackage(){
+    let packageJson = generatePackageJson()
+    editPackageFunctions.updatePackage(packageJson)
+}
+
+
 
 function savePackage(){
+    let packageJson = generatePackageJson()
+    if (inmateHelperFunctions.inmateHasPrisonID()){
+        savePackageToInmate(packageJson)
+
+    } else {
+        console.log(packageJson)
+        savePackageToInmateNoId(packageJson)
+    }
+ }
+
+function generatePackageJson(){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
     let noISBNBooksJson = generateNoISBNBooksJson()
     let date = helperFunctions.getDate()
-    let packageJson = `{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}"}`
-    
     let inmateId = inmateHelperFunctions.getInmateDatabaseID()
-    if (inmateHelperFunctions.inmateHasPrisonID())  {
-        savePackageToInmate("addPackage",packageJson, inmateId)
-    } else {
-        savePackageToInmate("addPackageInmateNoID", packageJson, inmateId)
-    }
-    
-   
 
+    if(inmateHelperFunctions.inmateHasPrisonID()){
+        if (editingPackage){
+            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}}`
+        } 
+        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}}`
+    } else {
+        if (editingPackage){
+            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}","inmateNoId": {"id":${inmateId}}}`
+        } 
+        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}",  "inmateNoId": {"id":${inmateId}}}`
+    }
+
+    
 }
 
-function savePackageToInmate(url ,packageJson, inmateId){
-    fetch(`http://localhost:8080/${url}?id=${inmateId}`, {
+function savePackageToInmate(packageJson){
+    console.log(packageJson)
+    fetch(`http://localhost:8080/addPackage`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -571,6 +646,30 @@ function savePackageToInmate(url ,packageJson, inmateId){
 }
 
 
+function savePackageToInmateNoId(packageJson){
+    console.log(packageJson)
+    fetch(`http://localhost:8080/addPackageForInmateNoId`, {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: packageJson
+    }).then(function(response){
+        if(response.status == 204){
+            throw "204";
+        } else if(response.status == 400){
+            throw "400";
+        }
+        return response.json();
+    }).then(function(data){
+        let container = getAddPackageContentContainer()
+        addPrintInvoiceButton(container, data)
+        addDoneButton(container)
+        
+        
+    })
+}
+
 
 function addDoneButton(container){
     let done = helperFunctions.createButton("Done")
@@ -579,7 +678,7 @@ function addDoneButton(container){
         if(inmateHelperFunctions.inmateHasPrisonID()){
             inmateFunctions.findInmate(inmateId)
         } else {
-           let info= inmateNoIDFunctions.findInmateNoIDByDatabaseID(inmateId)        }
+           inmateNoIDFunctions.findInmateNoIDByDatabaseID(inmateId)        }
         helperFunctions.hideModal()
     }
     container.appendChild(done)
@@ -636,7 +735,8 @@ function bookInfo_confirmBook(bookData, isbnTarget) {
 }
 
     return{
-        setupAddPackageModal:setupAddPackageModal
+        setupAddPackageModal:setupAddPackageModal,
+        setupEditPackageModal:setupEditPackageModal
         }
 
     

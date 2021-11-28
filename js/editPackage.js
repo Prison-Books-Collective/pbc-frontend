@@ -1,11 +1,13 @@
 editPackageFunctions = function(){
 
+    let addItemsButtonId = "addItemsButton"
     let editItemsButtonId = "editItemsButton"
+    let deleteItemButtonId = "deleteItemsButton"
     let buttonsDivId =  "editPackageButtonsDiv"
     let noISBNCheckboxName = "noISBNBookCheckbox"
     let zineCheckboxName = "zineCheckbox"
     let bookCheckboxName =  "bookCheckbox"
-    
+
     function editPackage(package){
         helperFunctions.displayModal()
         let container = helperFunctions.getAndClearModalContainer()
@@ -21,6 +23,7 @@ editPackageFunctions = function(){
     }
 
     function createEditPackageButtonPanel(buttonsDiv, package){
+        buttonsDiv.appendChild(createAddItemButton(package))
         buttonsDiv.appendChild(createEditItemButton())
         buttonsDiv.appendChild(createDeleteItemButton(package)) 
         buttonsDiv.appendChild(createDeletePackageButton(package["id"]))
@@ -28,10 +31,12 @@ editPackageFunctions = function(){
 
     function createDeleteItemButton(package){
         let deleteItemsButton = helperFunctions.createButton("Delete selected item(s)")
+        deleteItemsButton.id = deleteItemButtonId
+        deleteItemsButton.disabled = true
         deleteItemsButton.onclick = () =>{
-            let zines = document.getElementsByName(zineCheckboxName)
-            let books = document.getElementsByName(bookCheckboxName)
-            let noISBNBooks =  document.getElementsByName(noISBNCheckboxName)
+            let zines = getZineCheckboxes(zineCheckboxName)
+            let books = getBookCheckboxes(bookCheckboxName)
+            let noISBNBooks =  getNoISBNBookCheckboxes(noISBNCheckboxName)
 
             zinesChecked = []
             booksChecked = []
@@ -60,8 +65,8 @@ editPackageFunctions = function(){
             })
 
             let packageZines = package["zines"]
-            let packageBooksIds = package["books"].map(book => book.id)
-            let packageNoISBNBooksIds = package["noISBNBooks"].map(noISBN => noISBN.id)
+            let packageBooks = package["books"]
+            let packageNoISBNBooks = package["noISBNBooks"]
 
             
                 zinesChecked.forEach(checked => {
@@ -73,37 +78,51 @@ editPackageFunctions = function(){
                 })
                 newZines = packageZines
             
-           
-            // for (i = 0; i< packageBooks.length; i++){
-            //     booksChecked.forEach(checked => {
-            //         if (packageBooks[i]["id"] != checked.id){
-            //             newBooks.push(packageBooks[i])
-            //         }
-            //     })
-            // }
+                booksChecked.forEach(checked => {
+                    for (i = 0; i <packageBooks.length; i++){
+                        if (packageBooks[i]["id"] == checked){
+                            packageBooks.splice(i,1)
+                        }
+                    }
+                })
+        
+                newBooks = packageBooks
 
-            // for (i = 0; i< packageNoISBNBooks.length; i++){
-            //     noISBNBooksChecked.forEach(checked => {
-            //         if (packageNoISBNBooks[i]["id"] != checked.id){
-            //             newNoISBNBooks.push(packageNoISBNBooks[i])
-            //         }
-            //     })
-            // }
+
+                noISBNBooksChecked.forEach(checked => {
+                    for (i = 0; i <packageNoISBNBooks.length; i++){
+                        if (packageNoISBNBooks[i]["id"] == checked){
+                            packageNoISBNBooks.splice(i,1)
+                        }
+                    }
+                })
+        
+                newNoISBNBooks = packageNoISBNBooks
             
               package["zines"] = newZines
               package["books"] = newBooks
               package["noISBNBooks"] = newNoISBNBooks
-            console.log(package)
+            package = JSON.stringify(package)
             updatePackage(package)
         }
         return deleteItemsButton
     }    
 
+    function createAddItemButton(package){
+        let addItemsButton = helperFunctions.createButton("Add items")
+        addItemsButton.id = addItemsButtonId
+        addItemsButton.onclick = () => {
+            addPackageFunctions.setupEditPackageModal(package)
+        }
+
+        return addItemsButton
+    }
     function createEditItemButton(){
         let editItemsButton = helperFunctions.createButton("Edit selected item(s)")
         editItemsButton.id = editItemsButtonId
+        editItemsButton.disabled = true
         editItemsButton.onclick = () => {
-            //EDIT ITEMS
+            alert("This feature has not yet been implemented.")
         }
         return editItemsButton
     }    
@@ -123,16 +142,16 @@ editPackageFunctions = function(){
         let confirmDeletePackageButton = helperFunctions.createButton("Yes, delete entire package")
         confirmDeletePackageButton.style.background = "LightCoral"
         confirmDeletePackageButton.onclick = () => {
-            deletePackage(packageId)
+         deletePackage(packageId)
         }
         return confirmDeletePackageButton
     }  
 
     function deletePackage(packageId){
-        inmateId = inmateHelperFunctions.getInmateDatabaseID()
-        url = `http://localhost:8080/deletePackage?inmateId=${inmateId}&packageId=${packageId}`
+        let inmateId = inmateHelperFunctions.getInmateDatabaseID()
+        url = `http://localhost:8080/deletePackage?packageId=${packageId}`
         fetch(url, {
-            method: 'put'
+            method: 'delete'
         }).then(function(response){
             if(response.status == 400){
                 throw "400";
@@ -140,7 +159,12 @@ editPackageFunctions = function(){
             return response.json();
         }).then(function(data){
             helperFunctions.hideModal()
-            inmateFunctions.findInmate(inmateId)
+            setTimeout(1000)
+            if (inmateHelperFunctions.inmateHasPrisonID()){
+                inmateFunctions.findInmate(inmateId)
+            } else {
+                inmateNoIDFunctions.findInmateNoIDByDatabaseID(inmateId)
+            }
         }).catch(error => {
             if (error == "400"){
                 console.log("error")
@@ -149,23 +173,29 @@ editPackageFunctions = function(){
 }
 
     function updatePackage(package){
-        url = `http://localhost:8080/updatePackage`
+        let inmateId = inmateHelperFunctions.getInmateDatabaseID()
 
+        url = `http://localhost:8080/updatePackage`
         fetch(url, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(package)
+            body: package
         }).then(function(response){
             if(response.status == 400){
                 throw "400";
             }
             return response.json();
         }).then(function(data){
-            inmateId = inmateHelperFunctions.getInmateDatabaseID()
             helperFunctions.hideModal()
-            inmateFunctions.findInmate(inmateId)
+            setTimeout(1000)
+
+            if (inmateHelperFunctions.inmateHasPrisonID()){
+                inmateFunctions.findInmate(inmateId)
+            } else {
+                inmateNoIDFunctions.findInmateNoIDByDatabaseID(inmateId)
+            }
         }).catch(error => {
             if (error == "400"){
                 console.log("error")
@@ -212,6 +242,8 @@ editPackageFunctions = function(){
         addNoISBNBooksToEditChecklist(package, leftAlignDiv);
         return leftAlignDiv
     }
+                    
+               
 
     function addNoISBNBooksToEditChecklist(package, div) {
         package.noISBNBooks.forEach(noISBNBook => {
@@ -220,6 +252,7 @@ editPackageFunctions = function(){
             noISBNBookCheckbox.name = noISBNCheckboxName;
             noISBNBookCheckbox.value = JSON.stringify(noISBNBook);
             noISBNBookCheckbox.id = noISBNBook.id;
+            noISBNBookCheckbox.addEventListener("click", onCheckboxClick)
 
             const label = document.createElement("label");
             label.style.paddingLeft = "5px"
@@ -239,10 +272,8 @@ editPackageFunctions = function(){
             zineCheckbox.name = zineCheckboxName;
             zineCheckbox.value = JSON.stringify(zine);
             zineCheckbox.id = zine.id;
-            zineCheckbox.onclick = () => {
-                let editButton = document.getElementById(editItemsButtonId)
-                editButton.disabled = zineCheckbox.checked
-            }
+            zineCheckbox.addEventListener("click", onCheckboxClick)
+
             const label = document.createElement("label");
             label.htmlFor = zineCheckbox.id;
             label.style.paddingLeft = "5px"
@@ -262,7 +293,7 @@ editPackageFunctions = function(){
             bookCheckbox.name = bookCheckboxName;
             bookCheckbox.value = JSON.stringify(book);
             bookCheckbox.id = book.id;
-
+            bookCheckbox.addEventListener("click", onCheckboxClick)
             const label = document.createElement("label");
             label.htmlFor = bookCheckbox.id;
             label.style.paddingLeft = "5px"
@@ -276,12 +307,71 @@ editPackageFunctions = function(){
     }
    
 
+    function getZineCheckboxes() {
+        return document.getElementsByName(zineCheckboxName);
+    }
+    
 
+function getNoISBNBookCheckboxes() {
+    return document.getElementsByName(noISBNCheckboxName);
+}
+
+function getBookCheckboxes() {
+    return document.getElementsByName(bookCheckboxName);
+}
+
+function onCheckboxClick(event){
+    let zines = getZineCheckboxes()
+    let books = getBookCheckboxes()
+    let noISBNBooks = getNoISBNBookCheckboxes()
+
+    let zineChecked = false
+    let bookChecked = false
+    let noISBNBookChecked = false
+
+    let addItemsButton = document.getElementById(addItemsButtonId)
+    let editItemsButton = document.getElementById(editItemsButtonId)
+    let deleteItemsButton = document.getElementById(deleteItemButtonId)
+
+    zines.forEach(zineCheckbox => {
+        if (zineCheckbox.checked == true){
+            zineChecked = true
+        }
+    })
+
+    books.forEach(bookCheckbox => {
+        if (bookCheckbox.checked == true){
+            bookChecked = true
+        }
+    })
+
+    noISBNBooks.forEach(noISBNBookCheckbox => {
+        if (noISBNBookCheckbox.checked == true){
+            noISBNBookChecked = true
+        }
+    })
+    
+    if (zineChecked){
+        addItemsButton.disabled = true
+        editItemsButton.disabled = true
+        deleteItemsButton.disabled = false
+    } else if (bookChecked || noISBNBookChecked) {
+        addItemsButton.disabled = true
+        editItemsButton.disabled = false
+        deleteItemsButton.disabled = false
+    } else{
+        addItemsButton.disabled = false
+        editItemsButton.disabled = true
+        deleteItemsButton.disabled = true
+    }
+}
 
 
     return{
-        editPackage:editPackage
+        editPackage:editPackage,
+        updatePackage:updatePackage
     }
 
     
 }();
+

@@ -11,13 +11,17 @@ inmateHelperFunctions = function(){
     }
 
     
-    function displayInmate(inmateInfo){
+    async function displayInmate(inmateInfo){
         const resultsContainer = helperFunctions.getAndClearSiteContent();
         displayInmateInformation(inmateInfo, resultsContainer);
 
         displayAddPackageButton(resultsContainer);
-        if(inmateInfo.packages.length > 0  ){
-            createEditOrPrintPackageTable(resultsContainer, inmateInfo.packages);
+
+
+        let packages = await getInmatePackages(inmateInfo.id)
+        console.log(packages)
+        if(packages.length > 0  ){
+            createEditOrPrintPackageTable(resultsContainer, packages);
         }
     }
 
@@ -206,6 +210,25 @@ inmateHelperFunctions = function(){
             return getDatabaseIDForInmateNoPrisonID()
         }
     }
+
+    async function getInmatePackages(inmate_id){
+        if(inmateHasPrisonID()){
+            return fetch(`http://localhost:8080/getPackagesForInmate?inmateId=${inmate_id}`, {
+                method: 'get'
+         }).then(function(response) {
+             return response.json()
+         })
+        }else {
+             return fetch(`http://localhost:8080/getPackagesForInmateNoId?inmateId=${inmate_id}`, {
+                method: 'get'
+         }).then(function(response){
+            return response.json()
+         })
+        }
+
+    }
+
+
 
     return{
         displayInmate:displayInmate,
