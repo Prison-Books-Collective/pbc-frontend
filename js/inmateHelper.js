@@ -14,12 +14,8 @@ inmateHelperFunctions = function(){
     async function displayInmate(inmateInfo){
         const resultsContainer = helperFunctions.getAndClearSiteContent();
         displayInmateInformation(inmateInfo, resultsContainer);
-
         displayAddPackageButton(resultsContainer);
-
-
         let packages = await getInmatePackages(inmateInfo.id)
-        console.log(packages)
         if(packages.length > 0  ){
             createEditOrPrintPackageTable(resultsContainer, packages);
         }
@@ -28,8 +24,7 @@ inmateHelperFunctions = function(){
     function displayAddPackageButton(container){
         const addPackageButton = helperFunctions.createButton(`Add a <b><u>new package</b></u> (books or zines)`)
         addPackageButton.style.background = "DarkSeaGreen"
-        container.appendChild(addPackageButton)
-        
+        container.appendChild(addPackageButton)  
         addPackageButton.onclick = () => {
             helperFunctions.displayModal()
             addPackageFunctions.setupAddPackageModal()
@@ -42,13 +37,17 @@ inmateHelperFunctions = function(){
         
         const headerRow = document.createElement('tr')
 
+        const alert = document.createElement('th')
         const packageContents = document.createElement('th')
         const edit = document.createElement('th')
         const print = document.createElement('th')
+
+        alert.textContent = "!"
         packageContents.textContent = 'Package'
         edit.textContent = 'Edit'
         print.textContent = 'Print'
 
+        headerRow.appendChild(alert)
         headerRow.appendChild(packageContents)
         headerRow.appendChild(edit)
         headerRow.appendChild(print)
@@ -57,6 +56,7 @@ inmateHelperFunctions = function(){
         let count = 0;
 
         packages.slice().reverse().forEach(package => {
+            console.log(package)
             let packageElement = generatePackageContentElement(package);
 
             const packageRow = document.createElement('tr')
@@ -64,6 +64,26 @@ inmateHelperFunctions = function(){
                 packageRow.style.background = "Gainsboro"
             }
             count++
+
+            const alertCell = document.createElement('td')
+            alertCell.style.paddingTop = "10px"
+            alertCell.style.paddingBottom = "10px"
+            alertCell.style.paddingRight = "13px"
+            alertCell.style.paddingLeft = "13px"
+
+            if (package.alert != undefined){
+                const alertExists = document.createElement('a')
+                alertExists.href = "#"
+                alertExists.textContent = "!"
+
+                alertExists.onclick = () => {
+                    editPackageFunctions.enterRejectionDetailsScreen(package)
+                }
+
+                alertCell.appendChild(alertExists)
+            }
+
+            packageRow.appendChild(alertCell)
             const packageCell = document.createElement('td')
             packageCell.style.paddingTop = "10px"
             packageCell.style.paddingBottom = "10px"

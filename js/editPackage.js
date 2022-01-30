@@ -16,10 +16,68 @@ editPackageFunctions = function(){
 
         let buttonsDiv = document.createElement("div")
         buttonsDiv.id = buttonsDivId
+        buttonsDiv.style.paddingBottom = "15px"
         createEditPackageButtonPanel(buttonsDiv, package)
 
+        let rejectedPackageLink = document.createElement("a")
+        rejectedPackageLink.href = "#"
+        rejectedPackageLink.textContent = "Was this package rejected? Click here to log a package rejection."
+        rejectedPackageLink.style.fontSize = "13px"
+        rejectedPackageLink.onclick = () => {
+            enterRejectionDetailsScreen(package)
+        }
+
         container.appendChild(buttonsDiv)
+        container.appendChild(rejectedPackageLink)
+
+    }
+
+    function enterRejectionDetailsScreen(package){
+        if (!helperFunctions.isModalVisible()){
+            helperFunctions.displayModal()
+        }
+        let container = helperFunctions.getAndClearModalContainer()
+
+        let alertExists = false
+        if (package.alert != null) {
+            alertExists = true
+        }
         
+        let infoField = document.createElement("textArea")
+        infoField.style.width = "75%"
+        infoField.style.height = "175px"
+        
+        if (alertExists){
+            infoField.value = package.alert.information
+        }
+
+        let instructions = document.createElement("p")
+        instructions.textContent = "Enter details to log about the rejection below."
+
+
+        let buttonDiv = document.createElement("div")
+
+        let logRejectionForPackageButton = helperFunctions.createButton("Log Rejection for Package")
+        logRejectionForPackageButton.onclick = () => {
+            let id
+            if (!alertExists){
+                id = ""
+            } else {
+                id = package.alert.id
+            }
+
+            console.log(infoField.value)
+            package["alert"] = {"id": id, "information": `${infoField.value}`}
+            package = JSON.stringify(package)
+            console.log(package)
+            updatePackage(package)
+        }
+
+        buttonDiv.appendChild(logRejectionForPackageButton)
+
+        container.appendChild(instructions)
+        container.appendChild(infoField)
+        container.appendChild(buttonDiv)
     }
 
     function createEditPackageButtonPanel(buttonsDiv, package){
@@ -167,7 +225,6 @@ editPackageFunctions = function(){
             }
         }).catch(error => {
             if (error == "400"){
-                console.log("error")
             }
     })
 }
@@ -198,7 +255,6 @@ editPackageFunctions = function(){
             }
         }).catch(error => {
             if (error == "400"){
-                console.log("error")
             }
     })
 
@@ -369,7 +425,8 @@ function onCheckboxClick(event){
 
     return{
         editPackage:editPackage,
-        updatePackage:updatePackage
+        updatePackage:updatePackage,
+        enterRejectionDetailsScreen:enterRejectionDetailsScreen
     }
 
     

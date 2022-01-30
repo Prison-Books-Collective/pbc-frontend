@@ -260,6 +260,10 @@ helperFunctions = function () {
         modal.style.display = "block"
     }
 
+    function isModalVisible(){
+        return (modal.style.display == "block")
+    }
+
     function getAndClearSiteContent() {
         const container = document.getElementById(siteContentId);
         container.innerHTML = ""
@@ -283,7 +287,8 @@ helperFunctions = function () {
         getAndClearModalContainer: getAndClearModalContainer,
         getAndClearSiteContent: getAndClearSiteContent,
         getDate: getDate,
-        createBreakElement:createBreakElement
+        createBreakElement:createBreakElement,
+        isModalVisible:isModalVisible
     }
 
 

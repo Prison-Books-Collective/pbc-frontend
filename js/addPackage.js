@@ -181,7 +181,6 @@ addPackageFunctions = function(){
             displayZines(data)
         }).catch(error => {
             if (error == "400"){
-                console.log("error")
             }
     })
     }
@@ -269,9 +268,7 @@ addPackageFunctions = function(){
             if (error == "204"){
                 let notFoundText = `We could not find the book with <b>ISBN# ${isbnTarget}</b> in our database. Please add the title and author of the book and add it to the package. <br><br>`
                 editOrCreateBook(notFoundText, isbnTarget,"","", true)
-            } else{
-                console.log("other error")
-            }
+            } 
     })
 
 }
@@ -402,11 +399,6 @@ function updateBook(book){
         step1_bookOrZine(true)
 
     }).catch(error => {
-        if (error == "302"){
-            console.log("book already exists")
-        } else{
-            
-        }
 })
 
 }
@@ -442,8 +434,6 @@ function addCheckedZinesToPackage(checkedZines){
         const zineJson = JSON.parse(zine.value)
         zineListItem.innerHTML = `<b>${zine.id}</b> - ${zineJson['title']}`;
         zineListItem.setAttribute(zineAttribute, zine.value)
-        console.log("checked zine \n" + zine)
-        console.log("checked zine value \n" + zine.value)
         packageContentList.appendChild(zineListItem);  
     })
 }
@@ -454,8 +444,6 @@ function addImportedZinesToPackage(zines){
         zineListItem = document.createElement("li");
         zineListItem.innerHTML = `<b>${zine["threeLetterCode"]}</b> - ${zine['title']}`;
         zineListItem.setAttribute(zineAttribute, JSON.stringify(zine))
-        console.log("imported zine \n" + zine)
-        console.log("imported zine value \n" + zine.value)
         packageContentList.appendChild(zineListItem); 
     })
 
@@ -594,7 +582,6 @@ function savePackage(){
         savePackageToInmate(packageJson)
 
     } else {
-        console.log(packageJson)
         savePackageToInmateNoId(packageJson)
     }
  }
@@ -622,7 +609,6 @@ function generatePackageJson(){
 }
 
 function savePackageToInmate(packageJson){
-    console.log(packageJson)
     fetch(`http://localhost:8080/addPackage`, {
         method: 'post',
         headers: {
@@ -647,7 +633,6 @@ function savePackageToInmate(packageJson){
 
 
 function savePackageToInmateNoId(packageJson){
-    console.log(packageJson)
     fetch(`http://localhost:8080/addPackageForInmateNoId`, {
         method: 'post',
         headers: {
