@@ -348,8 +348,7 @@ function editOrCreateBook(text, originalIsbn, originalTitle, originalAuthor, isN
 
 }
 
-function saveNoISBNBook(noISBNBook){
-        
+function saveNoISBNBook(noISBNBook){  
     fetch(`http://localhost:8080/addNoISBNBook`, {
         method: 'post',
         headers: {
@@ -498,20 +497,56 @@ function createAddBookToPackageButton(container, bookData) {
 }
 
 function createCompletePackageButton(container){
-    let buttonText = "Complete package"
+    let buttonText = "Finish Adding Books"
     if (editingPackage){
-        buttonText = "Update package"
+        buttonText = "Finish Updating Package"
+    }
+    const finishAddingBooksButton = helperFunctions.createButton(buttonText)
+    finishAddingBooksButton.style.background =   "DarkSeaGreen"
+    finishAddingBooksButton.onclick = () =>{
+        addFacilityToPackage()
+    }
+    container.appendChild(finishAddingBooksButton)
+}
+
+function addFacilityToPackage(){
+    container = getAddPackageContentContainer()
+    dropdown = document.createElement("select")
+    getAllFacilities().then(function(result) {
+        result.forEach(facility => {
+            let dropdownOption = document.createElement("option")
+            dropdownOption.innerHTML = facility["facility_name"]
+            dropdownOption.value = JSON.stringify(facility)
+            dropdown.appendChild(dropdownOption)
+        })
+    })
+
+    let buttonText = "Complete and Save Package"
+    if (editingPackage){
+        buttonText = "Update and Save Package"
     }
     const savePackageButton = helperFunctions.createButton(buttonText)
     savePackageButton.style.background =   "DarkSeaGreen"
     savePackageButton.onclick = () =>{
+        console.log(dropdown.value)
         if (editingPackage){
-            updatePackage()
+            updatePackage(dropdown.value)
         } else {
-            savePackage()
+            savePackage(dropdown.value)
         }
     }
+    container.appendChild(dropdown)
     container.appendChild(savePackageButton)
+}
+
+async function getAllFacilities(){
+    const response = await fetch(`http://localhost:8080/getAllFacilities`, {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        }
+    })
+    return response.json();
 }
 
 function generateBooksJson(){
@@ -543,13 +578,10 @@ function generateZinesJson(){
     });
     if (zineExists){
         zineJson = zineJson.substring(0,zineJson.length - 2)
-
     }
     zineJson = zineJson + `]`
     return zineJson
 }
-
-
 
 function generateNoISBNBooksJson(){
     const packageContentListElement = document.getElementById(packageContentListId)
@@ -569,15 +601,15 @@ function generateNoISBNBooksJson(){
     return noISBNBooksJson
 }
 
-function updatePackage(){
-    let packageJson = generatePackageJson()
+function updatePackage(facility){
+    let packageJson = generatePackageJson(facility)
     editPackageFunctions.updatePackage(packageJson)
 }
 
 
 
-function savePackage(){
-    let packageJson = generatePackageJson()
+function savePackage(facility){
+    let packageJson = generatePackageJson(facility)
     if (inmateHelperFunctions.inmateHasPrisonID()){
         savePackageToInmate(packageJson)
 
@@ -586,7 +618,7 @@ function savePackage(){
     }
  }
 
-function generatePackageJson(){
+function generatePackageJson(facility){
     let booksJson = generateBooksJson()
     let zinesJson = generateZinesJson()
     let noISBNBooksJson = generateNoISBNBooksJson()
@@ -595,17 +627,15 @@ function generatePackageJson(){
 
     if(inmateHelperFunctions.inmateHasPrisonID()){
         if (editingPackage){
-            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}}`
+            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}, "facility": ${facility}}`
         } 
-        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}}`
+        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}", "inmate": {"id":"${inmateId}"}, "facility": ${facility}}`
     } else {
         if (editingPackage){
-            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}","inmateNoId": {"id":${inmateId}}}`
+            return `{"id": ${editingPackageId}, ${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}","inmateNoId": {"id":${inmateId}}, "facility": ${facility}}`
         } 
-        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}",  "inmateNoId": {"id":${inmateId}}}`
+        return`{${booksJson}, ${zinesJson}, ${noISBNBooksJson}, "date": "${date}",  "inmateNoId": {"id":${inmateId}}, "facility": ${facility}}`
     }
-
-    
 }
 
 function savePackageToInmate(packageJson){
@@ -625,12 +655,9 @@ function savePackageToInmate(packageJson){
     }).then(function(data){
         let container = getAddPackageContentContainer()
         addPrintInvoiceButton(container, data)
-        addDoneButton(container)
-        
-        
+        addDoneButton(container)        
     })
 }
-
 
 function savePackageToInmateNoId(packageJson){
     fetch(`http://localhost:8080/addPackageForInmateNoId`, {
@@ -650,8 +677,6 @@ function savePackageToInmateNoId(packageJson){
         let container = getAddPackageContentContainer()
         addPrintInvoiceButton(container, data)
         addDoneButton(container)
-        
-        
     })
 }
 

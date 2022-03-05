@@ -56,7 +56,6 @@ inmateHelperFunctions = function(){
         let count = 0;
 
         packages.slice().reverse().forEach(package => {
-            console.log(package)
             let packageElement = generatePackageContentElement(package);
 
             const packageRow = document.createElement('tr')
@@ -122,7 +121,11 @@ inmateHelperFunctions = function(){
             div.style.textAlign = "left"
             div.style.paddingLeft = "20px"
             let date = document.createElement("span")
-            date.innerHTML = `<b>${package.date}</b>:`;
+            if(!!(package.facility)) {
+                date.innerHTML = `<em>${package.facility.facility_name}</em>, <strong>${package.date}</strong>:`;
+            } else {
+                date.innerHTML = `<strong>${package.date}</strong>:`;
+            }
             div.appendChild(date)
             let list = document.createElement("ul")
 
