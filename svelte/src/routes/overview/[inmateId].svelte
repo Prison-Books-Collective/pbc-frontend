@@ -1,9 +1,4 @@
 <script lang="ts" context="module">
-	export enum INMATE_SEARCH_MODE {
-		CREATE = 'create',
-		DISAMBIGUATION = 'disambiguation'
-	}
-
 	export function load({ params }) {
 		const { inmateId } = params;
 		return { props: { inmateId } };

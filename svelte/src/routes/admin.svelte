@@ -104,7 +104,7 @@
 		justify-content: flex-start;
 	}
 
-	section[role='Manage Zines'] {
+	section {
 		display: flex;
 		flex-flow: column nowrap;
 		max-width: calc(100vw - 2rem);

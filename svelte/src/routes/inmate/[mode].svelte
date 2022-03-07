@@ -113,7 +113,7 @@
 		{#await getInmates}
 			<p>Loading...</p>
 		{:then inmates}
-			<nav role="inmate selection">
+			<nav>
 				{#each inmates as inmate}
 					<p>
 						<a href={ROUTE_OVERVIEW(inmate.id)}>
