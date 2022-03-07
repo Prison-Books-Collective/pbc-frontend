@@ -1,9 +1,4 @@
 <script lang="ts" context="module">
-  export enum INMATE_SEARCH_MODE { 
-    CREATE = 'create', 
-    DISAMBIGUATION = 'disambiguation'
-  }
-
   export function load({ params }) {
     const { mode } = params
     return { props: { mode }}
@@ -15,7 +10,7 @@
   import { goto } from '$app/navigation'
   import { InmateService } from '$lib/services/pbc-service'
   import { FacilityService } from '$lib/services/pbc-service/facility.service'
-  import { ROUTE_OVERVIEW } from '$lib/util/routing'
+  import { INMATE_SEARCH_MODE, ROUTE_OVERVIEW } from '$lib/util/routing'
   import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
   
   export let mode: INMATE_SEARCH_MODE

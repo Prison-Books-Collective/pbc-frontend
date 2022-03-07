@@ -1,18 +1,18 @@
-<script lang="ts" context="module">
-  export enum VALID_SEARCHES {
-    ID = 'id',
-    NAME_AND_LOCATION = 'name_and_location',
-  }
-</script>
-
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { FacilityService } from '$lib/services/pbc-service/facility.service'
   import { PackageService } from '$lib/services/pbc-service/package.service'
   import { InmateService } from '$lib/services/pbc-service/inmate.service'
   import { formatDate } from '$lib/util/time'
-  import { ROUTE_OVERVIEW, ROUTE_INMATE_CREATE_NAMED, ROUTE_INMATE_CREATE_ID, ROUTE_INMATE_DISAMBIGUATION } from '$lib/util/routing'
   import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
+  import { 
+    VALID_HOMEPAGE_SEARCHES,
+    ROUTE_OVERVIEW, 
+    ROUTE_INMATE_CREATE_NAMED, 
+    ROUTE_INMATE_CREATE_ID, 
+    ROUTE_INMATE_DISAMBIGUATION
+  } from '$lib/util/routing'
+
 
   let inmateSearch = {
     id: null,
@@ -21,16 +21,16 @@
     location: null,
   }
 
-  let searchBy = VALID_SEARCHES.ID
-  $: searchText = searchBy === VALID_SEARCHES.ID 
+  let searchBy = VALID_HOMEPAGE_SEARCHES.ID
+  $: searchText = searchBy === VALID_HOMEPAGE_SEARCHES.ID 
     ? 'Search by Name if no ID is available'
     : 'Search by Inmate ID'
 
   const toggleSearch = () => {
-    if( searchBy === VALID_SEARCHES.ID ) {
-      searchBy = VALID_SEARCHES.NAME_AND_LOCATION
+    if( searchBy === VALID_HOMEPAGE_SEARCHES.ID ) {
+      searchBy = VALID_HOMEPAGE_SEARCHES.NAME
     } else {
-      searchBy = VALID_SEARCHES.ID
+      searchBy = VALID_HOMEPAGE_SEARCHES.ID
     }
   }
 
@@ -39,7 +39,7 @@
   let getPackageCount = PackageService.getPackageCount( today )
 
   const searchForInmate = async () => {
-    if( searchBy === VALID_SEARCHES.ID ) {
+    if( searchBy === VALID_HOMEPAGE_SEARCHES.ID ) {
       if( inmateSearch.id === null ) { return }
       try {
         const foundInmate = await InmateService.getInmate(inmateSearch.id)
@@ -58,7 +58,7 @@
         console.error( error )
         return
       }
-    } else if( searchBy === VALID_SEARCHES.NAME_AND_LOCATION ) {
+    } else if( searchBy === VALID_HOMEPAGE_SEARCHES.NAME ) {
       try {
         const foundInmates = await InmateService.getInmateNoIdByName({
           firstName: inmateSearch.firstName,
@@ -99,14 +99,14 @@
 <main>
 
   <form on:submit|preventDefault={searchForInmate}>
-    {#if searchBy === VALID_SEARCHES.ID}
+    {#if searchBy === VALID_HOMEPAGE_SEARCHES.ID}
       <input 
         id="inmateId" 
         type="text"
         placeholder="Enter Inmate ID #, press Enter"
         name="inmateNumber"
         bind:value={inmateSearch.id}>
-    {:else if searchBy === VALID_SEARCHES.NAME_AND_LOCATION}
+    {:else if searchBy === VALID_HOMEPAGE_SEARCHES.NAME}
       <input 
         id="inmateFirstName"
         type="text" 

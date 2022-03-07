@@ -1,4 +1,4 @@
-import { CONTENT_TYPE_JSON, METHOD_POST } from '$lib/util/web'
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$lib/util/web'
 import { BASE_PBC_URI } from './index'
 import type { Zine } from './models/zine'
 
@@ -21,15 +21,16 @@ export class ZineService {
       throw new Error( `unexpected response ${ response.status } when creating zine at ${ this.URI_CREATE_ZINE } with details: ${ JSON.stringify( zine ) }` )
     }
 
+    this.cachedZines = []
     return await response.json() as Zine
   }
 
   public static async getZines(): Promise<Zine[]> {
-    if( this.cachedZines.length == 0) {
+    if( this.cachedZines.length > 0) {
       return this.cachedZines
     }
 
-    const response = await fetch(this.URI_GET_ZINES, { ...METHOD_POST })
+    const response = await fetch(this.URI_GET_ZINES, { ...METHOD_GET })
     if( response.status !== 200 ) {
       throw new Error( `unexpected response ${ response.status } when retrieving all zines from ${ this.URI_GET_ZINES }` )
     }
