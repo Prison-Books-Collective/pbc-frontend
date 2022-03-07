@@ -11,7 +11,8 @@
   import { PackageService } from '$lib/services/pbc-service/package.service'
   import { InmateService } from '$lib/services/pbc-service/inmate.service'
   import { formatDate } from '$lib/util/time'
-  import { ROUTE_OVERVIEW, ROUTE_INMATE_CREATE, ROUTE_INMATE_DISAMBIGUATION } from '$lib/util/routing'
+  import { ROUTE_OVERVIEW, ROUTE_INMATE_CREATE_NAMED, ROUTE_INMATE_CREATE_ID, ROUTE_INMATE_DISAMBIGUATION } from '$lib/util/routing'
+  import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 
   let inmateSearch = {
     id: null,
@@ -43,13 +44,17 @@
       try {
         const foundInmate = await InmateService.getInmate(inmateSearch.id)
         if( foundInmate === null ) {
-          alert( `Failed to find an inmate with ID "${ inmateSearch.id }"` )
+          const shouldCreateNewInmate = confirm( `Failed to find any inmates with ID#${ inmateSearch.id }. To create a new inmate, click OK` )
+          if( shouldCreateNewInmate ) {
+            goto( ROUTE_INMATE_CREATE_ID( inmateSearch.id ))
+            return
+          }
           return
         }
         goto( ROUTE_OVERVIEW( inmateSearch.id ))
         return
       } catch( error ) {
-        alert( `Communication with server failed. Check that the server is running and not in a failing state.` )
+        alert( ERROR_MESSAGE_SERVER_COMMUNICATION )
         console.error( error )
         return
       }
@@ -62,7 +67,7 @@
         if( foundInmates === null || foundInmates.length === 0 ) {
           const shouldCreateNewInmate = confirm( `Failed to find any inmates named "${ inmateSearch.firstName } ${ inmateSearch.lastName }". To create a new inmate, click OK` )
           if( shouldCreateNewInmate ) {
-            goto( ROUTE_INMATE_CREATE({ firstName: inmateSearch.firstName, lastName: inmateSearch.lastName }) )
+            goto( ROUTE_INMATE_CREATE_NAMED({ firstName: inmateSearch.firstName, lastName: inmateSearch.lastName }) )
             return
           }
           return
@@ -77,7 +82,7 @@
           goto( ROUTE_OVERVIEW( foundInmate.id ))
         }
       } catch( error ) {
-        alert( `Communication with server failed. Check that the server is running and not in a failing state.` )
+        alert( ERROR_MESSAGE_SERVER_COMMUNICATION )
         console.error( error )
         return
       }

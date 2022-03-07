@@ -5,19 +5,23 @@
   }
 
   export function load({ params }) {
-    const { mode, firstName, lastName } = params
-    return { props: { mode, firstName, lastName }}
+    const { mode } = params
+    return { props: { mode }}
   }
 </script>
 
 <script lang="ts">
+  import { page } from '$app/stores'
   import { goto } from '$app/navigation'
   import { InmateService } from '$lib/services/pbc-service'
   import { FacilityService } from '$lib/services/pbc-service/facility.service'
   import { ROUTE_OVERVIEW } from '$lib/util/routing'
+  import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
   
   export let mode: INMATE_SEARCH_MODE
-  export let firstName: string, lastName: string
+  export let id = $page.url.searchParams.get( 'id' ) || null
+  export let firstName = $page.url.searchParams.get( 'firstName' ) || null
+  export let lastName = $page.url.searchParams.get( 'lastName' ) || null
   export let location
 
   let getInmates = mode === INMATE_SEARCH_MODE.DISAMBIGUATION
@@ -28,14 +32,34 @@
     ? FacilityService.getAllFacilities()
     : Promise.resolve([])
 
-  const createInmate = async () => {
-    const createdInmate = await InmateService.createInmateNoID({
-      firstName, 
-      lastName, 
-      location
-    })
+  const wasIDProvided = () => {
+    return $page.url.searchParams.get( 'id' ) != null
+  }
 
-    goto(ROUTE_OVERVIEW( createdInmate.id ))
+  const createInmate = async () => {
+    let createInmate
+    if( id ) {
+       createInmate = InmateService.createInmate({
+        firstName,
+        lastName,
+        inmateId: id
+      })
+    } else {
+      createInmate = InmateService.createInmateNoID({
+        firstName, 
+        lastName, 
+        location
+      })
+    }
+
+    try {
+      const createdInmate = await createInmate
+      goto(ROUTE_OVERVIEW( createdInmate.id ))
+      return
+    } catch( error ) {
+      alert( ERROR_MESSAGE_SERVER_COMMUNICATION )
+      console.error( error )
+    }
   }
 </script>
 
@@ -44,6 +68,14 @@
     <h1>Add New Inmate</h1>
 
     <form on:submit|preventDefault={createInmate}>
+      {#if wasIDProvided()}
+      <input 
+        type="text" 
+        name="inmateNumber" 
+        id="inmateNumber"
+        placeholder="Inmate ID Number"
+        bind:value={id}>
+      {/if}
       <input 
         type="text" 
         name="firstName" 
@@ -56,6 +88,7 @@
         id="lastName"
         placeholder="Last Name"
         bind:value={lastName}>
+      {#if !wasIDProvided()}
       <select bind:value={location}>
         {#await getFacilities}
           <option value={undefined}>Loading Facilities</option>
@@ -66,8 +99,9 @@
           {/each}
         {/await}
       </select>
+      {/if}
 
-      <button type="submit" disabled={!(firstName) || !(lastName) || !(location)}>
+      <button type="submit" disabled={!(firstName) || !(lastName) || (!(location) && !(id))}>
         Add Inmate
       </button>
     </form>
