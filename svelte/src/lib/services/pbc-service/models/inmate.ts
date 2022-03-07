@@ -1,15 +1,15 @@
-import { Package } from './package'
+import { Package } from './package';
 
 export interface Inmate {
-  id: string
+	id: string;
 
-  firstName: string
-  lastName: string
-  middleInitial: string
+	firstName: string;
+	lastName: string;
+	middleInitial: string;
 
-  packages: Package[]
+	packages: Package[];
 }
 
 export interface InmateNoID extends Inmate {
-  location: string
+	location: string;
 }

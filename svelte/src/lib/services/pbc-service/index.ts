@@ -1,4 +1,4 @@
-export const BASE_PBC_URI = 'http://localhost:8080'
+export const BASE_PBC_URI = 'http://localhost:8080';
 
 // import type { Book, NoISBNBook } from './models/book'
 // import { BookService } from './book.service'
@@ -8,9 +8,9 @@ export const BASE_PBC_URI = 'http://localhost:8080'
 // import { FacilityService } from './facility.service'
 // export { FacilityService, Facility, FacilityType, State }
 
-import type { Inmate, InmateNoID } from './models/inmate'
-import { InmateService } from './inmate.service'
-export { InmateService, Inmate, InmateNoID }
+import type { Inmate, InmateNoID } from './models/inmate';
+import { InmateService } from './inmate.service';
+export { InmateService, Inmate, InmateNoID };
 
 // import type { Package } from './models/package'
 // import { PackageService } from './package.service'
