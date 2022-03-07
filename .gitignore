@@ -92,3 +92,5 @@ Thumbs.db
 
 .svelte-kit
 .svelte-kit/*
+build
+build/*
