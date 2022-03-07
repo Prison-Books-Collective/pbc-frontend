@@ -1,4 +1,4 @@
-<script lang="typescript" context="module">
+<script lang="ts" context="module">
   export enum INMATE_SEARCH_MODE { 
     CREATE = 'create', 
     DISAMBIGUATION = 'disambiguation'
@@ -10,7 +10,7 @@
   }
 </script>
 
-<script lang="typescript">
+<script lang="ts">
   import { InmateService } from '$lib/services/pbc-service'
   import type { Inmate, InmateNoID } from '$lib/services/pbc-service'
 

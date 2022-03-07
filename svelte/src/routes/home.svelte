@@ -1,11 +1,11 @@
-<script lang="typescript" context="module">
+<script lang="ts" context="module">
   export enum VALID_SEARCHES {
     ID = 'id',
     NAME_AND_LOCATION = 'name_and_location',
   }
 </script>
 
-<script lang="typescript">
+<script lang="ts">
   import { goto } from '$app/navigation'
   import { FacilityService } from '$lib/services/pbc-service/facility.service'
   import { PackageService } from '$lib/services/pbc-service/package.service'
