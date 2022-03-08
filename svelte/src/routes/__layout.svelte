@@ -1,5 +1,6 @@
 <script>
   import logo from '$lib/assets/pbc-logo-small.png'
+  import logoText from '$lib/assets/pbc-text.svg'
   import search from '$lib/assets/icons/search.png'
   import settings from '$lib/assets/icons/gear.png'
 </script>
@@ -23,6 +24,7 @@
   </div>
   {/if}
 
+  <img id="logo-text" src={logoText} alt="Logo text for Prison Books Collective"/>
 	<img id="logo" src={logo} alt="Logo for Prison Books Collective"/>
 </nav>
 
@@ -35,6 +37,15 @@
   }
 
   #logo {
+    opacity: 0.5;
+    transition-duration: 0.3s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  #logo-text {
     opacity: 0.5;
     transition-duration: 0.3s;
 

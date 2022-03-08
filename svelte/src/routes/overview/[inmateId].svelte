@@ -70,7 +70,7 @@
 
 		{#await getPackages then packages}
 		{#if packages.length === 0}
-			<h2>No packages have been created for { inmate.firstName } { inmate.lastName } yet</h2>
+			<h2 class="no-packages-message">No packages have been created for { inmate.firstName } { inmate.lastName } yet</h2>
 		{:else}
 			<table id="packageTable">
 				<tr>
@@ -182,6 +182,11 @@
 		width: 10px;
 		text-align: center;
 	}
+
+	.no-packages-message {
+		margin-top: 3em;
+	}
+	
 	.facility-name {
 		font-weight: normal;
 	}
