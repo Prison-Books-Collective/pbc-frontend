@@ -84,7 +84,7 @@
 					<tr class:darkRow="{!(index % 2)}">
 						<td class="spacer-col">
 							{#if pbcPackage.alert}
-								<div class="alert">!</div>
+								<abbr class="alert" title={pbcPackage.alert.information}>!</abbr>
 							{/if}
 						</td>
 						<td class="package-col">
