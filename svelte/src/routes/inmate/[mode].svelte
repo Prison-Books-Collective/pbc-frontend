@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import FacilitySelect from '$lib/components/facility/select.svelte'
+	import FacilitySelect from '$lib/components/facility/select.svelte';
 
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -88,7 +88,7 @@
 				bind:value={lastName}
 			/>
 			{#if !wasIDProvided()}
-				<FacilitySelect bind:facility={location}></FacilitySelect>
+				<FacilitySelect bind:facility={location} />
 			{/if}
 
 			<button type="submit" disabled={!firstName || !lastName || (!location && !id)}>

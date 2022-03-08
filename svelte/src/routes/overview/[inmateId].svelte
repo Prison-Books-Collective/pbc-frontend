@@ -6,8 +6,8 @@
 </script>
 
 <script lang="ts">
-	import Modal from '$lib/components/modal.svelte'
-	import EditInmate from '$lib/components/inmate/edit.svelte'
+	import Modal from '$lib/components/modal.svelte';
+	import EditInmate from '$lib/components/inmate/edit.svelte';
 
 	import { InmateService } from '$lib/services/pbc-service';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
@@ -17,16 +17,16 @@
 	import printIcon from '$lib/assets/icons/print.png';
 
 	enum MODAL_VALUES {
-		EDIT_INMATE = 'edit_inmate',
+		EDIT_INMATE = 'edit_inmate'
 	}
 
-	let isModalVisible = false
-	let modalContent = null
-	let modalProps = {}
+	let isModalVisible = false;
+	let modalContent = null;
+	let modalProps = {};
 
 	export let inmateId: string;
 	export let getInmate: Promise<Inmate | InmateNoID> = new Promise(() => {});
-	let showModal: MODAL_VALUES
+	let showModal: MODAL_VALUES;
 
 	const findInmate = async () => {
 		const inmateWithID = await InmateService.getInmate(inmateId);
@@ -57,22 +57,29 @@
 	});
 
 	const closeModal = () => {
-		isModalVisible = false
-	}
+		isModalVisible = false;
+	};
 	const refresh = (inmate) => {
-		inmateId = inmate.id
-		findInmate()
-	}
+		inmateId = inmate.id;
+		findInmate();
+	};
 	const presentEditInmateModal = () => {
-		showModal = MODAL_VALUES.EDIT_INMATE
-		isModalVisible = true
-	}
+		showModal = MODAL_VALUES.EDIT_INMATE;
+		isModalVisible = true;
+	};
 </script>
 
 <main>
 	<Modal bind:visible={isModalVisible}>
 		{#if showModal == MODAL_VALUES.EDIT_INMATE}
-			<EditInmate id={inmateId} on:update={e => {refresh(e.detail); closeModal()}} on:error={e => console.error(e.detail)}></EditInmate>
+			<EditInmate
+				id={inmateId}
+				on:update={(e) => {
+					refresh(e.detail);
+					closeModal();
+				}}
+				on:error={(e) => console.error(e.detail)}
+			/>
 		{/if}
 		<!-- Modal content will be programatically added here by modifying `isModalVisible` and `modalContent` -->
 		<!-- <svelte:component this={modalContent} {...modalProps}></svelte:component> -->

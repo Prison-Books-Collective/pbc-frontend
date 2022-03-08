@@ -3,9 +3,9 @@ import { BASE_PBC_URI } from './index';
 import type { Inmate, InmateNoID } from './models/inmate';
 import type { Facility } from './models/facility';
 
-export const isInmateNoID = ( inmate: Inmate | InmateNoID ) => {
-	return !!(inmate.location)
-}
+export const isInmateNoID = (inmate: Inmate | InmateNoID) => {
+	return !!inmate.location;
+};
 export class InmateService {
 	public static readonly URI_GET_INMATE = (inmateId: string) =>
 		`${BASE_PBC_URI}/getInmate?id=${inmateId}`;
@@ -49,21 +49,21 @@ export class InmateService {
 		inmateId: string;
 	}) =>
 		`${BASE_PBC_URI}/updateInmate?originalId=${initialId}&firstName=${firstName}&lastName=${lastName}&id=${inmateId}`;
-	
-		public static readonly URI_UPDATE_INMATE__NO_ID = ({
-			initialId,
-			firstName,
-			lastName,
-			location,
-			inmateId
-		}: {
-			initialId: string;
-			firstName: string;
-			lastName: string;
-			location: string;
-			inmateId: string;
-		}) =>
-			`${BASE_PBC_URI}/updateInmateNoID?originalId=${initialId}&firstName=${firstName}&lastName=${lastName}&location=${location}&id=${inmateId}`;
+
+	public static readonly URI_UPDATE_INMATE__NO_ID = ({
+		initialId,
+		firstName,
+		lastName,
+		location,
+		inmateId
+	}: {
+		initialId: string;
+		firstName: string;
+		lastName: string;
+		location: string;
+		inmateId: string;
+	}) =>
+		`${BASE_PBC_URI}/updateInmateNoID?originalId=${initialId}&firstName=${firstName}&lastName=${lastName}&location=${location}&id=${inmateId}`;
 
 	public static async getInmate(inmateId: string): Promise<Inmate | null> {
 		const response = await fetch(this.URI_GET_INMATE(inmateId), { ...METHOD_GET });
@@ -122,12 +122,12 @@ export class InmateService {
 		return (await response.json()) as InmateNoID[];
 	}
 
-	public static async getInmateUnknownIdStatus(id: string|number): Promise<Inmate|InmateNoID> {
-		let inmate = await this.getInmate(id.toString())
-		if( !inmate ) {
-			inmate = await this.getInmateNoIdByDatabaseID(id)
+	public static async getInmateUnknownIdStatus(id: string | number): Promise<Inmate | InmateNoID> {
+		let inmate = await this.getInmate(id.toString());
+		if (!inmate) {
+			inmate = await this.getInmateNoIdByDatabaseID(id);
 		}
-		return inmate
+		return inmate;
 	}
 
 	public static async createInmate({
@@ -235,7 +235,9 @@ export class InmateService {
 
 		if (response.status !== 200) {
 			throw new Error(
-				`unexpected response ${response.status} when updating inmate at "${this.URI_UPDATE_INMATE__NO_ID({
+				`unexpected response ${
+					response.status
+				} when updating inmate at "${this.URI_UPDATE_INMATE__NO_ID({
 					initialId,
 					firstName,
 					lastName,

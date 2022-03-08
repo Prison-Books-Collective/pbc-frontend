@@ -45,8 +45,8 @@ export class FacilityService {
 	}
 
 	public static async resolveFacilityByName(facilityName: string): Promise<Facility> {
-		if(!facilityName || facilityName === '') return null
-		const allFacilities = await this.getAllFacilities()
-		return allFacilities.find(facility => facility.facility_name === facilityName)
+		if (!facilityName || facilityName === '') return null;
+		const allFacilities = await this.getAllFacilities();
+		return allFacilities.find((facility) => facility.facility_name === facilityName);
 	}
 }
