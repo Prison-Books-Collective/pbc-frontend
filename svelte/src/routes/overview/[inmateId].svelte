@@ -64,6 +64,10 @@
 			</h1>
 		</div>
 
+		<button id="new-package">
+			Add a <strong><u>new package</u></strong> (books or zines)
+		</button>
+
 		{#await getPackages then packages}
 		{#if packages.length === 0}
 			<h2>No packages have been created for { inmate.firstName } { inmate.lastName } yet</h2>
@@ -78,7 +82,11 @@
 
 				{#each packages as pbcPackage, index}
 					<tr class:darkRow="{!(index % 2)}">
-						<td class="spacer-col"></td>
+						<td class="spacer-col">
+							{#if pbcPackage.alert}
+								<div class="alert">!</div>
+							{/if}
+						</td>
 						<td class="package-col">
 							<h2>
 								{#if pbcPackage.facility}
@@ -147,6 +155,7 @@
 		h1 {
 			font-size: 2rem;
 			text-align: center;
+			margin-bottom: 0;
 		}
 
 		span {
@@ -158,9 +167,21 @@
 
 	h2 {
 		font-size: 1rem;
-		line-height: 0;
+		margin-bottom: 0;
+		margin-top: 0;
 	}
 
+	#new-package {
+		background: darkseagreen;
+	}
+
+	.alert {
+		cursor: pointer;
+		text-decoration: underline;
+		color: blue;
+		width: 10px;
+		text-align: center;
+	}
 	.facility-name {
 		font-weight: normal;
 	}
