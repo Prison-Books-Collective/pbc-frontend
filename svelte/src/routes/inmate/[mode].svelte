@@ -134,7 +134,6 @@
 </main>
 
 <style lang="scss">
-
 	.createNew {
 		margin-top: 3em;
 		text-align: center;

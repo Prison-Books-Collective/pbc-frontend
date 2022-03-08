@@ -10,9 +10,8 @@
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 	import type { Inmate, InmateNoID } from '$lib/services/pbc-service';
 
-	import editIcon from '$lib/assets/icons/edit.png'
-	import printIcon from '$lib/assets/icons/print.png'
-
+	import editIcon from '$lib/assets/icons/edit.png';
+	import printIcon from '$lib/assets/icons/print.png';
 
 	export let inmateId: string;
 	export let getInmate: Promise<Inmate | InmateNoID> = new Promise(() => {});
@@ -37,30 +36,36 @@
 		return !!!inmate.location;
 	};
 
-	$: getPackages = getInmate.then( inmate => {
-		if( isInmateWithID( inmate ) ) {
-			return PackageService.getPackagesForInmate( inmate.id )
+	$: getPackages = getInmate.then((inmate) => {
+		if (isInmateWithID(inmate)) {
+			return PackageService.getPackagesForInmate(inmate.id);
 		} else {
-			return PackageService.getPackagesForInmateNoID( inmate.id )
+			return PackageService.getPackagesForInmateNoID(inmate.id);
 		}
-	})
+	});
 </script>
 
 <main>
 	{#await getInmate then inmate}
 		<div id="inmate-name">
 			<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
-			{#if isInmateWithID(inmate)}
+				{#if isInmateWithID(inmate)}
 					{inmate.firstName}
 					{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}&ensp;
 					<span>ID#{inmate.id}</span>
-			{:else}
+				{:else}
 					{inmate.firstName}
 					{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}
 					- <span>{inmate.location}</span>
-			{/if}
+				{/if}
 
-			<img src={ editIcon } class="editIcon" width="20" height="20" alt="edit icon; click to edit inmate information"/>
+				<img
+					src={editIcon}
+					class="editIcon"
+					width="20"
+					height="20"
+					alt="edit icon; click to edit inmate information"
+				/>
 			</h1>
 		</div>
 
@@ -69,71 +74,77 @@
 		</button>
 
 		{#await getPackages then packages}
-		{#if packages.length === 0}
-			<h2 class="no-packages-message">No packages have been created for { inmate.firstName } { inmate.lastName } yet</h2>
-		{:else}
-			<table id="packageTable">
-				<tr>
-					<th>!</th>
-					<th>Package</th>
-					<th>Edit</th>
-					<th>Print</th>
-				</tr>
-
-				{#each packages as pbcPackage, index}
-					<tr class:darkRow="{!(index % 2)}">
-						<td class="spacer-col">
-							{#if pbcPackage.alert}
-								<abbr class="alert" title={pbcPackage.alert.information}>!</abbr>
-							{/if}
-						</td>
-						<td class="package-col">
-							<h2>
-								{#if pbcPackage.facility}
-									<em class="facility-name">{ pbcPackage.facility.facility_name }</em>, 
-								{/if}
-								<date>
-									{ pbcPackage.date }:
-								</date>
-							</h2>
-							<ul>
-								{#each pbcPackage.books as book}
-									<li>
-										<em>{ book.title }</em> &mdash; { book.authors.join( ',' ) }
-									</li>
-								{/each}
-								{#each pbcPackage.noISBNBooks as book}
-									<li>
-										<em>{ book.title }</em> &mdash; { book.authors.join( ',' ) }
-									</li>
-								{/each}
-								{#each pbcPackage.zines as zine}
-									<li>
-										<strong>{ zine.threeLetterCode }</strong> &mdash; { zine.title }
-									</li>
-								{/each}
-							</ul>
-						</td>
-						<td class="edit-col">
-							<img
-								src={editIcon}
-								alt="edit icon; click to edit this package"
-								class="editIcon"
-								width="20" height="20"/>
-						</td>
-						<td class="print-col">
-							<img
-								src={printIcon}
-								alt="print icon; click to print this package"
-								class="printIcon"
-								width="20" height="20"/>
-						</td>
+			{#if packages.length === 0}
+				<h2 class="no-packages-message">
+					No packages have been created for {inmate.firstName}
+					{inmate.lastName} yet
+				</h2>
+			{:else}
+				<table id="packageTable">
+					<tr>
+						<th>!</th>
+						<th>Package</th>
+						<th>Edit</th>
+						<th>Print</th>
 					</tr>
-				{/each}
-			</table>
-		{/if}
-		{/await}
 
+					{#each packages as pbcPackage, index}
+						<tr class:darkRow={!(index % 2)}>
+							<td class="spacer-col">
+								{#if pbcPackage.alert}
+									<abbr class="alert" title={pbcPackage.alert.information}>!</abbr>
+								{/if}
+							</td>
+							<td class="package-col">
+								<h2>
+									{#if pbcPackage.facility}
+										<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
+									{/if}
+									<date>
+										{pbcPackage.date}:
+									</date>
+								</h2>
+								<ul>
+									{#each pbcPackage.books as book}
+										<li>
+											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+										</li>
+									{/each}
+									{#each pbcPackage.noISBNBooks as book}
+										<li>
+											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+										</li>
+									{/each}
+									{#each pbcPackage.zines as zine}
+										<li>
+											<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+										</li>
+									{/each}
+								</ul>
+							</td>
+							<td class="edit-col">
+								<img
+									src={editIcon}
+									alt="edit icon; click to edit this package"
+									class="editIcon"
+									width="20"
+									height="20"
+								/>
+							</td>
+							<td class="print-col">
+								<img
+									src={printIcon}
+									alt="print icon; click to print this package"
+									class="printIcon"
+									width="20"
+									height="20"
+								/>
+							</td>
+						</tr>
+					{/each}
+				</table>
+			{/if}
+		{/await}
 	{/await}
 </main>
 
@@ -186,7 +197,7 @@
 	.no-packages-message {
 		margin-top: 3em;
 	}
-	
+
 	.facility-name {
 		font-weight: normal;
 	}
@@ -198,11 +209,11 @@
 		padding: 10px 13px;
 	}
 	.package-col {
-		padding-top: 10px; 
-		padding-bottom: 10px; 
+		padding-top: 10px;
+		padding-bottom: 10px;
 		padding-right: 15px;
 		padding-left: 20px;
-		text-align: left; 
+		text-align: left;
 	}
 	.edit-col {
 		text-align: center;

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ZineService } from '$lib/services/pbc-service/zine.service';
-	import { FacilityService } from '$lib/services/pbc-service/facility.service'
+	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 	import type { Zine } from '$lib/services/pbc-service/models/zine';
 	import type { Facility } from '$lib/services/pbc-service/models/facility';
-	import { FacilityType, State  } from '$lib/services/pbc-service/models/facility';
+	import { FacilityType, State } from '$lib/services/pbc-service/models/facility';
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 
 	let newZine: Zine = {
@@ -17,8 +17,8 @@
 		id: null,
 		facility_name: null,
 		state: null,
-		facility_type: null,
-	}
+		facility_type: null
+	};
 
 	let getZines = ZineService.getZines();
 	let getFacilities = FacilityService.getAllFacilities();
@@ -67,16 +67,18 @@
 				id: null,
 				facility_name: null,
 				facility_type: null,
-				state: null,
+				state: null
 			};
 
-			alert(`Successfully added new Facility "[${ createdFacility.state }] ${createdFacility.facility_name} - ${createdFacility.facility_type}"`);
+			alert(
+				`Successfully added new Facility "[${createdFacility.state}] ${createdFacility.facility_name} - ${createdFacility.facility_type}"`
+			);
 			getFacilities = FacilityService.getAllFacilities();
-		} catch( error ) {
+		} catch (error) {
 			alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 			console.error(error);
 		}
-	}
+	};
 </script>
 
 <main>
@@ -149,22 +151,19 @@
 					<option value={f}>{f}</option>
 				{/each}
 			</select>
-			
-			<button disabled={!canAddFacility(newFacility)}>Add Facility</button>
 
+			<button disabled={!canAddFacility(newFacility)}>Add Facility</button>
 		</form>
 
 		<details>
-			<summary>
-				All Facilities
-			</summary>
+			<summary> All Facilities </summary>
 
 			<div>
 				{#await getFacilities then facilities}
 					<ul>
 						{#each facilities as facility}
 							<li>
-								[{ facility.state }] { facility.facility_name } &mdash; { facility.facility_type }
+								[{facility.state}] {facility.facility_name} &mdash; {facility.facility_type}
 							</li>
 						{/each}
 					</ul>
