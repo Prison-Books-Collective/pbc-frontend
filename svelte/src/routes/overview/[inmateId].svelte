@@ -48,25 +48,26 @@
 
 <main>
 	{#await getInmate then inmate}
-		{#if isInmateWithID(inmate)}
-			<div id="inmate-name">
-				<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
+		<div id="inmate-name">
+			<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
+			{#if isInmateWithID(inmate)}
 					{inmate.firstName}
 					{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}&ensp;
 					<span>ID#{inmate.id}</span>
-				</h1>
-			</div>
-		{:else}
-			<div id="inmate-name">
-				<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
+			{:else}
 					{inmate.firstName}
 					{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}
 					- <span>{inmate.location}</span>
-				</h1>
-			</div>
-		{/if}
+			{/if}
+
+			<img src={ editIcon } class="editIcon" width="20" height="20" alt="edit icon; click to edit inmate information"/>
+			</h1>
+		</div>
 
 		{#await getPackages then packages}
+		{#if packages.length === 0}
+			<h2>No packages have been created for { inmate.firstName } { inmate.lastName } yet</h2>
+		{:else}
 			<table id="packageTable">
 				<tr>
 					<th>!</th>
@@ -100,7 +101,7 @@
 								{/each}
 								{#each pbcPackage.zines as zine}
 									<li>
-										<strong>{ zine.threeLetterCode }</strong> - { zine.title }
+										<strong>{ zine.threeLetterCode }</strong> &mdash; { zine.title }
 									</li>
 								{/each}
 							</ul>
@@ -122,6 +123,7 @@
 					</tr>
 				{/each}
 			</table>
+		{/if}
 		{/await}
 
 	{/await}
@@ -144,6 +146,7 @@
 
 		h1 {
 			font-size: 2rem;
+			text-align: center;
 		}
 
 		span {
@@ -155,6 +158,7 @@
 
 	h2 {
 		font-size: 1rem;
+		line-height: 0;
 	}
 
 	.facility-name {
@@ -175,9 +179,11 @@
 		text-align: left; 
 	}
 	.edit-col {
+		text-align: center;
 		width: 40px;
 	}
 	.print-col {
+		text-align: center;
 		width: 40px;
 	}
 </style>

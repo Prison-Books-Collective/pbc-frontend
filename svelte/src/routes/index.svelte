@@ -84,18 +84,13 @@
 					return;
 				}
 
-				if (foundInmates.length > 1) {
+				if (foundInmates.length >= 1) {
 					goto(
 						ROUTE_INMATE_DISAMBIGUATION({
 							firstName: inmateSearch.firstName,
 							lastName: inmateSearch.lastName
 						})
 					);
-				}
-
-				if (foundInmates.length === 1) {
-					const foundInmate = foundInmates[0];
-					goto(ROUTE_OVERVIEW(foundInmate.id));
 				}
 			} catch (error) {
 				alert(ERROR_MESSAGE_SERVER_COMMUNICATION);

@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { ZineService } from '$lib/services/pbc-service/zine.service';
+	import { FacilityService } from '$lib/services/pbc-service/facility.service'
 	import type { Zine } from '$lib/services/pbc-service/models/zine';
+	import type { Facility } from '$lib/services/pbc-service/models/facility';
+	import { FacilityType, State  } from '$lib/services/pbc-service/models/facility';
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 
 	let newZine: Zine = {
@@ -10,7 +13,15 @@
 		inUse: null
 	};
 
+	let newFacility: Facility = {
+		id: null,
+		facility_name: null,
+		state: null,
+		facility_type: null,
+	}
+
 	let getZines = ZineService.getZines();
+	let getFacilities = FacilityService.getAllFacilities();
 
 	const canAddZine = (zine) => {
 		return (
@@ -19,6 +30,15 @@
 			zine.threeLetterCode.length < 5 &&
 			!!zine.title &&
 			zine.title !== ''
+		);
+	};
+
+	const canAddFacility = (facility) => {
+		return (
+			!!facility.state &&
+			!!facility.facility_name &&
+			facility.facility_name !== '' &&
+			!!facility.facility_type
 		);
 	};
 
@@ -39,13 +59,31 @@
 			console.error(error);
 		}
 	};
+
+	const createFacility = async () => {
+		try {
+			const createdFacility = await FacilityService.createFacility(newFacility);
+			newFacility = {
+				id: null,
+				facility_name: null,
+				facility_type: null,
+				state: null,
+			};
+
+			alert(`Successfully added new Facility "[${ createdFacility.state }] ${createdFacility.facility_name} - ${createdFacility.facility_type}"`);
+			getFacilities = FacilityService.getAllFacilities();
+		} catch( error ) {
+			alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
+			console.error(error);
+		}
+	}
 </script>
 
 <main>
 	<section>
-		<h1>Zines</h1>
+		<h2>Zines</h2>
 
-		<h2>Add New Zine</h2>
+		<h3>Add New Zine</h3>
 		<form id="newZineForm" on:submit|preventDefault={createZine}>
 			<label for="three-letter-code">
 				Three Letter Code:
@@ -66,7 +104,7 @@
 		</form>
 
 		<details>
-			<summary> All Zines </summary>
+			<summary>All Zines</summary>
 
 			<div>
 				{#await getZines then zines}
@@ -82,15 +120,67 @@
 			</div>
 		</details>
 	</section>
+
+	<section>
+		<h2>Facilities</h2>
+
+		<h3>Add New Facility</h3>
+		<form id="newFacilityForm" on:submit|preventDefault={createFacility}>
+			<label for="facility-name">
+				Facility Name:
+				<input
+					type="text"
+					name="facility-name"
+					id="facility-name"
+					bind:value={newFacility.facility_name}
+				/>
+			</label>
+
+			<select bind:value={newFacility.state}>
+				<option disabled selected value={null}>State of Operation</option>
+				{#each Object.values(State) as s}
+					<option value={s}>{s}</option>
+				{/each}
+			</select>
+
+			<select bind:value={newFacility.facility_type}>
+				<option disabled selected value={null}>Facility Type</option>
+				{#each Object.values(FacilityType) as f}
+					<option value={f}>{f}</option>
+				{/each}
+			</select>
+			
+			<button disabled={!canAddFacility(newFacility)}>Add Facility</button>
+
+		</form>
+
+		<details>
+			<summary>
+				All Facilities
+			</summary>
+
+			<div>
+				{#await getFacilities then facilities}
+					<ul>
+						{#each facilities as facility}
+							<li>
+								[{ facility.state }] { facility.facility_name } &mdash; { facility.facility_type }
+							</li>
+						{/each}
+					</ul>
+				{/await}
+			</div>
+		</details>
+	</section>
 </main>
 
 <style lang="scss">
-	h1 {
+	h2 {
 		font-size: 2rem;
 		text-align: center;
 	}
 
-	h2,
+	h3,
 	summary {
 		font-weight: 600;
 		font-size: 1.25rem;
@@ -111,7 +201,7 @@
 		width: 100%;
 	}
 
-	#newZineForm {
+	form {
 		display: flex;
 		flex-flow: column nowrap;
 		align-items: center;
@@ -126,6 +216,10 @@
 		input {
 			width: 30ch;
 		}
+	}
+
+	select {
+		width: 40ch;
 	}
 
 	details,

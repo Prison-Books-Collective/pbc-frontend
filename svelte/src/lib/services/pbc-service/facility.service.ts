@@ -1,9 +1,10 @@
-import { CONTENT_TYPE_JSON, METHOD_GET } from '$lib/util/web';
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$lib/util/web';
 import { BASE_PBC_URI } from './index';
 import type { Facility } from './models/facility';
 
 export class FacilityService {
 	public static readonly URI_GET_FACILITIES = `${BASE_PBC_URI}/getAllFacilities`;
+	public static readonly URI_CREATE_FACILITY = `${BASE_PBC_URI}/addFacility`
 
 	private static cachedFacilities: Facility[] = [];
 
@@ -25,5 +26,21 @@ export class FacilityService {
 
 		this.cachedFacilities = (await response.json()) as Facility[];
 		return this.cachedFacilities;
+	}
+
+	public static async createFacility(facility: Facility): Promise<Facility> {
+		const response = await fetch(this.URI_CREATE_FACILITY, {
+			...METHOD_POST,
+			headers: { ...CONTENT_TYPE_JSON },
+			body: JSON.stringify( facility )
+		});
+
+		if (response.status !== 200) {
+			throw new Error(
+				`unexpected response ${response.status} when creating facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}" at "${ this.URI_CREATE_FACILITY }"`
+			);
+		}
+		this.cachedFacilities = []
+		return await response.json() as Facility;
 	}
 }

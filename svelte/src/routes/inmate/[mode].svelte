@@ -24,8 +24,7 @@
 			? InmateService.getInmateNoIdByName({ firstName, lastName })
 			: Promise.resolve([]);
 
-	let getFacilities =
-		mode === INMATE_SEARCH_MODE.CREATE ? FacilityService.getAllFacilities() : Promise.resolve([]);
+	let getFacilities = FacilityService.getAllFacilities();
 
 	const wasIDProvided = () => {
 		return $page.url.searchParams.get('id') != null;
@@ -106,7 +105,7 @@
 	{:else if mode === INMATE_SEARCH_MODE.DISAMBIGUATION}
 		<h1>Inmate Selection</h1>
 		<p>
-			Multiple inmates with this name were found, please select which inmate you're creating a
+			The following inmates with this name were found, please select which inmate you're creating a
 			package for:
 		</p>
 
@@ -123,12 +122,23 @@
 						</a>
 					</p>
 				{/each}
+
+				<p class="createNew">
+					<a href={`/inmate/create?firstName=${firstName}&lastName=${lastName}`}>
+						Click here to create a new inmate record
+					</a>
+				</p>
 			</nav>
 		{/await}
 	{/if}
 </main>
 
 <style lang="scss">
+
+	.createNew {
+		margin-top: 3em;
+		text-align: center;
+	}
 	form {
 		display: flex;
 		flex-flow: column nowrap;

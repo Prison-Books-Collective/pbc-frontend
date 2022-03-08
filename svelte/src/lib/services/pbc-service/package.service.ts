@@ -14,7 +14,7 @@ export class PackageService {
 	public static readonly URI_GET_PACKAGES__INMATE_NO_ID = (database_id: string | number) =>
 		`${BASE_PBC_URI}/getPackagesForInmateNoId?inmateId=${database_id}`;
 	public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addPackage`;
-	public static readonly URI_CREATE_PACKAGE__INMATE_NO_ID = `${BASE_PBC_URI}/addPackageForInmateNoId`;
+	public static readonly URI_CREATE_PACKAGE__INMATE_NO_ID = ( inmateDatabaseID ) => `${BASE_PBC_URI}/addPackageForInmateNoId?id=${ inmateDatabaseID }`;
 	public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updatePackage`;
 	public static readonly URI_DELETE_PACKAGE = (packageId: number) =>
 		`${BASE_PBC_URI}/deletePackage?packageId=${packageId}`;
@@ -39,8 +39,8 @@ export class PackageService {
 		return (await response.json()) as Package;
 	}
 
-	public static async createPackageForInmateNoID(pbcPackage: Package): Promise<Package> {
-		const response = await fetch(this.URI_CREATE_PACKAGE__INMATE_NO_ID, {
+	public static async createPackageForInmateNoID( inmateDatabaseID: string, pbcPackage: Package): Promise<Package> {
+		const response = await fetch(this.URI_CREATE_PACKAGE__INMATE_NO_ID( inmateDatabaseID ), {
 			...METHOD_POST,
 			headers: { ...CONTENT_TYPE_JSON },
 			body: JSON.stringify(pbcPackage)

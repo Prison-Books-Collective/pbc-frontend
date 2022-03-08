@@ -5,7 +5,14 @@
 </script>
 
 <nav>
-  <img id="logo" src={logo} alt="Logo for Prison Books Collective"/>
+  <div id="navigation-buttons">
+    <a href="/">
+      <img src={search} alt="Magnifying Glass Search Icon" class="icon"/>
+    </a>
+    <a href="/admin">
+      <img src={settings} alt="Gear Settings Icon" class="icon"/>
+    </a>
+  </div>
 
   {#if false}
   <div id="inmate-name">
@@ -16,14 +23,7 @@
   </div>
   {/if}
 
-  <div id="navigation-buttons">
-    <a href="/">
-      <img src={search} alt="Magnifying Glass Search Icon" class="icon"/>
-    </a>
-    <a href="/admin">
-      <img src={settings} alt="Gear Settings Icon" class="icon"/>
-    </a>
-  </div>
+	<img id="logo" src={logo} alt="Logo for Prison Books Collective"/>
 </nav>
 
 <slot></slot>
