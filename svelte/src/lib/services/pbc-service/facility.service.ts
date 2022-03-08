@@ -43,4 +43,10 @@ export class FacilityService {
 		this.cachedFacilities = [];
 		return (await response.json()) as Facility;
 	}
+
+	public static async resolveFacilityByName(facilityName: string): Promise<Facility> {
+		if(!facilityName || facilityName === '') return null
+		const allFacilities = await this.getAllFacilities()
+		return allFacilities.find(facility => facility.facility_name === facilityName)
+	}
 }

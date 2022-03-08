@@ -7,8 +7,8 @@
   const KEY_ESCAPE = 'Escape'
 
   export let visible = false
-  export let width = 'content-fit'
-  export let maxWidth = '100vw'
+  export let width = 'auto'
+  export let maxWidth = '90vw'
   export let height = 'content-fit'
   export let maxHeight = '100vh'
 
@@ -31,7 +31,6 @@
     dispatch('cancel')
   }
   const closeOnEscape = ({ key }: KeyboardEvent) => {
-    console.log( key )
     if( key === KEY_ESCAPE ) {
       cancel()
     }
