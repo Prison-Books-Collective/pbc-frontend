@@ -7,7 +7,12 @@
 
 <script lang="ts">
 	import { InmateService } from '$lib/services/pbc-service';
+	import { PackageService } from '$lib/services/pbc-service/package.service';
 	import type { Inmate, InmateNoID } from '$lib/services/pbc-service';
+
+	import editIcon from '$lib/assets/icons/edit.png'
+	import printIcon from '$lib/assets/icons/print.png'
+
 
 	export let inmateId: string;
 	export let getInmate: Promise<Inmate | InmateNoID> = new Promise(() => {});
@@ -31,11 +36,18 @@
 	const isInmateWithID = (inmate: Partial<InmateNoID>) => {
 		return !!!inmate.location;
 	};
+
+	$: getPackages = getInmate.then( inmate => {
+		if( isInmateWithID( inmate ) ) {
+			return PackageService.getPackagesForInmate( inmate.id )
+		} else {
+			return PackageService.getPackagesForInmateNoID( inmate.id )
+		}
+	})
 </script>
 
 <main>
 	{#await getInmate then inmate}
-		{JSON.stringify(inmate)}
 		{#if isInmateWithID(inmate)}
 			<div id="inmate-name">
 				<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
@@ -53,6 +65,65 @@
 				</h1>
 			</div>
 		{/if}
+
+		{#await getPackages then packages}
+			<table id="packageTable">
+				<tr>
+					<th>!</th>
+					<th>Package</th>
+					<th>Edit</th>
+					<th>Print</th>
+				</tr>
+
+				{#each packages as pbcPackage, index}
+					<tr class:darkRow="{!(index % 2)}">
+						<td class="spacer-col"></td>
+						<td class="package-col">
+							<h2>
+								{#if pbcPackage.facility}
+									<em class="facility-name">{ pbcPackage.facility.facility_name }</em>, 
+								{/if}
+								<date>
+									{ pbcPackage.date }:
+								</date>
+							</h2>
+							<ul>
+								{#each pbcPackage.books as book}
+									<li>
+										<em>{ book.title }</em> &mdash; { book.authors.join( ',' ) }
+									</li>
+								{/each}
+								{#each pbcPackage.noISBNBooks as book}
+									<li>
+										<em>{ book.title }</em> &mdash; { book.authors.join( ',' ) }
+									</li>
+								{/each}
+								{#each pbcPackage.zines as zine}
+									<li>
+										<strong>{ zine.threeLetterCode }</strong> - { zine.title }
+									</li>
+								{/each}
+							</ul>
+						</td>
+						<td class="edit-col">
+							<img
+								src={editIcon}
+								alt="edit icon; click to edit this package"
+								class="editIcon"
+								width="20" height="20"/>
+						</td>
+						<td class="print-col">
+							<img
+								src={printIcon}
+								alt="print icon; click to print this package"
+								class="printIcon"
+								width="20" height="20"/>
+						</td>
+					</tr>
+				{/each}
+			</table>
+		{/await}
+
 	{/await}
 </main>
 
@@ -80,5 +151,33 @@
 			font-weight: 700;
 			font-size: 1.75rem;
 		}
+	}
+
+	h2 {
+		font-size: 1rem;
+	}
+
+	.facility-name {
+		font-weight: normal;
+	}
+
+	.darkRow {
+		background-color: gainsboro;
+	}
+	.spacer-col {
+		padding: 10px 13px;
+	}
+	.package-col {
+		padding-top: 10px; 
+		padding-bottom: 10px; 
+		padding-right: 15px;
+		padding-left: 20px;
+		text-align: left; 
+	}
+	.edit-col {
+		width: 40px;
+	}
+	.print-col {
+		width: 40px;
 	}
 </style>

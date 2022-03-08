@@ -1,7 +1,8 @@
-import { Alert } from './alert';
-import { Book, NoISBNBook } from './book';
-import { Inmate, InmateNoID } from './inmate';
-import { Zine } from './zine';
+import type { Alert } from './alert';
+import type { Book, NoISBNBook } from './book';
+import type { Facility } from './facility';
+import type { Inmate, InmateNoID } from './inmate';
+import type { Zine } from './zine';
 
 export interface Package {
 	id: number;
@@ -13,4 +14,6 @@ export interface Package {
 	noISBNBooks?: NoISBNBook[];
 
 	alert?: Alert;
+	facility?: Facility;
+	date: string;
 }

@@ -99,7 +99,7 @@ export class PackageService {
 			);
 		}
 
-		return (await response.json()) as Package[];
+		return (await response.json()).reverse() as Package[];
 	}
 
 	public static async getPackagesForInmateNoID(databaseId: string): Promise<Package[]> {

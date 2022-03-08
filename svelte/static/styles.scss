@@ -80,15 +80,22 @@ body {
 	background-color: #e8e7e2;
 }
 #editIcon,
+.editIcon,
 #searchIcon,
 #printIcon,
-#gearIcon {
+.printIcon,
+#gearIcon,
+.gearIcon {
 	opacity: 0.5;
+	transition-duration: 0.3s;
 }
 #editIcon:hover,
+.editIcon:hover,
 #searchIcon:hover,
 #printIcon:hover,
-#gearIcon:hover {
+.printIcon:hover,
+#gearIcon:hover,
+.gearIcon:hover {
 	opacity: 0.9;
 }
 table,
