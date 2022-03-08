@@ -1,0 +1,199 @@
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte'
+  import { fade } from 'svelte/transition'
+
+  const dispatch = createEventDispatcher();
+
+  const KEY_ESCAPE = 'Escape'
+
+  export let visible = false
+  export let width = 'content-fit'
+  export let maxWidth = '100vw'
+  export let height = 'content-fit'
+  export let maxHeight = '100vh'
+
+  export let closeSide: 'right'|'left'|'none'|false|null = false
+  export let showConfirm = false
+  export let confirmText = 'OK'
+  export let cancelText = 'Cancel'
+
+  export const close = () => {
+    visible = false
+    dispatch('close')
+  }
+
+  export const confirm = ( value = null ) => {
+    close()
+    dispatch('confirm', value)
+  }
+  export const cancel = () => {
+    close()
+    dispatch('cancel')
+  }
+  const closeOnEscape = ({ key }: KeyboardEvent) => {
+    console.log( key )
+    if( key === KEY_ESCAPE ) {
+      cancel()
+    }
+  }
+
+</script>
+
+<svelte:window on:keypress={closeOnEscape}></svelte:window>
+{#if visible}
+<section id="modal-container" transition:fade={{duration: 100}}>
+  <div id="background" on:click|self={close}></div>
+  <div id="modal" style={`width: ${width}; max-width: ${maxWidth}; height: ${height}; max-height: ${maxHeight}`}>
+    {#if !!(closeSide) && closeSide != 'none'}
+      {#if closeSide === 'left'}
+      <div class="close-left">
+        <button class="button-close" on:click={close}>
+          &times;
+        </button>
+      </div>
+      {/if}
+      <div class="space-top"></div>
+      {#if closeSide === 'right'}
+      <div class="close-right">
+        <button class="button-close" on:click={close}>
+          &times;
+        </button>
+      </div>
+      {/if}
+    {/if}
+
+    <div 
+      class="content content-bottom-border" 
+      class:content-bottom-border={showConfirm}
+      class:content-extra-padding={!(closeSide) || closeSide === 'none'}>
+      {#each Object.keys($$slots) as _}
+        <slot></slot>
+      {/each}
+    </div>
+
+    {#if showConfirm}
+    <div class="confirm">
+      <button on:click={confirm}>
+        {confirmText}
+      </button>
+    </div>
+    <div class="space-bottom"></div>
+    <div class="cancel">
+      <button on:click={cancel}>
+        {cancelText}
+      </button>
+    </div>
+    {/if}
+  </div>
+</section>
+{/if}
+
+
+<style lang="scss">
+  button {
+    margin: 0px;
+    box-shadow: none;
+    background: none;
+    border-radius: 0px;
+    border: none;
+    color: #333;
+    font-size: 1em;
+    padding: 0.75em;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .button-close {
+    padding-bottom: 0em;
+  }
+
+  button:disabled {
+    background: none;
+    cursor: not-allowed;
+  }
+
+  #modal-container {
+    z-index: 999;
+    position: fixed;
+      top: 0px;
+      left: 0px;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #background {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  #modal {
+    background-color: #eaeaea;
+    // padding: 1em 3em;
+    z-index: 100;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+
+    border-radius: 3px;
+
+    display: grid;
+    grid-template-areas:
+      "close-left space-top close-right"
+      "content content content"
+      "confirm space-bottom cancel";
+
+    .close-left {
+      grid-area: close-left;
+      text-align: left;
+    }
+
+    .close-right {
+      grid-area: close-right;
+      text-align: right;
+    }
+
+    .content {
+      position: relative;
+      grid-area: content;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5em;
+      padding-top: 0.5em;
+    }
+
+    .content-extra-padding {
+      padding: 1.5em;
+    }
+
+    .content-bottom-border:after {
+      content: '';
+      width: 90%;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.15);
+      position: absolute;
+      bottom: -4px;
+      border-radius: 5px;
+    }
+
+    .confirm {
+      grid-area: confirm;
+      padding: 0.5em;
+    }
+
+    .cancel {
+      grid-area: cancel;
+      padding: 0.5em;
+    }
+
+    .space-top, .space-bottom {
+      width: 100px;
+    }
+  }
+</style>

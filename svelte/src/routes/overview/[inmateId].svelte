@@ -6,12 +6,17 @@
 </script>
 
 <script lang="ts">
+	import Modal from '$lib/components/modal.svelte'
+
 	import { InmateService } from '$lib/services/pbc-service';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 	import type { Inmate, InmateNoID } from '$lib/services/pbc-service';
 
 	import editIcon from '$lib/assets/icons/edit.png';
 	import printIcon from '$lib/assets/icons/print.png';
+
+	let isModalVisible = false
+	let modalContent = null
 
 	export let inmateId: string;
 	export let getInmate: Promise<Inmate | InmateNoID> = new Promise(() => {});
@@ -46,6 +51,11 @@
 </script>
 
 <main>
+	<Modal visible={isModalVisible}>
+		<!-- Modal content will be programatically added here by modifying `isModalVisible` and `modalContent` -->
+		<svelte:component this={modalContent}></svelte:component>
+	</Modal>
+
 	{#await getInmate then inmate}
 		<div id="inmate-name">
 			<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
