@@ -2,6 +2,11 @@ import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/uti
 import { BASE_PBC_URI } from './index';
 import type { Book, NoISBNBook } from './models/book';
 
+
+export const isNoISBNBook = ( book: Book|NoISBNBook ) => {
+	return !(book.isbn10 && book.isbn13)
+}
+
 export class BookService {
 	public static readonly URI_GET_BOOK__ISBN10 = (isbn: string) =>
 		`${BASE_PBC_URI}/getIsbn10?isbn10=${isbn}`;
