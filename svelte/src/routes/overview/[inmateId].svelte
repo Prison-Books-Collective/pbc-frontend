@@ -51,132 +51,134 @@
 	};
 </script>
 
-<main>
-	<Modal bind:visible={isModalVisible}>
-		{#if activeModal == VALID_MODAL.EDIT_INMATE}
-			<EditInmate
-				id={inmateId}
-				on:update={(e) => refresh(e.detail)}
-				on:error={(e) => console.error(e.detail)}
-			/>
-		{:else if activeModal == VALID_MODAL.VIEW_ALERT}
-			<PackageAlert
-				on:update={(_) => refresh($focusedInmate)}
-				on:error={(e) => console.error(e.detail)}
-			/>
-		{/if}
-	</Modal>
-
-	<div id="inmate-name">
-		<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
-			{#if isInmateNoID($focusedInmate)}
-				{$focusedInmate.firstName}
-				{$focusedInmate.middleInitial
-					? $focusedInmate.middleInitial + '. '
-					: ''}{$focusedInmate.lastName}
-				- <span>{$focusedInmate.location}</span>
-			{:else}
-				{$focusedInmate.firstName}
-				{$focusedInmate.middleInitial
-					? $focusedInmate.middleInitial + '. '
-					: ''}{$focusedInmate.lastName}&ensp;
-				<span>ID#{$focusedInmate.id}</span>
+{#if $focusedInmate.id}
+	<main>
+		<Modal bind:visible={isModalVisible}>
+			{#if activeModal == VALID_MODAL.EDIT_INMATE}
+				<EditInmate
+					id={inmateId}
+					on:update={(e) => refresh(e.detail)}
+					on:error={(e) => console.error(e.detail)}
+				/>
+			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
+				<PackageAlert
+					on:update={(_) => refresh($focusedInmate)}
+					on:error={(e) => console.error(e.detail)}
+				/>
 			{/if}
+		</Modal>
 
-			<img
-				src={editIcon}
-				class="editIcon"
-				width="20"
-				height="20"
-				alt="edit icon; click to edit inmate information"
-				on:click={() => presentModal(VALID_MODAL.EDIT_INMATE)}
-			/>
-		</h1>
-	</div>
+		<div id="inmate-name">
+			<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
+				{#if isInmateNoID($focusedInmate)}
+					{$focusedInmate.firstName}
+					{$focusedInmate.middleInitial
+						? $focusedInmate.middleInitial + '. '
+						: ''}{$focusedInmate.lastName}
+					- <span>{$focusedInmate.location}</span>
+				{:else}
+					{$focusedInmate.firstName}
+					{$focusedInmate.middleInitial
+						? $focusedInmate.middleInitial + '. '
+						: ''}{$focusedInmate.lastName}&ensp;
+					<span>ID#{$focusedInmate.id}</span>
+				{/if}
 
-	<button id="new-package">
-		Add a <strong><u>new package</u></strong> (books or zines)
-	</button>
+				<img
+					src={editIcon}
+					class="editIcon"
+					width="20"
+					height="20"
+					alt="edit icon; click to edit inmate information"
+					on:click={() => presentModal(VALID_MODAL.EDIT_INMATE)}
+				/>
+			</h1>
+		</div>
 
-	{#await $focusedInmatePackages then packages}
-		{#if packages.length === 0}
-			<h2 class="no-packages-message">
-				No packages have been created for {$focusedInmate.firstName}
-				{$focusedInmate.lastName} yet
-			</h2>
-		{:else}
-			<table id="packageTable">
-				<tr>
-					<th>!</th>
-					<th>Package</th>
-					<th>Edit</th>
-					<th>Print</th>
-				</tr>
+		<button id="new-package">
+			Add a <strong><u>new package</u></strong> (books or zines)
+		</button>
 
-				{#each packages as pbcPackage, index}
-					<tr class:darkRow={!(index % 2)}>
-						<td class="spacer-col">
-							{#if pbcPackage.alert}
-								<abbr
-									class="alert"
-									title={pbcPackage.alert.information}
-									on:click={() => presentAlertModal(pbcPackage)}
-								>
-									!
-								</abbr>
-							{/if}
-						</td>
-						<td class="package-col">
-							<h2>
-								{#if pbcPackage.facility}
-									<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
-								{/if}
-								<date>
-									{pbcPackage.date}:
-								</date>
-							</h2>
-							<ul>
-								{#each pbcPackage.books as book}
-									<li>
-										<em>{book.title}</em> &mdash; {book.authors.join(',')}
-									</li>
-								{/each}
-								{#each pbcPackage.noISBNBooks as book}
-									<li>
-										<em>{book.title}</em> &mdash; {book.authors.join(',')}
-									</li>
-								{/each}
-								{#each pbcPackage.zines as zine}
-									<li>
-										<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
-									</li>
-								{/each}
-							</ul>
-						</td>
-						<td class="edit-col">
-							<img
-								src={editIcon}
-								alt="edit icon; click to edit this package"
-								class="editIcon"
-								width="20"
-								height="20"
-							/>
-						</td>
-						<td class="print-col">
-							<img
-								src={printIcon}
-								alt="print icon; click to print this package"
-								class="printIcon"
-								width="20"
-								height="20"
-							/>
-						</td>
+		{#await $focusedInmatePackages then packages}
+			{#if packages.length === 0}
+				<h2 class="no-packages-message">
+					No packages have been created for {$focusedInmate.firstName}
+					{$focusedInmate.lastName} yet
+				</h2>
+			{:else}
+				<table id="packageTable">
+					<tr>
+						<th>!</th>
+						<th>Package</th>
+						<th>Edit</th>
+						<th>Print</th>
 					</tr>
-				{/each}
-			</table>
-		{/if}
-	{/await}
-</main>
+
+					{#each packages as pbcPackage, index}
+						<tr class:darkRow={!(index % 2)}>
+							<td class="spacer-col">
+								{#if pbcPackage.alert}
+									<abbr
+										class="alert"
+										title={pbcPackage.alert.information}
+										on:click={() => presentAlertModal(pbcPackage)}
+									>
+										!
+									</abbr>
+								{/if}
+							</td>
+							<td class="package-col">
+								<h2>
+									{#if pbcPackage.facility}
+										<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
+									{/if}
+									<date>
+										{pbcPackage.date}:
+									</date>
+								</h2>
+								<ul>
+									{#each pbcPackage.books as book}
+										<li>
+											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+										</li>
+									{/each}
+									{#each pbcPackage.noISBNBooks as book}
+										<li>
+											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+										</li>
+									{/each}
+									{#each pbcPackage.zines as zine}
+										<li>
+											<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+										</li>
+									{/each}
+								</ul>
+							</td>
+							<td class="edit-col">
+								<img
+									src={editIcon}
+									alt="edit icon; click to edit this package"
+									class="editIcon"
+									width="20"
+									height="20"
+								/>
+							</td>
+							<td class="print-col">
+								<img
+									src={printIcon}
+									alt="print icon; click to print this package"
+									class="printIcon"
+									width="20"
+									height="20"
+								/>
+							</td>
+						</tr>
+					{/each}
+				</table>
+			{/if}
+		{/await}
+	</main>
+{/if}
 
 <style lang="scss">
 	main {

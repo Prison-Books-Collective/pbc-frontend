@@ -28,6 +28,8 @@
 	<img id="logo" src={logo} alt="Logo for Prison Books Collective" />
 </nav>
 
+<div id="nav-spacer" />
+
 <slot />
 
 <style lang="scss">
@@ -39,6 +41,7 @@
 	#logo {
 		opacity: 0.5;
 		transition-duration: 0.3s;
+		margin-right: 2em;
 
 		&:hover {
 			opacity: 1;
@@ -81,12 +84,16 @@
 	}
 
 	nav {
+		position: fixed;
 		display: flex;
 		flex-flow: row nowrap;
 		justify-content: space-between;
 		align-items: center;
+		background-color: #e8e7e2;
+		z-index: 100;
 
 		height: 3rem;
+		width: 100vw;
 
 		padding: 1rem;
 
@@ -95,6 +102,11 @@
 		img {
 			max-height: 3rem;
 		}
+	}
+
+	#nav-spacer {
+		height: 3rem;
+		padding: 1rem;
 	}
 
 	.icon {
