@@ -84,4 +84,4 @@ const createPackage = () => {
   }
 }
 
-export const pbcPackage = createPackage()
+export const newPackage = createPackage()

@@ -1,11 +1,20 @@
-import { writable } from 'svelte/store'
-import { InmateService } from '$lib/services/pbc-service/inmate.service'
+import { derived, writable } from 'svelte/store'
+import { InmateService, isInmateNoID } from '$lib/services/pbc-service/inmate.service'
+import { PackageService } from '$lib/services/pbc-service/package.service';
 import type { InmateNoID } from '$lib/services/pbc-service/models/inmate'
 
-const emptyInmate: Partial<InmateNoID> = {
+interface LocalStorageInmate extends InmateNoID {
+  [additionalFields: string]: any
+}
+
+const emptyInmate: LocalStorageInmate = {
   id: null,
+
   firstName: null,
+  middleInitial: null,
   lastName: null,
+
+  packages: null,
   location: null,
 }
 
@@ -32,3 +41,9 @@ const createFocusedInmate = () => {
 }
 
 export const focusedInmate = createFocusedInmate()
+export const focusedInmatePackages = derived(
+  focusedInmate,
+  $inmate => isInmateNoID( $inmate )
+    ? PackageService.getPackagesForInmateNoID($inmate.id)
+    : PackageService.getPackagesForInmate($inmate.id)
+)
