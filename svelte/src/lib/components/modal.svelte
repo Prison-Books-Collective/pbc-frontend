@@ -9,7 +9,7 @@
 	export let visible = false;
 	export let width = 'auto';
 	export let maxWidth = '90vw';
-	export let height = 'content-fit';
+	export let height = 'fit-content';
 	export let maxHeight = '100vh';
 
 	export let closeSide: 'right' | 'left' | 'none' | false | null = false;
@@ -138,6 +138,8 @@
 
 		border-radius: 3px;
 
+    overflow-y: scroll;
+
 		display: grid;
 		grid-template-areas:
 			'close-left space-top close-right'
@@ -155,7 +157,7 @@
 		}
 
 		.content {
-			position: relative;
+			// position: relative;
 			grid-area: content;
 			display: flex;
 			flex-flow: column nowrap;
