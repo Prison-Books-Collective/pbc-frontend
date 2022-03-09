@@ -11,6 +11,13 @@ export class InmateService {
 		`${BASE_PBC_URI}/getInmate?id=${inmateId}`;
 	public static readonly URI_GET_INMATE__NO_ID__BY_DATABASE_ID = (databaseId: string | number) =>
 		`${BASE_PBC_URI}/getInmateNoIDByDatabaseID?id=${databaseId}`;
+	public static readonly URI_GET_INMATE__BY_NAME = ({
+		firstName,
+		lastName
+	}: {
+		firstName: string;
+		lastName: string;
+	}) => `${BASE_PBC_URI}/searchInmatesByName?firstName=${firstName}&lastName=${lastName}`;
 	public static readonly URI_GET_INMATE__NO_ID__BY_NAME = ({
 		firstName,
 		lastName
@@ -96,6 +103,41 @@ export class InmateService {
 		}
 
 		return (await response.json()) as InmateNoID;
+	}
+
+	public static async getAllInmatesByName({
+		firstName,
+		lastName,
+	}: {
+		firstName: string;
+		lastName: string;
+	}): Promise<Inmate[]|InmateNoID[]> {
+		const inmatesWithIDs = await this.getInmatesByName({ firstName, lastName })
+		const inmatesWithoutIDs = await this.getInmateNoIdByName({ firstName, lastName })
+
+		return [ ...inmatesWithIDs, ...inmatesWithoutIDs ]
+	}
+
+	public static async getInmatesByName({
+		firstName,
+		lastName,
+	}: {
+		firstName: string;
+		lastName: string;
+	}): Promise<Inmate[]> {
+		const response = await fetch(this.URI_GET_INMATE__BY_NAME({ firstName, lastName }), {
+			...METHOD_GET
+		});
+
+		if (response.status !== 200) {
+			throw new Error(
+				`unexpected response ${
+					response.status
+				} when searching for inmate with name "${lastName}, ${firstName}" at "${ URI_GET_INMATE__BY_NAME({ firstName, lastName }) }"`
+			)
+		}
+
+		return (await response.json()) as Inmate[]
 	}
 
 	public static async getInmateNoIdByName({

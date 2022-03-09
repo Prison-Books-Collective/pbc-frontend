@@ -14,6 +14,7 @@
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 	import { INMATE_SEARCH_MODE, ROUTE_OVERVIEW } from '$lib/util/routing';
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
+	import InmateId from '../overview/[inmateId].svelte';
 
 	export let mode: INMATE_SEARCH_MODE;
 	export let id = $page.url.searchParams.get('id') || null;
@@ -23,7 +24,7 @@
 
 	let getInmates =
 		mode === INMATE_SEARCH_MODE.DISAMBIGUATION
-			? InmateService.getInmateNoIdByName({ firstName, lastName })
+			? InmateService.getAllInmatesByName({ firstName, lastName })
 			: Promise.resolve([]);
 
 	let getFacilities = FacilityService.getAllFacilities();
@@ -109,7 +110,11 @@
 				{#each inmates as inmate}
 					<p>
 						<a href={ROUTE_OVERVIEW(inmate.id)}>
-							<strong>{inmate.location}</strong> -
+							{#if inmate.location}
+								<strong>{inmate.location}</strong> -
+							{:else if inmate.id}
+								<strong>ID #{inmate.id}</strong>
+							{/if}
 							{inmate.firstName}
 							{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}
 						</a>
