@@ -3,22 +3,27 @@
 	import { InmateService, isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 	import FacilitySelect from '$lib/components/facility/select.svelte';
-	import type { Inmate, InmateNoID } from '$lib/services/pbc-service';
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
+	import { focusedInmate } from '$lib/stores/inmate';
 
 	const dispatch = createEventDispatcher();
+
 	export let id: string;
 
-	let inmate: Inmate | InmateNoID;
-	let location;
+	let updateFirstName = $focusedInmate.firstName;
+	let updateLastName = $focusedInmate.lastName;
+	let updateLocation;
+	(async () => {
+		updateLocation = await FacilityService.resolveFacilityByName($focusedInmate.location);
+	})();
 
-	const isDisabled = (inmate) => {
+	$: shouldDisableForm = () => {
 		return (
-			!inmate.firstName ||
-			inmate.firstName === '' ||
-			!inmate.lastName ||
-			inmate.lastName === '' ||
-			(isInmateNoID(inmate) && !inmate.location)
+			!updateFirstName ||
+			updateFirstName === '' ||
+			!updateLastName ||
+			updateLastName === '' ||
+			(isInmateNoID($focusedInmate) && !updateLocation)
 		);
 	};
 
@@ -29,13 +34,17 @@
 				createdInmate = await InmateService.updateInmateNoID({
 					initialId: id,
 					...inmate,
+					firstName: updateFirstName,
+					lastName: updateLastName,
 					inmateId: inmate.id,
-					location: location.facility_name
+					location: updateLocation.facility_name
 				});
 			} else {
 				createdInmate = await InmateService.updateInmate({
 					initialId: id,
 					...inmate,
+					firstName: updateFirstName,
+					lastName: updateLastName,
 					inmateId: inmate.id
 				});
 			}
@@ -46,18 +55,13 @@
 			dispatch('error', error);
 		}
 	};
-
-	(async () => {
-		inmate = await InmateService.getInmateUnknownIdStatus(id);
-		location = await FacilityService.resolveFacilityByName(inmate.location);
-	})();
 </script>
 
-{#if inmate}
-	<form id="edit-inmate" on:submit|preventDefault={() => updateInmateRecord(inmate)}>
+{#if $focusedInmate}
+	<form id="edit-inmate" on:submit|preventDefault={() => updateInmateRecord($focusedInmate)}>
 		<h1>Edit Inmate Record</h1>
 
-		{#if !isInmateNoID(inmate)}
+		{#if !isInmateNoID($focusedInmate)}
 			<label for="inmate-number">
 				Inmate ID:
 				<input
@@ -65,33 +69,33 @@
 					name="inmate-number"
 					placeholder="Inmate ID"
 					disabled
-					bind:value={inmate.id}
+					bind:value={$focusedInmate.id}
 				/>
 			</label>
 		{/if}
 
 		<label for="first-name">
 			First Name:
-			<input type="text" name="first-name" placeholder="First Name" bind:value={inmate.firstName} />
+			<input type="text" name="first-name" placeholder="First Name" bind:value={updateFirstName} />
 		</label>
 
 		<label for="last-name">
 			Last Name:
-			<input type="text" name="last-name" placeholder="Last Name" bind:value={inmate.lastName} />
+			<input type="text" name="last-name" placeholder="Last Name" bind:value={updateLastName} />
 		</label>
 
-		{#if isInmateNoID(inmate) && location}
+		{#if isInmateNoID($focusedInmate) && updateLocation}
 			<label for="facility">
 				Facility:
 				<FacilitySelect
-					selected={inmate.location}
-					bind:facility={location}
-					on:update={() => (inmate.location = location.facility_name)}
+					selected={$focusedInmate.location}
+					bind:facility={updateLocation}
+					on:update={() => ($focusedInmate.location = updateLocation.facility_name)}
 				/>
 			</label>
 		{/if}
 
-		<button disabled={isDisabled(inmate)}> Update Inmate Record </button>
+		<button disabled={shouldDisableForm()}> Update Inmate Record </button>
 	</form>
 {/if}
 

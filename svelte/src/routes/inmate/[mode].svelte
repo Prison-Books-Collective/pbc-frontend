@@ -20,7 +20,7 @@
 	export let id = $page.url.searchParams.get('id') || null;
 	export let firstName = $page.url.searchParams.get('firstName') || null;
 	export let lastName = $page.url.searchParams.get('lastName') || null;
-	export let location;
+	let location;
 
 	let getInmates =
 		mode === INMATE_SEARCH_MODE.DISAMBIGUATION
@@ -111,9 +111,9 @@
 					<p>
 						<a href={ROUTE_OVERVIEW(inmate.id)}>
 							{#if inmate.location}
-								<strong>{inmate.location}</strong> -
+								<strong>{inmate.location}</strong> &mdash;
 							{:else if inmate.id}
-								<strong>ID #{inmate.id}</strong>
+								<strong>ID #{inmate.id}</strong> &mdash;
 							{/if}
 							{inmate.firstName}
 							{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}

@@ -112,6 +112,13 @@ th {
 	height: 30px;
 }
 
+.button-danger {
+	border: rgb(171, 68, 68) solid 1px;
+	background: lightcoral;
+	text-shadow: 0px -1px 0px rgb(171, 68, 68);
+	box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
+}
+
 table {
 	margin-top: 20px;
 }

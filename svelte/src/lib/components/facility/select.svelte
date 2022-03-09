@@ -6,7 +6,7 @@
 
 	const dispatch = createEventDispatcher();
 	export let facility: Facility = null;
-	export let selected: string; // facility name
+	export let selected: string = undefined; // facility name
 
 	let getFacilities = FacilityService.getAllFacilities();
 
@@ -22,7 +22,7 @@
 		<option disabled selected={!selected} value={null}>Select Facility</option>
 		{#each facilities as facility}
 			<option value={facility} selected={selected === facility.facility_name}
-				>{facility.facility_name}</option
+				>{facility.facility_name}, {facility.state}</option
 			>
 		{/each}
 	{/await}

@@ -35,6 +35,7 @@ const createFocusedInmate = () => {
 
 	return {
 		subscribe,
+		set,
 		reset,
 		fetch
 	};

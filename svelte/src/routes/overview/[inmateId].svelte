@@ -8,6 +8,8 @@
 <script lang="ts">
 	import Modal from '$lib/components/modal.svelte';
 	import EditInmate from '$lib/components/inmate/edit.svelte';
+	import PackageOverview from '$lib/components/package/overview.svelte';
+	import EditPackage from '$lib/components/package/edit.svelte';
 	import PackageAlert from '$lib/components/package/alert.svelte';
 
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
@@ -23,6 +25,9 @@
 
 	enum VALID_MODAL {
 		EDIT_INMATE = 'edit_inmate',
+
+		OVERVIEW_PACKAGE = 'overview_package',
+		EDIT_PACKAGE = 'edit_package',
 
 		VIEW_ALERT = 'view_alert'
 	}
@@ -49,6 +54,15 @@
 		newPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.VIEW_ALERT);
 	};
+
+	const presentCreatePackageModal = () => {
+		newPackage.reset();
+		presentModal(VALID_MODAL.OVERVIEW_PACKAGE);
+	};
+	const presentEditPackageModal = (pbcPackage: Package) => {
+		newPackage.load(pbcPackage);
+		presentModal(VALID_MODAL.EDIT_PACKAGE);
+	};
 </script>
 
 {#if $focusedInmate.id}
@@ -60,6 +74,10 @@
 					on:update={(e) => refresh(e.detail)}
 					on:error={(e) => console.error(e.detail)}
 				/>
+			{:else if activeModal == VALID_MODAL.OVERVIEW_PACKAGE}
+				<PackageOverview />
+			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
+				<EditPackage />
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert
 					on:update={(_) => refresh($focusedInmate)}
@@ -95,7 +113,7 @@
 			</h1>
 		</div>
 
-		<button id="new-package">
+		<button id="new-package" on:click={() => presentCreatePackageModal()}>
 			Add a <strong><u>new package</u></strong> (books or zines)
 		</button>
 
@@ -161,6 +179,7 @@
 									class="editIcon"
 									width="20"
 									height="20"
+									on:click={() => presentEditPackageModal(pbcPackage)}
 								/>
 							</td>
 							<td class="print-col">
