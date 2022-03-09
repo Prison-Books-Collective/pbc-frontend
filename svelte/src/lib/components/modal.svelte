@@ -60,8 +60,7 @@
 			{/if}
 
 			<div
-				class="content content-bottom-border"
-				class:content-bottom-border={showConfirm}
+				class="content"
 				class:content-extra-padding={!closeSide || closeSide === 'none'}
 			>
 				{#each Object.keys($$slots) as _}
@@ -138,6 +137,7 @@
 
 		border-radius: 3px;
 
+    // max-height: 80vh !important;
     overflow-y: scroll;
 
 		display: grid;
@@ -165,20 +165,13 @@
 			align-items: center;
 			padding: 1.5em;
 			padding-top: 0.5em;
+
+      // max-height: 60vh !important;
+      overflow-y: scroll;
 		}
 
 		.content-extra-padding {
 			padding: 1.5em;
-		}
-
-		.content-bottom-border:after {
-			content: '';
-			width: 90%;
-			height: 1px;
-			background: rgba(0, 0, 0, 0.15);
-			position: absolute;
-			bottom: -4px;
-			border-radius: 5px;
 		}
 
 		.confirm {
@@ -189,11 +182,12 @@
 		.cancel {
 			grid-area: cancel;
 			padding: 0.5em;
+      text-align: right;
 		}
 
 		.space-top,
 		.space-bottom {
-			width: 100px;
+			width: 100%;
 		}
 	}
 </style>
