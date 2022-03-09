@@ -71,7 +71,7 @@ const createPackage = () => {
 			facility
 		}));
 
-	const load = ( pbcPackage: Package ) => set({ ...pbcPackage, existsInDatabase: true })
+	const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true });
 	const reset = () => set({ ...emptyPackage });
 
 	return {
@@ -85,7 +85,7 @@ const createPackage = () => {
 		setDestination,
 
 		load,
-		reset,
+		reset
 	};
 };
 

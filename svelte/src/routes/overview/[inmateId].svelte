@@ -13,10 +13,7 @@
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
 	import { newPackage } from '$lib/stores/package';
 
-	import { InmateService } from '$lib/services/pbc-service';
-	import { PackageService } from '$lib/services/pbc-service/package.service';
 	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
-	import type { Inmate, InmateNoID } from '$lib/services/pbc-service/models/inmate';
 	import type { Package } from '$lib/services/pbc-service/models/package';
 
 	import editIcon from '$lib/assets/icons/edit.png';
@@ -27,7 +24,7 @@
 	enum VALID_MODAL {
 		EDIT_INMATE = 'edit_inmate',
 
-		VIEW_ALERT = 'view_alert',
+		VIEW_ALERT = 'view_alert'
 	}
 
 	let isModalVisible = false;
@@ -48,10 +45,10 @@
 		closeModal();
 	};
 
-	const presentAlertModal = ( pbcPackage: Package ) => {
-		newPackage.load(pbcPackage)
-		presentModal(VALID_MODAL.VIEW_ALERT)
-	}
+	const presentAlertModal = (pbcPackage: Package) => {
+		newPackage.load(pbcPackage);
+		presentModal(VALID_MODAL.VIEW_ALERT);
+	};
 </script>
 
 <main>
@@ -64,8 +61,9 @@
 			/>
 		{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 			<PackageAlert
-				on:update={_ => refresh($focusedInmate)}
-				on:error={(e) => console.error(e.detail)}/>
+				on:update={(_) => refresh($focusedInmate)}
+				on:error={(e) => console.error(e.detail)}
+			/>
 		{/if}
 	</Modal>
 
@@ -119,10 +117,11 @@
 					<tr class:darkRow={!(index % 2)}>
 						<td class="spacer-col">
 							{#if pbcPackage.alert}
-								<abbr 
-									class="alert" 
+								<abbr
+									class="alert"
 									title={pbcPackage.alert.information}
-									on:click={() => presentAlertModal(pbcPackage)}>
+									on:click={() => presentAlertModal(pbcPackage)}
+								>
 									!
 								</abbr>
 							{/if}
