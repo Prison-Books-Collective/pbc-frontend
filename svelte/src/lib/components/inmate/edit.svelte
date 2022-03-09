@@ -105,6 +105,11 @@
 
 	label {
 		width: 100%;
+		margin-bottom: 1.5em;
+	}
+
+	label:last-of-type {
+		margin-bottom: 0.5em;
 	}
 
 	input[type='text'] {
