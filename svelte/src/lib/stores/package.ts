@@ -71,10 +71,12 @@ const createPackage = () => {
 			facility
 		}));
 
+	const load = ( pbcPackage: Package ) => set({ ...pbcPackage, existsInDatabase: true })
 	const reset = () => set({ ...emptyPackage });
 
 	return {
 		subscribe,
+		set,
 
 		addBook,
 		addZine,
@@ -82,7 +84,8 @@ const createPackage = () => {
 		setInmate,
 		setDestination,
 
-		reset
+		load,
+		reset,
 	};
 };
 
