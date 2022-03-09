@@ -6,13 +6,11 @@
 </script>
 
 <script lang="ts">
-	import { onDestroy } from 'svelte'
-
 	import Modal from '$lib/components/modal.svelte';
 	import EditInmate from '$lib/components/inmate/edit.svelte';
 
-	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate'
-	import { newPackage } from '$lib/stores/package'
+	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
+	import { newPackage } from '$lib/stores/package';
 
 	import { InmateService } from '$lib/services/pbc-service';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
@@ -21,30 +19,29 @@
 
 	import editIcon from '$lib/assets/icons/edit.png';
 	import printIcon from '$lib/assets/icons/print.png';
-	
 
 	export let inmateId: string;
 
 	enum VALID_MODAL {
 		EDIT_INMATE = 'edit_inmate'
 	}
-	
+
 	let isModalVisible = false;
 	let activeModal: VALID_MODAL;
 
-	focusedInmate.fetch(inmateId)
+	focusedInmate.fetch(inmateId);
 
 	const presentModal = (modal: VALID_MODAL) => {
-		activeModal = modal
-		isModalVisible = true
-	}
+		activeModal = modal;
+		isModalVisible = true;
+	};
 	const closeModal = () => {
 		isModalVisible = false;
 	};
 	const refresh = (inmate) => {
 		inmateId = inmate.id;
-		focusedInmate.fetch(inmateId)
-		closeModal()
+		focusedInmate.fetch(inmateId);
+		closeModal();
 	};
 </script>
 
@@ -63,11 +60,15 @@
 		<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
 			{#if isInmateNoID($focusedInmate)}
 				{$focusedInmate.firstName}
-				{$focusedInmate.middleInitial ? $focusedInmate.middleInitial + '. ' : ''}{$focusedInmate.lastName}
+				{$focusedInmate.middleInitial
+					? $focusedInmate.middleInitial + '. '
+					: ''}{$focusedInmate.lastName}
 				- <span>{$focusedInmate.location}</span>
 			{:else}
 				{$focusedInmate.firstName}
-				{$focusedInmate.middleInitial ? $focusedInmate.middleInitial + '. ' : ''}{$focusedInmate.lastName}&ensp;
+				{$focusedInmate.middleInitial
+					? $focusedInmate.middleInitial + '. '
+					: ''}{$focusedInmate.lastName}&ensp;
 				<span>ID#{$focusedInmate.id}</span>
 			{/if}
 

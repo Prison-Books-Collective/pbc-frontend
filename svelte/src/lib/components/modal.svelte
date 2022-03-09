@@ -59,10 +59,7 @@
 				{/if}
 			{/if}
 
-			<div
-				class="content"
-				class:content-extra-padding={!closeSide || closeSide === 'none'}
-			>
+			<div class="content" class:content-extra-padding={!closeSide || closeSide === 'none'}>
 				{#each Object.keys($$slots) as _}
 					<slot />
 				{/each}
@@ -137,8 +134,8 @@
 
 		border-radius: 3px;
 
-    // max-height: 80vh !important;
-    overflow-y: scroll;
+		// max-height: 80vh !important;
+		overflow-y: scroll;
 
 		display: grid;
 		grid-template-areas:
@@ -166,8 +163,8 @@
 			padding: 1.5em;
 			padding-top: 0.5em;
 
-      // max-height: 60vh !important;
-      overflow-y: scroll;
+			// max-height: 60vh !important;
+			overflow-y: scroll;
 		}
 
 		.content-extra-padding {
@@ -182,7 +179,7 @@
 		.cancel {
 			grid-area: cancel;
 			padding: 0.5em;
-      text-align: right;
+			text-align: right;
 		}
 
 		.space-top,
