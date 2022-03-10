@@ -103,7 +103,13 @@
 
 	<div class="package-destination">
 		<span class="label">Destination: </span>
-		<FacilitySelect bind:facility selected={facility?.facility_name} />
+		<FacilitySelect
+			bind:facility
+			selected={facility?.facility_name}
+			on:update={({ detail }) => {
+				newPackage.setDestination(detail);
+			}}
+		/>
 	</div>
 	<hr width="100%" />
 
