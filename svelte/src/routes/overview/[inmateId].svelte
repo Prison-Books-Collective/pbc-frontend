@@ -14,7 +14,7 @@
 	import PackageAlert from '$lib/components/package/alert.svelte';
 
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
-	import { newPackage } from '$lib/stores/package';
+	import { focusedPackage } from '$lib/stores/package';
 
 	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 	import type { Package } from '$lib/services/pbc-service/models/package';
@@ -54,14 +54,14 @@
 	};
 
 	const presentAlertModal = (pbcPackage: Package) => {
-		newPackage.load(pbcPackage);
+		focusedPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.VIEW_ALERT);
 	};
 	const presentCreatePackageModal = () => {
 		presentModal(VALID_MODAL.OVERVIEW_PACKAGE);
 	};
 	const presentEditPackageModal = (pbcPackage: Package) => {
-		newPackage.load(pbcPackage);
+		focusedPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.EDIT_PACKAGE);
 	};
 </script>
@@ -86,7 +86,7 @@
 					on:update={() => refresh($focusedInmate)}
 					on:error={(e) => console.error(e.detail)}
 					on:add-items={() => presentCreatePackageModal()}
-					on:reject={() => presentAlertModal($newPackage)}
+					on:reject={() => presentAlertModal($focusedPackage)}
 				/>
 			{:else if activeModal == VALID_MODAL.ADD_ZINE}
 				<AddZine
@@ -131,7 +131,7 @@
 		<button
 			class="button-success"
 			on:click={() => {
-				newPackage.reset();
+				focusedPackage.reset();
 				presentCreatePackageModal();
 			}}
 		>
@@ -226,6 +226,12 @@
 		flex-flow: column nowrap;
 		justify-content: flex-start;
 		align-items: center;
+		text-align: center;
+	}
+
+	table {
+		width: 100%;
+		max-width: 800px;
 	}
 
 	#inmate-name {

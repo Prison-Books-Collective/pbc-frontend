@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { newPackage } from '$lib/stores/package';
+	import { focusedPackage } from '$lib/stores/package';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 
 	const dispatch = createEventDispatcher();
 
-	if (!$newPackage.alert) {
-		newPackage.createAlert('');
+	if (!$focusedPackage.alert) {
+		focusedPackage.createAlert('');
 	}
 
 	const saveAlert = async (pbcPackage) => {
@@ -40,32 +40,32 @@
 
 <section class="alert-container">
 	<h1>Package Rejection Details</h1>
-	{#if $newPackage.alert && $newPackage.alert.id}
+	{#if $focusedPackage.alert && $focusedPackage.alert.id}
 		<p>This package was rejected. You can update the rejection notes below:</p>
 	{:else}
 		<p>Enter details about the rejection to log below:</p>
 	{/if}
-	<form on:submit|preventDefault={() => saveAlert($newPackage)}>
+	<form on:submit|preventDefault={() => saveAlert($focusedPackage)}>
 		<textarea
 			name="package-rejection"
 			placeholder="Reason the package was rejected"
 			cols="30"
 			rows="10"
-			bind:value={$newPackage.alert.information}
+			bind:value={$focusedPackage.alert.information}
 		/>
 
 		<div class="form-options">
 			<button
 				class="log-button"
-				disabled={!$newPackage.alert ||
-					!$newPackage.alert.information ||
-					$newPackage.alert.information === ''}>Log Rejection for Package</button
+				disabled={!$focusedPackage.alert ||
+					!$focusedPackage.alert.information ||
+					$focusedPackage.alert.information === ''}>Log Rejection for Package</button
 			>
-			{#if $newPackage.alert && $newPackage.alert.id}
+			{#if $focusedPackage.alert && $focusedPackage.alert.id}
 				<button
 					type="button"
 					class="button-danger clear-button"
-					on:click={() => removeAlert($newPackage)}>Clear</button
+					on:click={() => removeAlert($focusedPackage)}>Clear</button
 				>
 			{/if}
 		</div>

@@ -3,7 +3,7 @@
 
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 
-	import { newPackage } from '$lib/stores/package';
+	import { focusedPackage } from '$lib/stores/package';
 	import { focusedInmate } from '$lib/stores/inmate';
 
 	const dispatch = createEventDispatcher();
@@ -16,8 +16,8 @@
 
 	const deleteItems = () => {
 		try {
-			newPackage.removeItemsById(...selectedItems);
-			const updatedPackage = PackageService.updatePackage($newPackage);
+			focusedPackage.removeItemsById(...selectedItems);
+			const updatedPackage = PackageService.updatePackage($focusedPackage);
 			dispatch('update', updatedPackage);
 			selectedItems = [];
 		} catch (error) {
@@ -30,10 +30,10 @@
 		const shouldDelete = confirm('Are you sure you want to delete this entire package?');
 		if (shouldDelete) {
 			try {
-				PackageService.deletePackage($newPackage.id);
+				PackageService.deletePackage($focusedPackage.id);
 				dispatch('update', {});
 			} catch (error) {
-				console.error(`failed to delete package with ID "${$newPackage.id}"`, error);
+				console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error);
 				dispatch('error', error);
 			}
 		}
@@ -55,7 +55,7 @@
 	<hr width="100%" />
 
 	<div class="package-contents">
-		{#each $newPackage.books as book}
+		{#each $focusedPackage.books as book}
 			<label for={book.id.toString()}>
 				<input
 					type="checkbox"
@@ -67,7 +67,7 @@
 				<em>{book.title}</em> &mdash; {book.authors.join(', ')}
 			</label>
 		{/each}
-		{#each $newPackage.noISBNBooks as book}
+		{#each $focusedPackage.noISBNBooks as book}
 			<label for={book.id.toString()}>
 				<input
 					type="checkbox"
@@ -79,7 +79,7 @@
 				<em>{book.title}</em> &mdash; {book.authors.join(', ')}
 			</label>
 		{/each}
-		{#each $newPackage.zines as zine}
+		{#each $focusedPackage.zines as zine}
 			<label for={zine.id.toString()}>
 				<input
 					type="checkbox"
@@ -95,10 +95,10 @@
 
 	<p>
 		<em>
-			Completed on <strong><date>{$newPackage.date}</date></strong>
-			{#if $newPackage.facility}
+			Completed on <strong><date>{$focusedPackage.date}</date></strong>
+			{#if $focusedPackage.facility}
 				and destined for
-				<strong>{$newPackage.facility.facility_name}, {$newPackage.facility.state}</strong>
+				<strong>{$focusedPackage.facility.facility_name}, {$focusedPackage.facility.state}</strong>
 			{/if}
 		</em>
 	</p>
@@ -112,7 +112,7 @@
 	</nav>
 
 	<p class="package-rejected" on:click={logRejectionClicked}>
-		{#if $newPackage.alert && $newPackage.alert.id}
+		{#if $focusedPackage.alert && $focusedPackage.alert.id}
 			<span class="text-red">
 				This package was rejected. Click here to view the attached notes
 			</span>

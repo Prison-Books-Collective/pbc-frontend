@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { focusedInmate } from '$lib/stores/inmate';
-	import { newPackage } from '$lib/stores/package';
+	import { focusedPackage } from '$lib/stores/package';
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
 	import FacilitySelect from '$lib/components/facility/select.svelte';
@@ -11,17 +11,18 @@
 	const dispatch = createEventDispatcher();
 
 	let removeItems = [];
-	let facility = $newPackage.facility;
+	let facility = $focusedPackage.facility;
 	(async () => {
 		if (!facility && $focusedInmate.location) {
 			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
+			focusedPackage.setDestination(facility);
 		}
 	})();
 
 	$: isPackageEmpty = () =>
-		$newPackage.books.length === 0 &&
-		$newPackage.noISBNBooks.length === 0 &&
-		$newPackage.zines.length === 0;
+		$focusedPackage.books.length === 0 &&
+		$focusedPackage.noISBNBooks.length === 0 &&
+		$focusedPackage.zines.length === 0;
 
 	$: shouldDisableComplete = () => !facility;
 	$: shouldDisableRemove = () => !removeItems || removeItems.length === 0;
@@ -30,14 +31,13 @@
 	const addBooksClicked = () => dispatch('add-books');
 	$: completePackageClicked = async () => {
 		try {
-			newPackage.setInmate($focusedInmate);
-			newPackage.setDestination(facility);
+			focusedPackage.setInmate($focusedInmate);
 
-			if ($newPackage.id) {
-				const updatedPackage = await PackageService.updatePackage($newPackage);
+			if ($focusedPackage.id) {
+				const updatedPackage = await PackageService.updatePackage($focusedPackage);
 				dispatch('update', updatedPackage);
 			} else {
-				const createdPackage = await PackageService.createPackage($newPackage);
+				const createdPackage = await PackageService.createPackage($focusedPackage);
 				dispatch('update', createdPackage);
 			}
 		} catch (error) {
@@ -46,7 +46,7 @@
 		}
 	};
 	const removeSelectedClicked = () => {
-		newPackage.removeItemsById(...removeItems);
+		focusedPackage.removeItemsById(...removeItems);
 		removeItems = [];
 	};
 </script>
@@ -59,7 +59,7 @@
 		</p>
 	{:else}
 		<ol class="package-items-list">
-			{#each $newPackage.books as book}
+			{#each $focusedPackage.books as book}
 				<li>
 					<label for={book.id.toString()}>
 						<input
@@ -72,7 +72,7 @@
 					</label>
 				</li>
 			{/each}
-			{#each $newPackage.noISBNBooks as book}
+			{#each $focusedPackage.noISBNBooks as book}
 				<li>
 					<label for={book.id.toString()}>
 						<input
@@ -85,7 +85,7 @@
 					</label>
 				</li>
 			{/each}
-			{#each $newPackage.zines as zine}
+			{#each $focusedPackage.zines as zine}
 				<li>
 					<label for={zine.id.toString()}>
 						<input
@@ -101,16 +101,18 @@
 		</ol>
 	{/if}
 
-	<div class="package-destination">
-		<span class="label">Destination: </span>
-		<FacilitySelect
-			bind:facility
-			selected={facility?.facility_name}
-			on:update={({ detail }) => {
-				newPackage.setDestination(detail);
-			}}
-		/>
-	</div>
+	{#if facility}
+		<div class="package-destination">
+			<span class="label">Destination: </span>
+			<FacilitySelect
+				bind:facility
+				selected={facility?.facility_name}
+				on:update={({ detail }) => {
+					focusedPackage.setDestination(detail);
+				}}
+			/>
+		</div>
+	{/if}
 	<hr width="100%" />
 
 	{#if isPackageEmpty()}

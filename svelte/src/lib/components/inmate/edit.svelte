@@ -87,11 +87,7 @@
 		{#if isInmateNoID($focusedInmate) && updateLocation}
 			<label for="facility">
 				Facility:
-				<FacilitySelect
-					selected={$focusedInmate.location}
-					bind:facility={updateLocation}
-					on:update={() => ($focusedInmate.location = updateLocation.facility_name)}
-				/>
+				<FacilitySelect selected={$focusedInmate.location} bind:facility={updateLocation} />
 			</label>
 		{/if}
 

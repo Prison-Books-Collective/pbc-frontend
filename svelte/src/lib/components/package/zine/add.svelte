@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
 
-	import { newPackage } from '$lib/stores/package';
+	import { focusedPackage } from '$lib/stores/package';
 	import { ZineService } from '$lib/services/pbc-service/zine.service';
 	import type { Zine } from '$lib/services/pbc-service/models/zine';
 
@@ -15,11 +15,11 @@
 	let availableZines: Zine[] = [];
 	(async () => {
 		allZines = await getZines;
-		availableZines = allZines.filter((z) => !$newPackage.zines.includes(z));
+		availableZines = allZines.filter((z) => !$focusedPackage.zines.includes(z));
 	})();
 
 	$: availableZines = allZines.filter((z) => {
-		if ($newPackage.zines.includes(z)) return false;
+		if ($focusedPackage.zines.includes(z)) return false;
 		if (filter == '') return true;
 
 		filter = filter.toLowerCase();
@@ -31,7 +31,7 @@
 
 	const cancelClicked = () => dispatch('cancel');
 	$: addClicked = () => {
-		addZines.forEach((z) => newPackage.addZine(z));
+		addZines.forEach((z) => focusedPackage.addZine(z));
 		dispatch('add-zines', addZines);
 		addZines = [];
 	};

@@ -76,6 +76,7 @@ const createPackage = () => {
 		update((currentPackage) => ({
 			...currentPackage,
 			alert: {
+				id: null,
 				information: alertText
 			}
 		}));
@@ -122,4 +123,4 @@ const createPackage = () => {
 	};
 };
 
-export const newPackage = createPackage();
+export const focusedPackage = createPackage();
