@@ -64,7 +64,7 @@
 			}
 		} else if (searchBy === VALID_HOMEPAGE_SEARCHES.NAME) {
 			try {
-				const foundInmates = await InmateService.getInmateNoIdByName({
+				const foundInmates = await InmateService.getAllInmatesByName({
 					firstName: inmateSearch.firstName,
 					lastName: inmateSearch.lastName
 				});
