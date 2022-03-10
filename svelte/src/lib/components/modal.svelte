@@ -98,6 +98,7 @@
 
 	.button-close {
 		padding-bottom: 0em;
+		color: rgba(0, 0, 0, 0.3);
 	}
 
 	button:disabled {
@@ -146,11 +147,13 @@
 		.close-left {
 			grid-area: close-left;
 			text-align: left;
+			font-size: 1.5em;
 		}
 
 		.close-right {
 			grid-area: close-right;
 			text-align: right;
+			font-size: 1.5em;
 		}
 
 		.content {

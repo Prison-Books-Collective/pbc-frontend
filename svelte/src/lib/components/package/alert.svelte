@@ -6,6 +6,10 @@
 
 	const dispatch = createEventDispatcher();
 
+	if (!$newPackage.alert) {
+		newPackage.createAlert('');
+	}
+
 	const saveAlert = async (pbcPackage) => {
 		try {
 			const packageUpdate = await PackageService.updatePackage({
@@ -18,11 +22,29 @@
 			console.error('failed to save rejection log for package', error);
 		}
 	};
+
+	const removeAlert = async (pbcPackage) => {
+		try {
+			const packageUpdate = await PackageService.updatePackage({
+				...pbcPackage,
+				alert: null,
+				existsInDatabase: undefined
+			});
+			dispatch('update', packageUpdate);
+		} catch (error) {
+			dispatch('error', error);
+			console.error('failed to save rejection log for package', error);
+		}
+	};
 </script>
 
 <section class="alert-container">
 	<h1>Package Rejection Details</h1>
-	<p>Enter details about the rejection to log below</p>
+	{#if $newPackage.alert && $newPackage.alert.id}
+		<p>This package was rejected. You can update the rejection notes below:</p>
+	{:else}
+		<p>Enter details about the rejection to log below:</p>
+	{/if}
 	<form on:submit|preventDefault={() => saveAlert($newPackage)}>
 		<textarea
 			name="package-rejection"
@@ -31,11 +53,22 @@
 			rows="10"
 			bind:value={$newPackage.alert.information}
 		/>
-		<button
-			disabled={!$newPackage.alert ||
-				!$newPackage.alert.information ||
-				$newPackage.alert.information === ''}>Log Rejection for Package</button
-		>
+
+		<div class="form-options">
+			<button
+				class="log-button"
+				disabled={!$newPackage.alert ||
+					!$newPackage.alert.information ||
+					$newPackage.alert.information === ''}>Log Rejection for Package</button
+			>
+			{#if $newPackage.alert && $newPackage.alert.id}
+				<button
+					type="button"
+					class="button-danger clear-button"
+					on:click={() => removeAlert($newPackage)}>Clear</button
+				>
+			{/if}
+		</div>
 	</form>
 </section>
 
@@ -46,6 +79,17 @@
 		justify-content: flex-start;
 		align-items: stretch;
 		text-align: center;
+	}
+	.form-options {
+		display: flex;
+		flex-flow: row nowrap;
+	}
+	.log-button {
+		flex: 3;
+	}
+	.clear-button {
+		flex: 1;
+		margin-left: 1em;
 	}
 
 	textarea {

@@ -56,7 +56,6 @@
 	};
 
 	const presentCreatePackageModal = () => {
-		newPackage.reset();
 		presentModal(VALID_MODAL.OVERVIEW_PACKAGE);
 	};
 	const presentEditPackageModal = (pbcPackage: Package) => {
@@ -78,8 +77,10 @@
 				<PackageOverview />
 			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
 				<EditPackage
-					on:update={(_) => refresh($focusedInmate)}
+					on:update={() => refresh($focusedInmate)}
 					on:error={(e) => console.error(e.detail)}
+					on:add-items={() => presentCreatePackageModal()}
+					on:reject={() => presentAlertModal($newPackage)}
 				/>
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert
@@ -116,7 +117,13 @@
 			</h1>
 		</div>
 
-		<button id="new-package" on:click={() => presentCreatePackageModal()}>
+		<button
+			class="button-success"
+			on:click={() => {
+				newPackage.reset();
+				presentCreatePackageModal();
+			}}
+		>
 			Add a <strong><u>new package</u></strong> (books or zines)
 		</button>
 
@@ -236,10 +243,6 @@
 		margin-top: 0;
 	}
 
-	#new-package {
-		background: darkseagreen;
-	}
-
 	.alert {
 		cursor: pointer;
 		text-decoration: underline;
@@ -276,5 +279,9 @@
 	.print-col {
 		text-align: center;
 		width: 40px;
+	}
+	.editIcon,
+	.printIcon {
+		cursor: pointer;
 	}
 </style>

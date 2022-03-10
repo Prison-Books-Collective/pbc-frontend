@@ -70,7 +70,16 @@ const createPackage = () => {
 			...currentPackage,
 			facility
 		}));
-	
+		
+	const createAlert = ( alertText = '' ) => {
+		update((currentPackage) => ({
+			...currentPackage,
+			alert: {
+				information: alertText
+			}
+		}))
+	}
+
 	const	removeItemsById = ( ...ids: (string|number)[] ) => {
 		update(currentPackage => {
 			let { books, noISBNBooks, zines } = currentPackage
@@ -102,6 +111,8 @@ const createPackage = () => {
 
 		setInmate,
 		setDestination,
+
+		createAlert,
 
 		removeItemsById,
 

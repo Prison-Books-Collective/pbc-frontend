@@ -37,6 +37,12 @@
 			}
 		}
 	};
+	const addItemsClicked = () => {
+		dispatch('add-items');
+	};
+	const logRejectionClicked = () => {
+		dispatch('reject');
+	};
 </script>
 
 <section class="package-overview">
@@ -87,12 +93,24 @@
 	</div>
 
 	<nav class="package-options">
-		<button>Add Items</button>
+		<button on:click={addItemsClicked}>Add Items</button>
 		<button disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
 			>Delete Selected Item(s)</button
 		>
 		<button class="button-danger" on:click={() => deletePackage()}>Delete Entire Package</button>
 	</nav>
+
+	<p class="package-rejected" on:click={logRejectionClicked}>
+		{#if $newPackage.alert && $newPackage.alert.id}
+			<span class="text-red">
+				This package was rejected. Click here to view the attached notes
+			</span>
+		{:else}
+			<span class="text-blue">
+				Was this package rejected? Click here to log a package rejection
+			</span>
+		{/if}
+	</p>
 </section>
 
 <style lang="scss">
@@ -114,6 +132,21 @@
 		flex-flow: row nowrap;
 		justify-content: space-around;
 		align-items: center;
+	}
+
+	.package-rejected {
+		cursor: pointer;
+		margin-top: 2em;
+	}
+
+	.text-blue {
+		color: blue;
+		text-decoration: underline;
+	}
+
+	.text-red {
+		color: rgb(233, 56, 36);
+		text-decoration: underline;
 	}
 
 	p {

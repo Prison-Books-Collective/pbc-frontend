@@ -113,10 +113,17 @@ th {
 }
 
 .button-danger {
-	border: rgb(171, 68, 68) solid 1px;
 	background: lightcoral;
+	border: rgb(171, 68, 68) solid 1px;
 	text-shadow: 0px -1px 0px rgb(171, 68, 68);
 	box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
+}
+
+.button-success {
+	background: darkseagreen;
+	border: rgb(61, 130, 61) solid 1px;
+	text-shadow: 0px -1px 0px rgb(61, 130, 61);
+	box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
 }
 
 table {
@@ -171,8 +178,10 @@ button {
 	top: 1px;
 }
 button:disabled {
-	background-color: #838383;
 	background: #838383;
+	border: #444 solid 1px;
+	text-shadow: 0px -1px 0px #444;
+	box-shadow: inset 0px 1px 3px 0px #ccc;
 	cursor: not-allowed;
 }
 
