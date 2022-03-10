@@ -106,6 +106,8 @@
 	label {
 		width: 100%;
 		margin-bottom: 1.5em;
+		text-align: left;
+		font-weight: 700;
 	}
 
 	label:last-of-type {
