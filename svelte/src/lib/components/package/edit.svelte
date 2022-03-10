@@ -4,6 +4,7 @@
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 
 	import { newPackage } from '$lib/stores/package';
+	import { focusedInmate } from '$lib/stores/inmate';
 
 	const dispatch = createEventDispatcher();
 
@@ -48,7 +49,7 @@
 <section class="package-overview">
 	<!-- {JSON.stringify($newPackage)} -->
 
-	<h1>Edit Package</h1>
+	<h1>Edit Package for {$focusedInmate.firstName} {$focusedInmate.lastName}</h1>
 	<p>Select item(s) to edit or delete, or delete the whole package.</p>
 	<p>Changes you make to the titles or authors of items will affect the entire database.</p>
 	<hr width="100%" />
@@ -91,6 +92,16 @@
 			</label>
 		{/each}
 	</div>
+
+	<p>
+		<em>
+			Completed on <strong><date>{$newPackage.date}</date></strong>
+			{#if $newPackage.facility}
+				and destined for
+				<strong>{$newPackage.facility.facility_name}, {$newPackage.facility.state}</strong>
+			{/if}
+		</em>
+	</p>
 
 	<nav class="package-options">
 		<button on:click={addItemsClicked}>Add Items</button>

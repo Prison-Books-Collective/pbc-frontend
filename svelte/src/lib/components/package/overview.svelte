@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { focusedInmate } from '$lib/stores/inmate';
 	import { newPackage } from '$lib/stores/package';
+	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
 	import FacilitySelect from '$lib/components/facility/select.svelte';
 
 	let facility = $newPackage.facility;
+	(async () => {
+		if (!facility && $focusedInmate.location) {
+			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
+		}
+	})();
 
 	const isPackageEmpty = () =>
 		$newPackage.books.length === 0 &&
@@ -16,7 +22,6 @@
 
 <section class="package-overview">
 	<h1>Package Contents</h1>
-	<!-- {JSON.stringify($newPackage)} -->
 	{#if isPackageEmpty()}
 		<p>
 			<em>There are currently no items in this package</em>
