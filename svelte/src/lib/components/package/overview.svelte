@@ -7,6 +7,7 @@
 
 	import FacilitySelect from '$lib/components/facility/select.svelte';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
+	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 
 	const dispatch = createEventDispatcher();
 
@@ -101,7 +102,7 @@
 		</ol>
 	{/if}
 
-	{#if facility}
+	{#if !isInmateNoID($focusedInmate) || facility}
 		<div class="package-destination">
 			<span class="label">Destination: </span>
 			<FacilitySelect
