@@ -1,10 +1,41 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
+	import { PackageService } from '$lib/services/pbc-service/package.service';
+
 	import { newPackage } from '$lib/stores/package';
+
+	const dispatch = createEventDispatcher();
 
 	let selectedItems = [];
 
 	$: shouldDisableSelectionOptions = () => {
 		return !selectedItems || selectedItems.length === 0;
+	};
+
+	const deleteItems = () => {
+		try {
+			newPackage.removeItemsById(...selectedItems);
+			const updatedPackage = PackageService.updatePackage($newPackage);
+			dispatch('update', updatedPackage);
+			selectedItems = [];
+		} catch (error) {
+			console.error(`failed to delete items: [${selectedItems.join(', ')}]`, error);
+			dispatch('error', error);
+		}
+	};
+
+	const deletePackage = () => {
+		const shouldDelete = confirm('Are you sure you want to delete this entire package?');
+		if (shouldDelete) {
+			try {
+				PackageService.deletePackage($newPackage.id);
+				dispatch('update', {});
+			} catch (error) {
+				console.error(`failed to delete package with ID "${$newPackage.id}"`, error);
+				dispatch('error', error);
+			}
+		}
 	};
 </script>
 
@@ -55,12 +86,12 @@
 		{/each}
 	</div>
 
-	{JSON.stringify(selectedItems)}
-
 	<nav class="package-options">
 		<button>Add Items</button>
-		<button disabled={shouldDisableSelectionOptions()}>Delete Selected Item(s)</button>
-		<button class="button-danger">Delete Entire Package</button>
+		<button disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
+			>Delete Selected Item(s)</button
+		>
+		<button class="button-danger" on:click={() => deletePackage()}>Delete Entire Package</button>
 	</nav>
 </section>
 

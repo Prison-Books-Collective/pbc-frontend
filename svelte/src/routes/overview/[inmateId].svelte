@@ -77,7 +77,10 @@
 			{:else if activeModal == VALID_MODAL.OVERVIEW_PACKAGE}
 				<PackageOverview />
 			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
-				<EditPackage />
+				<EditPackage
+					on:update={(_) => refresh($focusedInmate)}
+					on:error={(e) => console.error(e.detail)}
+				/>
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert
 					on:update={(_) => refresh($focusedInmate)}
