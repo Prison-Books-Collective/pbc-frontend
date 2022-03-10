@@ -9,6 +9,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	let removeItems = [];
 	let facility = $newPackage.facility;
 	(async () => {
 		if (!facility && $focusedInmate.location) {
@@ -16,15 +17,21 @@
 		}
 	})();
 
-	const isPackageEmpty = () =>
+	$: isPackageEmpty = () =>
 		$newPackage.books.length === 0 &&
 		$newPackage.noISBNBooks.length === 0 &&
 		$newPackage.zines.length === 0;
 
 	$: shouldDisableComplete = () => !facility;
+	$: shouldDisableRemove = () => !removeItems || removeItems.length === 0;
 
 	const addZinesClicked = () => dispatch('add-zines');
 	const addBooksClicked = () => dispatch('add-books');
+	const completePackageClicked = () => {};
+	const removeSelectedClicked = () => {
+		newPackage.removeItemsById(...removeItems);
+		removeItems = [];
+	};
 </script>
 
 <section class="package-overview">
@@ -37,17 +44,41 @@
 		<ol class="package-items-list">
 			{#each $newPackage.books as book}
 				<li>
-					<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+					<label for={book.id.toString()}>
+						<input
+							id={book.id.toString()}
+							type="checkbox"
+							bind:group={removeItems}
+							value={book.id}
+						/>
+						<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+					</label>
 				</li>
 			{/each}
 			{#each $newPackage.noISBNBooks as book}
 				<li>
-					<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+					<label for={book.id.toString()}>
+						<input
+							id={book.id.toString()}
+							type="checkbox"
+							bind:group={removeItems}
+							value={book.id}
+						/>
+						<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+					</label>
 				</li>
 			{/each}
 			{#each $newPackage.zines as zine}
 				<li>
-					<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+					<label for={zine.id.toString()}>
+						<input
+							id={zine.id.toString()}
+							type="checkbox"
+							bind:group={removeItems}
+							value={zine.id}
+						/>
+						<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+					</label>
 				</li>
 			{/each}
 		</ol>
@@ -75,10 +106,25 @@
 	{/if}
 
 	<nav class="package-options">
-		<button on:click={() => addBooksClicked()}>Add Book</button>
-		<button on:click={() => addZinesClicked()}>Add Zine(s)</button>
+		<button on:click={addBooksClicked}>Add Book</button>
+		<button on:click={addZinesClicked}>Add Zine(s)</button>
 		{#if !isPackageEmpty()}
-			<button class="button-success" disabled={shouldDisableComplete()}>Complete Package</button>
+			<button
+				on:click={removeSelectedClicked}
+				class="button-danger"
+				disabled={shouldDisableRemove()}
+			>
+				Remove Selected
+			</button>
+		{/if}
+		{#if !isPackageEmpty()}
+			<button
+				on:click={completePackageClicked}
+				class="button-success"
+				disabled={shouldDisableComplete()}
+			>
+				Complete Package
+			</button>
 		{/if}
 	</nav>
 </section>
