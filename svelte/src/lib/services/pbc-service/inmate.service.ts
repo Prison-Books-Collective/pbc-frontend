@@ -107,20 +107,20 @@ export class InmateService {
 
 	public static async getAllInmatesByName({
 		firstName,
-		lastName,
+		lastName
 	}: {
 		firstName: string;
 		lastName: string;
-	}): Promise<Inmate[]|InmateNoID[]> {
-		const inmatesWithIDs = await this.getInmatesByName({ firstName, lastName })
-		const inmatesWithoutIDs = await this.getInmateNoIdByName({ firstName, lastName })
+	}): Promise<Inmate[] | InmateNoID[]> {
+		const inmatesWithIDs = await this.getInmatesByName({ firstName, lastName });
+		const inmatesWithoutIDs = await this.getInmateNoIdByName({ firstName, lastName });
 
-		return [ ...inmatesWithIDs, ...inmatesWithoutIDs ]
+		return [...inmatesWithIDs, ...inmatesWithoutIDs];
 	}
 
 	public static async getInmatesByName({
 		firstName,
-		lastName,
+		lastName
 	}: {
 		firstName: string;
 		lastName: string;
@@ -133,11 +133,13 @@ export class InmateService {
 			throw new Error(
 				`unexpected response ${
 					response.status
-				} when searching for inmate with name "${lastName}, ${firstName}" at "${ URI_GET_INMATE__BY_NAME({ firstName, lastName }) }"`
-			)
+				} when searching for inmate with name "${lastName}, ${firstName}" at "${URI_GET_INMATE__BY_NAME(
+					{ firstName, lastName }
+				)}"`
+			);
 		}
 
-		return (await response.json()) as Inmate[]
+		return (await response.json()) as Inmate[];
 	}
 
 	public static async getInmateNoIdByName({

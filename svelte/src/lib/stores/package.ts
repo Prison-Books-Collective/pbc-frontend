@@ -70,34 +70,34 @@ const createPackage = () => {
 			...currentPackage,
 			facility
 		}));
-		
-	const createAlert = ( alertText = '' ) => {
+
+	const createAlert = (alertText = '') => {
 		update((currentPackage) => ({
 			...currentPackage,
 			alert: {
 				information: alertText
 			}
-		}))
-	}
+		}));
+	};
 
-	const	removeItemsById = ( ...ids: (string|number)[] ) => {
-		update(currentPackage => {
-			let { books, noISBNBooks, zines } = currentPackage
+	const removeItemsById = (...ids: (string | number)[]) => {
+		update((currentPackage) => {
+			let { books, noISBNBooks, zines } = currentPackage;
 
-			ids.forEach(id => {
-				books = books.filter(b => b.id != id)
-				noISBNBooks = noISBNBooks.filter(b => b.id != id)
-				zines = zines.filter(z => z.id != id)
-			})
+			ids.forEach((id) => {
+				books = books.filter((b) => b.id != id);
+				noISBNBooks = noISBNBooks.filter((b) => b.id != id);
+				zines = zines.filter((z) => z.id != id);
+			});
 
 			return {
 				...currentPackage,
 				books,
 				noISBNBooks,
-				zines,
-			}
-		})
-	}
+				zines
+			};
+		});
+	};
 
 	const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true });
 	const reset = () => set({ ...emptyPackage });
