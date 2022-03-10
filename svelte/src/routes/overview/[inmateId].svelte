@@ -10,6 +10,7 @@
 	import EditInmate from '$lib/components/inmate/edit.svelte';
 	import PackageOverview from '$lib/components/package/overview.svelte';
 	import EditPackage from '$lib/components/package/edit.svelte';
+	import AddZine from '$lib/components/package/zine/add.svelte';
 	import PackageAlert from '$lib/components/package/alert.svelte';
 
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
@@ -28,6 +29,8 @@
 
 		OVERVIEW_PACKAGE = 'overview_package',
 		EDIT_PACKAGE = 'edit_package',
+
+		ADD_ZINE = 'add_zine',
 
 		VIEW_ALERT = 'view_alert'
 	}
@@ -54,7 +57,6 @@
 		newPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.VIEW_ALERT);
 	};
-
 	const presentCreatePackageModal = () => {
 		presentModal(VALID_MODAL.OVERVIEW_PACKAGE);
 	};
@@ -74,13 +76,18 @@
 					on:error={(e) => console.error(e.detail)}
 				/>
 			{:else if activeModal == VALID_MODAL.OVERVIEW_PACKAGE}
-				<PackageOverview />
+				<PackageOverview on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)} />
 			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
 				<EditPackage
 					on:update={() => refresh($focusedInmate)}
 					on:error={(e) => console.error(e.detail)}
 					on:add-items={() => presentCreatePackageModal()}
 					on:reject={() => presentAlertModal($newPackage)}
+				/>
+			{:else if activeModal == VALID_MODAL.ADD_ZINE}
+				<AddZine
+					on:add-zines={() => presentCreatePackageModal()}
+					on:cancel={() => presentCreatePackageModal()}
 				/>
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert

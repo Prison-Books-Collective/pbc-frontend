@@ -1,9 +1,13 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	import { focusedInmate } from '$lib/stores/inmate';
 	import { newPackage } from '$lib/stores/package';
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
 	import FacilitySelect from '$lib/components/facility/select.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	let facility = $newPackage.facility;
 	(async () => {
@@ -18,6 +22,9 @@
 		$newPackage.zines.length === 0;
 
 	$: shouldDisableComplete = () => !facility;
+
+	const addZinesClicked = () => dispatch('add-zines');
+	const addBooksClicked = () => dispatch('add-books');
 </script>
 
 <section class="package-overview">
@@ -59,17 +66,17 @@
 		</p>
 	{:else}
 		<p>
-			Would you like to add another book, or zine(s)? If you're finished,
+			Would you like to include additional books or zines? If you're finished,
 			{#if !facility}
 				select a <strong>destination facility</strong>, and then
 			{/if}
-			click Complete Package
+			click Complete Package.
 		</p>
 	{/if}
 
 	<nav class="package-options">
-		<button>Add Book</button>
-		<button>Add Zine(s)</button>
+		<button on:click={() => addBooksClicked()}>Add Book</button>
+		<button on:click={() => addZinesClicked()}>Add Zine(s)</button>
 		{#if !isPackageEmpty()}
 			<button class="button-success" disabled={shouldDisableComplete()}>Complete Package</button>
 		{/if}
