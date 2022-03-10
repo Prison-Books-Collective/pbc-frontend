@@ -6,6 +6,7 @@
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
 	import FacilitySelect from '$lib/components/facility/select.svelte';
+	import { PackageService } from '$lib/services/pbc-service/package.service';
 
 	const dispatch = createEventDispatcher();
 
@@ -27,7 +28,23 @@
 
 	const addZinesClicked = () => dispatch('add-zines');
 	const addBooksClicked = () => dispatch('add-books');
-	const completePackageClicked = () => {};
+	$: completePackageClicked = async () => {
+		try {
+			newPackage.setInmate($focusedInmate);
+			newPackage.setDestination(facility);
+
+			if ($newPackage.id) {
+				const updatedPackage = await PackageService.updatePackage($newPackage);
+				dispatch('update', updatedPackage);
+			} else {
+				const createdPackage = await PackageService.createPackage($newPackage);
+				dispatch('update', createdPackage);
+			}
+		} catch (error) {
+			dispatch('error', error);
+			console.error('failed to update Package in database', error);
+		}
+	};
 	const removeSelectedClicked = () => {
 		newPackage.removeItemsById(...removeItems);
 		removeItems = [];

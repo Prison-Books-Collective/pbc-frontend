@@ -138,6 +138,7 @@
 		// max-height: 80vh !important;
 		overflow-y: scroll;
 
+		transition-duration: 0.3s;
 		display: grid;
 		grid-template-areas:
 			'close-left space-top close-right'

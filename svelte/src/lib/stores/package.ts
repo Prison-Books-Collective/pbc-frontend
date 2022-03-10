@@ -6,6 +6,7 @@ import type { Facility } from '$lib/services/pbc-service/models/facility';
 import type { Inmate, InmateNoID } from '$lib/services/pbc-service/models/inmate';
 import type { Package } from '$lib/services/pbc-service/models/package';
 import type { Zine } from '$lib/services/pbc-service/models/zine';
+import { formatDate } from '$lib/util/time';
 
 interface LocalStoragePackage extends Package {
 	existsInDatabase: boolean;
@@ -13,7 +14,7 @@ interface LocalStoragePackage extends Package {
 
 const emptyPackage: LocalStoragePackage = {
 	id: null,
-	date: null,
+	date: formatDate(new Date()),
 
 	inmate: null,
 	inmateNoId: null,

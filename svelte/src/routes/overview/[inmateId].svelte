@@ -76,7 +76,11 @@
 					on:error={(e) => console.error(e.detail)}
 				/>
 			{:else if activeModal == VALID_MODAL.OVERVIEW_PACKAGE}
-				<PackageOverview on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)} />
+				<PackageOverview
+					on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)}
+					on:update={() => refresh($focusedInmate)}
+					on:error={(e) => console.error(e)}
+				/>
 			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
 				<EditPackage
 					on:update={() => refresh($focusedInmate)}
