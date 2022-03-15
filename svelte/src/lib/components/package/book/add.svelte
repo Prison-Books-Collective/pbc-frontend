@@ -12,7 +12,6 @@
 	});
 
 	const cancelClicked = () => dispatch('cancel');
-	const searchClicked = () => dispatch('search', inputISBN);
 	const noISBNClicked = () => dispatch('no-isbn');
 
 	$: shouldDisableSearch = () => {
@@ -20,6 +19,7 @@
 	};
 	$: loadISBN = () => {
 		focusedBook.fetch(inputISBN);
+		dispatch('search', inputISBN);
 	};
 </script>
 
@@ -37,9 +37,7 @@
 	</label>
 
 	<div class="options">
-		<button on:click={searchClicked} class="button-success" disabled={shouldDisableSearch()}>
-			Search for Book
-		</button>
+		<button class="button-success" disabled={shouldDisableSearch()}> Search for Book </button>
 		<button on:click={noISBNClicked} class="button-danger" type="button">No ISBN?</button>
 		<button on:click={cancelClicked} type="button">Cancel</button>
 	</div>
@@ -51,9 +49,6 @@
 		flex-flow: column nowrap;
 		justify-content: flex-start;
 		align-items: stretch;
-	}
-
-	.options {
 	}
 
 	label {

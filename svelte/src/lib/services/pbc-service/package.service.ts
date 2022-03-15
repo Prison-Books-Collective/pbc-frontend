@@ -117,7 +117,7 @@ export class PackageService {
 			);
 		}
 
-		return (await response.json()) as Package[];
+		return (await response.json()).reverse() as Package[];
 	}
 
 	// date is a formatted string "yyyy-mm-dd"

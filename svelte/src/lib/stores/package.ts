@@ -33,7 +33,7 @@ const createPackage = () => {
 	const { subscribe, set, update } = writable(emptyPackage);
 
 	const addBook = (book: Book | NoISBNBook) => {
-		if (isNoISBNBook) {
+		if (isNoISBNBook(book)) {
 			update((currentPackage) => ({
 				...currentPackage,
 				noISBNBooks: [...currentPackage.noISBNBooks, book]

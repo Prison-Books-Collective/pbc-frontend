@@ -14,19 +14,19 @@ const emptyBook: LocalStorageBook = {
 	title: null,
 	authors: [],
 
-	existsInDatabase: false
+  existsInDatabase: false,
 };
 
 const createFocusedBook = () => {
 	const { subscribe, set, update } = writable(emptyBook);
 
 	const fetch = async (isbn) => {
-		if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) return;
+    if(!isbn || (isbn.length !== 10 && isbn.length !== 13)) return
 		try {
-			set({
-				...(await BookService.findBook(isbn)),
-				existsInDatabase: true
-			});
+      set({ 
+        ...await BookService.findBook(isbn), 
+        existsInDatabase: true
+      })
 		} catch (error) {
 			console.error(error);
 			console.error(`failed to set store $focusedBook via remote using ISBN "${isbn}"`);
@@ -34,40 +34,33 @@ const createFocusedBook = () => {
 		}
 	};
 
-	const sync = async () =>
-		update((book) => {
-			let operation: Promise<Book | NoISBNBook>;
+  const sync = async () => update(book => {
+    let operation: Promise<Book|NoISBNBook>
 
-			if (isNoISBNBook(book)) {
-				operation = BookService.createBookNoISBN(book);
-			} else {
-				if (book.existsInDatabase) {
-					operation = BookService.updateBook(book);
-				} else {
-					operation = BookService.createBook(book);
-				}
-			}
+    if(isNoISBNBook(book)) {
+      operation = BookService.createBookNoISBN(book)
+    } else {
+      if(book.existsInDatabase) {
+        operation = BookService.updateBook(book)
+      } else {
+        operation = BookService.createBook(book)
+      }
+    }
 
-			operation
-				.then((updatedBook) =>
-					set({
-						...updatedBook,
-						existsInDatabase: true
-					})
-				)
-				.catch((error) => {
-					console.error(error);
-					console.error(
-						`failed to sync $focusedBook via remote using data ${JSON.stringify(book)}`
-					);
-					set({
-						existsInDatabase: false,
-						...book
-					});
-				});
+    operation.then(updatedBook => set({
+      ...updatedBook,
+      existsInDatabase: true
+    })).catch(error => {
+      console.error(error)
+      console.error(`failed to sync $focusedBook via remote using data ${JSON.stringify(book)}`)
+      set({
+        existsInDatabase: false, 
+        ...book
+      })
+    })
 
-			return { ...book };
-		});
+    return {...book}
+  })
 
 	const reset = () => set({ ...emptyBook });
 
@@ -76,8 +69,8 @@ const createFocusedBook = () => {
 		set,
 
 		fetch,
-		sync,
-		reset
+    sync,
+		reset,
 	};
 };
 

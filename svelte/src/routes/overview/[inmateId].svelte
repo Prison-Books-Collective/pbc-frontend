@@ -12,6 +12,7 @@
 	import EditPackage from '$lib/components/package/edit.svelte';
 	import AddZine from '$lib/components/package/zine/add.svelte';
 	import AddBook from '$lib/components/package/book/add.svelte';
+	import BookDetail from '$lib/components/package/book/detail.svelte';
 	import PackageAlert from '$lib/components/package/alert.svelte';
 
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
@@ -33,6 +34,7 @@
 
 		ADD_ZINE = 'add_zine',
 		ADD_BOOK = 'add_book',
+		DETAIL_BOOK = 'detail_book',
 
 		VIEW_ALERT = 'view_alert'
 	}
@@ -97,7 +99,16 @@
 					on:cancel={() => presentCreatePackageModal()}
 				/>
 			{:else if activeModal == VALID_MODAL.ADD_BOOK}
-				<AddBook on:cancel={() => presentCreatePackageModal()} />
+				<AddBook
+					on:cancel={() => presentCreatePackageModal()}
+					on:search={() => presentModal(VALID_MODAL.DETAIL_BOOK)}
+				/>
+			{:else if activeModal == VALID_MODAL.DETAIL_BOOK}
+				<BookDetail
+					on:cancel={() => presentCreatePackageModal()}
+					on:search={() => presentModal(VALID_MODAL.ADD_BOOK)}
+					on:add-book={() => presentCreatePackageModal()}
+				/>
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert
 					on:update={(_) => refresh($focusedInmate)}
