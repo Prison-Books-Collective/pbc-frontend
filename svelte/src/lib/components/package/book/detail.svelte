@@ -53,10 +53,6 @@
 	};
 </script>
 
-<p>
-	{JSON.stringify($focusedBook)}
-</p>
-
 <!-- case: success, found book -->
 {#if mode === VALID_MODE.DISPLAY && $focusedBook.existsInDatabase}
 	<section class="book-flow">

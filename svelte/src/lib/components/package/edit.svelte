@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-
 	import { PackageService } from '$lib/services/pbc-service/package.service';
-
 	import { focusedPackage } from '$lib/stores/package';
 	import { focusedInmate } from '$lib/stores/inmate';
+	import Book from '$lib/components/book.svelte';
+	import Zine from '$lib/components/Zine.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -38,17 +38,11 @@
 			}
 		}
 	};
-	const addItemsClicked = () => {
-		dispatch('add-items');
-	};
-	const logRejectionClicked = () => {
-		dispatch('reject');
-	};
+	const addItemsClicked = () => dispatch('add-items');
+	const logRejectionClicked = () => dispatch('reject');
 </script>
 
 <section class="package-overview">
-	<!-- {JSON.stringify($newPackage)} -->
-
 	<h1>Edit Package for {$focusedInmate.firstName} {$focusedInmate.lastName}</h1>
 	<p>Select item(s) to edit or delete, or delete the whole package.</p>
 	<p>Changes you make to the titles or authors of items will affect the entire database.</p>
@@ -64,7 +58,7 @@
 					bind:group={selectedItems}
 					value={book.id}
 				/>
-				<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+				<Book {book} />
 			</label>
 		{/each}
 		{#each $focusedPackage.noISBNBooks as book}
@@ -76,7 +70,7 @@
 					bind:group={selectedItems}
 					value={book.id}
 				/>
-				<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+				<Book {book} />
 			</label>
 		{/each}
 		{#each $focusedPackage.zines as zine}
@@ -88,7 +82,7 @@
 					bind:group={selectedItems}
 					value={zine.id}
 				/>
-				<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+				<Zine {zine} />
 			</label>
 		{/each}
 	</div>
@@ -165,7 +159,8 @@
 	}
 
 	label {
-		display: block;
+		display: flex;
+		align-items: baseline;
 		width: 100%;
 		margin-bottom: 0.5em;
 	}

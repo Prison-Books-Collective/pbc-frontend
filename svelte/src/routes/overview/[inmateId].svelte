@@ -6,6 +6,8 @@
 </script>
 
 <script lang="ts">
+	import Book from '$lib/components/book.svelte';
+	import Zine from '$lib/components/Zine.svelte';
 	import Modal from '$lib/components/modal.svelte';
 	import EditInmate from '$lib/components/inmate/edit.svelte';
 	import PackageOverview from '$lib/components/package/overview.svelte';
@@ -194,17 +196,17 @@
 								<ul>
 									{#each pbcPackage.books as book}
 										<li>
-											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+											<Book {book} />
 										</li>
 									{/each}
 									{#each pbcPackage.noISBNBooks as book}
 										<li>
-											<em>{book.title}</em> &mdash; {book.authors.join(',')}
+											<Book {book} />
 										</li>
 									{/each}
 									{#each pbcPackage.zines as zine}
 										<li>
-											<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+											<Zine {zine} />
 										</li>
 									{/each}
 								</ul>

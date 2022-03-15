@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 import { isNoISBNBook } from '$lib/services/pbc-service/book.service';
+import { PackageService } from '$lib/services/pbc-service/package.service';
 import type { Book, NoISBNBook } from '$lib/services/pbc-service/models/book';
 import type { Facility } from '$lib/services/pbc-service/models/facility';
 import type { Inmate, InmateNoID } from '$lib/services/pbc-service/models/inmate';
@@ -101,6 +102,15 @@ const createPackage = () => {
 		});
 	};
 
+	const fetch = async (packageId: number) => {
+		try {
+			const pbcPackage = await PackageService.getPackage(packageId)
+			load(pbcPackage)
+		} catch(error) {
+			console.error(error)
+			console.error(`failed to retrieve package with ID "${packageId}" via remote`)
+		}
+	}
 	const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true });
 	const reset = () => set({ ...emptyPackage });
 
@@ -118,6 +128,7 @@ const createPackage = () => {
 
 		removeItemsById,
 
+		fetch,
 		load,
 		reset
 	};

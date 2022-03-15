@@ -5,6 +5,8 @@
 	import { focusedPackage } from '$lib/stores/package';
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
+	import Book from '$lib/components/book.svelte';
+	import Zine from '$lib/components/zine.svelte';
 	import FacilitySelect from '$lib/components/facility/select.svelte';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
@@ -69,7 +71,7 @@
 							bind:group={removeItems}
 							value={book.id}
 						/>
-						<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+						<Book {book} />
 					</label>
 				</li>
 			{/each}
@@ -82,7 +84,7 @@
 							bind:group={removeItems}
 							value={book.id}
 						/>
-						<em>{book.title}</em> &mdash; {book.authors.join(', ')}
+						<Book {book} />
 					</label>
 				</li>
 			{/each}
@@ -95,7 +97,7 @@
 							bind:group={removeItems}
 							value={zine.id}
 						/>
-						<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+						<Zine {zine} />
 					</label>
 				</li>
 			{/each}

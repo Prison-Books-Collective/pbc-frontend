@@ -9,6 +9,8 @@ import { BASE_PBC_URI } from './index';
 import type { Package } from './models/package';
 
 export class PackageService {
+	public static readonly URI_GET_PACKAGE = (packageId: number) =>
+		`${BASE_PBC_URI}/getPackageById?id=${packageId}`
 	public static readonly URI_GET_PACKAGES = (inmateId: string) =>
 		`${BASE_PBC_URI}/getPackagesForInmate?inmateId=${inmateId}`;
 	public static readonly URI_GET_PACKAGES__INMATE_NO_ID = (database_id: string | number) =>
@@ -21,6 +23,18 @@ export class PackageService {
 		`${BASE_PBC_URI}/deletePackage?packageId=${packageId}`;
 	public static readonly URI_PACKAGE_COUNT = (date: string) =>
 		`${BASE_PBC_URI}/getPackageCountFromDate?date=${date}`; // date is a formatted string "yyyy-mm-dd"
+
+	public static async getPackage(packageId: number): Promise<Package> {
+		const response = await fetch(this.URI_GET_PACKAGE(packageId), {...METHOD_GET });
+
+		if (response.status !== 200) {
+			throw new Error(
+				`unexpected response ${response.status} when retrieving package with ID "${packageId}" at "${this.URI_GET_PACKAGE(packageId)}"`
+			);
+		}
+
+		return await response.json() as Package;
+	}
 
 	public static async createPackage(pbcPackage: Package): Promise<Package> {
 		const response = await fetch(this.URI_CREATE_PACKAGE, {
@@ -99,7 +113,7 @@ export class PackageService {
 
 		if (response.status !== 200) {
 			throw new Error(
-				`unexpected response ${response.status} when retrieving packages for inmate with ID "${inmateId} at "${this.URI_GET_PACKAGES}""`
+				`unexpected response ${response.status} when retrieving packages for inmate with ID "${inmateId}" at "${this.URI_GET_PACKAGES}"`
 			);
 		}
 
@@ -113,7 +127,7 @@ export class PackageService {
 
 		if (response.status !== 200) {
 			throw new Error(
-				`unexpected response ${response.status} when retrieving packages for no-ID inmate with databaseID "${databaseId} at "${this.URI_GET_PACKAGES__INMATE_NO_ID}""`
+				`unexpected response ${response.status} when retrieving packages for no-ID inmate with databaseID "${databaseId}" at "${this.URI_GET_PACKAGES__INMATE_NO_ID}"`
 			);
 		}
 
