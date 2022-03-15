@@ -12,6 +12,7 @@
 	import EditInmate from '$lib/components/inmate/edit.svelte';
 	import PackageOverview from '$lib/components/package/overview.svelte';
 	import EditPackage from '$lib/components/package/edit.svelte';
+	import PrintPackage from '$lib/components/package/print.svelte';
 	import AddZine from '$lib/components/package/zine/add.svelte';
 	import AddBook from '$lib/components/package/book/add.svelte';
 	import BookDetail from '$lib/components/package/book/detail.svelte';
@@ -33,6 +34,7 @@
 
 		OVERVIEW_PACKAGE = 'overview_package',
 		EDIT_PACKAGE = 'edit_package',
+		PRINT_PACKAGE = 'print_package',
 
 		ADD_ZINE = 'add_zine',
 		ADD_BOOK = 'add_book',
@@ -68,6 +70,10 @@
 		printWindow.close();
 	};
 
+	const presentPrintModal = () => {
+		refresh($focusedInmate);
+		presentModal(VALID_MODAL.PRINT_PACKAGE);
+	};
 	const presentAlertModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.VIEW_ALERT);
@@ -94,12 +100,12 @@
 				<PackageOverview
 					on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)}
 					on:add-books={() => presentModal(VALID_MODAL.ADD_BOOK)}
-					on:update={() => refresh($focusedInmate)}
+					on:update={() => presentPrintModal()}
 					on:error={(e) => console.error(e)}
 				/>
 			{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
 				<EditPackage
-					on:update={() => refresh($focusedInmate)}
+					on:update={() => presentPrintModal()}
 					on:error={(e) => console.error(e.detail)}
 					on:add-items={() => presentCreatePackageModal()}
 					on:reject={() => presentAlertModal($focusedPackage)}
@@ -119,6 +125,14 @@
 					on:cancel={() => presentCreatePackageModal()}
 					on:search={() => presentModal(VALID_MODAL.ADD_BOOK)}
 					on:add-book={() => presentCreatePackageModal()}
+				/>
+			{:else if activeModal == VALID_MODAL.PRINT_PACKAGE}
+				<PrintPackage
+					on:done={closeModal}
+					on:print={() => {
+						printPackage($focusedPackage);
+						closeModal();
+					}}
 				/>
 			{:else if activeModal == VALID_MODAL.VIEW_ALERT}
 				<PackageAlert

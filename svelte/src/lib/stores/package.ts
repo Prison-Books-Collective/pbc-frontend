@@ -113,6 +113,12 @@ const createPackage = () => {
 	}
 	const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true });
 	const reset = () => set({ ...emptyPackage });
+	const sync = async (pbcPackage: Package) => {
+		const createdPackage = pbcPackage.id
+			? await PackageService.updatePackage(pbcPackage)
+			: await PackageService.createPackage(pbcPackage);
+		load(createdPackage)
+	}
 
 	return {
 		subscribe,
@@ -129,8 +135,9 @@ const createPackage = () => {
 		removeItemsById,
 
 		fetch,
+		sync,
 		load,
-		reset
+		reset,
 	};
 };
 

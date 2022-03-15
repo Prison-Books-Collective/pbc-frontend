@@ -42,14 +42,8 @@
 	$: completePackageClicked = async () => {
 		try {
 			focusedPackage.setInmate($focusedInmate);
-
-			if ($focusedPackage.id) {
-				const updatedPackage = await PackageService.updatePackage($focusedPackage);
-				dispatch('update', updatedPackage);
-			} else {
-				const createdPackage = await PackageService.createPackage($focusedPackage);
-				dispatch('update', createdPackage);
-			}
+			const updatedPackage = await focusedPackage.sync($focusedPackage);
+			dispatch('update', updatedPackage);
 		} catch (error) {
 			dispatch('error', error);
 			console.error('failed to update Package in database', error);
