@@ -60,9 +60,11 @@
 	};
 
 	const printPackage = async (pbcPackage: Package) => {
-		const url = `/invoice/${pbcPackage.id}`;
+		const url = `/invoice/${pbcPackage.id}?print=true`;
 		const printWindow = window.open(url, 'title', 'attributes');
-		await delay(2000);
+		printWindow.focus();
+		await delay(3500);
+		printWindow.document.close();
 		printWindow.close();
 	};
 

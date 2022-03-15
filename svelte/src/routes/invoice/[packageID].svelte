@@ -1,7 +1,8 @@
 <script lang="ts" context="module">
-	export function load({ params }) {
+	export function load({ params, url }) {
 		const { packageID } = params;
-		return { props: { packageID } };
+		const print = url.searchParams.get('print') || false;
+		return { props: { packageID, print } };
 	}
 </script>
 
@@ -15,17 +16,18 @@
 	import information from '$lib/assets/invoice/invoice-information.svg';
 
 	export let packageID: number;
+	export let print: boolean = false;
 
 	onMount(async () => {
 		if (packageID !== $focusedPackage.id) {
 			await focusedPackage.fetch(packageID);
+			await delay(2000);
 		}
 
-		delay(1000);
-		if (packageID == $focusedPackage.id) {
+		if (print) {
+			window.document.close();
 			window.focus();
 			window.print();
-			window.document.close();
 		}
 	});
 </script>
