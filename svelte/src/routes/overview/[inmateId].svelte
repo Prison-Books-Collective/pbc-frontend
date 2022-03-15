@@ -19,9 +19,9 @@
 
 	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
 	import { focusedPackage } from '$lib/stores/package';
-
 	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 	import type { Package } from '$lib/services/pbc-service/models/package';
+	import { delay } from '$lib/util/time';
 
 	import editIcon from '$lib/assets/icons/edit.png';
 	import printIcon from '$lib/assets/icons/print.png';
@@ -57,6 +57,13 @@
 		inmateId = inmate.id;
 		focusedInmate.fetch(inmateId);
 		closeModal();
+	};
+
+	const printPackage = async (pbcPackage: Package) => {
+		const url = `/invoice/${pbcPackage.id}`;
+		const printWindow = window.open(url, 'title', 'attributes');
+		await delay(2000);
+		printWindow.close();
 	};
 
 	const presentAlertModal = (pbcPackage: Package) => {
@@ -228,6 +235,7 @@
 									class="printIcon"
 									width="20"
 									height="20"
+									on:click={printPackage(pbcPackage)}
 								/>
 							</td>
 						</tr>

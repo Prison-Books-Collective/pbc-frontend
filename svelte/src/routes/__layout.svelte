@@ -5,7 +5,7 @@
 	import settings from '$lib/assets/icons/gear.png';
 </script>
 
-<nav>
+<nav id="nav-primary">
 	<div id="navigation-buttons">
 		<a href="/">
 			<img src={search} alt="Magnifying Glass Search Icon" class="icon" />

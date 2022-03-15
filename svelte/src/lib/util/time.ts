@@ -17,3 +17,7 @@ export const formatDateForInvoice = (date: Date = new Date()) => {
 		year: 'numeric'
 	});
 };
+
+export const delay = (ms: number) => new Promise(resolve => {
+	setTimeout(resolve, ms)
+})

@@ -2,8 +2,17 @@
 	import type { Zine } from '$lib/services/pbc-service/models/zine';
 
 	export let zine: Zine = null;
+	export let formatForInvoice: boolean = false;
 </script>
 
 {#if zine}
-	<strong>{zine.threeLetterCode}</strong> &mdash; {zine.title}
+	<strong>
+		{#if formatForInvoice}
+			ZINE
+		{:else}
+			{zine.threeLetterCode}
+		{/if}
+	</strong>
+	&mdash;
+	{zine.title}
 {/if}
