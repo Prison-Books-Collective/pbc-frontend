@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedInmate } from '$lib/stores/inmate';
+	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
 	import { focusedPackage } from '$lib/stores/package';
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
@@ -9,7 +9,6 @@
 	import Zine from '$lib/components/zine.svelte';
 	import FacilitySelect from '$lib/components/facility/select.svelte';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
-	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
 
 	const dispatch = createEventDispatcher();
 
@@ -18,6 +17,14 @@
 	(async () => {
 		if (!facility && $focusedInmate.location) {
 			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
+			focusedPackage.setDestination(facility);
+		} else if (!facility) {
+			const inmatePackages = await $focusedInmatePackages;
+			if (!inmatePackages || inmatePackages.length === 0) {
+				facility = null;
+				return;
+			}
+			facility = inmatePackages[0].facility;
 			focusedPackage.setDestination(facility);
 		}
 	})();
@@ -104,7 +111,7 @@
 		</ol>
 	{/if}
 
-	{#if !isInmateNoID($focusedInmate) || facility}
+	{#if facility || $focusedPackage.books.length > 0 || $focusedPackage.noISBNBooks.length > 0 || $focusedPackage.zines.length > 0}
 		<div class="package-destination">
 			<span class="label">Destination: </span>
 			<FacilitySelect

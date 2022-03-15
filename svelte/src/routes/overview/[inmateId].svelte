@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/Zine.svelte';
+	import Zine from '$lib/components/zine.svelte';
 	import Modal from '$lib/components/modal.svelte';
 	import EditInmate from '$lib/components/inmate/edit.svelte';
 	import PackageOverview from '$lib/components/package/overview.svelte';
