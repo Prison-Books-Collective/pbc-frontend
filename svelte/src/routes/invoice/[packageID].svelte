@@ -107,6 +107,10 @@
 		flex-flow: row nowrap;
 	}
 
+	* {
+		font-family: gentium;
+	}
+
 	#page-1 {
 		font-family: gentium;
 	}
