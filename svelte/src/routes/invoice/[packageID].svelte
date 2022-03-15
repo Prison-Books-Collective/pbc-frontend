@@ -10,7 +10,6 @@
 	import { onMount } from 'svelte';
 	import { focusedPackage } from '$lib/stores/package';
 	import { delay, formatDateForInvoice } from '$lib/util/time';
-	import Book from '$lib/components/book.svelte';
 	import Zine from '$lib/components/zine.svelte';
 	import logo from '$lib/assets/invoice/invoice-logo.svg';
 	import information from '$lib/assets/invoice/invoice-information.svg';
@@ -18,17 +17,14 @@
 	export let packageID: number;
 	export let print: boolean = false;
 
-	onMount(async () => {
-		if (packageID !== $focusedPackage.id) {
-			await focusedPackage.fetch(packageID);
-			await delay(2000);
-		}
-
-		if (print) {
-			window.document.close();
-			window.focus();
-			window.print();
-		}
+	onMount(() => {
+		focusedPackage.fetch(packageID).then(async () => {
+			if (print) {
+				await delay(1000);
+				window.focus();
+				window.print();
+			}
+		});
 	});
 </script>
 
@@ -58,8 +54,8 @@
 		limited to sending <span class="underline">only 2 books and up to 5 zines</span> per package,
 		and 1 package every 2 months.
 		<br /><br />
-		I’ve done my best to find the books you've requested, but since our selection is based on donations,
-		we usually can’t find specific titles. However, I've included books that I hope you’ll enjoy!
+		I've done my best to find the books you've requested, but since our selection is based on donations,
+		we usually can't find specific titles. However, I've included books that I hope you'll enjoy!
 	</p>
 
 	<div id="break-2" class="line-break" />
@@ -74,7 +70,7 @@
 		<ol id="package-list">
 			{#each $focusedPackage.books as book}
 				<li>
-					<Book {book} />
+					<em>{book.title}</em> &mdash; {book.authors.join(', ')}
 				</li>
 			{/each}
 			{#each $focusedPackage.zines as zine}
@@ -84,7 +80,7 @@
 			{/each}
 			{#each $focusedPackage.noISBNBooks as book}
 				<li>
-					<Book {book} />
+					<em>{book.title}</em> &mdash; {book.authors.join(', ')}
 				</li>
 			{/each}
 		</ol>
