@@ -56,9 +56,21 @@
 		refresh();
 		presentModal(VALID_MODAL.PRINT_PACKAGE);
 	};
+
+	$: shouldConfirmCancel =
+		activeModal !== VALID_MODAL.EDIT_PACKAGE &&
+		activeModal !== VALID_MODAL.PRINT_PACKAGE &&
+		($focusedPackage.books.length > 0 ||
+			$focusedPackage.noISBNBooks.length > 0 ||
+			$focusedPackage.zines.length > 0);
 </script>
 
-<Modal visible={activeModal !== VALID_MODAL.NONE} on:close={closeModal} on:cancel={closeModal}>
+<Modal
+	visible={activeModal !== VALID_MODAL.NONE}
+	on:close={closeModal}
+	on:cancel={closeModal}
+	confirmCancel={shouldConfirmCancel}
+>
 	{#if activeModal == VALID_MODAL.VIEW_PACKAGE}
 		<PackageOverview
 			on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)}

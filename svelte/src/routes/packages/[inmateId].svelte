@@ -8,7 +8,6 @@
 <script lang="ts">
 	import { focusedInmate } from '$lib/stores/inmate';
 	import { focusedPackage } from '$lib/stores/package';
-	import { delay } from '$lib/util/time';
 	import { printPackage } from '$lib/util/routing';
 	import type { Package } from '$lib/services/pbc-service/models/package';
 

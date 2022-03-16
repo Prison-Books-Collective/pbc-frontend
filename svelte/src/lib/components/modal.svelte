@@ -17,22 +17,40 @@
 	export let confirmText = 'OK';
 	export let cancelText = 'Cancel';
 
+	export let confirmCancel = false;
+	export let confirmCancelText = `Are you sure you want to close this window? You will lose all unsaved changes in this package.`;
+
 	export const close = () => {
-		visible = false;
-		dispatch('close');
+		if (!confirmCancel) {
+			visible = false;
+			dispatch('close');
+			return;
+		}
+
+		const shouldClose = confirm(confirmCancelText);
+		if (shouldClose) {
+			visible = false;
+			dispatch('close');
+		}
 	};
 
-	export const confirm = (value = null) => {
+	export const confirmClicked = (value = null) => {
 		close();
-		dispatch('confirm', value);
+
+		if (!visible) {
+			dispatch('confirm', value);
+		}
 	};
-	export const cancel = () => {
+	export const cancelClicked = () => {
 		close();
-		dispatch('cancel');
+
+		if (!visible) {
+			dispatch('cancel');
+		}
 	};
 	const closeOnEscape = ({ key }: KeyboardEvent) => {
 		if (key === KEY_ESCAPE) {
-			cancel();
+			cancelClicked();
 		}
 	};
 </script>
@@ -67,13 +85,13 @@
 
 			{#if showConfirm}
 				<div class="confirm">
-					<button on:click={confirm}>
+					<button on:click={confirmClicked}>
 						{confirmText}
 					</button>
 				</div>
 				<div class="space-bottom" />
 				<div class="cancel">
-					<button on:click={cancel}>
+					<button on:click={cancelClicked}>
 						{cancelText}
 					</button>
 				</div>
