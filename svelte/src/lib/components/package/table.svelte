@@ -44,8 +44,8 @@
 					<th>Print</th>
 				</tr>
 
-				{#each packages as pbcPackage, index}
-					<tr class:darkRow={!(index % 2)}>
+				{#each packages as pbcPackage}
+					<tr>
 						<td class="spacer-col">
 							{#if pbcPackage.alert}
 								<abbr
@@ -144,10 +144,6 @@
 
 	.no-packages-message {
 		margin-top: 3em;
-	}
-
-	.darkRow {
-		background-color: gainsboro;
 	}
 	.spacer-col {
 		padding: 10px 13px;

@@ -45,16 +45,17 @@
 
 	body {
 		margin: 0px !important;
+		background-color: #e8e7e2;
 	}
 
 	table {
 		border-collapse: collapse;
 		margin-left: auto;
 		margin-right: auto;
+		margin-top: 20px;
 		width: auto;
 	}
 
-	main,
 	.svelte-page {
 		display: flex;
 
@@ -72,29 +73,7 @@
 		margin-top: 5px;
 		margin-bottom: 5px;
 	}
-
-	body {
-		background-color: #e8e7e2;
-	}
-	#editIcon,
-	.editIcon,
-	#searchIcon,
-	#printIcon,
-	.printIcon,
-	#gearIcon,
-	.gearIcon {
-		opacity: 0.5;
-		transition-duration: 0.3s;
-	}
-	#editIcon:hover,
-	.editIcon:hover,
-	#searchIcon:hover,
-	#printIcon:hover,
-	.printIcon:hover,
-	#gearIcon:hover,
-	.gearIcon:hover {
-		opacity: 0.9;
-	}
+	
 	table,
 	th,
 	td {
@@ -104,9 +83,40 @@
 	tr {
 		background-color: #f0f0f0;
 	}
+	tr:nth-child(2n) {
+		background-color: gainsboro;
+	}
 	th {
 		background-color: #c1e3de;
 		height: 30px;
+	}
+
+	button {
+		display: inline-block;
+		margin: 20px 10px 0px;
+		padding: 11px 23px;
+
+		background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+		border: 1px solid #566963;
+		border-radius: 5px;
+		box-shadow: inset 0px 1px 3px 0px #91b8b3;
+		
+		font-family: roboto;
+		color: #ffffff;
+		font-size: 15px;
+		text-decoration: none;
+		text-shadow: 0px -1px 0px #2b665e;
+		
+		transition-duration: 0.3s;
+		cursor: pointer;
+	}
+	
+	button:disabled {
+		background: #838383;
+		border: #444 solid 1px;
+		text-shadow: 0px -1px 0px #444;
+		box-shadow: inset 0px 1px 3px 0px #ccc;
+		cursor: not-allowed;
 	}
 
 	.button-danger {
@@ -123,102 +133,15 @@
 		box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
 	}
 
-	table {
-		margin-top: 20px;
-	}
+}
+.icon {
+	max-height: 1.5rem;
 
-	#inmate {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		/* bring your own prefixes */
-		transform: translate(-50%, -50%);
-	}
+	opacity: 0.5;
+	transition-duration: 0.3s;
 
-	input[type='text']#find_inmate_id_field {
-		border: none;
-		outline: 0;
-		background-color: transparent;
-		font-size: 25px;
-		height: 50px;
-		width: 400px;
-	}
-	input[type='text']#find_inmate_id_field:focus {
-		border: none;
-		background-color: transparent;
-		outline: 0;
-		width: 400px;
-		height: 30px;
-	}
-	button {
-		font-family: roboto;
-		margin: 20px 10px 0px;
-		box-shadow: inset 0px 1px 3px 0px #91b8b3;
-		background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-		background-color: #768d87;
-		border-radius: 5px;
-		border: 1px solid #566963;
-		display: inline-block;
-		cursor: pointer;
-		transition-duration: 0.3s;
-		color: #ffffff;
-		font-size: 15px;
-		padding: 11px 23px;
-		text-decoration: none;
-		text-shadow: 0px -1px 0px #2b665e;
-	}
-	.button:hover {
-		background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
-		background-color: #6c7c7c;
-	}
-	.button:active {
-		position: relative;
-		top: 1px;
-	}
-	button:disabled {
-		background: #838383;
-		border: #444 solid 1px;
-		text-shadow: 0px -1px 0px #444;
-		box-shadow: inset 0px 1px 3px 0px #ccc;
-		cursor: not-allowed;
-	}
-
-	.modal {
-		display: none; /* Hidden by default */
-		position: fixed; /* Stay in place */
-		z-index: 1; /* Sit on top */
-		left: 0;
-		top: 0;
-		width: 100%; /* Full width */
-		height: 100%; /* Full height */
-		overflow: auto; /* Enable scroll if needed */
-		background-color: rgb(0, 0, 0); /* Fallback color */
-		background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-	}
-
-	/* Modal Content/Box */
-	.modal-content {
-		background-color: #fefefe;
-		margin: 15% auto; /* 15% from the top and centered */
-		padding: 20px;
-		border: 1px solid #888;
-		width: 80%; /* Could be more or less, depending on screen size */
-		text-align: center;
-	}
-
-	/* The Close Button */
-	.close {
-		color: #aaa;
-		float: right;
-		font-size: 28px;
-		font-weight: bold;
-	}
-
-	.close:hover,
-	.close:focus {
-		color: black;
-		text-decoration: none;
-		cursor: pointer;
+	&:hover {
+		opacity: 1;
 	}
 }
 
