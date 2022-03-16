@@ -42,37 +42,37 @@
 	* {
 		font-family: roboto;
 	}
-	
+
 	body {
 		margin: 0px !important;
 	}
-	
+
 	table {
 		border-collapse: collapse;
 		margin-left: auto;
 		margin-right: auto;
 		width: auto;
 	}
-	
-	main, .svelte-page {
+
+	main,
+	.svelte-page {
 		display: flex;
-	
+
 		padding: 1rem;
 		flex-flow: column nowrap;
 		justify-content: center;
 		align-items: center;
-	
+
 		max-width: 100vw;
 		word-wrap: break-word;
 		min-height: calc(100vh - 7rem);
 	}
 
-	
 	ul {
 		margin-top: 5px;
 		margin-bottom: 5px;
 	}
-	
+
 	body {
 		background-color: #e8e7e2;
 	}
@@ -100,7 +100,7 @@
 	td {
 		border: 1px solid black;
 	}
-	
+
 	tr {
 		background-color: #f0f0f0;
 	}
@@ -108,25 +108,25 @@
 		background-color: #c1e3de;
 		height: 30px;
 	}
-	
+
 	.button-danger {
 		background: lightcoral;
 		border: rgb(171, 68, 68) solid 1px;
 		text-shadow: 0px -1px 0px rgb(171, 68, 68);
 		box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
 	}
-	
+
 	.button-success {
 		background: darkseagreen;
 		border: rgb(61, 130, 61) solid 1px;
 		text-shadow: 0px -1px 0px rgb(61, 130, 61);
 		box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
 	}
-	
+
 	table {
 		margin-top: 20px;
 	}
-	
+
 	#inmate {
 		position: fixed;
 		top: 50%;
@@ -134,7 +134,7 @@
 		/* bring your own prefixes */
 		transform: translate(-50%, -50%);
 	}
-	
+
 	input[type='text']#find_inmate_id_field {
 		border: none;
 		outline: 0;
@@ -182,7 +182,7 @@
 		box-shadow: inset 0px 1px 3px 0px #ccc;
 		cursor: not-allowed;
 	}
-	
+
 	.modal {
 		display: none; /* Hidden by default */
 		position: fixed; /* Stay in place */
@@ -195,7 +195,7 @@
 		background-color: rgb(0, 0, 0); /* Fallback color */
 		background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 	}
-	
+
 	/* Modal Content/Box */
 	.modal-content {
 		background-color: #fefefe;
@@ -205,7 +205,7 @@
 		width: 80%; /* Could be more or less, depending on screen size */
 		text-align: center;
 	}
-	
+
 	/* The Close Button */
 	.close {
 		color: #aaa;
@@ -213,14 +213,13 @@
 		font-size: 28px;
 		font-weight: bold;
 	}
-	
+
 	.close:hover,
 	.close:focus {
 		color: black;
 		text-decoration: none;
 		cursor: pointer;
 	}
-	
 }
 
 @media print {
@@ -228,7 +227,8 @@
 	// 	page-break-after: always;
 	// }
 
-	#nav-primary, #nav-spacer {
+	#nav-primary,
+	#nav-spacer {
 		display: none;
 	}
 }

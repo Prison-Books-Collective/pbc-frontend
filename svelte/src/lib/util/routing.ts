@@ -1,7 +1,7 @@
-import { goto } from '$app/navigation'
-import { InmateService } from '$lib/services/pbc-service/inmate.service'
-import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error'
-import { focusedInmate } from '$lib/stores/inmate'
+import { goto } from '$app/navigation';
+import { InmateService } from '$lib/services/pbc-service/inmate.service';
+import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
+import { focusedInmate } from '$lib/stores/inmate';
 
 export enum VALID_HOMEPAGE_SEARCH {
 	ID = 'id',
@@ -16,17 +16,18 @@ export enum INMATE_SEARCH_MODE {
 export const ROUTE_PACKAGES_FOR_INMATE = (inmateID) => `/packages/${inmateID}`;
 export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
 	`/create/inmate?firstName=${firstName}&lastName=${lastName}`;
-export const ROUTE_INMATE_CREATE_ID = (inmateID) =>
-	`/create/inmate?id=${inmateID}`;
-export const ROUTE_INMATE_SEARCH = ({firstName, lastName}) =>
-	`/search/inmates?firstName=${firstName}&lastName=${lastName}`
+export const ROUTE_INMATE_CREATE_ID = (inmateID) => `/create/inmate?id=${inmateID}`;
+export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
+	`/search/inmates?firstName=${firstName}&lastName=${lastName}`;
 
-
-export const gotoSearchForInmate = async (searchBy: VALID_HOMEPAGE_SEARCH, { id, firstName, lastName }) => {
+export const gotoSearchForInmate = async (
+	searchBy: VALID_HOMEPAGE_SEARCH,
+	{ id, firstName, lastName }
+) => {
 	if (searchBy === VALID_HOMEPAGE_SEARCH.ID) {
-		return searchForInmateByID(id)
+		return searchForInmateByID(id);
 	} else if (searchBy === VALID_HOMEPAGE_SEARCH.NAME) {
-		return searchForInmatesByName({firstName, lastName})	
+		return searchForInmatesByName({ firstName, lastName });
 	}
 };
 
@@ -34,8 +35,8 @@ const searchForInmateByID = async (id) => {
 	if (id === null) return;
 	try {
 		const foundInmate = await InmateService.getInmate(id);
-		if(foundInmate) {
-			focusedInmate.set(foundInmate)
+		if (foundInmate) {
+			focusedInmate.set(foundInmate);
 			return goto(ROUTE_PACKAGES_FOR_INMATE(id));
 		}
 
@@ -47,25 +48,26 @@ const searchForInmateByID = async (id) => {
 		alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 		console.error(error);
 	}
-}
+};
 
-const searchForInmatesByName = async ({firstName, lastName}) => {
-	if(!firstName || !lastName || firstName.trim() === '' || lastName.trim() === '') return
+const searchForInmatesByName = async ({ firstName, lastName }) => {
+	if (!firstName || !lastName || firstName.trim() === '' || lastName.trim() === '') return;
 	try {
 		const foundInmates = await InmateService.getAllInmatesByName({
 			firstName,
 			lastName
 		});
-		if(foundInmates && foundInmates.length > 0) return goto(ROUTE_INMATE_SEARCH({firstName, lastName}));
+		if (foundInmates && foundInmates.length > 0)
+			return goto(ROUTE_INMATE_SEARCH({ firstName, lastName }));
 
 		const shouldCreateNewInmate = confirm(
 			`Failed to find any inmates named "${firstName} ${lastName}". To create a new inmate, click OK`
 		);
 		if (shouldCreateNewInmate) {
-			return goto(ROUTE_INMATE_CREATE_NAMED({firstName, lastName}));
+			return goto(ROUTE_INMATE_CREATE_NAMED({ firstName, lastName }));
 		}
 	} catch (error) {
 		alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 		console.error(error);
 	}
-}
+};

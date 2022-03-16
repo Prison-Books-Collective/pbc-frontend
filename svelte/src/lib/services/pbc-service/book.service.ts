@@ -1,9 +1,9 @@
-import { BASE_PBC_URI } from '.'
+import { BASE_PBC_URI } from '.';
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/util/web';
 import type { Book, NoISBNBook } from './models/book';
 
 export const isNoISBNBook = (book: Book | NoISBNBook) => {
-	return (!book.isbn10 && !book.isbn13);
+	return !book.isbn10 && !book.isbn13;
 };
 
 export class BookService {
@@ -40,11 +40,11 @@ export class BookService {
 	}
 
 	public static async createBook(book: Book): Promise<Book> {
-		if(!book.isbn10 || book.isbn10.length === 0) {
-			book.isbn10 = `no-10-${book.isbn13}`
+		if (!book.isbn10 || book.isbn10.length === 0) {
+			book.isbn10 = `no-10-${book.isbn13}`;
 		}
-		if(!book.isbn13 || book.isbn13.length === 0) {
-			book.isbn13 = `no-13-${book.isbn10}`
+		if (!book.isbn13 || book.isbn13.length === 0) {
+			book.isbn13 = `no-13-${book.isbn10}`;
 		}
 
 		const response = await fetch(this.URI_CREATE_BOOK, {

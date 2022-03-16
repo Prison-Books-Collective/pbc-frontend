@@ -104,21 +104,21 @@ const createPackage = () => {
 
 	const fetch = async (packageId: number) => {
 		try {
-			const pbcPackage = await PackageService.getPackage(packageId)
-			load(pbcPackage)
-		} catch(error) {
-			console.error(error)
-			console.error(`failed to retrieve package with ID "${packageId}" via remote`)
+			const pbcPackage = await PackageService.getPackage(packageId);
+			load(pbcPackage);
+		} catch (error) {
+			console.error(error);
+			console.error(`failed to retrieve package with ID "${packageId}" via remote`);
 		}
-	}
+	};
 	const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true });
 	const reset = () => set({ ...emptyPackage });
 	const sync = async (pbcPackage: Package) => {
 		const createdPackage = pbcPackage.id
 			? await PackageService.updatePackage(pbcPackage)
 			: await PackageService.createPackage(pbcPackage);
-		load(createdPackage)
-	}
+		load(createdPackage);
+	};
 
 	return {
 		subscribe,
@@ -137,7 +137,7 @@ const createPackage = () => {
 		fetch,
 		sync,
 		load,
-		reset,
+		reset
 	};
 };
 

@@ -1,4 +1,4 @@
-import { BASE_PBC_URI } from '.'
+import { BASE_PBC_URI } from '.';
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$lib/util/web';
 import type { Facility } from './models/facility';
 
