@@ -31,7 +31,7 @@
 		if (shouldDelete) {
 			try {
 				PackageService.deletePackage($focusedPackage.id);
-				dispatch('update', {});
+				dispatch('delete', {});
 			} catch (error) {
 				console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error);
 				dispatch('error', error);
