@@ -1,16 +1,4 @@
 <script lang="ts" context="module">
-	enum VALID_MODAL {
-		OVERVIEW_PACKAGE = 'overview_package',
-		EDIT_PACKAGE = 'edit_package',
-		PRINT_PACKAGE = 'print_package',
-
-		ADD_ZINE = 'add_zine',
-		ADD_BOOK = 'add_book',
-		DETAIL_BOOK = 'detail_book',
-
-		VIEW_ALERT = 'view_alert'
-	}
-
 	export function load({ params }) {
 		const { inmateId } = params;
 		return { props: { inmateId } };
@@ -21,65 +9,32 @@
 	import { focusedInmate } from '$lib/stores/inmate';
 	import { focusedPackage } from '$lib/stores/package';
 	import { delay } from '$lib/util/time';
+	import { printPackage } from '$lib/util/routing';
 	import type { Package } from '$lib/services/pbc-service/models/package';
 
 	import InmateName from '$lib/components/inmate/inmate-name.svelte';
 	import PackageTable from '$lib/components/package/table.svelte';
-	import Modal from '$lib/components/modal.svelte';
-	import PackageOverview from '$lib/components/package/overview.svelte';
-	import EditPackage from '$lib/components/package/edit.svelte';
-	import PrintPackage from '$lib/components/package/print.svelte';
-	import AddZine from '$lib/components/package/zine/add.svelte';
-	import AddBook from '$lib/components/package/book/add.svelte';
-	import BookDetail from '$lib/components/package/book/detail.svelte';
-	import PackageAlert from '$lib/components/package/alert.svelte';
+	import CreatePackageModal from '$lib/components/package/create-package-modal.svelte';
+	import { VALID_MODAL } from '$lib/components/package/create-package-modal.svelte';
 
 	export let inmateId: string;
 
-	let isModalVisible = false;
 	let activeModal: VALID_MODAL;
-	let searchISBN = null;
+	let activeModalParams = {};
+
 	const inmateIsLoaded = focusedInmate.fetch(inmateId);
 
-	const presentModal = (modal: VALID_MODAL) => {
-		activeModal = modal;
-		isModalVisible = true;
-	};
-	const closeModal = () => {
-		isModalVisible = false;
-	};
-	const refresh = (inmate) => {
-		inmateId = inmate.id;
-		focusedInmate.fetch(inmateId);
-		closeModal();
-	};
-	const printPackage = async (pbcPackage: Package) => {
-		const url = `/invoice/${pbcPackage.id}?print=true`;
-		const printWindow = window.open(url, 'title', 'attributes');
-		printWindow.focus();
-		await delay(3500);
-		printWindow.document.close();
-		printWindow.close();
-	};
-
-	const presentPrintModal = () => {
-		refresh($focusedInmate);
-		presentModal(VALID_MODAL.PRINT_PACKAGE);
-	};
 	const presentAlertModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		presentModal(VALID_MODAL.VIEW_ALERT);
+		activeModal = VALID_MODAL.VIEW_ALERT;
+		activeModalParams = { packageId: pbcPackage.id };
 	};
 	const presentCreatePackageModal = () => {
-		presentModal(VALID_MODAL.OVERVIEW_PACKAGE);
+		activeModal = VALID_MODAL.VIEW_PACKAGE;
 	};
 	const presentEditPackageModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		presentModal(VALID_MODAL.EDIT_PACKAGE);
-	};
-	const presentBookDetail = (isbn) => {
-		searchISBN = isbn;
-		presentModal(VALID_MODAL.DETAIL_BOOK);
+		activeModal = VALID_MODAL.EDIT_PACKAGE;
 	};
 </script>
 
@@ -87,58 +42,7 @@
 	<title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
 </svelte:head>
 
-<Modal bind:visible={isModalVisible}>
-	{#if activeModal == VALID_MODAL.OVERVIEW_PACKAGE}
-		<PackageOverview
-			on:add-zines={() => presentModal(VALID_MODAL.ADD_ZINE)}
-			on:add-books={() => presentModal(VALID_MODAL.ADD_BOOK)}
-			on:update={() => presentPrintModal()}
-			on:error={(e) => console.error(e)}
-		/>
-	{:else if activeModal == VALID_MODAL.EDIT_PACKAGE}
-		<EditPackage
-			on:update={() => presentPrintModal()}
-			on:error={(e) => console.error(e.detail)}
-			on:add-items={() => presentCreatePackageModal()}
-			on:delete={() => {
-				closeModal();
-				refresh($focusedInmate);
-			}}
-			on:reject={() => presentAlertModal($focusedPackage)}
-		/>
-	{:else if activeModal == VALID_MODAL.ADD_ZINE}
-		<AddZine
-			on:add-zines={() => presentCreatePackageModal()}
-			on:cancel={() => presentCreatePackageModal()}
-		/>
-	{:else if activeModal == VALID_MODAL.ADD_BOOK}
-		<AddBook
-			on:cancel={() => presentCreatePackageModal()}
-			on:search={({ detail: isbn }) => presentBookDetail(isbn)}
-			on:update={() => presentModal(VALID_MODAL.OVERVIEW_PACKAGE)}
-		/>
-	{:else if activeModal == VALID_MODAL.DETAIL_BOOK}
-		<BookDetail
-			isbn={searchISBN}
-			on:cancel={() => presentCreatePackageModal()}
-			on:search={() => presentModal(VALID_MODAL.ADD_BOOK)}
-			on:add-book={() => presentCreatePackageModal()}
-		/>
-	{:else if activeModal == VALID_MODAL.PRINT_PACKAGE}
-		<PrintPackage
-			on:done={closeModal}
-			on:print={() => {
-				printPackage($focusedPackage);
-				closeModal();
-			}}
-		/>
-	{:else if activeModal == VALID_MODAL.VIEW_ALERT}
-		<PackageAlert
-			on:update={(_) => refresh($focusedInmate)}
-			on:error={(e) => console.error(e.detail)}
-		/>
-	{/if}
-</Modal>
+<CreatePackageModal bind:activeModal bind:activeModalParams />
 
 {#await inmateIsLoaded}
 	<h1>Loading</h1>
@@ -171,6 +75,11 @@
 		flex-flow: column nowrap;
 		justify-content: flex-start;
 		align-items: stretch;
+		text-align: center;
+	}
+
+	h1 {
+		width: 100%;
 		text-align: center;
 	}
 

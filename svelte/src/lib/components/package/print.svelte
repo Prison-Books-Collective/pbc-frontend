@@ -45,7 +45,7 @@
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: flex-start;
-		align-items: stretch;
+		align-items: center;
 	}
 
 	h1 {

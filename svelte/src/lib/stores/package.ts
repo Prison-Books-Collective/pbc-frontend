@@ -106,6 +106,7 @@ const createPackage = () => {
 		try {
 			const pbcPackage = await PackageService.getPackage(packageId);
 			load(pbcPackage);
+			return pbcPackage;
 		} catch (error) {
 			console.error(error);
 			console.error(`failed to retrieve package with ID "${packageId}" via remote`);

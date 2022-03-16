@@ -6,9 +6,17 @@
 
 	const dispatch = createEventDispatcher();
 
-	if (!$focusedPackage.alert) {
-		focusedPackage.createAlert('');
-	}
+	export let packageId = null;
+	let packageLoaded = !!packageId
+		? focusedPackage.fetch(packageId)
+		: Promise.resolve($focusedPackage);
+
+	packageLoaded.then((pbcPackage) => {
+		console.log({ pbcPackage });
+		if (!pbcPackage.alert) {
+			focusedPackage.createAlert('');
+		}
+	});
 
 	const saveAlert = async (pbcPackage) => {
 		try {
@@ -38,39 +46,41 @@
 	};
 </script>
 
-<section class="alert-container">
-	<h1>Package Rejection Details</h1>
-	{#if $focusedPackage.alert && $focusedPackage.alert.id}
-		<p>This package was rejected. You can update the rejection notes below:</p>
-	{:else}
-		<p>Enter details about the rejection to log below:</p>
-	{/if}
-	<form on:submit|preventDefault={() => saveAlert($focusedPackage)}>
-		<textarea
-			name="package-rejection"
-			placeholder="Reason the package was rejected"
-			cols="30"
-			rows="10"
-			bind:value={$focusedPackage.alert.information}
-		/>
+{#await packageLoaded then}
+	<section class="alert-container">
+		<h1>Package Rejection Details</h1>
+		{#if $focusedPackage.alert && $focusedPackage.alert.id}
+			<p>This package was rejected. You can update the rejection notes below:</p>
+		{:else}
+			<p>Enter details about the rejection to log below:</p>
+		{/if}
+		<form on:submit|preventDefault={() => saveAlert($focusedPackage)}>
+			<textarea
+				name="package-rejection"
+				placeholder="Reason the package was rejected"
+				cols="30"
+				rows="10"
+				bind:value={$focusedPackage.alert.information}
+			/>
 
-		<div class="form-options">
-			<button
-				class="log-button"
-				disabled={!$focusedPackage.alert ||
-					!$focusedPackage.alert.information ||
-					$focusedPackage.alert.information === ''}>Log Rejection for Package</button
-			>
-			{#if $focusedPackage.alert && $focusedPackage.alert.id}
+			<div class="form-options">
 				<button
-					type="button"
-					class="button-danger clear-button"
-					on:click={() => removeAlert($focusedPackage)}>Clear</button
+					class="log-button"
+					disabled={!$focusedPackage.alert ||
+						!$focusedPackage.alert.information ||
+						$focusedPackage.alert.information === ''}>Log Rejection for Package</button
 				>
-			{/if}
-		</div>
-	</form>
-</section>
+				{#if $focusedPackage.alert && $focusedPackage.alert.id}
+					<button
+						type="button"
+						class="button-danger clear-button"
+						on:click={() => removeAlert($focusedPackage)}>Clear</button
+					>
+				{/if}
+			</div>
+		</form>
+	</section>
+{/await}
 
 <style lang="scss">
 	.alert-container {

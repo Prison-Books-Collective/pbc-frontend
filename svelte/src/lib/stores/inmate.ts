@@ -23,11 +23,14 @@ const createFocusedInmate = () => {
 
 	const fetch = async (id) => {
 		try {
-			set(await InmateService.getInmateUnknownIdStatus(id));
+			const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
+			set(foundInmate);
+			return foundInmate;
 		} catch (error) {
 			console.error(error);
 			console.error(`failed to set store $focusedInmate via remote using ID "${id}"`);
 			reset();
+			return emptyInmate;
 		}
 	};
 

@@ -1,7 +1,9 @@
 import { goto } from '$app/navigation';
 import { InmateService } from '$lib/services/pbc-service/inmate.service';
-import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 import { focusedInmate } from '$lib/stores/inmate';
+import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
+import { delay } from '$lib/util/time';
+import type { Package } from '$lib/services/pbc-service/models/package';
 
 export enum VALID_HOMEPAGE_SEARCH {
 	ID = 'id',
@@ -19,6 +21,8 @@ export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
 export const ROUTE_INMATE_CREATE_ID = (inmateID) => `/create/inmate?id=${inmateID}`;
 export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
 	`/search/inmates?firstName=${firstName}&lastName=${lastName}`;
+export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
+export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
 
 export const gotoSearchForInmate = async (
 	searchBy: VALID_HOMEPAGE_SEARCH,
@@ -70,4 +74,17 @@ const searchForInmatesByName = async ({ firstName, lastName }) => {
 		alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 		console.error(error);
 	}
+};
+
+export const printPackage = async (pbcPackage: Package) => {
+	const printWindow = window.open(
+		ROUTE_PRINT_INVOICE(pbcPackage.id), 
+		'title', 
+		'attributes'
+	);
+	
+	printWindow.focus();
+	await delay(3500);
+	printWindow.document.close();
+	printWindow.close();
 };
