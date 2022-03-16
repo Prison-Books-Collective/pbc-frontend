@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { VALID_HOMEPAGE_SEARCH, gotoSearchForInmate } from '$lib/util/routing';
 	import PackageCount from '$lib/components/package/package-count.svelte';
 
@@ -6,7 +7,13 @@
 	let firstName = null;
 	let lastName = null;
 
+	let searchByIdElement;
 	let searchBy = VALID_HOMEPAGE_SEARCH.ID;
+
+	onMount(() => {
+		searchByIdElement.focus();
+	});
+
 	$: searchText =
 		searchBy === VALID_HOMEPAGE_SEARCH.ID ? 'Search by Name?' : 'Search by Inmate ID?';
 	$: toggleSearch = () =>
@@ -26,11 +33,12 @@
 	<form on:submit|preventDefault={() => gotoSearchForInmate(searchBy, { id, firstName, lastName })}>
 		{#if searchBy === VALID_HOMEPAGE_SEARCH.ID}
 			<input
-				id="inmateId"
+				id="inmate-id"
 				type="text"
 				placeholder="Enter Inmate ID #, press Enter"
 				name="inmateNumber"
 				bind:value={id}
+				bind:this={searchByIdElement}
 			/>
 		{:else if searchBy === VALID_HOMEPAGE_SEARCH.NAME}
 			<input
@@ -75,6 +83,10 @@
 			max-width: 100vw;
 			width: calc(100vw - 5rem);
 			margin-bottom: 1rem;
+		}
+
+		#inmate-id {
+			outline: none;
 		}
 
 		button {
