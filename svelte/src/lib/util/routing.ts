@@ -8,10 +8,10 @@ export enum INMATE_SEARCH_MODE {
 	DISAMBIGUATION = 'disambiguation'
 }
 
-export const ROUTE_OVERVIEW = (inmateID) => `/overview/${inmateID}`;
+export const ROUTE_PACKAGES_FOR_INMATE = (inmateID) => `/packages/${inmateID}`;
 export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
-	`/inmate/${INMATE_SEARCH_MODE.CREATE}?firstName=${firstName}&lastName=${lastName}`;
+	`/create/inmate?firstName=${firstName}&lastName=${lastName}`;
 export const ROUTE_INMATE_CREATE_ID = (inmateID) =>
-	`/inmate/${INMATE_SEARCH_MODE.CREATE}?id=${inmateID}`;
-export const ROUTE_INMATE_DISAMBIGUATION = ({ firstName, lastName }) =>
-	`/inmate/${INMATE_SEARCH_MODE.DISAMBIGUATION}?firstName=${firstName}&lastName=${lastName}`;
+	`/create/inmate?id=${inmateID}`;
+export const ROUTE_INMATE_SEARCH = ({firstName, lastName}) =>
+	`/search/inmates?firstName=${firstName}&lastName=${lastName}`

@@ -7,10 +7,10 @@
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 	import {
 		VALID_HOMEPAGE_SEARCHES,
-		ROUTE_OVERVIEW,
+		ROUTE_PACKAGES_FOR_INMATE,
+		ROUTE_INMATE_SEARCH,
 		ROUTE_INMATE_CREATE_NAMED,
-		ROUTE_INMATE_CREATE_ID,
-		ROUTE_INMATE_DISAMBIGUATION
+		ROUTE_INMATE_CREATE_ID
 	} from '$lib/util/routing';
 
 	let inmateSearch = {
@@ -55,7 +55,7 @@
 					}
 					return;
 				}
-				goto(ROUTE_OVERVIEW(inmateSearch.id));
+				goto(ROUTE_PACKAGES_FOR_INMATE(inmateSearch.id));
 				return;
 			} catch (error) {
 				alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
@@ -86,7 +86,7 @@
 
 				if (foundInmates.length >= 1) {
 					goto(
-						ROUTE_INMATE_DISAMBIGUATION({
+						ROUTE_INMATE_SEARCH({
 							firstName: inmateSearch.firstName,
 							lastName: inmateSearch.lastName
 						})

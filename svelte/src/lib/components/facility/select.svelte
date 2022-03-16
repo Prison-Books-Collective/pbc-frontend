@@ -7,7 +7,6 @@
 	const dispatch = createEventDispatcher();
 	export let facility: Facility = null;
 	export let selected: string = undefined; // facility name
-
 	let getFacilities = FacilityService.getAllFacilities();
 
 	const emitUpdate = (newFacility: Facility) => {
@@ -19,7 +18,7 @@
 	{#await getFacilities}
 		<option value={undefined}>Loading Facilities</option>
 	{:then facilities}
-		<option disabled selected={!selected} value={null}>Select Facility</option>
+		<option disabled selected={!!!selected} value={null}>Select Facility</option>
 		{#each facilities as facility}
 			<option value={facility} selected={selected === facility.facility_name}
 				>{facility.facility_name}, {facility.state}</option
