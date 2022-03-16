@@ -1,21 +1,25 @@
+<script lang="ts" context="module">
+	enum VALID_MODE {
+		DISPLAY = 'display-book',
+		EDIT = 'edit-book',
+		CREATE = 'create-book'
+	}
+</script>
+
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { focusedBook } from '$lib/stores/book';
 	import { focusedPackage } from '$lib/stores/package';
 
 	const dispatch = createEventDispatcher();
-	enum VALID_MODE {
-		DISPLAY,
-		EDIT,
-		CREATE,
-		CREATE_NO_ISBN
-	}
 
-	let mode = VALID_MODE.DISPLAY;
+	export let mode = VALID_MODE.DISPLAY;
+	export let isbn = null;
 
-	let newISBN;
 	let newTitle;
 	let newAuthor;
+
+	$: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE;
 
 	const addBookClicked = () => {
 		focusedPackage.addBook($focusedBook);
@@ -24,7 +28,7 @@
 
 	const editBookClicked = () => {
 		mode = VALID_MODE.EDIT;
-		newISBN = $focusedBook.isbn10 || $focusedBook.isbn13 || null;
+		isbn = $focusedBook.isbn10 || $focusedBook.isbn13 || null;
 		newTitle = $focusedBook.title;
 		newAuthor = $focusedBook.authors ? $focusedBook.authors.join(', ') : null;
 	};
@@ -36,24 +40,23 @@
 	const searchClicked = () => dispatch('search');
 
 	$: shouldDisableEditAndAdd = () => {
-		return !newISBN || (newISBN.length !== 10 && newISBN.length !== 13) || !newAuthor || !newTitle;
+		return !isbn || (isbn.length !== 10 && isbn.length !== 13) || !newAuthor || !newTitle;
 	};
-	$: editAndAdd = () => {
+	$: editAndAdd = async () => {
 		$focusedBook.title = newTitle;
 		$focusedBook.authors = newAuthor.split(',').map((author) => author.trim());
-		if (newISBN.length === 10) {
-			$focusedBook.isbn10 = newISBN;
-		} else if (newISBN.length === 13) {
-			$focusedBook.isbn13 = newISBN;
+		if (isbn.length === 10) {
+			$focusedBook.isbn10 = isbn;
+		} else if (isbn.length === 13) {
+			$focusedBook.isbn13 = isbn;
 		}
-		focusedBook.sync();
+		await focusedBook.sync();
 		focusedPackage.addBook($focusedBook);
 
 		dispatch('add-book', $focusedBook);
 	};
 </script>
 
-<!-- case: success, found book -->
 {#if mode === VALID_MODE.DISPLAY && $focusedBook.existsInDatabase}
 	<section class="book-flow">
 		<p>
@@ -92,20 +95,13 @@
 	</section>
 {/if}
 
-<!-- case: success, edit book -->
 {#if mode === VALID_MODE.EDIT}
 	<form class="book-flow" on:submit|preventDefault={editAndAdd}>
 		<p>Edit the book information below, then save the book</p>
 
 		<label for="new-isbn">
 			ISBN10 or ISBN13
-			<input
-				type="text"
-				name="new-isbn"
-				id="new-isbn"
-				placeholder="New ISBN"
-				bind:value={newISBN}
-			/>
+			<input type="text" name="new-isbn" id="new-isbn" placeholder="New ISBN" bind:value={isbn} />
 		</label>
 
 		<label for="new-title">
@@ -134,13 +130,57 @@
 			<button class="button-success" disabled={shouldDisableEditAndAdd()}>
 				Save book and add to package
 			</button>
-			<button type="button" on:click={cancelEditClicked}>Cancel</button>
+			<button type="button" on:click={mode === VALID_MODE.EDIT ? cancelEditClicked : cancelClicked}
+				>Cancel</button
+			>
 		</div>
 	</form>
 {/if}
-<!-- case: success, create no-isbn book -->
 
-<!-- case: failure, book does not exist; create book with ISBN -->
+{#if mode === VALID_MODE.CREATE && isbn}
+	<form class="book-flow" on:submit|preventDefault={editAndAdd}>
+		<p>
+			We could not find the book with
+			<strong>ISBN# {$focusedBook.isbn10 || $focusedBook.isbn13}</strong>
+			in our database. Please add the title and author of the book and add it to the package.
+		</p>
+
+		<label for="new-isbn">
+			ISBN10 or ISBN13
+			<input type="text" name="new-isbn" id="new-isbn" placeholder="New ISBN" bind:value={isbn} />
+		</label>
+
+		<label for="new-title">
+			Book Title
+			<input
+				type="text"
+				name="new-title"
+				id="new-title"
+				placeholder="New Book Title"
+				bind:value={newTitle}
+			/>
+		</label>
+
+		<label for="new-author">
+			Book Author(s)
+			<input
+				type="text"
+				name="new-author"
+				id="new-author"
+				placeholder="New Book Author(s)"
+				bind:value={newAuthor}
+			/>
+		</label>
+
+		<div class="book-options">
+			<button class="button-success" disabled={shouldDisableEditAndAdd()}>
+				Save book and add to package
+			</button>
+			<button type="button" on:click={cancelClicked}>Cancel</button>
+		</div>
+	</form>
+{/if}
+
 <style lang="scss">
 	.book-flow {
 		display: flex;

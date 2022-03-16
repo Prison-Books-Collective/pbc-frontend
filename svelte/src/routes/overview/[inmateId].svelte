@@ -45,6 +45,7 @@
 
 	let isModalVisible = false;
 	let activeModal: VALID_MODAL;
+	let searchISBN = null;
 
 	focusedInmate.fetch(inmateId);
 
@@ -60,7 +61,6 @@
 		focusedInmate.fetch(inmateId);
 		closeModal();
 	};
-
 	const printPackage = async (pbcPackage: Package) => {
 		const url = `/invoice/${pbcPackage.id}?print=true`;
 		const printWindow = window.open(url, 'title', 'attributes');
@@ -84,6 +84,10 @@
 	const presentEditPackageModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
 		presentModal(VALID_MODAL.EDIT_PACKAGE);
+	};
+	const presentBookDetail = (isbn) => {
+		searchISBN = isbn;
+		presentModal(VALID_MODAL.DETAIL_BOOK);
 	};
 </script>
 
@@ -118,10 +122,12 @@
 			{:else if activeModal == VALID_MODAL.ADD_BOOK}
 				<AddBook
 					on:cancel={() => presentCreatePackageModal()}
-					on:search={() => presentModal(VALID_MODAL.DETAIL_BOOK)}
+					on:search={({ detail: isbn }) => presentBookDetail(isbn)}
+					on:update={() => presentModal(VALID_MODAL.OVERVIEW_PACKAGE)}
 				/>
 			{:else if activeModal == VALID_MODAL.DETAIL_BOOK}
 				<BookDetail
+					isbn={searchISBN}
 					on:cancel={() => presentCreatePackageModal()}
 					on:search={() => presentModal(VALID_MODAL.ADD_BOOK)}
 					on:add-book={() => presentCreatePackageModal()}
@@ -251,7 +257,7 @@
 									class="printIcon"
 									width="20"
 									height="20"
-									on:click={printPackage(pbcPackage)}
+									on:click={() => printPackage(pbcPackage)}
 								/>
 							</td>
 						</tr>
