@@ -16,6 +16,10 @@
 	const getInmates = InmateService.getAllInmatesByName({ firstName, lastName });
 </script>
 
+<svelte:head>
+	<title>Search Results for: {firstName} {lastName}</title>
+</svelte:head>
+
 <main class="svelte-page">
 	<h1>Inmate Selection</h1>
 	<p>

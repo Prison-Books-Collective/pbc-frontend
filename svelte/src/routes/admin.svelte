@@ -17,6 +17,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>BellBooks - Settings & Configuration</title>
+</svelte:head>
+
 <main class="svelte-page">
 	<section>
 		<h2>Zines</h2>

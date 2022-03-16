@@ -89,6 +89,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
+</svelte:head>
+
 {#if $focusedInmate.id}
 	<main>
 		<Modal bind:visible={isModalVisible}>

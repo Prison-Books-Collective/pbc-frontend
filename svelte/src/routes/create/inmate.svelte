@@ -39,6 +39,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>BellBooks - Register Inmate</title>
+</svelte:head>
+
 <main class="svelte-page">
 	<h1>Add New Inmate</h1>
 

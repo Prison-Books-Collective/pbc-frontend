@@ -28,6 +28,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>BellBooks - Invoice</title>
+</svelte:head>
+
 <div id="page-1" class="page-break">
 	<header>
 		<div id="logo-container">
