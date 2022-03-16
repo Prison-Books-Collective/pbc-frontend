@@ -92,7 +92,11 @@
 				<FacilitySelect bind:facility={location} />
 			{/if}
 
-			<button type="submit" disabled={!firstName || !lastName || (!location && !id)}>
+			<button
+				type="submit"
+				class="button-success"
+				disabled={!firstName || !lastName || (!location && !id)}
+			>
 				Add Inmate
 			</button>
 		</form>
@@ -132,6 +136,12 @@
 </main>
 
 <style lang="scss">
+	main {
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: center;
+		align-items: center;
+	}
 	.createNew {
 		margin-top: 3em;
 		text-align: center;
@@ -141,6 +151,7 @@
 		flex-flow: column nowrap;
 		justify-content: center;
 		align-items: center;
+		max-width: 500px;
 
 		input[type='text'] {
 			background-color: transparent;
@@ -148,7 +159,7 @@
 			font-size: 1.5rem;
 			text-align: center;
 			max-width: 100vw;
-			width: calc(100vw - 5rem);
+			width: 100%;
 			margin-bottom: 1rem;
 		}
 
