@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
 
-	import { FacilityService } from '$lib/services/pbc-service/facility.service';
+	import { facilities } from '$lib/stores/facility';
 	import type { Facility } from '$lib/services/pbc-service/models/facility';
 
 	const dispatch = createEventDispatcher();
 	export let facility: Facility = null;
 	export let selected: string = undefined; // facility name
-	let getFacilities = FacilityService.getAllFacilities();
+	let facilitiesLoaded = facilities.fetch();
 
 	const emitUpdate = (newFacility: Facility) => {
 		dispatch('update', newFacility);
@@ -15,13 +15,12 @@
 </script>
 
 <select name="facility" bind:value={facility} on:change={() => emitUpdate(facility)}>
-	{#await getFacilities}
+	{#await facilitiesLoaded}
 		<option value={undefined}>Loading Facilities</option>
-	{:then facilities}
+	{:then _}
 		<option disabled selected={!!!selected} value={null}>Select Facility</option>
-		{#each facilities as facility}
-			<option value={facility} selected={selected === facility.facility_name}
-				>{facility.facility_name}, {facility.state}</option
+		{#each $facilities as f}
+			<option value={f} selected={selected === f.facility_name}>{f.facility_name}, {f.state}</option
 			>
 		{/each}
 	{/await}

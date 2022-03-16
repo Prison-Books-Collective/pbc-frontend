@@ -11,5 +11,5 @@ export interface Inmate {
 }
 
 export interface InmateNoID extends Inmate {
-	location: string;
+	location?: string;
 }

@@ -6,7 +6,7 @@
 	import { FacilityService } from '$lib/services/pbc-service/facility.service';
 
 	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine.svelte';
+	import Zine from '$lib/components/zine/zine.svelte';
 	import FacilitySelect from '$lib/components/facility/select.svelte';
 	import { PackageService } from '$lib/services/pbc-service/package.service';
 

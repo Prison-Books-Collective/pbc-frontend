@@ -41,7 +41,7 @@
 				</p>
 			{/each}
 
-			<p class="createNew">
+			<p id="create-new-inmate">
 				<a href={ROUTE_INMATE_CREATE_NAMED({ firstName, lastName })}>
 					Click here to create a new inmate record
 				</a>
@@ -51,7 +51,7 @@
 </main>
 
 <style lang="scss">
-	.createNew {
+	#create-new-inmate {
 		margin-top: 3em;
 		text-align: center;
 	}

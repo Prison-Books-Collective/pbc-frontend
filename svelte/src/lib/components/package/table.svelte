@@ -4,7 +4,7 @@
 	import type { Package } from '$lib/services/pbc-service/models/package';
 
 	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine.svelte';
+	import Zine from '$lib/components/zine/zine.svelte';
 	import editIcon from '$lib/assets/icons/edit.png';
 	import printIcon from '$lib/assets/icons/print.png';
 

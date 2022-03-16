@@ -4,7 +4,7 @@
 	import { focusedPackage } from '$lib/stores/package';
 	import { focusedInmate } from '$lib/stores/inmate';
 	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine.svelte';
+	import Zine from '$lib/components/zine/zine.svelte';
 
 	const dispatch = createEventDispatcher();
 

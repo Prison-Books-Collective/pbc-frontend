@@ -3,20 +3,18 @@
 	import { fly } from 'svelte/transition';
 
 	import { focusedPackage } from '$lib/stores/package';
-	import { ZineService } from '$lib/services/pbc-service/zine.service';
+	import { zines } from '$lib/stores/zine';
 	import type { Zine } from '$lib/services/pbc-service/models/zine';
 
 	const dispatch = createEventDispatcher();
 
 	let filter: string = '';
-	let getZines = ZineService.getZines();
 	let addZines: Zine[] = [];
 	let allZines: Zine[] = [];
 	let availableZines: Zine[] = [];
-	(async () => {
-		allZines = await getZines;
-		availableZines = allZines.filter((z) => !$focusedPackage.zines.includes(z));
-	})();
+
+	allZines = $zines;
+	availableZines = allZines.filter((z) => !$focusedPackage.zines.includes(z));
 
 	$: availableZines = allZines.filter((z) => {
 		if ($focusedPackage.zines.includes(z)) return false;

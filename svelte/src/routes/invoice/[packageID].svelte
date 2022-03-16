@@ -10,7 +10,7 @@
 	import { onMount } from 'svelte';
 	import { focusedPackage } from '$lib/stores/package';
 	import { delay, formatDateForInvoice } from '$lib/util/time';
-	import Zine from '$lib/components/zine.svelte';
+	import Zine from '$lib/components/zine/zine.svelte';
 	import logo from '$lib/assets/invoice/invoice-logo.svg';
 	import information from '$lib/assets/invoice/invoice-information.svg';
 
@@ -176,8 +176,8 @@
 		padding: 7px 0px 0px 95px;
 	}
 
-	#package-list {
-	}
+	/* #package-list {
+	} */
 
 	#break-1 {
 		width: 100%;
