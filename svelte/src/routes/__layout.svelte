@@ -15,15 +15,6 @@
 		</a>
 	</div>
 
-	{#if false}
-		<div id="inmate-name">
-			<h1 id="" aria-label="Inmate's first and last name, and inmate ID if available">
-				Samah Majadla&ensp;
-				<span>ID#123</span>
-			</h1>
-		</div>
-	{/if}
-
 	<img id="logo-text" src={logoText} alt="Logo text for Prison Books Collective" />
 	<img id="logo" src={logo} alt="Logo for Prison Books Collective" />
 </nav>
@@ -54,24 +45,6 @@
 
 		&:hover {
 			opacity: 1;
-		}
-	}
-
-	#inmate-name {
-		display: flex;
-		flex-flow: row wrap;
-
-		justify-content: space-between;
-		align-items: center;
-
-		h1 {
-			font-size: 1.5rem;
-		}
-
-		span {
-			color: darkslategray;
-			font-weight: 700;
-			font-size: 1.25rem;
 		}
 	}
 

@@ -1,3 +1,4 @@
+import { BASE_PBC_URI } from '.'
 import {
 	CONTENT_TYPE_JSON,
 	METHOD_GET,
@@ -5,7 +6,6 @@ import {
 	METHOD_DELETE,
 	METHOD_PUT
 } from '$lib/util/web';
-import { BASE_PBC_URI } from './index';
 import type { Package } from './models/package';
 
 export class PackageService {

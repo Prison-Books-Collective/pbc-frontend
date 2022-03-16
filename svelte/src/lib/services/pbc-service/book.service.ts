@@ -1,5 +1,5 @@
+import { BASE_PBC_URI } from '.'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/util/web';
-import { BASE_PBC_URI } from './index';
 import type { Book, NoISBNBook } from './models/book';
 
 export const isNoISBNBook = (book: Book | NoISBNBook) => {

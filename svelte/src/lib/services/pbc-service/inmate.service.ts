@@ -1,5 +1,5 @@
 import { METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/util/web';
-import { BASE_PBC_URI } from './index';
+import { BASE_PBC_URI } from '.'
 import type { Inmate, InmateNoID } from './models/inmate';
 import type { Facility } from './models/facility';
 

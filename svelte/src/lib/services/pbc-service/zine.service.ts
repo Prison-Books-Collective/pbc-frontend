@@ -1,5 +1,5 @@
+import { BASE_PBC_URI } from '.'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$lib/util/web';
-import { BASE_PBC_URI } from './index';
 import type { Zine } from './models/zine';
 
 export class ZineService {
