@@ -59,6 +59,7 @@
 
 	$: shouldConfirmCancel =
 		activeModal !== VALID_MODAL.EDIT_PACKAGE &&
+		activeModal !== VALID_MODAL.VIEW_ALERT &&
 		activeModal !== VALID_MODAL.PRINT_PACKAGE &&
 		($focusedPackage.books.length > 0 ||
 			$focusedPackage.noISBNBooks.length > 0 ||
