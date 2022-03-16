@@ -174,6 +174,13 @@
 </main>
 
 <style lang="scss">
+	section {
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
 	h2 {
 		font-size: 2rem;
 		text-align: center;
@@ -207,22 +214,44 @@
 		justify-content: center;
 		text-align: right;
 		margin-bottom: 3em;
-
-		label {
-			width: 40ch;
-		}
-
-		input {
-			width: 30ch;
-		}
+		max-width: 800px;
 	}
 
 	select {
-		width: 40ch;
+		background: none;
+		appearance: none;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+
+		font-size: 1rem;
+		padding: 0.5rem;
+		margin-bottom: 1rem;
+
+		border: 1px solid rgba(0, 0, 0, 0.3);
+		border-radius: 3px;
+
+		width: 100%;
 	}
 
 	details,
 	summary {
 		outline: none;
+	}
+
+	label {
+		width: 100%;
+		margin-bottom: 1.5em;
+		text-align: left;
+		font-weight: 700;
+	}
+
+	input[type='text'] {
+		padding: 0.5em;
+		width: 95%;
+		max-width: auto;
+		font-size: 1rem;
+		background: none;
+		border: 1px solid rgba(0, 0, 0, 0.3);
+		border-radius: 3px;
 	}
 </style>
