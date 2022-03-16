@@ -26,11 +26,11 @@
 		}
 	};
 
-	const deletePackage = () => {
+	const deletePackage = async () => {
 		const shouldDelete = confirm('Are you sure you want to delete this entire package?');
 		if (shouldDelete) {
 			try {
-				PackageService.deletePackage($focusedPackage.id);
+				await PackageService.deletePackage($focusedPackage.id);
 				dispatch('delete', {});
 			} catch (error) {
 				console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error);
