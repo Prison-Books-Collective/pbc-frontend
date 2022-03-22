@@ -103,7 +103,24 @@
 
 	#toggle-search {
 		color: blue;
-		text-decoration: underline;
 		font-size: 1rem;
+		position: relative;
+	}
+
+	#toggle-search::before {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 1px;
+		bottom: -2px;
+		background-color: blue;
+
+		transition: transform 250ms ease-in-out;
+		transform: scale(0);
+	}
+
+	#toggle-search:hover::before,
+	#toggle-search:focus-visible::before {
+		transform: scale(1);
 	}
 </style>
