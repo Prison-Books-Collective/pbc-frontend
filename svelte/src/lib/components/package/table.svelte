@@ -48,13 +48,13 @@
 					<tr>
 						<td class="spacer-col">
 							{#if pbcPackage.alert}
-								<abbr
+								<div
 									class="alert"
-									title={pbcPackage.alert.information}
+									data-tooltip={pbcPackage.alert.information}
 									on:click={() => alertPackageClicked(pbcPackage)}
 								>
 									!
-								</abbr>
+								</div>
 							{/if}
 						</td>
 						<td class="package-col">
@@ -173,5 +173,38 @@
 		&:hover {
 			opacity: 0.9;
 		}
+	}
+
+	[data-tooltip] {
+		position: relative;
+	}
+
+	[data-tooltip]::before {
+		content: attr(data-tooltip);
+
+		position: absolute;
+		top: 0px;
+		left: 1em;
+
+		padding: 1rem;
+		width: clamp(20ch, 50ch, 80vw);
+
+		text-align: left;
+		color: transparent;
+		background-color: #eee;
+		border-radius: 3px;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+
+		transform-origin: top left;
+		transform: scale(0);
+		transition: 200ms ease-in-out 300ms;
+
+		z-index: 100;
+	}
+
+	[data-tooltip]:hover::before,
+	[data-tooltip]:focus-visible::before {
+		transform: scale(1);
+		color: black;
 	}
 </style>
