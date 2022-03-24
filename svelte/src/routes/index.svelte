@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { VALID_HOMEPAGE_SEARCH, gotoSearchForInmate } from '$lib/util/routing';
+	import { isEmpty } from '$lib/util/strings';
 	import PackageCount from '$lib/components/package/package-count.svelte';
+	import { uriQueryJoin } from '$lib/util/web';
 
 	let id = null;
 	let firstName = null;
@@ -21,8 +23,7 @@
 			searchBy === VALID_HOMEPAGE_SEARCH.ID
 				? VALID_HOMEPAGE_SEARCH.NAME
 				: VALID_HOMEPAGE_SEARCH.ID);
-	$: shouldDisableSearch = () =>
-		!firstName || !lastName || firstName.trim() === '' || lastName.trim() === '';
+	$: shouldDisableSearch = () => isEmpty(firstName) && isEmpty(lastName);
 </script>
 
 <svelte:head>

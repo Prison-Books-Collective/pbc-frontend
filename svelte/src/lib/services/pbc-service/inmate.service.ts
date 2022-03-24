@@ -1,4 +1,4 @@
-import { METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/util/web';
+import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$lib/util/web';
 import { BASE_PBC_URI } from '.';
 import type { Inmate, InmateNoID } from './models/inmate';
 import type { Facility } from './models/facility';
@@ -8,23 +8,23 @@ export const isInmateNoID = (inmate: Inmate | InmateNoID) => {
 };
 export class InmateService {
 	public static readonly URI_GET_INMATE = (inmateId: string) =>
-		`${BASE_PBC_URI}/getInmate?id=${inmateId}`;
+		`${BASE_PBC_URI}/getInmate${uriQueryJoin({ id: inmateId })}`;
 	public static readonly URI_GET_INMATE__NO_ID__BY_DATABASE_ID = (databaseId: string | number) =>
-		`${BASE_PBC_URI}/getInmateNoIDByDatabaseID?id=${databaseId}`;
+		`${BASE_PBC_URI}/getInmateNoIDByDatabaseID${uriQueryJoin({ id: databaseId })}`;
 	public static readonly URI_GET_INMATE__BY_NAME = ({
 		firstName,
 		lastName
 	}: {
 		firstName: string;
 		lastName: string;
-	}) => `${BASE_PBC_URI}/searchInmatesByName?firstName=${firstName}&lastName=${lastName}`;
+	}) => `${BASE_PBC_URI}/searchInmatesByName${uriQueryJoin({ firstName, lastName })}`;
 	public static readonly URI_GET_INMATE__NO_ID__BY_NAME = ({
 		firstName,
 		lastName
 	}: {
 		firstName: string;
 		lastName: string;
-	}) => `${BASE_PBC_URI}/getInmateNoID?firstName=${firstName}&lastName=${lastName}`;
+	}) => `${BASE_PBC_URI}/getInmateNoID${uriQueryJoin({ firstName, lastName })}`;
 	public static readonly URI_CREATE_INMATE = ({
 		firstName,
 		lastName,
@@ -33,7 +33,7 @@ export class InmateService {
 		firstName: string;
 		lastName: string;
 		inmateId: string;
-	}) => `${BASE_PBC_URI}/addInmate?firstName=${firstName}&lastName=${lastName}&id=${inmateId}`;
+	}) => `${BASE_PBC_URI}/addInmate${uriQueryJoin({ firstName, lastName, id: inmateId })}`;
 	public static readonly URI_CREATE_INMATE__NO_ID = ({
 		firstName,
 		lastName,
@@ -43,7 +43,7 @@ export class InmateService {
 		lastName: string;
 		location: string;
 	}) =>
-		`${BASE_PBC_URI}/addInmateNoID?firstName=${firstName}&lastName=${lastName}&location=${location}`;
+		`${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`;
 	public static readonly URI_UPDATE_INMATE = ({
 		initialId,
 		firstName,
@@ -55,7 +55,7 @@ export class InmateService {
 		lastName: string;
 		inmateId: string;
 	}) =>
-		`${BASE_PBC_URI}/updateInmate?originalId=${initialId}&firstName=${firstName}&lastName=${lastName}&id=${inmateId}`;
+		`${BASE_PBC_URI}/updateInmate${uriQueryJoin({ originalId: initialId, firstName, lastName, id: inmateId })}`;
 
 	public static readonly URI_UPDATE_INMATE__NO_ID = ({
 		initialId,
@@ -70,7 +70,7 @@ export class InmateService {
 		location: string;
 		inmateId: string;
 	}) =>
-		`${BASE_PBC_URI}/updateInmateNoID?originalId=${initialId}&firstName=${firstName}&lastName=${lastName}&location=${location}&id=${inmateId}`;
+		`${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({ originalId: initialId, firstName, lastName, location, id: inmateId })}`;
 
 	public static async getInmate(inmateId: string): Promise<Inmate | null> {
 		const response = await fetch(this.URI_GET_INMATE(inmateId), { ...METHOD_GET });
@@ -129,11 +129,12 @@ export class InmateService {
 			...METHOD_GET
 		});
 
+		if (response.status === 204) return []
 		if (response.status !== 200) {
 			throw new Error(
 				`unexpected response ${
 					response.status
-				} when searching for inmate with name "${lastName}, ${firstName}" at "${URI_GET_INMATE__BY_NAME(
+				} when searching for inmate with name "${firstName} ${lastName}" at "${URI_GET_INMATE__BY_NAME(
 					{ firstName, lastName }
 				)}"`
 			);
@@ -153,6 +154,7 @@ export class InmateService {
 			...METHOD_GET
 		});
 
+		if (response.status === 204) return []
 		if (response.status !== 200) {
 			throw new Error(
 				`unexpected response ${

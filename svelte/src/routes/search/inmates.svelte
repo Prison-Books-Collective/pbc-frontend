@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
 	export function load({ url }) {
-		const firstName =
-			url.searchParams.get('firstName') || url.searchParams.get('first_name') || null;
-		const lastName = url.searchParams.get('lastName') || url.searchParams.get('last_name') || null;
+		let firstName = url.searchParams.get('firstName') || url.searchParams.get('first_name') || null;
+		let lastName = url.searchParams.get('lastName') || url.searchParams.get('last_name') || null;
+
+		if (firstName == 'null') firstName = null;
+		if (lastName == 'null') lastName = null;
 		return { props: { firstName, lastName } };
 	}
 </script>

@@ -4,6 +4,7 @@ import { focusedInmate } from '$lib/stores/inmate';
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
 import { delay } from '$lib/util/time';
 import type { Package } from '$lib/services/pbc-service/models/package';
+import { isEmpty } from '$lib/util/strings';
 
 export enum VALID_HOMEPAGE_SEARCH {
 	ID = 'id',
@@ -55,7 +56,8 @@ const searchForInmateByID = async (id) => {
 };
 
 const searchForInmatesByName = async ({ firstName, lastName }) => {
-	if (!firstName || !lastName || firstName.trim() === '' || lastName.trim() === '') return;
+	if (isEmpty(firstName) && isEmpty(lastName)) return;
+
 	try {
 		const foundInmates = await InmateService.getAllInmatesByName({
 			firstName,
@@ -65,7 +67,7 @@ const searchForInmatesByName = async ({ firstName, lastName }) => {
 			return goto(ROUTE_INMATE_SEARCH({ firstName, lastName }));
 
 		const shouldCreateNewInmate = confirm(
-			`Failed to find any inmates named "${firstName} ${lastName}". To create a new inmate, click OK`
+			`Failed to find any inmates matching name "${[firstName, lastName].filter(x => !isEmpty(x)).join(' ')}". To create a new inmate, click OK`
 		);
 		if (shouldCreateNewInmate) {
 			return goto(ROUTE_INMATE_CREATE_NAMED({ firstName, lastName }));
