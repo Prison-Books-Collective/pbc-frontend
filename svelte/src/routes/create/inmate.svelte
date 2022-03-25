@@ -13,11 +13,11 @@
 
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { ROUTE_PACKAGES_FOR_INMATE } from '$lib/util/routing';
-	import { focusedInmate } from '$lib/stores/inmate';
-	import type { Facility } from '$lib/services/pbc-service/models/facility';
-	import { InmateService } from '$lib/services/pbc-service/inmate.service';
-	import FacilitySelect from '$lib/components/facility/select.svelte';
+	import { ROUTE_PACKAGES_FOR_INMATE } from '$util/routing';
+	import { focusedInmate } from '$stores/inmate';
+	import type { Facility } from '$models/pbc/facility';
+	import { InmateService } from '$services/pbc/inmate.service';
+	import FacilitySelect from '$components/facility/select.svelte';
 
 	export let id = null;
 	export let firstName = null;

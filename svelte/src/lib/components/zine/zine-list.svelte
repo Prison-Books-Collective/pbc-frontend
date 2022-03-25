@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { zines } from '$lib/stores/zine';
-	import Zine from '$lib/components/zine/zine.svelte';
+	import { zines } from '$stores/zine';
+	import Zine from '$components/zine/zine.svelte';
 </script>
 
 <details>

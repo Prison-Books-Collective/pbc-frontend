@@ -1,7 +1,7 @@
-import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$lib/util/web';
+import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web';
 import { BASE_PBC_URI } from '.';
 import type { Inmate, InmateNoID } from './models/inmate';
-import type { Facility } from './models/facility';
+import type { Facility } from '../../models/pbc/facility';
 
 export const isInmateNoID = (inmate: Inmate | InmateNoID) => {
 	return !!inmate.location;

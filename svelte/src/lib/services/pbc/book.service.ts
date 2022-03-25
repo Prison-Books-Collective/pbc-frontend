@@ -1,6 +1,6 @@
 import { BASE_PBC_URI } from '.';
-import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT } from '$lib/util/web';
-import type { Book, NoISBNBook } from './models/book';
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT } from '$util/web';
+import type { Book, NoISBNBook } from '$models/pbc/book';
 
 export const isNoISBNBook = (book: Book | NoISBNBook) => {
 	return !book.isbn10 && !book.isbn13;

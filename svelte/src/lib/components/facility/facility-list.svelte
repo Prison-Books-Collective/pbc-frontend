@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { facilities } from '$lib/stores/facility';
+	import { facilities } from '$stores/facility';
 	import Facility from './facility.svelte';
 </script>
 

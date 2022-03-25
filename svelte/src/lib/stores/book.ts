@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
-import type { Book, NoISBNBook } from '$lib/services/pbc-service/models/book';
-import { BookService, isNoISBNBook } from '$lib/services/pbc-service/book.service';
+import type { Book, NoISBNBook } from '$models/pbc/book';
+import { BookService, isNoISBNBook } from '$services/pbc/book.service';
 
 interface LocalStorageBook extends Book {
 	[additionalFields: string]: any;

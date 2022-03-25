@@ -6,15 +6,15 @@
 </script>
 
 <script lang="ts">
-	import { focusedInmate } from '$lib/stores/inmate';
-	import { focusedPackage } from '$lib/stores/package';
-	import { printPackage } from '$lib/util/routing';
-	import type { Package } from '$lib/services/pbc-service/models/package';
+	import { focusedInmate } from '$stores/inmate';
+	import { focusedPackage } from '$stores/package';
+	import { printPackage } from '$util/routing';
+	import type { Package } from '$models/pbc/package';
 
-	import InmateName from '$lib/components/inmate/inmate-name.svelte';
-	import PackageTable from '$lib/components/package/table.svelte';
-	import CreatePackageModal from '$lib/components/package/create-package-modal.svelte';
-	import { VALID_MODAL } from '$lib/components/package/create-package-modal.svelte';
+	import InmateName from '$components/inmate/inmate-name.svelte';
+	import PackageTable from '$components/package/table.svelte';
+	import CreatePackageModal from '$components/package/create-package-modal.svelte';
+	import { VALID_MODAL } from '$components/package/create-package-modal.svelte';
 
 	export let inmateId: string;
 

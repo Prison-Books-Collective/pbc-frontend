@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Facility } from '$lib/services/pbc-service/models/facility';
+	import type { Facility } from '$models/pbc/facility';
 
 	export let facility: Facility = null;
 </script>

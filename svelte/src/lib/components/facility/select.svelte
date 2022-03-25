@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
 
-	import { facilities } from '$lib/stores/facility';
-	import type { Facility } from '$lib/services/pbc-service/models/facility';
+	import { facilities } from '$stores/facility';
+	import type { Facility } from '$models/pbc/facility';
 
 	const dispatch = createEventDispatcher();
 	export let facility: Facility = null;

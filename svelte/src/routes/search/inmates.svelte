@@ -10,8 +10,8 @@
 </script>
 
 <script lang="ts">
-	import { InmateService } from '$lib/services/pbc-service/inmate.service';
-	import { ROUTE_PACKAGES_FOR_INMATE, ROUTE_INMATE_CREATE_NAMED } from '$lib/util/routing';
+	import { InmateService } from '$services/pbc/inmate.service';
+	import { ROUTE_PACKAGES_FOR_INMATE, ROUTE_INMATE_CREATE_NAMED } from '$util/routing';
 
 	export let firstName = null;
 	export let lastName = null;

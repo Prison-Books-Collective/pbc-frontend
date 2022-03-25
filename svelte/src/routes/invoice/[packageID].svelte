@@ -8,11 +8,11 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { focusedPackage } from '$lib/stores/package';
-	import { delay, formatDateForInvoice } from '$lib/util/time';
-	import Zine from '$lib/components/zine/zine.svelte';
-	import logo from '$lib/assets/invoice/invoice-logo.svg';
-	import information from '$lib/assets/invoice/invoice-information.svg';
+	import { focusedPackage } from '$stores/package';
+	import { delay, formatDateForInvoice } from '$util/time';
+	import Zine from '$components/zine/zine.svelte';
+	import logo from '$assets/invoice/invoice-logo.svg';
+	import information from '$assets/invoice/invoice-information.svg';
 
 	export let packageID: number;
 	export let print: boolean = false;

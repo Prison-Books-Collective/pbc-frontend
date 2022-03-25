@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedPackage } from '$lib/stores/package';
-	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine/zine.svelte';
+	import { focusedPackage } from '$stores/package';
+	import Book from '$components/book.svelte';
+	import Zine from '$components/zine/zine.svelte';
 
 	const dispatch = createEventDispatcher();
 

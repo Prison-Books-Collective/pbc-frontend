@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { FacilityService } from '$lib/services/pbc-service/facility.service';
+import { FacilityService } from '$services/pbc/facility.service';
 
 const createFacilityStore = () => {
 	const { subscribe, set } = writable([]);

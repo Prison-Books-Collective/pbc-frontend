@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate } from '$lib/stores/inmate';
-	import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
-	import Modal from '$lib/components/modal.svelte';
-	import EditInmate from '$lib/components/inmate/edit.svelte';
-	import editIcon from '$lib/assets/icons/edit.png';
+	import { focusedInmate } from '$stores/inmate';
+	import { isInmateNoID } from '$services/pbc/inmate.service';
+	import Modal from '$components/modal.svelte';
+	import EditInmate from '$components/inmate/edit.svelte';
+	import editIcon from '$assets/icons/edit.png';
 
 	const dispatch = createEventDispatcher();
 

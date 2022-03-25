@@ -2,9 +2,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
 
-	import { focusedPackage } from '$lib/stores/package';
-	import { zines } from '$lib/stores/zine';
-	import type { Zine } from '$lib/services/pbc-service/models/zine';
+	import { focusedPackage } from '$stores/package';
+	import { zines } from '$stores/zine';
+	import type { Zine } from '$models/pbc/zine';
 
 	const dispatch = createEventDispatcher();
 

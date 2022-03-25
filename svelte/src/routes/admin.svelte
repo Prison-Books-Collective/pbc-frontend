@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
-	import ZineList from '$lib/components/zine/zine-list.svelte';
-	import FacilityList from '$lib/components/facility/facility-list.svelte';
-	import CreateZine from '$lib/components/zine/create-zine.svelte';
-	import CreateFacility from '$lib/components/facility/create-facility.svelte';
+	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
+	import ZineList from '$components/zine/zine-list.svelte';
+	import FacilityList from '$components/facility/facility-list.svelte';
+	import CreateZine from '$components/zine/create-zine.svelte';
+	import CreateFacility from '$components/facility/create-facility.svelte';
 
 	const alertZineCreated = ({ detail: zine }) =>
 		alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`);

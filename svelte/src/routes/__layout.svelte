@@ -1,8 +1,8 @@
 <script>
-	import logo from '$lib/assets/pbc-logo-small.png';
-	import logoText from '$lib/assets/pbc-text.svg';
-	import search from '$lib/assets/icons/search.png';
-	import settings from '$lib/assets/icons/gear.png';
+	import logo from '$assets/pbc-logo-small.png';
+	import logoText from '$assets/pbc-text.svg';
+	import search from '$assets/icons/search.png';
+	import settings from '$assets/icons/gear.png';
 </script>
 
 <nav id="nav-primary">

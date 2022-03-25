@@ -1,13 +1,13 @@
 import { writable } from 'svelte/store';
-import { isInmateNoID } from '$lib/services/pbc-service/inmate.service';
-import { isNoISBNBook } from '$lib/services/pbc-service/book.service';
-import { PackageService } from '$lib/services/pbc-service/package.service';
-import type { Book, NoISBNBook } from '$lib/services/pbc-service/models/book';
-import type { Facility } from '$lib/services/pbc-service/models/facility';
-import type { Inmate, InmateNoID } from '$lib/services/pbc-service/models/inmate';
-import type { Package } from '$lib/services/pbc-service/models/package';
-import type { Zine } from '$lib/services/pbc-service/models/zine';
-import { formatDate } from '$lib/util/time';
+import { isInmateNoID } from '$services/pbc/inmate.service';
+import { isNoISBNBook } from '$services/pbc/book.service';
+import { PackageService } from '$services/pbc/package.service';
+import type { Book, NoISBNBook } from '$models/pbc/book';
+import type { Facility } from '$models/pbc/facility';
+import type { Inmate, InmateNoID } from '$models/pbc/inmate';
+import type { Package } from '$models/pbc/package';
+import type { Zine } from '$models/pbc/zine';
+import { formatDate } from '$util/time';
 
 interface LocalStoragePackage extends Package {
 	existsInDatabase: boolean;

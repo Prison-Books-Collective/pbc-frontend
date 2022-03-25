@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
-	import { focusedPackage } from '$lib/stores/package';
-	import { FacilityService } from '$lib/services/pbc-service/facility.service';
+	import { focusedInmate, focusedInmatePackages } from '$stores/inmate';
+	import { focusedPackage } from '$stores/package';
+	import { FacilityService } from '$services/pbc/facility.service';
 
-	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine/zine.svelte';
-	import FacilitySelect from '$lib/components/facility/select.svelte';
-	import { PackageService } from '$lib/services/pbc-service/package.service';
+	import Book from '$components/book.svelte';
+	import Zine from '$components/zine/zine.svelte';
+	import FacilitySelect from '$components/facility/select.svelte';
+	import { PackageService } from '$services/pbc/package.service';
 
 	const dispatch = createEventDispatcher();
 

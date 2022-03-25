@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { PackageService } from '$lib/services/pbc-service/package.service';
-	import { focusedPackage } from '$lib/stores/package';
-	import { focusedInmate } from '$lib/stores/inmate';
-	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine/zine.svelte';
+	import { PackageService } from '$services/pbc/package.service';
+	import { focusedPackage } from '$stores/package';
+	import { focusedInmate } from '$stores/inmate';
+	import Book from '$components/book.svelte';
+	import Zine from '$components/zine/zine.svelte';
 
 	const dispatch = createEventDispatcher();
 

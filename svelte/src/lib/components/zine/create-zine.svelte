@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { zines } from '$lib/stores/zine';
+	import { zines } from '$stores/zine';
 
 	const dispatch = createEventDispatcher();
 

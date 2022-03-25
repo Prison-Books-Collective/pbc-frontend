@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Book, NoISBNBook } from '$lib/services/pbc-service/models/book';
+	import type { Book, NoISBNBook } from '$models/pbc/book';
 
 	export let book: Book | NoISBNBook = null;
 </script>

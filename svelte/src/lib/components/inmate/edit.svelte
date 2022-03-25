@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
-	import { InmateService, isInmateNoID } from '$lib/services/pbc-service/inmate.service';
-	import { FacilityService } from '$lib/services/pbc-service/facility.service';
-	import FacilitySelect from '$lib/components/facility/select.svelte';
-	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
-	import { focusedInmate } from '$lib/stores/inmate';
+	import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
+	import { FacilityService } from '$services/pbc/facility.service';
+	import FacilitySelect from '$components/facility/select.svelte';
+	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
+	import { focusedInmate } from '$stores/inmate';
 
 	const dispatch = createEventDispatcher();
 

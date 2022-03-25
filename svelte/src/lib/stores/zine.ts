@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { ZineService } from '$lib/services/pbc-service/zine.service';
+import { ZineService } from '$services/pbc/zine.service';
 
 const createZineStore = () => {
 	const { subscribe, set } = writable([]);

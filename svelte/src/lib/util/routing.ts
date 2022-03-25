@@ -1,10 +1,10 @@
 import { goto } from '$app/navigation';
-import { InmateService } from '$lib/services/pbc-service/inmate.service';
-import { focusedInmate } from '$lib/stores/inmate';
-import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$lib/util/error';
-import { delay } from '$lib/util/time';
-import type { Package } from '$lib/services/pbc-service/models/package';
-import { isEmpty } from '$lib/util/strings';
+import { InmateService } from '$services/pbc/inmate.service';
+import { focusedInmate } from '$stores/inmate';
+import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
+import { delay } from '$util/time';
+import type { Package } from '$models/pbc/package';
+import { isEmpty } from '$util/strings';
 
 export enum VALID_HOMEPAGE_SEARCH {
 	ID = 'id',

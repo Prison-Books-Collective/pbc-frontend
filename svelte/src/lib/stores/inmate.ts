@@ -1,7 +1,7 @@
 import { derived, writable } from 'svelte/store';
-import { InmateService, isInmateNoID } from '$lib/services/pbc-service/inmate.service';
-import { PackageService } from '$lib/services/pbc-service/package.service';
-import type { InmateNoID } from '$lib/services/pbc-service/models/inmate';
+import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
+import { PackageService } from '$services/pbc/package.service';
+import type { InmateNoID } from '$models/pbc/inmate';
 
 interface LocalStorageInmate extends InmateNoID {
 	[additionalFields: string]: any;

@@ -16,19 +16,19 @@
 
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate } from '$lib/stores/inmate';
-	import { focusedPackage } from '$lib/stores/package';
-	import { printPackage } from '$lib/util/routing';
-	import type { Package } from '$lib/services/pbc-service/models/package';
+	import { focusedInmate } from '$stores/inmate';
+	import { focusedPackage } from '$stores/package';
+	import { printPackage } from '$util/routing';
+	import type { Package } from '$models/pbc/package';
 
-	import Modal from '$lib/components/modal.svelte';
-	import PackageOverview from '$lib/components/package/overview.svelte';
-	import EditPackage from '$lib/components/package/edit.svelte';
-	import PrintPackage from '$lib/components/package/print.svelte';
-	import AddZine from '$lib/components/package/zine/add.svelte';
-	import AddBook from '$lib/components/package/book/add.svelte';
-	import BookDetail from '$lib/components/package/book/detail.svelte';
-	import PackageAlert from '$lib/components/package/alert.svelte';
+	import Modal from '$components/modal.svelte';
+	import PackageOverview from '$components/package/overview.svelte';
+	import EditPackage from '$components/package/edit.svelte';
+	import PrintPackage from '$components/package/print.svelte';
+	import AddZine from '$components/package/zine/add.svelte';
+	import AddBook from '$components/package/book/add.svelte';
+	import BookDetail from '$components/package/book/detail.svelte';
+	import PackageAlert from '$components/package/alert.svelte';
 
 	const dispatch = createEventDispatcher();
 

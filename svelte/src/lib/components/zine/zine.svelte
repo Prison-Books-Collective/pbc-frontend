@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Zine } from '$lib/services/pbc-service/models/zine';
+	import type { Zine } from '$models/pbc/zine';
 
 	export let zine: Zine = null;
 	export let formatForInvoice: boolean = false;

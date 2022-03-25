@@ -7,8 +7,8 @@
 
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
-	import { focusedBook } from '$lib/stores/book';
-	import { focusedPackage } from '$lib/stores/package';
+	import { focusedBook } from '$stores/book';
+	import { focusedPackage } from '$stores/package';
 
 	const dispatch = createEventDispatcher();
 

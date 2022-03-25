@@ -5,8 +5,8 @@ import {
 	METHOD_POST,
 	METHOD_DELETE,
 	METHOD_PUT
-} from '$lib/util/web';
-import type { Package } from './models/package';
+} from '$util/web';
+import type { Package } from '../../models/pbc/package';
 
 export class PackageService {
 	public static readonly URI_GET_PACKAGE = (packageId: number) =>

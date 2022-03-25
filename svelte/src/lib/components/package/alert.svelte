@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedPackage } from '$lib/stores/package';
-	import { PackageService } from '$lib/services/pbc-service/package.service';
+	import { focusedPackage } from '$stores/package';
+	import { PackageService } from '$services/pbc/package.service';
 
 	const dispatch = createEventDispatcher();
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { PackageService } from '$lib/services/pbc-service/package.service';
-	import { formatDate } from '$lib/util/time';
+	import { PackageService } from '$services/pbc/package.service';
+	import { formatDate } from '$util/time';
 
 	const today = formatDate(new Date());
 	let getPackageCount = PackageService.getPackageCount(today);

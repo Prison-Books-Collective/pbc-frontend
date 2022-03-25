@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate, focusedInmatePackages } from '$lib/stores/inmate';
-	import type { Package } from '$lib/services/pbc-service/models/package';
+	import { focusedInmate, focusedInmatePackages } from '$stores/inmate';
+	import type { Package } from '$models/pbc/package';
 
-	import Book from '$lib/components/book.svelte';
-	import Zine from '$lib/components/zine/zine.svelte';
-	import editIcon from '$lib/assets/icons/edit.png';
-	import printIcon from '$lib/assets/icons/print.png';
+	import Book from '$components/book.svelte';
+	import Zine from '$components/zine/zine.svelte';
+	import editIcon from '$assets/icons/edit.png';
+	import printIcon from '$assets/icons/print.png';
 
 	const dispatch = createEventDispatcher();
 
