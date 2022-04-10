@@ -1,5 +1,4 @@
-import { derived, writable } from 'svelte/store';
-import type { Readable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
 import { PackageService } from '$services/pbc/package.service';
 import type { Package } from '$models/pbc/package';
@@ -72,9 +71,3 @@ const createFocusedPackages = (focusedInmate: ReturnType<typeof createFocusedInm
 
 export const focusedInmate = createFocusedInmate();
 export const focusedPackages = createFocusedPackages(focusedInmate);
-export const focusedInmatePackages: Readable<Package[]> = derived(focusedInmate, ($inmate, set) => {
-	set([]);
-	(isInmateNoID($inmate)
-		? PackageService.getPackagesForInmateNoID($inmate.id)
-		: PackageService.getPackagesForInmate($inmate.id)).then(set)
-});
