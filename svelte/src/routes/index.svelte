@@ -118,10 +118,12 @@
 
 		transition: transform 250ms ease-in-out;
 		transform: scale(0);
+		transform-origin: right;
 	}
 
 	#toggle-search:hover::before,
 	#toggle-search:focus-visible::before {
 		transform: scale(1);
+		transform-origin: left;
 	}
 </style>

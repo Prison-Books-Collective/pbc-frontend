@@ -1,6 +1,8 @@
 import { derived, writable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
 import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
 import { PackageService } from '$services/pbc/package.service';
+import type { Package } from '$models/pbc/package';
 import type { InmateNoID } from '$models/pbc/inmate';
 
 interface LocalStorageInmate extends InmateNoID {
@@ -45,8 +47,9 @@ const createFocusedInmate = () => {
 };
 
 export const focusedInmate = createFocusedInmate();
-export const focusedInmatePackages = derived(focusedInmate, ($inmate) =>
-	isInmateNoID($inmate)
+export const focusedInmatePackages: Readable<Package[]> = derived(focusedInmate, ($inmate, set) => {
+	set([]);
+	(isInmateNoID($inmate)
 		? PackageService.getPackagesForInmateNoID($inmate.id)
-		: PackageService.getPackagesForInmate($inmate.id)
-);
+		: PackageService.getPackagesForInmate($inmate.id)).then(set)
+});

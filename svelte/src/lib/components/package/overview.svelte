@@ -8,7 +8,6 @@
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
 	import FacilitySelect from '$components/facility/select.svelte';
-	import { PackageService } from '$services/pbc/package.service';
 
 	const dispatch = createEventDispatcher();
 
@@ -19,12 +18,11 @@
 			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
 			focusedPackage.setDestination(facility);
 		} else if (!facility) {
-			const inmatePackages = await $focusedInmatePackages;
-			if (!inmatePackages || inmatePackages.length === 0) {
+			if (!$focusedInmatePackages || $focusedInmatePackages.length === 0) {
 				facility = null;
 				return;
 			}
-			facility = inmatePackages[0].facility;
+			facility = $focusedInmatePackages[0].facility;
 			focusedPackage.setDestination(facility);
 		}
 	})();
