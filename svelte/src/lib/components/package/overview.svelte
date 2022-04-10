@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedInmate, focusedInmatePackages } from '$stores/inmate';
+	import { focusedInmate, focusedPackages } from '$stores/inmate';
 	import { focusedPackage } from '$stores/package';
 	import { FacilityService } from '$services/pbc/facility.service';
 
@@ -18,11 +18,11 @@
 			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
 			focusedPackage.setDestination(facility);
 		} else if (!facility) {
-			if (!$focusedInmatePackages || $focusedInmatePackages.length === 0) {
+			if (!$focusedPackages || $focusedPackages.length === 0) {
 				facility = null;
 				return;
 			}
-			facility = $focusedInmatePackages[0].facility;
+			facility = $focusedPackages[0].facility;
 			focusedPackage.setDestination(facility);
 		}
 	})();

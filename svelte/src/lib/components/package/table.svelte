@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate, focusedInmatePackages } from '$stores/inmate';
+	import { focusedInmate, focusedPackages } from '$stores/inmate';
 	import type { Package } from '$models/pbc/package';
 
 	import Book from '$components/book.svelte';
@@ -10,6 +10,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	export let isPackagesForInmate: boolean = false;
 	export let inmateID: string | number = null;
 	if (inmateID) {
 		focusedInmate.fetch(inmateID);
@@ -25,14 +26,18 @@
 		dispatch('print', pbcPackage);
 	};
 
-	$: console.log({packages: $focusedInmatePackages})
+	$: console.log({packages: $focusedPackages})
 </script>
 
 <section id="package-table-container">
-	{#if $focusedInmatePackages.length === 0}
+	{#if $focusedPackages.length === 0}
 	<h2 class="no-packages-message">
-		No packages have been created for {$focusedInmate.firstName}
-		{$focusedInmate.lastName} yet
+		{#if isPackagesForInmate}
+			No packages have been created for {$focusedInmate.firstName}
+			{$focusedInmate.lastName} yet
+		{:else}
+			No packages found
+		{/if}
 	</h2>
 {:else}
 	<table id="packageTable">
@@ -43,7 +48,7 @@
 			<th>Print</th>
 		</tr>
 
-		{#each $focusedInmatePackages as pbcPackage}
+		{#each $focusedPackages as pbcPackage}
 			<tr>
 				<td class="spacer-col">
 					{#if pbcPackage.alert}
@@ -58,6 +63,17 @@
 				</td>
 				<td class="package-col">
 					<h2>
+						{#if !isPackagesForInmate}
+							<strong>
+								{pbcPackage.inmate.firstName} {pbcPackage.inmate.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage.inmate.lastName}
+								{#if !pbcPackage.inmate.location}
+									#{pbcPackage.inmate.id}
+								{/if}
+							</strong>
+						{/if}
+						{#if !isPackagesForInmate && pbcPackage.facility}
+							&mdash;
+						{/if}
 						{#if pbcPackage.facility}
 							<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
 						{/if}

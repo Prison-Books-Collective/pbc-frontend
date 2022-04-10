@@ -2,7 +2,8 @@
 	export function load({ params, url }) {
 		const { packageID } = params;
 		const print = url.searchParams.get('print') || false;
-		return { props: { packageID, print } };
+		const date = url.searchParams.get('date') || false;
+		return { props: { packageID, print, date } };
 	}
 </script>
 
@@ -16,6 +17,18 @@
 
 	export let packageID: number;
 	export let print: boolean = false;
+	export let date: string = null;
+	let invoiceDate
+
+	$: {
+		if(!date) {
+			invoiceDate = formatDateForInvoice(new Date($focusedPackage.date))
+		} else if(date.trim().toLowerCase() === 'today') {
+			invoiceDate = formatDateForInvoice()
+		} else {
+			invoiceDate = formatDateForInvoice(new Date(date))
+		}
+	}
 
 	onMount(() => {
 		focusedPackage.fetch(packageID).then(async () => {
@@ -49,7 +62,7 @@
 
 	<div id="name-date-container">
 		<span id="name-container">______________________________________________________</span>
-		<span id="date-container">{formatDateForInvoice(new Date($focusedPackage.date))}</span>
+		<span id="date-container">{invoiceDate}</span>
 	</div>
 
 	<p id="information">

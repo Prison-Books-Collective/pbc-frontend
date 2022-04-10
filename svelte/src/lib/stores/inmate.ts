@@ -20,6 +20,8 @@ const emptyInmate: LocalStorageInmate = {
 	location: null
 };
 
+const emptyPackages: Package[] = []
+
 const createFocusedInmate = () => {
 	const { subscribe, set } = writable(emptyInmate);
 
@@ -46,7 +48,30 @@ const createFocusedInmate = () => {
 	};
 };
 
+const createFocusedPackages = (focusedInmate: ReturnType<typeof createFocusedInmate>) => {
+	const { subscribe, set } = writable(emptyPackages);
+
+	focusedInmate.subscribe(async $inmate => {
+		const packages = await (isInmateNoID($inmate)
+			? PackageService.getPackagesForInmateNoID($inmate.id)
+			: PackageService.getPackagesForInmate($inmate.id));
+		set(packages);
+	});
+
+	const fetchForInmate = (inmateID: string) => {
+		focusedInmate.fetch(inmateID)
+	}
+	
+	return {
+		subscribe,
+		set,
+
+		fetchForInmate,
+	};
+}
+
 export const focusedInmate = createFocusedInmate();
+export const focusedPackages = createFocusedPackages(focusedInmate);
 export const focusedInmatePackages: Readable<Package[]> = derived(focusedInmate, ($inmate, set) => {
 	set([]);
 	(isInmateNoID($inmate)
