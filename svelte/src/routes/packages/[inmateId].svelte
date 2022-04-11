@@ -9,31 +9,31 @@
 	import { focusedInmate } from '$stores/inmate';
 	import { focusedPackage, focusedPackages } from '$stores/package';
 	import { printPackage } from '$util/routing';
+	import { ValidCreatePackageModal } from '$models/create-package-modal';
 	import type { Package } from '$models/pbc/package';
 
 	import InmateName from '$components/inmate/inmate-name.svelte';
 	import PackageTable from '$components/package/table.svelte';
 	import CreatePackageModal from '$components/package/create-package-modal.svelte';
-	import { VALID_MODAL } from '$components/package/create-package-modal.svelte';
 
 	export let inmateId: string;
 
-	let activeModal: VALID_MODAL;
+	let activeModal: ValidCreatePackageModal;
 	let activeModalParams = {};
 
 	const inmateIsLoaded = focusedInmate.fetch(inmateId);
 
 	const presentAlertModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		activeModal = VALID_MODAL.VIEW_ALERT;
+		activeModal = ValidCreatePackageModal.VIEW_ALERT;
 		activeModalParams = { packageId: pbcPackage.id };
 	};
 	const presentCreatePackageModal = () => {
-		activeModal = VALID_MODAL.VIEW_PACKAGE;
+		activeModal = ValidCreatePackageModal.VIEW_PACKAGE;
 	};
 	const presentEditPackageModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		activeModal = VALID_MODAL.EDIT_PACKAGE;
+		activeModal = ValidCreatePackageModal.EDIT_PACKAGE;
 	};
 </script>
 

@@ -1,10 +1,6 @@
 <script lang="ts" context="module">
-import { formatDate } from "$lib/util/time";
-  export enum SearchMode {
-    DATE = 'by-date',
-    DATE_RANGE = 'by-date-range',
-    BOOK = 'by-book',
-  }
+  import { formatDate } from "$util/time";
+  import { SearchMode } from '$models/search-packages-mode';
 
 	export function load({ url }) {
 		let searchMode: SearchMode = url.searchParams.get('search') 
@@ -33,12 +29,13 @@ import { formatDate } from "$lib/util/time";
 </script>
 
 <script lang="ts">
-  import PackageTable from "$lib/components/package/table.svelte";
   import { focusedPackage, focusedPackages } from '$stores/package'
   import { printPackage } from '$util/routing';
-  import CreatePackageModal, { VALID_MODAL } from "$components/package/create-package-modal.svelte";
+  import { ValidCreatePackageModal } from "$models/create-package-modal";
   import type { Package } from "$models/pbc/package";
-import { focusedInmate } from "$lib/stores/inmate";
+  
+  import PackageTable from "$lib/components/package/table.svelte";
+  import CreatePackageModal from "$components/package/create-package-modal.svelte";
 
   export let searchMode = SearchMode.DATE;
 
@@ -46,7 +43,7 @@ import { focusedInmate } from "$lib/stores/inmate";
   export let startDate: string = formatDate(new Date())
   export let endDate: string = formatDate(new Date())
 
-  let activeModal: VALID_MODAL;
+  let activeModal: ValidCreatePackageModal;
   let activeModalParams = {};
 
   $: switch(searchMode) {
@@ -60,12 +57,12 @@ import { focusedInmate } from "$lib/stores/inmate";
 
   const presentEditPackageModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		activeModal = VALID_MODAL.EDIT_PACKAGE;
+		activeModal = ValidCreatePackageModal.EDIT_PACKAGE;
 	};
 
   const presentAlertModal = (pbcPackage: Package) => {
 		focusedPackage.load(pbcPackage);
-		activeModal = VALID_MODAL.VIEW_ALERT;
+		activeModal = ValidCreatePackageModal.VIEW_ALERT;
 		activeModalParams = { packageId: pbcPackage.id };
 	};
 </script>
@@ -75,7 +72,6 @@ import { focusedInmate } from "$lib/stores/inmate";
 <main class="svelte-page">
   <PackageTable 
     packages={$focusedPackages}
-    isPackagesForInmate={false}
     on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
     on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
     on:alert={({ detail: pbcPackage }) => presentAlertModal(pbcPackage)}/>

@@ -19,11 +19,8 @@ const config = {
 					$services: resolve('./src/lib/services'),
 					$stores: resolve('./src/lib/stores'),
 					$util: resolve('./src/lib/util'),
-		            // $components: resolve('./src/components'),
-		            // $stores: resolve('./src/stores'),
-		            // $actions: resolve('./src/actions')
-		        }
-		    }
+				}
+			}
 		}
 	}
 };
