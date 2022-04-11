@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	import { focusedInmate } from '$stores/inmate';
-	import { focusedPackage } from '$stores/package';
+	import { focusedPackage, focusedPackages } from '$stores/package';
 	import { printPackage } from '$util/routing';
 	import type { Package } from '$models/pbc/package';
 
@@ -61,6 +61,8 @@
 		</button>
 
 		<PackageTable
+			packages={$focusedPackages}
+			inmate={$focusedInmate}
 			on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
 			on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
 			on:alert={({ detail: pbcPackage }) => presentAlertModal(pbcPackage)}

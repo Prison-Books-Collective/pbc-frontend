@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate } from '$stores/inmate';
 	import { focusedPackages } from '$stores/package';
 	import type { Package } from '$models/pbc/package';
+	import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate';
 
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
@@ -11,10 +11,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let isPackagesForInmate: boolean = true;
-	export let inmateID: string | number = null;
-	if (inmateID) {
-		focusedInmate.fetch(inmateID);
+	export let packages: Package[] = []
+	export let inmate: Inmate | InmateNoID = null
+
+	if (!packages || packages.length === 0) {
+		packages = $focusedPackages
 	}
 
 	const alertPackageClicked = (pbcPackage: Package) => {
@@ -26,16 +27,13 @@
 	const printPackageClicked = (pbcPackage: Package) => {
 		dispatch('print', pbcPackage);
 	};
-
-	$: console.log({packages: $focusedPackages})
 </script>
 
 <section id="package-table-container">
-	{#if $focusedPackages.length === 0}
+	{#if packages.length === 0}
 	<h2 class="no-packages-message">
-		{#if isPackagesForInmate}
-			No packages have been created for {$focusedInmate.firstName}
-			{$focusedInmate.lastName} yet
+		{#if inmate}
+			No packages have been created for {inmate.firstName} {inmate.lastName} yet
 		{:else}
 			No packages found
 		{/if}
@@ -49,7 +47,7 @@
 			<th>Print</th>
 		</tr>
 
-		{#each $focusedPackages as pbcPackage}
+		{#each packages as pbcPackage}
 			<tr>
 				<td class="spacer-col">
 					{#if pbcPackage.alert}
@@ -63,7 +61,7 @@
 					{/if}
 				</td>
 				<td class="package-col">
-					{#if !isPackagesForInmate}
+					{#if !inmate}
 						<h2>
 							Package #{pbcPackage.id}
 						</h2>

@@ -74,6 +74,7 @@ import { focusedInmate } from "$lib/stores/inmate";
 
 <main class="svelte-page">
   <PackageTable 
+    packages={$focusedPackages}
     isPackagesForInmate={false}
     on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
     on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
