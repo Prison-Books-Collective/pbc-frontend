@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate, focusedPackages } from '$stores/inmate';
+	import { focusedInmate } from '$stores/inmate';
+	import { focusedPackages } from '$stores/package';
 	import type { Package } from '$models/pbc/package';
 
 	import Book from '$components/book.svelte';
@@ -10,7 +11,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let isPackagesForInmate: boolean = false;
+	export let isPackagesForInmate: boolean = true;
 	export let inmateID: string | number = null;
 	if (inmateID) {
 		focusedInmate.fetch(inmateID);
@@ -62,18 +63,15 @@
 					{/if}
 				</td>
 				<td class="package-col">
+					{#if !isPackagesForInmate}
+						<h2>
+							{pbcPackage.inmate.firstName} {pbcPackage.inmate.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage.inmate.lastName}
+							{#if !pbcPackage.inmate.location}
+								#{pbcPackage.inmate.id}
+							{/if}
+						</h2>
+					{/if}
 					<h2>
-						{#if !isPackagesForInmate}
-							<strong>
-								{pbcPackage.inmate.firstName} {pbcPackage.inmate.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage.inmate.lastName}
-								{#if !pbcPackage.inmate.location}
-									#{pbcPackage.inmate.id}
-								{/if}
-							</strong>
-						{/if}
-						{#if !isPackagesForInmate && pbcPackage.facility}
-							&mdash;
-						{/if}
 						{#if pbcPackage.facility}
 							<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
 						{/if}

@@ -1,7 +1,5 @@
 import { writable } from 'svelte/store';
-import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
-import { PackageService } from '$services/pbc/package.service';
-import type { Package } from '$models/pbc/package';
+import { InmateService } from '$services/pbc/inmate.service';
 import type { InmateNoID } from '$models/pbc/inmate';
 
 interface LocalStorageInmate extends InmateNoID {
@@ -18,8 +16,6 @@ const emptyInmate: LocalStorageInmate = {
 	packages: null,
 	location: null
 };
-
-const emptyPackages: Package[] = []
 
 const createFocusedInmate = () => {
 	const { subscribe, set } = writable(emptyInmate);
@@ -47,27 +43,5 @@ const createFocusedInmate = () => {
 	};
 };
 
-const createFocusedPackages = (focusedInmate: ReturnType<typeof createFocusedInmate>) => {
-	const { subscribe, set } = writable(emptyPackages);
-
-	focusedInmate.subscribe(async $inmate => {
-		const packages = await (isInmateNoID($inmate)
-			? PackageService.getPackagesForInmateNoID($inmate.id)
-			: PackageService.getPackagesForInmate($inmate.id));
-		set(packages);
-	});
-
-	const fetchForInmate = (inmateID: string) => {
-		focusedInmate.fetch(inmateID)
-	}
-	
-	return {
-		subscribe,
-		set,
-
-		fetchForInmate,
-	};
-}
-
+export type FocusedInmateStore = ReturnType<typeof createFocusedInmate>;
 export const focusedInmate = createFocusedInmate();
-export const focusedPackages = createFocusedPackages(focusedInmate);

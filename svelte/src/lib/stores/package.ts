@@ -2,6 +2,8 @@ import { writable } from 'svelte/store';
 import { isInmateNoID } from '$services/pbc/inmate.service';
 import { isNoISBNBook } from '$services/pbc/book.service';
 import { PackageService } from '$services/pbc/package.service';
+import { focusedInmate } from '$stores/inmate';
+import type { FocusedInmateStore } from '$stores/inmate';
 import type { Book, NoISBNBook } from '$models/pbc/book';
 import type { Facility } from '$models/pbc/facility';
 import type { Inmate, InmateNoID } from '$models/pbc/inmate';
@@ -29,6 +31,8 @@ const emptyPackage: LocalStoragePackage = {
 
 	existsInDatabase: false
 };
+
+const emptyPackages: Package[] = []
 
 const createPackage = () => {
 	const { subscribe, set, update } = writable(emptyPackage);
@@ -142,4 +146,28 @@ const createPackage = () => {
 	};
 };
 
+
+const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
+	const { subscribe, set } = writable(emptyPackages);
+
+	focusedInmate.subscribe(async $inmate => {
+		const packages = await (isInmateNoID($inmate)
+			? PackageService.getPackagesForInmateNoID($inmate.id)
+			: PackageService.getPackagesForInmate($inmate.id));
+		set(packages);
+	});
+
+	const fetchForInmate = (inmateID: string) => {
+		focusedInmate.fetch(inmateID)
+	}
+	
+	return {
+		subscribe,
+		set,
+
+		fetchForInmate,
+	};
+}
+
 export const focusedPackage = createPackage();
+export const focusedPackages = createFocusedPackages(focusedInmate);

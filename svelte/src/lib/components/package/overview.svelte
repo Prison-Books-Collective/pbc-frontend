@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedInmate, focusedPackages } from '$stores/inmate';
-	import { focusedPackage } from '$stores/package';
+	import { focusedInmate } from '$stores/inmate';
+	import { focusedPackage, focusedPackages } from '$stores/package';
 	import { FacilityService } from '$services/pbc/facility.service';
 
 	import Book from '$components/book.svelte';
