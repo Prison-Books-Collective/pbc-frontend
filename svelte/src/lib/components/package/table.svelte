@@ -65,8 +65,12 @@
 				<td class="package-col">
 					{#if !isPackagesForInmate}
 						<h2>
-							{pbcPackage.inmate.firstName} {pbcPackage.inmate.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage.inmate.lastName}
-							{#if !pbcPackage.inmate.location}
+							Package #{pbcPackage.id}
+						</h2>
+						<h2>
+							{pbcPackage?.inmate?.firstName || pbcPackage?.inmateNoId?.firstName} 
+							{pbcPackage?.inmate?.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage?.inmate?.lastName || pbcPackage?.inmateNoId?.lastName}
+							{#if pbcPackage?.inmate?.id}
 								#{pbcPackage.inmate.id}
 							{/if}
 						</h2>

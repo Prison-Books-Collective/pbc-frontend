@@ -4,6 +4,9 @@
 	import FacilityList from '$components/facility/facility-list.svelte';
 	import CreateZine from '$components/zine/create-zine.svelte';
 	import CreateFacility from '$components/facility/create-facility.svelte';
+	import FacilitySelect from '$components/facility/select.svelte';
+import SearchByDate from '$lib/components/package/search-by-date.svelte';
+import { searchByDate, searchByDateRange } from '$lib/util/routing';
 
 	const alertZineCreated = ({ detail: zine }) =>
 		alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`);
@@ -15,6 +18,22 @@
 		alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 		console.error(error);
 	};
+
+	enum PackageSearch {
+		NONE,
+		DATE,
+		DATE_RANGE,
+		BOOK,
+		FACILITY
+	}
+
+	const gotoPackageSearch = ( detail ) => {
+		if(detail.date) {
+			searchByDate(detail.date);
+		} else {
+			searchByDateRange(detail.startDate, detail.endDate);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -37,6 +56,32 @@
 		<CreateFacility on:update={alertFacilityCreated} on:error={alertCreationError} />
 		<div class="spacer" />
 		<FacilityList />
+	</section>
+
+	<section>
+		<h2>Packages</h2>
+
+		<h3>Search Packages by Date</h3>
+		<SearchByDate
+			on:search={({ detail }) => gotoPackageSearch( detail )}/>
+
+		<form on:submit|preventDefault>
+			<label for="isbn">
+				Book ISBN
+				<input name="isbn" id="isbn" type="text"/>
+			</label>
+
+			<button>
+				Search by Book
+			</button>
+		</form>
+
+		<form>
+			<FacilitySelect/>
+			<button>
+				Search by Facility
+			</button>
+		</form>
 	</section>
 </main>
 
@@ -70,5 +115,45 @@
 	.spacer {
 		width: 1px;
 		height: 2rem;
+	}
+
+	h3 {
+		font-weight: 600;
+		font-size: 1.25rem;
+		color: darkslategray;
+		text-align: center;
+		width: 100%;
+	}
+
+
+
+	form {
+		max-width: 600px;
+		margin-block-end: 2rem;
+
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: stretch;
+		align-items: stretch;
+	}
+	
+	label {
+		width: 100%;
+		margin-bottom: 1.5em;
+		text-align: left;
+		font-weight: 700;
+	}
+	input[type='text'], input[type='date'] {
+		padding: 0.5em;
+		width: 95%;
+		max-width: auto;
+		font-size: 1rem;
+		background: none;
+		border: 1px solid rgba(0, 0, 0, 0.3);
+		border-radius: 3px;
+	}
+
+	input[disabled] {
+		cursor: not-allowed;
 	}
 </style>

@@ -5,6 +5,7 @@ import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
 import { delay } from '$util/time';
 import type { Package } from '$models/pbc/package';
 import { isEmpty } from '$util/strings';
+import { uriQueryJoin } from '$util/web';
 
 export enum VALID_HOMEPAGE_SEARCH {
 	ID = 'id',
@@ -24,6 +25,7 @@ export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
 	`/search/inmates?firstName=${firstName}&lastName=${lastName}`;
 export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
 export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
+export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) => `/search/packages/${uriQueryJoin({ searchMode, ...params })}`
 
 export const gotoSearchForInmate = async (
 	searchBy: VALID_HOMEPAGE_SEARCH,
@@ -90,3 +92,11 @@ export const printPackage = async (pbcPackage: Package) => {
 	printWindow.document.close();
 	printWindow.close();
 };
+
+export const searchByDate = (date: string) => {
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date', params: { date }}))
+}
+
+export const searchByDateRange = (startDate: string, endDate: string) => {
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date-range', params: { startDate, endDate }}))
+}
