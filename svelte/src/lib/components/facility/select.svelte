@@ -1,30 +1,66 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
-
 	import { facilities } from '$stores/facility';
 	import type { Facility } from '$models/pbc/facility';
 
 	const dispatch = createEventDispatcher();
+
+	export let facilityList: Facility[] = [];
 	export let facility: Facility = null;
+	export let multipleFacilities: Facility[] = []; // selections
 	export let selected: string = undefined; // facility name
-	let facilitiesLoaded = facilities.fetch();
+	export let disabled = false;
+	export let multiple = false;
+
+	let facilitiesLoaded = new Promise(() => {});
+	if(facilityList.length === 0) {
+		facilities.fetch().then(facilities => {
+			facilityList = facilities;
+			facilitiesLoaded = Promise.resolve();
+		})
+	} else {
+		facilitiesLoaded = Promise.resolve();
+	}
 
 	const emitUpdate = (newFacility: Facility) => {
 		dispatch('update', newFacility);
 	};
+
+	const emitMultiUpdate = (selectedFacilities: Facility[]) => {
+		dispatch('update-multiple', selectedFacilities)
+	}
 </script>
 
-<select name="facility" bind:value={facility} on:change={() => emitUpdate(facility)}>
-	{#await facilitiesLoaded}
-		<option value={undefined}>Loading Facilities</option>
-	{:then _}
-		<option disabled selected={!!!selected} value={null}>Select Facility</option>
-		{#each $facilities as f}
-			<option value={f} selected={selected === f.facility_name}>{f.facility_name}, {f.state}</option
-			>
-		{/each}
-	{/await}
-</select>
+{#if multiple}
+	<select multiple disabled={disabled} name="facility" 
+		bind:value={multipleFacilities} 
+		on:change={() => emitMultiUpdate(multipleFacilities)}>
+		{#await facilitiesLoaded}
+			<option value={undefined}>Loading Facilities</option>
+		{:then}
+			<option disabled selected={!!!selected} value={null}>Select Facility</option>
+			{#each facilityList as f}
+				<option value={f} selected={selected === f.facility_name}>{f.facility_name}{f.state ? ',' : ''} {f.state}</option
+				>
+			{/each}
+		{/await}
+	</select>
+{:else}
+	<select name="facility" 
+		bind:value={facility} 
+		disabled={disabled}
+		on:change={() => emitUpdate(facility)}>
+		{#await facilitiesLoaded}
+			<option value={undefined}>Loading Facilities</option>
+		{:then _}
+			<option disabled selected={!!!selected} value={null}>Select Facility</option>
+			{#each facilityList as f}
+				<option value={f} selected={selected === f.facility_name}>{f.facility_name}, {f.state}</option
+				>
+			{/each}
+		{/await}
+	</select>
+{/if}
 
 <style lang="scss">
 	select {

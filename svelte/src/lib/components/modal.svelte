@@ -18,7 +18,7 @@
 	export let cancelText = 'Cancel';
 
 	export let confirmCancel = false;
-	export let confirmCancelText = `Are you sure you want to close this window? You will lose all unsaved changes in this package.`;
+	export let confirmCancelText = `Are you sure you want to close this window?`;
 
 	export const close = () => {
 		if (!confirmCancel) {
@@ -117,11 +117,6 @@
 	.button-close {
 		padding-bottom: 0em;
 		color: rgba(0, 0, 0, 0.3);
-	}
-
-	button:disabled {
-		background: none;
-		cursor: not-allowed;
 	}
 
 	#modal-container {

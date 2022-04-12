@@ -5,8 +5,8 @@
 	import CreateZine from '$components/zine/create-zine.svelte';
 	import CreateFacility from '$components/facility/create-facility.svelte';
 	import FacilitySelect from '$components/facility/select.svelte';
-import SearchByDate from '$lib/components/package/search-by-date.svelte';
-import { searchByDate, searchByDateRange } from '$lib/util/routing';
+	import SearchByDate from '$lib/components/package/search-by-date.svelte';
+	import { searchByDate, searchByDateRange } from '$lib/util/routing';
 
 	const alertZineCreated = ({ detail: zine }) =>
 		alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`);
@@ -42,6 +42,32 @@ import { searchByDate, searchByDateRange } from '$lib/util/routing';
 
 <main class="svelte-page">
 	<section>
+		<h2>Packages</h2>
+
+		<h3>Search Packages by Date</h3>
+		<SearchByDate
+			on:search={({ detail }) => gotoPackageSearch( detail )}/>
+
+		<!-- <form on:submit|preventDefault>
+			<label for="isbn">
+				Book ISBN
+				<input name="isbn" id="isbn" type="text"/>
+			</label>
+
+			<button>
+				Search by Book
+			</button>
+		</form> -->
+
+		<!-- <form>
+			<FacilitySelect/>
+			<button>
+				Search by Facility
+			</button>
+		</form> -->
+	</section>
+
+	<section>
 		<h2>Zines</h2>
 		<CreateZine on:update={alertZineCreated} on:error={alertCreationError} />
 		<div class="spacer" />
@@ -57,32 +83,6 @@ import { searchByDate, searchByDateRange } from '$lib/util/routing';
 		<div class="spacer" />
 		<FacilityList />
 	</section>
-
-	<section>
-		<h2>Packages</h2>
-
-		<h3>Search Packages by Date</h3>
-		<SearchByDate
-			on:search={({ detail }) => gotoPackageSearch( detail )}/>
-
-		<form on:submit|preventDefault>
-			<label for="isbn">
-				Book ISBN
-				<input name="isbn" id="isbn" type="text"/>
-			</label>
-
-			<button>
-				Search by Book
-			</button>
-		</form>
-
-		<form>
-			<FacilitySelect/>
-			<button>
-				Search by Facility
-			</button>
-		</form>
-	</section>
 </main>
 
 <style lang="scss">
@@ -97,6 +97,7 @@ import { searchByDate, searchByDateRange } from '$lib/util/routing';
 	h2 {
 		font-size: 2rem;
 		text-align: center;
+		color: inherit;
 	}
 
 	main {
@@ -124,36 +125,5 @@ import { searchByDate, searchByDateRange } from '$lib/util/routing';
 		text-align: center;
 		width: 100%;
 	}
-
-
-
-	form {
-		max-width: 600px;
-		margin-block-end: 2rem;
-
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: stretch;
-		align-items: stretch;
-	}
 	
-	label {
-		width: 100%;
-		margin-bottom: 1.5em;
-		text-align: left;
-		font-weight: 700;
-	}
-	input[type='text'], input[type='date'] {
-		padding: 0.5em;
-		width: 95%;
-		max-width: auto;
-		font-size: 1rem;
-		background: none;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 3px;
-	}
-
-	input[disabled] {
-		cursor: not-allowed;
-	}
 </style>

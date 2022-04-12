@@ -8,9 +8,11 @@ const createFacilityStore = () => {
 		try {
 			const facilities = await FacilityService.getAllFacilities();
 			set(facilities);
+			return facilities;
 		} catch (error) {
 			console.error(error);
 			console.error(`failed to sync $facilities via remote`);
+			return [];
 		}
 	};
 

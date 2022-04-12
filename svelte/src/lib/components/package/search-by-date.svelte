@@ -68,70 +68,17 @@
     {submitText}
   </button>
 
-  <p class="toggle-search" on:click={toggleSearch}>
+  <p class="link" on:click={toggleSearch}>
 		{searchText}
 	</p>
 </form>
 
 <style>
-  #date-search {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: center;
-		align-items: center;
-	}
-
-	label {
-		width: 100%;
-		margin-bottom: 1.5em;
-		text-align: left;
-		font-weight: 700;
-	}
-
 	label:last-of-type {
 		margin-bottom: 0.5em;
 	}
 
-  input[type='date'] {
-		padding: 0.5em;
-		width: 95%;
-		max-width: auto;
-		font-size: 1rem;
-		background: none;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 3px;
-	}
-
-	input[disabled] {
-		cursor: not-allowed;
-	}
-
 	button {
 		width: 100%;
-	}
-
-  .toggle-search {
-		color: blue;
-		font-size: 1rem;
-		position: relative;
-	}
-
-	.toggle-search::before {
-		content: '';
-		position: absolute;
-		width: 100%;
-		height: 1px;
-		bottom: -2px;
-		background-color: blue;
-
-		transition: transform 250ms ease-in-out;
-		transform: scale(0);
-		transform-origin: right;
-	}
-
-	.toggle-search:hover::before,
-	.toggle-search:focus-visible::before {
-		transform: scale(1);
-		transform-origin: left;
 	}
 </style>

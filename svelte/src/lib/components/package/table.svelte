@@ -27,6 +27,9 @@
 	const printPackageClicked = (pbcPackage: Package) => {
 		dispatch('print', pbcPackage);
 	};
+
+	const undefinedInmate = { firstName: 'Unavailable', middleInitial: undefined, lastName: 'Unavailable', id: 'No-ID', location: undefined };
+	const resolveInmate = (pbcPackage: Package) => pbcPackage.inmate || pbcPackage.inmateNoId || undefinedInmate;
 </script>
 
 <section id="package-table-container">
@@ -61,26 +64,29 @@
 					{/if}
 				</td>
 				<td class="package-col">
-					{#if !inmate}
-						<h2>
-							Package #{pbcPackage.id}
-						</h2>
-						<h2>
-							{pbcPackage?.inmate?.firstName || pbcPackage?.inmateNoId?.firstName} 
-							{pbcPackage?.inmate?.middleInitial ? pbcPackage.inmate.middleInitial + ' ' : ''}{pbcPackage?.inmate?.lastName || pbcPackage?.inmateNoId?.lastName}
-							{#if pbcPackage?.inmate?.id}
-								#{pbcPackage.inmate.id}
-							{/if}
-						</h2>
-					{/if}
 					<h2>
 						{#if pbcPackage.facility}
-							<em class="facility-name">{pbcPackage.facility.facility_name}</em>,
+							<em class:non-bold={!!(inmate)}>{pbcPackage.facility.facility_name}</em>,
 						{/if}
 						<date>
 							{pbcPackage.date}:
 						</date>
 					</h2>
+					{#if !inmate}
+						<h2 class="non-bold">
+							{resolveInmate(pbcPackage).firstName} 
+							{resolveInmate(pbcPackage).middleInitial ? resolveInmate(pbcPackage).middleInitial + ' ' : ''}{resolveInmate(pbcPackage).lastName}
+							
+							{#if !resolveInmate(pbcPackage)['location']}
+								#{pbcPackage.inmate.id}
+							{:else}
+								(No ID available)
+							{/if}
+							
+							&mdash;
+							Package #{pbcPackage.id} 
+						</h2>
+					{/if}
 					<ul>
 						{#each pbcPackage.books as book}
 							<li>
@@ -139,6 +145,8 @@
 	}
 
 	h2 {
+		color: inherit;
+		text-align: left;
 		font-size: 1rem;
 		margin-bottom: 0;
 		margin-top: 0;
@@ -152,12 +160,13 @@
 		text-align: center;
 	}
 
-	.facility-name {
+	.non-bold {
 		font-weight: normal;
 	}
 
 	.no-packages-message {
 		margin-top: 3em;
+		text-align: center;
 	}
 	.spacer-col {
 		padding: 10px 13px;

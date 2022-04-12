@@ -56,6 +56,7 @@
 	on:close={closeModal}
 	on:cancel={closeModal}
 	confirmCancel={shouldConfirmCancel}
+	confirmCancelText="Are you sure you want to close this window? You will lose all unsaved changes in this package."
 >
 	{#if activeModal == ValidCreatePackageModal.VIEW_PACKAGE}
 		<PackageOverview

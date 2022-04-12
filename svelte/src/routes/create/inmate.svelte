@@ -94,30 +94,3 @@
 		</button>
 	</form>
 </main>
-
-<style lang="scss">
-	form {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: flex-start;
-		align-items: stretch;
-		max-width: 500px;
-	}
-
-	label {
-		width: 100%;
-		margin-bottom: 1.5em;
-		text-align: left;
-		font-weight: 700;
-	}
-
-	input[type='text'] {
-		padding: 0.5em;
-		width: 95%;
-		max-width: auto;
-		font-size: 1rem;
-		background: none;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 3px;
-	}
-</style>

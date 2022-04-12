@@ -165,6 +165,7 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 		try {
 			const packages = await PackageService.getPackagesForDate(date)
 			set(packages);
+			return packages;
 		} catch(error) {
 			console.error(error);
 			console.error(`failed to retrieve packages for Date "${date}" via remote`);
@@ -175,6 +176,7 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 		try {
 			const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
 			set(packages);
+			return packages;
 		} catch(error) {
 			console.error(error);
 			console.error(`failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`);

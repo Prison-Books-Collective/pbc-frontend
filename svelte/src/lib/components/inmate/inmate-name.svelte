@@ -47,8 +47,6 @@
 		<img
 			src={editIcon}
 			class="icon"
-			width="20"
-			height="20"
 			alt="edit icon; click to edit inmate information"
 			on:click={presentModal}
 		/>

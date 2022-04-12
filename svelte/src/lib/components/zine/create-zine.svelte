@@ -49,36 +49,3 @@
 		<button disabled={shouldDisableCreate} class="button-success">Add Zine</button>
 	</form>
 </section>
-
-<style>
-	h2 {
-		font-weight: 600;
-		font-size: 1.25rem;
-		color: darkslategray;
-		text-align: center;
-	}
-
-	form {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: flex-start;
-		align-items: stretch;
-	}
-
-	label {
-		width: 100%;
-		margin-bottom: 1.5em;
-		text-align: left;
-		font-weight: 700;
-	}
-
-	input[type='text'] {
-		padding: 0.5em;
-		width: 95%;
-		max-width: auto;
-		font-size: 1rem;
-		background: none;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 3px;
-	}
-</style>

@@ -62,7 +62,7 @@
 		{/if}
 	</form>
 
-	<p id="toggle-search" on:click={toggleSearch}>
+	<p class="link" on:click={toggleSearch}>
 		{searchText}
 	</p>
 
@@ -77,16 +77,12 @@
 		align-items: center;
 
 		input[type='text'] {
-			background-color: transparent;
 			border: none;
 			font-size: 1.5rem;
 			text-align: center;
 			max-width: 100vw;
 			width: calc(100vw - 5rem);
 			margin-bottom: 1rem;
-		}
-
-		#inmate-id {
 			outline: none;
 		}
 
@@ -95,35 +91,6 @@
 			flex-flow: row nowrap;
 			align-items: center;
 			justify-content: space-between;
-
-			&:disabled {
-				cursor: not-allowed;
-			}
 		}
-	}
-
-	#toggle-search {
-		color: blue;
-		font-size: 1rem;
-		position: relative;
-	}
-
-	#toggle-search::before {
-		content: '';
-		position: absolute;
-		width: 100%;
-		height: 1px;
-		bottom: -2px;
-		background-color: blue;
-
-		transition: transform 250ms ease-in-out;
-		transform: scale(0);
-		transform-origin: right;
-	}
-
-	#toggle-search:hover::before,
-	#toggle-search:focus-visible::before {
-		transform: scale(1);
-		transform-origin: left;
 	}
 </style>

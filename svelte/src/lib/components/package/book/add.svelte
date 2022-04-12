@@ -62,7 +62,7 @@
 </script>
 
 {#if display === DISPLAY_FORM.WITH_ISBN}
-	<form id="search-book" on:submit|preventDefault={loadISBN}>
+	<form on:submit|preventDefault={loadISBN}>
 		<label for="isbn-input">
 			Scan book ISBN
 			<input
@@ -75,7 +75,7 @@
 			/>
 		</label>
 
-		<div class="options">
+		<div>
 			<button class="button-success" disabled={shouldDisableSearch()} type="submit">
 				Search for Book
 			</button>
@@ -86,7 +86,7 @@
 {/if}
 
 {#if display === DISPLAY_FORM.WITHOUT_ISBN}
-	<form id="search-no-isbn" on:submit|preventDefault={saveNoISBNBook}>
+	<form on:submit|preventDefault={saveNoISBNBook}>
 		<p>Fill out the information below and save book (or resource)</p>
 
 		<label for="book-title">
@@ -111,7 +111,7 @@
 			/>
 		</label>
 
-		<div class="options">
+		<div>
 			<button class="button-success" disabled={shouldDisableSearchNoISBN()}>
 				Save Book and Add to Package
 			</button>
@@ -120,30 +120,3 @@
 		</div>
 	</form>
 {/if}
-
-<style lang="scss">
-	#search-book,
-	#search-no-isbn {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: flex-start;
-		align-items: stretch;
-	}
-
-	label {
-		width: 100%;
-		margin-bottom: 1.5em;
-		text-align: left;
-		font-weight: 700;
-	}
-
-	input[type='text'] {
-		padding: 0.5em;
-		width: 95%;
-		max-width: auto;
-		font-size: 1rem;
-		background: none;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 3px;
-	}
-</style>
