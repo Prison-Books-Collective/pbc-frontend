@@ -107,13 +107,14 @@
 
 	label {
 		display: block;
+		margin-bottom: 0.25rem;
 	}
 
 	.filter-input {
 		background: none;
-		font-size: 1.25rem;
-		padding: 0.5em;
-		margin-bottom: 0.5em;
+		font-size: 1.10rem;
+		padding: 0.5rem;
+		margin-bottom: 0.5rem;
 		border-radius: 3px;
 		border: rgba(0, 0, 0, 0.3) 1px solid;
 	}

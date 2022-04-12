@@ -50,17 +50,17 @@
   {#if searchType === SearchType.DATE}
     <label for="date">
       Date
-      <input name="date" id="date" type="date" bind:value={date}>
+      <input name="date" id="date" type="date" bind:value={date} max={new Date().toISOString().split("T")[0]}>
     </label>
   {:else}
     <label for="start-date">
       Start Date
-      <input name="start-date" id="start-date" type="date" bind:value={startDate}>
+      <input name="start-date" id="start-date" type="date" bind:value={startDate} max={endDate}>
     </label>
 
     <label for="end-date">
       End Date
-      <input name="end-date" id="end-date" type="date" bind:value={endDate}>
+      <input name="end-date" id="end-date" type="date" bind:value={endDate} min={startDate} max={new Date().toISOString().split("T")[0]}>
     </label>
   {/if}
 

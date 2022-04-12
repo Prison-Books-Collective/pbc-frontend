@@ -29,10 +29,12 @@
 </script>
 
 <script lang="ts">
+  import { fade } from 'svelte/transition'
   import { focusedPackage, focusedPackages } from '$stores/package'
   import { printPackage } from '$util/routing';
+  import { isEmpty } from '$util/strings';
   import { ValidCreatePackageModal } from "$models/create-package-modal";
-  import type { Package } from "$models/pbc/package";
+  import { stringify, type Package } from "$models/pbc/package";
   
   import filterIcon from '$assets/icons/filter.png'
   import PackageTable from "$lib/components/package/table.svelte";
@@ -49,15 +51,22 @@
   let activeModalParams = {};
 
   let showFilters = false;
+  let filteredPackages = []
 
   let filterByFacilities = false;
   let availableFacilities = [];
   let facilitiesLoaded = new Promise(() => {})
   let filterFacilities = []
-  let filteredPackages = []
 
   let filterByZines = false;
+  let availableZines = [];
   let filterZinesMode: 'all'|'any' = 'any'
+  let filterZinesList = [];
+
+  let filterByKeyword = false;
+  let filterKeywordMode: 'all'|'any' = 'any'
+  let filterKeywordList = [];
+  let keywordInput = '';
 
   $: switch(searchMode) {
     case SearchMode.DATE:
@@ -68,25 +77,36 @@
       break;
   }
 
+  const nullFacility = {
+    id: undefined,
+    facility_name: ' No Facility Provided ',
+    state: '',
+    facility_type: '',
+  }
+
   focusedPackages.subscribe(packages => {
     availableFacilities = [];
-    const nullFacility = {
-      id: undefined,
-      facility_name: ' No Facility Provided ',
-      state: '',
-      facility_type: 'JAIL',
-    }
+    availableZines = [];
     packages.forEach(p => {
       const facility = p.facility
+      const zines = p.zines
       if(!facility && !availableFacilities.includes(nullFacility)) {
         availableFacilities.push(nullFacility);
       }
       if(facility && !availableFacilities.find(f => f.id === facility.id)) {
-        availableFacilities.push(p.facility);
+        availableFacilities.push(facility);
+      }
+      if(zines && zines.length > 0) {
+        zines.forEach(zine => {
+          if(!availableZines.find(z => z.id === zine.id)) {
+            availableZines.push(zine)
+          }
+        })
       }
     })
 
     availableFacilities.sort((a, b) => a.facility_name < b.facility_name ? -1 : 1);
+    availableZines.sort((a, b) => a.threeLetterCode < b.threeLetterCode ? -1 : 1);
     facilitiesLoaded = Promise.resolve()
   })
 
@@ -103,8 +123,81 @@
 
   const toggleShowFilters = () => showFilters = !showFilters
 
-  $: if(filterFacilities && filterFacilities.length > 0) {
-    filteredPackages = $focusedPackages.filter(p => filterFacilities.find(f => f.id === p.facility?.id))
+  const shouldDisableAddKeyword = (keyword) => isEmpty(keyword);
+
+  const addKeyword = (keyword) => {
+    keywordInput = '';
+    keyword = keyword.trim().toLowerCase();
+    if(!filterKeywordList.includes(keyword)) {
+      filterKeywordList = [ ...filterKeywordList, keyword ]
+    }
+  }
+
+  const removeKeyword = (index) => {
+    filterKeywordList.splice(index, 1)
+    filterKeywordList = filterKeywordList
+  }
+
+  $: if(shouldFilter()) {
+    filteredPackages = $focusedPackages
+    
+    if(filterByFacilities && filterFacilities && filterFacilities.length > 0) {
+      filteredPackages = applyFacilityFilter(filteredPackages, filterFacilities);
+    }
+    if(filterByZines && filterZinesList && filterZinesList.length > 0) {
+      filteredPackages = applyZineFilter(filteredPackages, filterZinesList, filterZinesMode);
+    }
+    if(filterByKeyword && filterKeywordList && filterKeywordList.length > 0) {
+      filteredPackages = applyKeywordFilter(filteredPackages, filterKeywordList, filterKeywordMode);
+    }
+  }
+
+  const applyFacilityFilter = (packages, filterFacilities) => {
+    return packages.filter(p => filterFacilities.find(f => f.id === p.facility?.id))
+  }
+
+  const applyZineFilter = (packages, filterZinesList, filterZinesMode: 'any'|'all') => {
+    if(filterZinesMode === 'any') {
+      return packages.filter(p => {
+        if(!p.zines || p.zines.length === 0) return false
+        for(let z of p.zines) {
+          if(filterZinesList.find(fz => fz.id === z.id)) return true
+        }
+        return false
+      })
+    } else {
+      return packages.filter(p => {
+        if(!p.zines || p.zines.length === 0) return false
+        for(let fz of filterZinesList) {
+          if(!p.zines.find(z => fz.id === z.id)) return false;
+        }
+        return true;
+      })
+    }
+  }
+
+  const applyKeywordFilter = (packages, filterKeywordList, filterKeywordMode: 'any'|'all') => {
+    if(filterKeywordMode === 'any') {
+      return packages.filter(p => {
+        const packageString = stringify(p)
+        for(let keyword of filterKeywordList) {
+          if(packageString.includes(keyword)) return true
+        }
+        return false
+      })
+    } else {
+      return packages.filter(p => {
+        const packageString = stringify(p)
+        for(let keyword of filterKeywordList) {
+          if(!packageString.includes(keyword)) return false
+        }
+        return true
+      })
+    }
+  }
+
+  $: shouldFilter = () => {
+    return filterByFacilities || filterByZines || filterByKeyword;
   }
 </script>
 
@@ -118,10 +211,10 @@
         Displaying results for &emsp;
       </h2>
       {#if searchMode === SearchMode.DATE}
-        <input type="date" bind:value={date}/>
+        <input type="date" bind:value={date} max={new Date().toISOString().split("T")[0]}/>
       {:else if searchMode === SearchMode.DATE_RANGE}
-        <input type="date" bind:value={startDate}/>
-        <input type="date" bind:value={endDate}/>
+        <input type="date" bind:value={startDate} max={endDate}/>
+        <input type="date" bind:value={endDate} min={startDate} max={new Date().toISOString().split("T")[0]}/>
       {/if}
 
       <img
@@ -136,34 +229,87 @@
     </header>
   {/if}
 
-
-  <section id="filters" class:active={showFilters}>
+  {#if showFilters}
+  <section id="filters" transition:fade>
     <label for="facility-select">
       <input type="checkbox" id="facility-select" bind:checked={filterByFacilities}/>
       Filter by Facility
+      {#if filterByFacilities}
       {#await facilitiesLoaded then}
         <FacilitySelect multiple disabled={!filterByFacilities} facilityList={availableFacilities} bind:multipleFacilities={filterFacilities}/>
       {/await}
+      {/if}
     </label>
 
     <label for="zine-select">
       <input type="checkbox" id="zine-select" bind:checked={filterByZines}/>
       Filter by Zines
     </label>
-    <div id="zine-options">
+    {#if filterByZines}
+    <div class="options">
       <label for="any-zines" class="non-bold" class:disabled={!filterByZines}>
         <input type="radio" id="any-zines" value="any" disabled={!filterByZines} bind:group={filterZinesMode}/>
-        May contain <strong class="any">Any</strong> of the Zines
+        Contains <strong class="any">Any</strong> of the Zines
       </label>
       <label for="all-zines" class="non-bold" class:disabled={!filterByZines}>
         <input type="radio" id="all-zines" value="all" disabled={!filterByZines} bind:group={filterZinesMode}/>
-        Must contain <strong class="all">All</strong> of the Zines
+        Contains <strong class="all">All</strong> of the Zines
       </label>
     </div>
+
+    <section class="keywords">
+      {#each availableZines as zine}
+        <label for={zine.id} class="zine-item">
+          <input type="checkbox" id={zine.id} bind:group={filterZinesList} value={zine}/>
+          {zine.threeLetterCode} &mdash; {zine.title}
+        </label>
+      {/each}
+    </section>
+    {/if}
+
+    <label for="keyword-select">
+      <input type="checkbox" id="keyword-select" bind:checked={filterByKeyword}/>
+      Filter by Keywords
+    </label>
+    
+    {#if filterByKeyword}
+      <div class="options">
+        <label for="any-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+          <input type="radio" id="any-keywords" value="any" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
+          Contains <strong class="any">Any</strong> of the Keywords
+        </label>
+        <label for="all-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+          <input type="radio" id="all-keywords" value="all" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
+          Contains <strong class="all">All</strong> of the Keywords
+        </label>
+      </div>
+      
+      <form on:submit|preventDefault={() => addKeyword(keywordInput)}>
+        <label for="keyword-input">
+          Keyword <span class="light-text">(<em>All or part of: Author, Title, ISBN, Inmate Name, etc.</em>)</span>
+          <div class="options">
+            <input id="keyword-input" type="text" bind:value={keywordInput} placeholder="Keyword"/>
+            <button class="button-success" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>Add</button>
+          </div>
+        </label>
+      </form>
+
+      {#if filterKeywordList && filterKeywordList.length > 0}
+      <section class="keywords">
+        {#each filterKeywordList as keyword, index}
+          <span class="chip">
+            {keyword}
+            <button class="chip-close" on:click={() => removeKeyword(index)}>&times;</button>
+          </span>
+        {/each}
+      </section>
+      {/if}
+    {/if}
   </section>
+  {/if}
 
   <PackageTable 
-    packages={filterByFacilities && filteredPackages && filteredPackages.length > 0 ? filteredPackages : $focusedPackages}
+    packages={shouldFilter() ? filteredPackages : $focusedPackages}
     on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
     on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
     on:alert={({ detail: pbcPackage }) => presentAlertModal(pbcPackage)}/>
@@ -202,20 +348,20 @@
     border: solid 1px black;
     transition-duration: 0.3s;
 
-    transform-origin: top;
-    transform: scale(1, 0);
-    opacity: 0;
-    margin-bottom: -12rem;
+    // transform-origin: top;
+    // transform: scale(1, 0);
+    // opacity: 0;
+    // margin-bottom: -12rem;
 
     display: flex;
     flex-flow: column nowrap;
   }
 
-  #filters.active {
-    margin-bottom: 0px;
-    transform: scale(1, 1);
-    opacity: 1;
-  }
+  // #filters.active {
+  //   margin-bottom: 0px;
+  //   transform: scale(1, 1);
+  //   opacity: 1;
+  // }
 
   input[type=date] {
     flex-basis: 10rem;
@@ -253,15 +399,80 @@
     opacity: 0.4;
   }
 
-  [for=any-zines], [for=all-zines] {
+  [for^=any-], [for^=all-] {
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 3px;
     padding: 0.25rem;
   }
 
-  #zine-options {
+  input[type=text] {
+    width: auto;
+    flex-basis: 100%;
+  }
+
+  .options {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
     gap: 1rem;
+  }
+
+  .button-success {
+    margin: 0px;
+  }
+
+  .options.vertical {
+    flex-flow: column nowrap;
+  }
+
+  .keywords {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    // align-items: center;
+    // min-height: 3rem;
+    padding: 1rem;
+    border: 1px dashed rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    margin-bottom: 1rem;
+    gap: 1rem;
+
+    max-height: 10rem;
+    overflow-y: scroll;
+  }
+
+  .chip {
+    background-color: #444;
+    color: #EAEAEA;
+    padding: 0.5rem;
+    padding-inline: 1.25rem;
+    border-radius: 16px;
+  }
+
+  form {
+    display: contents;
+    margin-bottom: 0px;
+  }
+
+  .chip-close {
+    margin: 0px;
+    width: 1ch;
+    padding: 0px;
+    padding-inline: 15px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+    color: #EAEAEA;
+  }
+
+  .light-text {
+    font-weight: normal;
+    opacity: 0.6;
+  }
+
+  .zine-item {
+    margin: 0rem;
   }
 </style>

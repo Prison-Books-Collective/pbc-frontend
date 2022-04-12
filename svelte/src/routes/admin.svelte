@@ -58,13 +58,6 @@
 				Search by Book
 			</button>
 		</form> -->
-
-		<!-- <form>
-			<FacilitySelect/>
-			<button>
-				Search by Facility
-			</button>
-		</form> -->
 	</section>
 
 	<section>

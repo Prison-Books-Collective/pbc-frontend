@@ -12,7 +12,6 @@
 		: Promise.resolve($focusedPackage);
 
 	packageLoaded.then((pbcPackage) => {
-		console.log({ pbcPackage });
 		if (!pbcPackage.alert) {
 			focusedPackage.createAlert('');
 		}

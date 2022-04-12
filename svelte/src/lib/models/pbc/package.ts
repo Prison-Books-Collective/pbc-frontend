@@ -17,3 +17,19 @@ export interface Package {
 	facility?: Facility;
 	date: string;
 }
+
+export const stringify = (p: Package) => {
+	const inmate = p.inmate || p.inmateNoId || null
+	return `
+		${p.id}
+		${p.date}
+		${p.alert?.information || ''}
+		${p.facility?.facility_name || ''} ${p.facility?.facility_type || ''} ${p.facility?.state || ''}
+		${p.books?.map(b => `${b.title} ${b.authors.join(' ')} ${b.isbn10} ${b.isbn13}`).join(' ') || ''}
+		${p.noISBNBooks?.map(b => `${b.title} ${b.authors.join(' ')}`).join(' ') || ''}
+		${p.zines?.map(z => `${z.threeLetterCode} ${z.title}`).join(' ') || ''}
+		${inmate?.id || ''}
+		${inmate?.firstName || ''} ${inmate?.middleInitial ? inmate?.middleInitial + ' ' : ''}${inmate?.lastName || ''}
+		${inmate?.location || ''}
+	`.replace(/(\s+)/, '').trim().toLowerCase()
+}
