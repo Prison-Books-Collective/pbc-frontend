@@ -15,7 +15,12 @@
 				props['startDate'] = getQueryParam(url, 'start date') || formatDate(new Date());
 				props['endDate'] = getQueryParam(url, 'end date') || formatDate(new Date());
 				break;
-			case SearchMode.BOOK:
+			case SearchMode.ISBN:
+				props['isbn'] = url.searchParams.get('isbn') || null;
+				break;
+			case SearchMode.AUTHOR_AND_TITLE:
+				props['author'] = url.searchParams.get('author') || null;
+				props['title'] = url.searchParams.get('title') || null;
 				break;
 		}
 
@@ -30,6 +35,7 @@
 	import { isEmpty } from '$util/strings';
 	import { ValidCreatePackageModal } from '$models/create-package-modal';
 	import { resolveInmate, stringify, type Package } from '$models/pbc/package';
+	import type { Book } from '$models/pbc/book';
 
 	import filterIcon from '$assets/icons/filter.png';
 	import PackageTable from '$lib/components/package/table.svelte';
@@ -42,9 +48,14 @@
 	export let startDate: string = formatDate(new Date());
 	export let endDate: string = formatDate(new Date());
 
+	export let isbn = '';
+	export let [author, title] = ['', ''];
+
 	let activeModal: ValidCreatePackageModal;
 	let activeModalParams = {};
 	let selectedInmate = null;
+
+	let book: Book;
 
 	let showFilters = false;
 	let filteredPackages = [];
@@ -67,13 +78,41 @@
 	let filterByRejected = false;
 	let filterRejectedMode: 'only' | 'remove' = 'only';
 
-	$: switch (searchMode) {
-		case SearchMode.DATE:
-			focusedPackages.fetchForDate(date);
-			break;
-		case SearchMode.DATE_RANGE:
-			focusedPackages.fetchForDateRange(startDate, endDate);
-			break;
+	$: {
+		loadPackages(searchMode)
+		;[date, startDate, endDate, isbn, author, title];
+	}
+
+	const findBook = (searchMode) => (packages) => {
+		console.log('searching for the book')
+		if(packages && packages.length > 0) {
+			let p = packages[0];
+			if(searchMode === SearchMode.AUTHOR_AND_TITLE && p.noISBNBooks && p.noISBNBooks.length > 0) {
+				const matchingBook = p.noISBNBooks.find(book => book.authors.map(s => s.toLowerCase()).join(',').includes(author.toLowerCase()) && book.title.toLowerCase().includes(title.toLowerCase()));
+				if(matchingBook) {
+					book = matchingBook;
+					return;
+				}
+			}
+
+			if(searchMode === SearchMode.AUTHOR_AND_TITLE) {
+				console.log('searching by author and title through book books')
+				const matchingBook = p.books.find(book => book.authors.map(s => s.toLowerCase()).join(',').includes(author.toLowerCase()) && book.title.toLowerCase().includes(title.toLowerCase()));
+				if(matchingBook) {
+					book = matchingBook;
+					return;
+				}
+			}
+
+			if(searchMode === SearchMode.ISBN) {
+				const matchingBook = p.books.find(book => book.isbn10 === isbn || book.isbn13 === isbn);
+				console.log(matchingBook)
+				if(matchingBook) {
+					book = matchingBook;
+					return;
+				}
+			}
+		}
 	}
 
 	const nullFacility = {
@@ -91,6 +130,14 @@
 			case SearchMode.DATE_RANGE:
 				focusedPackages.fetchForDateRange(startDate, endDate);
 				break;
+			case SearchMode.ISBN:
+				if(!isEmpty(isbn)) {
+					focusedPackages.fetchForISBN(isbn).then(findBook(searchMode));
+				}
+			case SearchMode.AUTHOR_AND_TITLE:
+				if(!isEmpty(author) && !isEmpty(title)) {
+					focusedPackages.fetchForAuthorAndTitle(author, title).then(findBook(searchMode));
+				}
 		}
 	};
 	const parsePackages = (packages: Package[]) => {
@@ -254,6 +301,24 @@
 				/>
 			{/if}
 
+			<img
+				src={filterIcon}
+				class="icon filter-icon active"
+				class:active={showFilters}
+				width="20"
+				height="20"
+				alt="filter icon; click to filter the list of packages"
+				on:click={toggleShowFilters}
+			/>
+		</header>
+	{/if}
+
+	{#if (searchMode === SearchMode.ISBN || searchMode === SearchMode.AUTHOR_AND_TITLE) && book}
+		<header id="book-header">
+			<h2>Displaying results for &emsp;</h2>
+			<h2 class="book-title">{book.title}</h2>
+			<span class="book-text"> by </span>
+			<h2 class="book-author">{book.authors?.[0]}</h2>
 			<img
 				src={filterIcon}
 				class="icon filter-icon active"
@@ -440,36 +505,25 @@
 		font-weight: normal;
 	}
 
-	#date-header {
+	#date-header, #book-header {
 		display: flex;
 		flex-flow: row nowrap;
 		align-items: baseline;
 		justify-content: center;
+		gap: 1rem;
 	}
 
 	#filters {
 		border-radius: 3px;
 		max-width: 100vw;
-		// height: 10rem;
 		padding: 1rem;
 		padding-bottom: 0px;
 		border: solid 1px black;
 		transition-duration: 0.3s;
 
-		// transform-origin: top;
-		// transform: scale(1, 0);
-		// opacity: 0;
-		// margin-bottom: -12rem;
-
 		display: flex;
 		flex-flow: column nowrap;
 	}
-
-	// #filters.active {
-	//   margin-bottom: 0px;
-	//   transform: scale(1, 1);
-	//   opacity: 1;
-	// }
 
 	input[type='date'] {
 		flex-basis: 10rem;
@@ -533,16 +587,10 @@
 		margin: 0px;
 	}
 
-	.options.vertical {
-		flex-flow: column nowrap;
-	}
-
 	.keywords {
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-start;
-		// align-items: center;
-		// min-height: 3rem;
 		padding: 1rem;
 		border: 1px dashed rgba(0, 0, 0, 0.3);
 		border-radius: 3px;

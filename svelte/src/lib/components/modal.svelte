@@ -142,13 +142,10 @@
 
 	#modal {
 		background-color: #eaeaea;
-		// padding: 1em 3em;
 		z-index: 100;
 		box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
 
 		border-radius: 3px;
-
-		// max-height: 80vh !important;
 		overflow-y: scroll;
 
 		transition-duration: 0.3s;
@@ -171,7 +168,6 @@
 		}
 
 		.content {
-			// position: relative;
 			grid-area: content;
 			display: flex;
 			flex-flow: column nowrap;
@@ -179,8 +175,6 @@
 			align-items: center;
 			padding: 1.5em;
 			padding-top: 0.5em;
-
-			// max-height: 60vh !important;
 			overflow-y: scroll;
 		}
 

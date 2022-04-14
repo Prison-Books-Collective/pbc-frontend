@@ -184,13 +184,41 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 		}
 	};
 
+	const fetchForISBN = async (isbn: string) => {
+		try {
+			const packages = await PackageService.getPackagesForISBN(isbn);
+			set(packages);
+			return packages;
+		} catch (error) {
+			console.error(error)
+			console.error(
+				`failed to retrieve packages containing ISBN "${isbn}" via remote`
+			);
+		}
+	}
+
+	const fetchForAuthorAndTitle = async (author: string, title: string) => {
+		try {
+			const packages = await PackageService.getPackagesForAuthorAndTitle(author, title);
+			set(packages);
+			return packages;
+		} catch (error) {
+			console.error(error)
+			console.error(
+				`failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`
+			);
+		}
+	}
+
 	return {
 		subscribe,
 		set,
 
 		fetchForInmate,
 		fetchForDate,
-		fetchForDateRange
+		fetchForDateRange,
+		fetchForISBN,
+		fetchForAuthorAndTitle,
 	};
 };
 

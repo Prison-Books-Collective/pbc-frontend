@@ -1,5 +1,6 @@
 export enum SearchMode {
 	DATE = 'by-date',
 	DATE_RANGE = 'by-date-range',
-	BOOK = 'by-book'
+	ISBN = 'by-isbn',
+	AUTHOR_AND_TITLE = 'by-author-and-title'
 }

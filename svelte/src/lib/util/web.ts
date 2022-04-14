@@ -20,7 +20,6 @@ export const uriQueryJoin = (queryMap: any) => {
 };
 
 // attempts to retrieve query parameter regardless of the format it may have been provided in
-//
 // expects paramName to contain spaces between words; ie: field name "firstName" would be input as "first name"
 export const getQueryParam = (url: URL, paramName: string, ...aliases: string[]) => {
 	const paramParts = paramName.split(' ').map((s) => s.toLowerCase());

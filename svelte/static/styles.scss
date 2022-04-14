@@ -231,9 +231,9 @@ input[disabled] {
 }
 
 @media print {
-	// .page-break {
-	// 	page-break-after: always;
-	// }
+	.page-break {
+		page-break-after: always;
+	}
 
 	#nav-primary,
 	#nav-spacer {

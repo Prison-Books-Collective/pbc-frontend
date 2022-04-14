@@ -21,6 +21,10 @@ export class PackageService {
 		`${BASE_PBC_URI}/getPackagesFromDate?date=${date}`;
 	public static readonly URI_GET_PACKAGES__BY_DATE_RANGE = (startDate: string, endDate: string) =>
 		`${BASE_PBC_URI}/getPackagesBetweenDates?startDate=${startDate}&endDate=${endDate}`;
+	public static readonly URI_GET_PACKAGES__BY_ISBN = (isbn: string) =>
+		`${BASE_PBC_URI}/getPackagesByISBN?isbn=${isbn}`
+	public static readonly URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE = (author: string, title: string) =>
+		`${BASE_PBC_URI}/getPackagesByAuthorAndTitle?author=${author}&title=${title}`
 
 	public static async getPackage(packageId: number): Promise<Package> {
 		const response = await fetch(this.URI_GET_PACKAGE(packageId), { ...METHOD_GET });
@@ -183,6 +187,41 @@ export class PackageService {
 
 		return ((await response.json()) as Package[]).sort(packageSortByDate);
 	}
+
+	public static async getPackagesForISBN(isbn: string): Promise<Package[]> {
+		const response = await fetch(this.URI_GET_PACKAGES__BY_ISBN(isbn), {
+			...METHOD_GET
+		});
+
+		if (response.status === 204) return [];
+		if (response.status !== 200) {
+			throw new Error(
+				`unexpected response ${
+					response.status
+				} when retrieving packages containing isbn using input "${isbn}" at "${this.URI_GET_PACKAGES__BY_ISBN(isbn)}"`
+			);
+		}
+
+		return ((await response.json()) as Package[]).sort(packageSortByDate);
+	}
+
+	public static async getPackagesForAuthorAndTitle(author: string, title: string): Promise<Package[]> {
+		const response = await fetch(this.URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE(author, title), {
+			...METHOD_GET
+		});
+
+		if (response.status === 204) return [];
+		if (response.status !== 200) {
+			throw new Error(
+				`unexpected response ${
+					response.status
+				} when retrieving packages containing "${title}" by author "${author}" at "${this.URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE(author, title)}"`
+			);
+		}
+
+		return ((await response.json()) as Package[]).sort(packageSortByDate);
+	}
+
 }
 
 const packageSortByDate = (packageA: Package, packageB: Package) => {
