@@ -112,7 +112,7 @@
 	}
 
 	button {
-		margin: 0px;
+		margin-inline: 0px;
 		width: 100%;
 	}
 </style>

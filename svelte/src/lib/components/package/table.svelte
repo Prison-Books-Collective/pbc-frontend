@@ -41,7 +41,7 @@
 	{:else}
 		<table id="packageTable">
 			<tr>
-				<th>!</th>
+				<th style="width: 3ch;">!</th>
 				<th>Package</th>
 				<th>Edit</th>
 				<th>Print</th>
@@ -139,7 +139,7 @@
 
 	table {
 		width: 100%;
-		max-width: 800px;
+		// max-width: 800px;
 	}
 
 	h2 {

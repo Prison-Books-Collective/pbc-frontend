@@ -75,7 +75,7 @@
 			/>
 		</label>
 
-		<div>
+		<div class="options">
 			<button class="button-success" disabled={shouldDisableSearch()} type="submit">
 				Search for Book
 			</button>
@@ -111,7 +111,7 @@
 			/>
 		</label>
 
-		<div>
+		<div class="options">
 			<button class="button-success" disabled={shouldDisableSearchNoISBN()}>
 				Save Book and Add to Package
 			</button>
@@ -120,3 +120,17 @@
 		</div>
 	</form>
 {/if}
+
+<style>
+	.options {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+	}
+	button {
+		flex-grow: 1;
+		margin: 0;
+	}
+</style>

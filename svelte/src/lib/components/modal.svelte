@@ -61,7 +61,7 @@
 		<div id="background" on:click|self={close} />
 		<div
 			id="modal"
-			style={`width: ${width}; max-width: ${maxWidth}; height: ${height}; max-height: ${maxHeight}`}
+			style:width style:maxWidth style:height style:maxHeight
 		>
 			{#if !!closeSide && closeSide != 'none'}
 				{#if closeSide === 'left'}
@@ -144,9 +144,9 @@
 		background-color: #eaeaea;
 		z-index: 100;
 		box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
-
+		overflow: auto;
 		border-radius: 3px;
-		overflow-y: scroll;
+		max-height: 90vh;
 
 		transition-duration: 0.3s;
 		display: grid;
@@ -175,7 +175,6 @@
 			align-items: center;
 			padding: 1.5em;
 			padding-top: 0.5em;
-			overflow-y: scroll;
 		}
 
 		.content-extra-padding {
@@ -196,6 +195,21 @@
 		.space-top,
 		.space-bottom {
 			width: 100%;
+		}
+	}
+
+	@media (max-width: 500px) {
+		#modal {
+			position: absolute;
+			top: 20px;
+			left: 0px;
+			right: 0px;
+			bottom: 20px;
+			border-radius: 0px;
+			max-width: 100vw;
+			width: 100vw;
+			max-height: 100vh;
+			overflow: auto;
 		}
 	}
 </style>

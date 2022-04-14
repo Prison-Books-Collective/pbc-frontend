@@ -56,6 +56,7 @@
 	let selectedInmate = null;
 
 	let book: Book;
+	let loading = true;
 
 	let showFilters = false;
 	let filteredPackages = [];
@@ -83,8 +84,11 @@
 		;[date, startDate, endDate, isbn, author, title];
 	}
 
+	const doneLoading = () => {
+		loading = false;
+	}
+
 	const findBook = (searchMode) => (packages) => {
-		console.log('searching for the book')
 		if(packages && packages.length > 0) {
 			let p = packages[0];
 			if(searchMode === SearchMode.AUTHOR_AND_TITLE && p.noISBNBooks && p.noISBNBooks.length > 0) {
@@ -96,7 +100,6 @@
 			}
 
 			if(searchMode === SearchMode.AUTHOR_AND_TITLE) {
-				console.log('searching by author and title through book books')
 				const matchingBook = p.books.find(book => book.authors.map(s => s.toLowerCase()).join(',').includes(author.toLowerCase()) && book.title.toLowerCase().includes(title.toLowerCase()));
 				if(matchingBook) {
 					book = matchingBook;
@@ -106,7 +109,6 @@
 
 			if(searchMode === SearchMode.ISBN) {
 				const matchingBook = p.books.find(book => book.isbn10 === isbn || book.isbn13 === isbn);
-				console.log(matchingBook)
 				if(matchingBook) {
 					book = matchingBook;
 					return;
@@ -125,18 +127,22 @@
 	const loadPackages = (searchMode: SearchMode) => {
 		switch (searchMode) {
 			case SearchMode.DATE:
-				focusedPackages.fetchForDate(date);
+				focusedPackages.fetchForDate(date).then(doneLoading);
+				loading = true;
 				break;
 			case SearchMode.DATE_RANGE:
-				focusedPackages.fetchForDateRange(startDate, endDate);
+				focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading);
+				loading = true;
 				break;
 			case SearchMode.ISBN:
 				if(!isEmpty(isbn)) {
-					focusedPackages.fetchForISBN(isbn).then(findBook(searchMode));
+					focusedPackages.fetchForISBN(isbn).then(findBook(searchMode)).then(doneLoading);
+					loading = true;
 				}
 			case SearchMode.AUTHOR_AND_TITLE:
 				if(!isEmpty(author) && !isEmpty(title)) {
-					focusedPackages.fetchForAuthorAndTitle(author, title).then(findBook(searchMode));
+					focusedPackages.fetchForAuthorAndTitle(author, title).then(findBook(searchMode)).then(doneLoading);
+					loading = true;
 				}
 		}
 	};
@@ -483,13 +489,17 @@
 			{/if}
 		</section>
 	{/if}
-
+	
+	{#if loading}
+		<h2>Loading</h2>
+	{:else}
 	<PackageTable
 		packages={shouldFilter() ? filteredPackages : $focusedPackages}
 		on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
 		on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
 		on:alert={({ detail: pbcPackage }) => presentAlertModal(pbcPackage)}
 	/>
+	{/if}
 </main>
 
 <style lang="scss">
@@ -526,7 +536,6 @@
 
 	#filters {
 		border-radius: 3px;
-		max-width: 100vw;
 		padding: 1rem;
 		padding-bottom: 0px;
 		border: solid 1px black;

@@ -58,44 +58,50 @@
 </script>
 
 {#if $focusedInmate}
-	<form id="edit-inmate" on:submit|preventDefault={() => updateInmateRecord($focusedInmate)}>
-		<h1>Edit Inmate Record</h1>
+	<section>
+		<form id="edit-inmate" on:submit|preventDefault={() => updateInmateRecord($focusedInmate)}>
+			<h1>Edit Inmate Record</h1>
 
-		{#if !isInmateNoID($focusedInmate)}
-			<label for="inmate-number">
-				Inmate ID:
-				<input
-					type="text"
-					name="inmate-number"
-					placeholder="Inmate ID"
-					disabled
-					bind:value={$focusedInmate.id}
-				/>
+			{#if !isInmateNoID($focusedInmate)}
+				<label for="inmate-number">
+					Inmate ID:
+					<input
+						type="text"
+						name="inmate-number"
+						placeholder="Inmate ID"
+						disabled
+						bind:value={$focusedInmate.id}
+					/>
+				</label>
+			{/if}
+
+			<label for="first-name">
+				First Name:
+				<input type="text" name="first-name" placeholder="First Name" bind:value={updateFirstName} />
 			</label>
-		{/if}
 
-		<label for="first-name">
-			First Name:
-			<input type="text" name="first-name" placeholder="First Name" bind:value={updateFirstName} />
-		</label>
-
-		<label for="last-name">
-			Last Name:
-			<input type="text" name="last-name" placeholder="Last Name" bind:value={updateLastName} />
-		</label>
-
-		{#if isInmateNoID($focusedInmate) && updateLocation}
-			<label for="facility">
-				Facility:
-				<FacilitySelect selected={$focusedInmate.location} bind:facility={updateLocation} />
+			<label for="last-name">
+				Last Name:
+				<input type="text" name="last-name" placeholder="Last Name" bind:value={updateLastName} />
 			</label>
-		{/if}
 
-		<button disabled={shouldDisableForm()}> Update Inmate Record </button>
-	</form>
+			{#if isInmateNoID($focusedInmate) && updateLocation}
+				<label for="facility">
+					Facility:
+					<FacilitySelect selected={$focusedInmate.location} bind:facility={updateLocation} />
+				</label>
+			{/if}
+
+			<button class="slim" disabled={shouldDisableForm()}>Update Inmate Record</button>
+		</form>
+	</section>
 {/if}
 
 <style lang="scss">
+	section {
+		max-width: 100%;
+		width: 400px;
+	}
 	button {
 		width: 100%;
 	}

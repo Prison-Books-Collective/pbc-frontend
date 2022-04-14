@@ -194,4 +194,15 @@
 		font-size: 2rem;
 		margin-bottom: 0.25rem;
 	}
+
+	.book-options {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: center;
+	}
+
+	button {
+		flex-grow: 1;
+	}
 </style>

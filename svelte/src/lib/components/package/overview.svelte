@@ -186,9 +186,13 @@
 
 	.package-options {
 		display: flex;
-		flex-flow: row nowrap;
+		flex-flow: row wrap;
 		justify-content: space-around;
 		align-items: center;
+	}
+
+	button {
+		flex-grow: 1;
 	}
 
 	h1 {
