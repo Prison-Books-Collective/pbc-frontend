@@ -99,3 +99,11 @@ export const searchByDate = (date: string) => {
 export const searchByDateRange = (startDate: string, endDate: string) => {
 	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date-range', params: { startDate, endDate } }));
 };
+
+export const searchByISBN = (isbn: string) => {
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-isbn', params: { isbn }}));
+}
+
+export const searchByAuthorAndTitle = (author: string, title: string) => {
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-author-and-title', params: { author, title }}));
+}

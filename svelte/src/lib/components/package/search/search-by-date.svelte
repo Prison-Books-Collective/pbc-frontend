@@ -84,12 +84,33 @@
 	</p>
 </form>
 
-<style>
-	label:last-of-type {
-		margin-bottom: 0.5em;
+<style lang="scss">
+	#date-search {
+		max-width: 400px;
+		width: 100%;
+	}
+
+	label {
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: stretch;
+
+		&:last-of-type {
+			margin-bottom: 0.5em;
+		}
+	}
+
+	input[type=date] {
+		width: auto;
 	}
 
 	button {
 		width: 100%;
+		margin: 0px;
 	}
+
+	p {
+		width: fit-content;
+		margin-inline: auto;
+  }
 </style>
