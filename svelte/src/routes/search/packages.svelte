@@ -64,6 +64,9 @@
 	let filterKeywordList = [];
 	let keywordInput = '';
 
+	let filterByRejected = false;
+	let filterRejectedMode: 'only' | 'remove' = 'only';
+
 	$: switch (searchMode) {
 		case SearchMode.DATE:
 			focusedPackages.fetchForDate(date);
@@ -162,6 +165,9 @@
 		if (filterByKeyword && filterKeywordList && filterKeywordList.length > 0) {
 			filteredPackages = applyKeywordFilter(filteredPackages, filterKeywordList, filterKeywordMode);
 		}
+		if (filterByRejected) {
+			filteredPackages = applyRejectionFilter(filteredPackages, filterRejectedMode)
+		}
 	}
 
 	focusedPackages.subscribe(parsePackages);
@@ -210,8 +216,14 @@
 		}
 	};
 
+	const applyRejectionFilter = (packages, rejectionFilterMode: 'only' | 'remove') => {
+		return rejectionFilterMode === 'only'
+			? packages.filter(p => p.alert)
+			: packages.filter(p => !p.alert)
+	}
+
 	$: shouldFilter = () => {
-		return filterByFacilities || filterByZines || filterByKeyword;
+		return filterByFacilities || filterByZines || filterByKeyword || filterByRejected;
 	};
 
 	const refresh = (searchMode: SearchMode) => {
@@ -370,6 +382,36 @@
 					</section>
 				{/if}
 			{/if}
+
+			<label for="rejected">
+				<input type="checkbox" id="rejected" bind:checked={filterByRejected}/>
+				Filter by Rejection Status
+			</label>
+
+			{#if filterByRejected}
+				<div class="options">
+					<label for="only-rejected" class="non-bold" class:disabled={!filterByRejected}>
+						<input
+							type="radio"
+							id="only-rejected"
+							value="only"
+							disabled={!filterByRejected}
+							bind:group={filterRejectedMode}
+						/>
+						<strong>Only</strong> Rejected Packages
+					</label>
+					<label for="remove-rejected" class="non-bold" class:disabled={!filterByRejected}>
+						<input
+							type="radio"
+							id="remove-rejected"
+							value="remove"
+							disabled={!filterByRejected}
+							bind:group={filterRejectedMode}
+						/>
+						<strong>Remove</strong> Rejected Packages
+					</label>
+				</div>
+			{/if}
 		</section>
 	{/if}
 
@@ -466,7 +508,9 @@
 	}
 
 	[for^='any-'],
-	[for^='all-'] {
+	[for^='all-'],
+	[for^='only-'],
+	[for^='remove-'] {
 		border: 1px solid rgba(0, 0, 0, 0.3);
 		border-radius: 3px;
 		padding: 0.25rem;
