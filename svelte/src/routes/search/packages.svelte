@@ -337,7 +337,7 @@
 
 	{#if showFilters}
 		<section id="filters" transition:fade>
-			<label for="facility-select">
+			<label for="facility-select" class="checkbox">
 				<input type="checkbox" id="facility-select" bind:checked={filterByFacilities} />
 				Filter by Facility
 				{#if filterByFacilities}
@@ -352,13 +352,13 @@
 				{/if}
 			</label>
 
-			<label for="zine-select">
+			<label for="zine-select" class="checkbox">
 				<input type="checkbox" id="zine-select" bind:checked={filterByZines} />
 				Filter by Zines
 			</label>
 			{#if filterByZines}
 				<div class="options">
-					<label for="any-zines" class="non-bold" class:disabled={!filterByZines}>
+					<label for="any-zines" class="non-bold checkbox" class:disabled={!filterByZines}>
 						<input
 							type="radio"
 							id="any-zines"
@@ -368,7 +368,7 @@
 						/>
 						Contains <strong class="any">Any</strong> of the Zines
 					</label>
-					<label for="all-zines" class="non-bold" class:disabled={!filterByZines}>
+					<label for="all-zines" class="non-bold checkbox" class:disabled={!filterByZines}>
 						<input
 							type="radio"
 							id="all-zines"
@@ -382,7 +382,7 @@
 
 				<section class="keywords">
 					{#each availableZines as zine}
-						<label for={zine.id} class="zine-item">
+						<label for={zine.id} class="zine-item checkbox">
 							<input type="checkbox" id={zine.id} bind:group={filterZinesList} value={zine} />
 							{zine.threeLetterCode} &mdash; {zine.title}
 						</label>
@@ -390,14 +390,14 @@
 				</section>
 			{/if}
 
-			<label for="keyword-select">
+			<label for="keyword-select" class="checkbox">
 				<input type="checkbox" id="keyword-select" bind:checked={filterByKeyword} />
 				Filter by Keywords
 			</label>
 
 			{#if filterByKeyword}
 				<div class="options">
-					<label for="any-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+					<label for="any-keywords" class="non-bold checkbox" class:disabled={!filterByKeyword}>
 						<input
 							type="radio"
 							id="any-keywords"
@@ -407,7 +407,7 @@
 						/>
 						Contains <strong class="any">Any</strong> of the Keywords
 					</label>
-					<label for="all-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+					<label for="all-keywords" class="non-bold checkbox" class:disabled={!filterByKeyword}>
 						<input
 							type="radio"
 							id="all-keywords"
@@ -452,14 +452,14 @@
 				{/if}
 			{/if}
 
-			<label for="rejected">
+			<label for="rejected" class="checkbox">
 				<input type="checkbox" id="rejected" bind:checked={filterByRejected}/>
 				Filter by Rejection Status
 			</label>
 
 			{#if filterByRejected}
 				<div class="options">
-					<label for="only-rejected" class="non-bold" class:disabled={!filterByRejected}>
+					<label for="only-rejected" class="non-bold checkbox" class:disabled={!filterByRejected}>
 						<input
 							type="radio"
 							id="only-rejected"
@@ -469,7 +469,7 @@
 						/>
 						<strong>Only</strong> Rejected Packages
 					</label>
-					<label for="remove-rejected" class="non-bold" class:disabled={!filterByRejected}>
+					<label for="remove-rejected" class="non-bold checkbox" class:disabled={!filterByRejected}>
 						<input
 							type="radio"
 							id="remove-rejected"

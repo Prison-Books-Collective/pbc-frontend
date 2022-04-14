@@ -49,3 +49,15 @@
 		<button disabled={shouldDisableCreate} class="button-success">Add Zine</button>
 	</form>
 </section>
+
+<style>
+	section {
+		max-width: 400px;
+		width: 100%;
+	}
+
+	button {
+		width: 100%;
+		margin: 0px;
+	}
+</style>

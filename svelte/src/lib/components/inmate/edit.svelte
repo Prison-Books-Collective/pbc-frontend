@@ -96,10 +96,6 @@
 {/if}
 
 <style lang="scss">
-	label:last-of-type {
-		margin-bottom: 0.5em;
-	}
-
 	button {
 		width: 100%;
 	}

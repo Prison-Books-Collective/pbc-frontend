@@ -53,7 +53,7 @@
 
 	<div class="package-contents">
 		{#each $focusedPackage.books as book}
-			<label for={book.id.toString()}>
+			<label for={book.id.toString()} class="checkbox">
 				<input
 					type="checkbox"
 					name={book.id.toString()}
@@ -65,7 +65,7 @@
 			</label>
 		{/each}
 		{#each $focusedPackage.noISBNBooks as book}
-			<label for={book.id.toString()}>
+			<label for={book.id.toString()} class="checkbox">
 				<input
 					type="checkbox"
 					name={book.id.toString()}
@@ -77,7 +77,7 @@
 			</label>
 		{/each}
 		{#each $focusedPackage.zines as zine}
-			<label for={zine.id.toString()}>
+			<label for={zine.id.toString()} class="checkbox">
 				<input
 					type="checkbox"
 					name={zine.id.toString()}

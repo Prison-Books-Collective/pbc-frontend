@@ -92,10 +92,6 @@
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: stretch;
-
-    &:last-of-type {
-      margin-bottom: 0.5em;
-    }
 	}
 
 	input[type=text] {

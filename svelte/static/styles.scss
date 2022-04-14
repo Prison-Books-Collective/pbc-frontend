@@ -91,10 +91,15 @@
 		height: 30px;
 	}
 
+
+	button.slim {
+		margin: 0px;
+	}
+	
 	button {
 		display: inline-block;
-		margin: 20px 10px 0px;
 		padding: 11px 23px;
+		margin: 20px 10px 0px;
 
 		background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
 		border: 1px solid #566963;
@@ -158,11 +163,17 @@ label {
 	font-weight: 700;
 }
 
+label:not(.checkbox) {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: stretch;
+}
+
 input[type='text'],
 input[type='date'] {
 	background: red;
 	padding: 0.5em;
-	width: 95%;
+	width: auto;
 	max-width: auto;
 	font-size: 1rem;
 	background: none;

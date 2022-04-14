@@ -65,7 +65,7 @@
 		<ol class="package-items-list">
 			{#each $focusedPackage.books as book}
 				<li>
-					<label for={book.id.toString()}>
+					<label for={book.id.toString()} class="checkbox">
 						<input
 							id={book.id.toString()}
 							type="checkbox"
@@ -78,7 +78,7 @@
 			{/each}
 			{#each $focusedPackage.noISBNBooks as book}
 				<li>
-					<label for={book.id.toString()}>
+					<label for={book.id.toString()} class="checkbox">
 						<input
 							id={book.id.toString()}
 							type="checkbox"
@@ -91,7 +91,7 @@
 			{/each}
 			{#each $focusedPackage.zines as zine}
 				<li>
-					<label for={zine.id.toString()}>
+					<label for={zine.id.toString()} class="checkbox">
 						<input
 							id={zine.id.toString()}
 							type="checkbox"
