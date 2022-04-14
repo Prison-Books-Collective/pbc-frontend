@@ -5,7 +5,7 @@
 	import CreateZine from '$components/zine/create-zine.svelte';
 	import CreateFacility from '$components/facility/create-facility.svelte';
 	import FacilitySelect from '$components/facility/select.svelte';
-	import SearchByDate from '$lib/components/package/search-by-date.svelte';
+	import SearchByDate from '$lib/components/package/search/search-by-date.svelte';
 	import { searchByDate, searchByDateRange } from '$lib/util/routing';
 
 	const alertZineCreated = ({ detail: zine }) =>
@@ -27,13 +27,13 @@
 		FACILITY
 	}
 
-	const gotoPackageSearch = ( detail ) => {
-		if(detail.date) {
+	const gotoPackageSearch = (detail) => {
+		if (detail.date) {
 			searchByDate(detail.date);
 		} else {
 			searchByDateRange(detail.startDate, detail.endDate);
 		}
-	}
+	};
 </script>
 
 <svelte:head>
@@ -45,8 +45,7 @@
 		<h2>Packages</h2>
 
 		<h3>Search Packages by Date</h3>
-		<SearchByDate
-			on:search={({ detail }) => gotoPackageSearch( detail )}/>
+		<SearchByDate on:search={({ detail }) => gotoPackageSearch(detail)} />
 
 		<!-- <form on:submit|preventDefault>
 			<label for="isbn">
@@ -118,5 +117,4 @@
 		text-align: center;
 		width: 100%;
 	}
-	
 </style>

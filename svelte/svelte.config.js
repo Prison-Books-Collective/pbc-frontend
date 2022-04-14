@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
 import preprocess from 'svelte-preprocess';
-import { resolve } from "path";
+import { resolve } from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -18,7 +18,7 @@ const config = {
 					$models: resolve('./src/lib/models'),
 					$services: resolve('./src/lib/services'),
 					$stores: resolve('./src/lib/stores'),
-					$util: resolve('./src/lib/util'),
+					$util: resolve('./src/lib/util')
 				}
 			}
 		}

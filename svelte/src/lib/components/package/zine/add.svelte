@@ -28,14 +28,14 @@
 	});
 
 	const toggle = (zine: Zine) => {
-		if(shouldAdd(zine)) {
-			const removeIndex = addZines.indexOf(zine)
+		if (shouldAdd(zine)) {
+			const removeIndex = addZines.indexOf(zine);
 			addZines.splice(removeIndex, 1);
 			addZines = addZines;
 		} else {
-			addZines = [ ...addZines, zine ]
+			addZines = [...addZines, zine];
 		}
-	}
+	};
 
 	const shouldAdd = (zine: Zine) => addZines.includes(zine);
 
@@ -61,11 +61,16 @@
 				placeholder="Filter Zine List"
 				bind:value={filter}
 			/>
-			<!-- {#key addZines} -->
 			{#each availableZines as zine}
 				<label for={zine.id.toString()} transition:fly|local={{ duration: 300, x: -50 }}>
 					{#key availableZines}
-						<input type="checkbox" id={zine.id.toString()} value={zine} checked={shouldAdd(zine)} on:change={() => toggle(zine)}/>
+						<input
+							type="checkbox"
+							id={zine.id.toString()}
+							value={zine}
+							checked={shouldAdd(zine)}
+							on:change={() => toggle(zine)}
+						/>
 						<strong>
 							{zine.threeLetterCode}
 						</strong>
@@ -74,7 +79,6 @@
 					{/key}
 				</label>
 			{/each}
-			<!-- {/key} -->
 		</div>
 	{/if}
 
@@ -128,7 +132,7 @@
 
 	.filter-input {
 		background: none;
-		font-size: 1.10rem;
+		font-size: 1.1rem;
 		padding: 0.5rem;
 		margin-bottom: 0.5rem;
 		border-radius: 3px;

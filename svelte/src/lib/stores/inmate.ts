@@ -22,7 +22,7 @@ const createFocusedInmate = () => {
 
 	const fetch = async (id) => {
 		try {
-			const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
+			const foundInmate = await InmateService.getInmateUnknownIdStatus(id);
 			set(foundInmate);
 			return foundInmate;
 		} catch (error) {

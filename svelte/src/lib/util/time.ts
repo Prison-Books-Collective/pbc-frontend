@@ -11,9 +11,9 @@ export const formatDate = (date: Date): string => {
 };
 
 export const formatDateForInvoice = (date: Date = new Date()) => {
-	let timeZone = 'UTC'
+	let timeZone = 'UTC';
 	if (date.getDate() == new Date().getDate()) {
-		timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+		timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 	}
 	return date.toLocaleDateString('default', {
 		month: 'long',

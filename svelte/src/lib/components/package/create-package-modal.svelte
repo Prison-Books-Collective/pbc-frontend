@@ -21,7 +21,7 @@
 	export let activeModal: ValidCreatePackageModal = ValidCreatePackageModal.NONE;
 	export let activeModalParams = {};
 
-	const refresh = () => dispatch('refresh')
+	const refresh = () => dispatch('refresh');
 
 	const closeModal = () => {
 		activeModal = ValidCreatePackageModal.NONE;
@@ -59,7 +59,7 @@
 >
 	{#if activeModal == ValidCreatePackageModal.VIEW_PACKAGE}
 		<PackageOverview
-			inmate={inmate}
+			{inmate}
 			on:add-zines={() => presentModal(ValidCreatePackageModal.ADD_ZINE)}
 			on:add-books={() => presentModal(ValidCreatePackageModal.ADD_BOOK)}
 			on:update={() => presentPrintModal()}

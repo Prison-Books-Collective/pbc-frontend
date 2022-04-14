@@ -23,9 +23,10 @@ export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
 export const ROUTE_INMATE_CREATE_ID = (inmateID) => `/create/inmate?id=${inmateID}`;
 export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
 	`/search/inmates?firstName=${firstName}&lastName=${lastName}`;
-export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
-export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
-export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) => `/search/packages/${uriQueryJoin({ searchMode, ...params })}`
+export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`;
+export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`;
+export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) =>
+	`/search/packages/${uriQueryJoin({ searchMode, ...params })}`;
 
 export const gotoSearchForInmate = async (
 	searchBy: VALID_HOMEPAGE_SEARCH,
@@ -69,7 +70,9 @@ const searchForInmatesByName = async ({ firstName, lastName }) => {
 			return goto(ROUTE_INMATE_SEARCH({ firstName, lastName }));
 
 		const shouldCreateNewInmate = confirm(
-			`Failed to find any inmates matching name "${[firstName, lastName].filter(x => !isEmpty(x)).join(' ')}". To create a new inmate, click OK`
+			`Failed to find any inmates matching name "${[firstName, lastName]
+				.filter((x) => !isEmpty(x))
+				.join(' ')}". To create a new inmate, click OK`
 		);
 		if (shouldCreateNewInmate) {
 			return goto(ROUTE_INMATE_CREATE_NAMED({ firstName, lastName }));
@@ -81,12 +84,8 @@ const searchForInmatesByName = async ({ firstName, lastName }) => {
 };
 
 export const printPackage = async (pbcPackage: Package) => {
-	const printWindow = window.open(
-		ROUTE_PRINT_INVOICE(pbcPackage.id), 
-		'title', 
-		'attributes'
-	);
-	
+	const printWindow = window.open(ROUTE_PRINT_INVOICE(pbcPackage.id), 'title', 'attributes');
+
 	printWindow.focus();
 	await delay(3500);
 	printWindow.document.close();
@@ -94,9 +93,9 @@ export const printPackage = async (pbcPackage: Package) => {
 };
 
 export const searchByDate = (date: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date', params: { date }}))
-}
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date', params: { date } }));
+};
 
 export const searchByDateRange = (startDate: string, endDate: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date-range', params: { startDate, endDate }}))
-}
+	goto(ROUTE_PACKAGE_SEARCH({ searchMode: 'by-date-range', params: { startDate, endDate } }));
+};

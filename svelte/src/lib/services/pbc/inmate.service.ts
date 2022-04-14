@@ -42,8 +42,7 @@ export class InmateService {
 		firstName: string;
 		lastName: string;
 		location: string;
-	}) =>
-		`${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`;
+	}) => `${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`;
 	public static readonly URI_UPDATE_INMATE = ({
 		initialId,
 		firstName,
@@ -55,7 +54,12 @@ export class InmateService {
 		lastName: string;
 		inmateId: string;
 	}) =>
-		`${BASE_PBC_URI}/updateInmate${uriQueryJoin({ originalId: initialId, firstName, lastName, id: inmateId })}`;
+		`${BASE_PBC_URI}/updateInmate${uriQueryJoin({
+			originalId: initialId,
+			firstName,
+			lastName,
+			id: inmateId
+		})}`;
 
 	public static readonly URI_UPDATE_INMATE__NO_ID = ({
 		initialId,
@@ -70,7 +74,13 @@ export class InmateService {
 		location: string;
 		inmateId: string;
 	}) =>
-		`${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({ originalId: initialId, firstName, lastName, location, id: inmateId })}`;
+		`${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({
+			originalId: initialId,
+			firstName,
+			lastName,
+			location,
+			id: inmateId
+		})}`;
 
 	public static async getInmate(inmateId: string): Promise<Inmate | null> {
 		const response = await fetch(this.URI_GET_INMATE(inmateId), { ...METHOD_GET });
@@ -129,7 +139,7 @@ export class InmateService {
 			...METHOD_GET
 		});
 
-		if (response.status === 204) return []
+		if (response.status === 204) return [];
 		if (response.status !== 200) {
 			throw new Error(
 				`unexpected response ${
@@ -154,7 +164,7 @@ export class InmateService {
 			...METHOD_GET
 		});
 
-		if (response.status === 204) return []
+		if (response.status === 204) return [];
 		if (response.status !== 200) {
 			throw new Error(
 				`unexpected response ${

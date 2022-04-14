@@ -11,11 +11,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let packages: Package[] = []
-	export let inmate: Inmate | InmateNoID = null
+	export let packages: Package[] = [];
+	export let inmate: Inmate | InmateNoID = null;
 
 	if (!packages || packages.length === 0) {
-		packages = $focusedPackages
+		packages = $focusedPackages;
 	}
 
 	const alertPackageClicked = (pbcPackage: Package) => {
@@ -31,101 +31,102 @@
 
 <section id="package-table-container">
 	{#if packages.length === 0}
-	<h2 class="no-packages-message">
-		{#if inmate}
-			No packages have been created for {inmate.firstName} {inmate.lastName} yet
-		{:else}
-			No packages found
-		{/if}
-	</h2>
-{:else}
-	<table id="packageTable">
-		<tr>
-			<th>!</th>
-			<th>Package</th>
-			<th>Edit</th>
-			<th>Print</th>
-		</tr>
-
-		{#each packages as pbcPackage}
+		<h2 class="no-packages-message">
+			{#if inmate}
+				No packages have been created for {inmate.firstName} {inmate.lastName} yet
+			{:else}
+				No packages found
+			{/if}
+		</h2>
+	{:else}
+		<table id="packageTable">
 			<tr>
-				<td class="spacer-col">
-					{#if pbcPackage.alert}
-						<div
-							class="alert"
-							data-tooltip={pbcPackage.alert.information}
-							on:click={() => alertPackageClicked(pbcPackage)}
-						>
-							!
-						</div>
-					{/if}
-				</td>
-				<td class="package-col">
-					<h2>
-						{#if pbcPackage.facility}
-							<em class:non-bold={!!(inmate)}>{pbcPackage.facility.facility_name}</em>,
-						{/if}
-						<date>
-							{pbcPackage.date}:
-						</date>
-					</h2>
-					{#if !inmate}
-						<h2 class="non-bold">
-							{resolveInmate(pbcPackage).firstName} 
-							{resolveInmate(pbcPackage).middleInitial ? resolveInmate(pbcPackage).middleInitial + ' ' : ''}{resolveInmate(pbcPackage).lastName}
-							
-							{#if !resolveInmate(pbcPackage)['location']}
-								#{pbcPackage.inmate.id}
-							{:else}
-								(No ID available)
-							{/if}
-							
-							&mdash;
-							Package #{pbcPackage.id} 
-						</h2>
-					{/if}
-					<ul>
-						{#each pbcPackage.books as book}
-							<li>
-								<Book {book} />
-							</li>
-						{/each}
-						{#each pbcPackage.noISBNBooks as book}
-							<li>
-								<Book {book} />
-							</li>
-						{/each}
-						{#each pbcPackage.zines as zine}
-							<li>
-								<Zine {zine} />
-							</li>
-						{/each}
-					</ul>
-				</td>
-				<td class="edit-col">
-					<img
-						src={editIcon}
-						alt="edit icon; click to edit this package"
-						class="edit-icon"
-						width="20"
-						height="20"
-						on:click={() => editPackageClicked(pbcPackage)}
-					/>
-				</td>
-				<td class="print-col">
-					<img
-						src={printIcon}
-						alt="print icon; click to print this package"
-						class="print-icon"
-						width="20"
-						height="20"
-						on:click={() => printPackageClicked(pbcPackage)}
-					/>
-				</td>
+				<th>!</th>
+				<th>Package</th>
+				<th>Edit</th>
+				<th>Print</th>
 			</tr>
-		{/each}
-	</table>
-{/if}
+
+			{#each packages as pbcPackage}
+				<tr>
+					<td class="spacer-col">
+						{#if pbcPackage.alert}
+							<div
+								class="alert"
+								data-tooltip={pbcPackage.alert.information}
+								on:click={() => alertPackageClicked(pbcPackage)}
+							>
+								!
+							</div>
+						{/if}
+					</td>
+					<td class="package-col">
+						<h2>
+							{#if pbcPackage.facility}
+								<em class:non-bold={!!inmate}>{pbcPackage.facility.facility_name}</em>,
+							{/if}
+							<date>
+								{pbcPackage.date}:
+							</date>
+						</h2>
+						{#if !inmate}
+							<h2 class="non-bold">
+								{resolveInmate(pbcPackage).firstName}
+								{resolveInmate(pbcPackage).middleInitial
+									? resolveInmate(pbcPackage).middleInitial + ' '
+									: ''}{resolveInmate(pbcPackage).lastName}
+
+								{#if !resolveInmate(pbcPackage)['location']}
+									#{pbcPackage.inmate.id}
+								{:else}
+									(No ID available)
+								{/if}
+
+								&mdash; Package #{pbcPackage.id}
+							</h2>
+						{/if}
+						<ul>
+							{#each pbcPackage.books as book}
+								<li>
+									<Book {book} />
+								</li>
+							{/each}
+							{#each pbcPackage.noISBNBooks as book}
+								<li>
+									<Book {book} />
+								</li>
+							{/each}
+							{#each pbcPackage.zines as zine}
+								<li>
+									<Zine {zine} />
+								</li>
+							{/each}
+						</ul>
+					</td>
+					<td class="edit-col">
+						<img
+							src={editIcon}
+							alt="edit icon; click to edit this package"
+							class="edit-icon"
+							width="20"
+							height="20"
+							on:click={() => editPackageClicked(pbcPackage)}
+						/>
+					</td>
+					<td class="print-col">
+						<img
+							src={printIcon}
+							alt="print icon; click to print this package"
+							class="print-icon"
+							width="20"
+							height="20"
+							on:click={() => printPackageClicked(pbcPackage)}
+						/>
+					</td>
+				</tr>
+			{/each}
+		</table>
+	{/if}
 </section>
 
 <style lang="scss">

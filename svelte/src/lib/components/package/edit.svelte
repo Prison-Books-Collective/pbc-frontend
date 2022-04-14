@@ -43,7 +43,10 @@
 </script>
 
 <section class="package-overview">
-	<h1>Edit Package for {$focusedPackage.inmate?.firstName || $focusedPackage.inmateNoId?.firstName} {$focusedPackage.inmate?.lastName || $focusedPackage.inmateNoId?.lastName}</h1>
+	<h1>
+		Edit Package for {$focusedPackage.inmate?.firstName || $focusedPackage.inmateNoId?.firstName}
+		{$focusedPackage.inmate?.lastName || $focusedPackage.inmateNoId?.lastName}
+	</h1>
 	<p>Select item(s) to edit or delete, or delete the whole package.</p>
 	<p>Changes you make to the titles or authors of items will affect the entire database.</p>
 	<hr width="100%" />

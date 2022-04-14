@@ -1,11 +1,5 @@
 import { BASE_PBC_URI } from '.';
-import {
-	CONTENT_TYPE_JSON,
-	METHOD_GET,
-	METHOD_POST,
-	METHOD_DELETE,
-	METHOD_PUT
-} from '$util/web';
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT } from '$util/web';
 import type { Package } from '../../models/pbc/package';
 
 export class PackageService {
@@ -153,34 +147,45 @@ export class PackageService {
 			...METHOD_GET
 		});
 
-		if (response.status === 204) return []
+		if (response.status === 204) return [];
 		if (response.status !== 200) {
 			throw new Error(
-				`unexpected response ${response.status} when retrieving packages by date using input "${date}" at "${this.URI_GET_PACKAGES__BY_DATE(date)}"`
+				`unexpected response ${
+					response.status
+				} when retrieving packages by date using input "${date}" at "${this.URI_GET_PACKAGES__BY_DATE(
+					date
+				)}"`
 			);
 		}
 
 		return ((await response.json()) as Package[]).sort(packageSortByDate);
 	}
 
-	public static async getPackagesForDateRange(startDate: string, endDate: string): Promise<Package[]> {
+	public static async getPackagesForDateRange(
+		startDate: string,
+		endDate: string
+	): Promise<Package[]> {
 		const response = await fetch(this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate), {
 			...METHOD_GET
 		});
 
-		if (response.status === 204) return []
+		if (response.status === 204) return [];
 		if (response.status !== 200) {
 			throw new Error(
-				`unexpected response ${response.status} when retrieving packages by date range using input "${startDate}, ${endDate}" at "${this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate)}"`
+				`unexpected response ${
+					response.status
+				} when retrieving packages by date range using input "${startDate}, ${endDate}" at "${this.URI_GET_PACKAGES__BY_DATE_RANGE(
+					startDate,
+					endDate
+				)}"`
 			);
 		}
 
 		return ((await response.json()) as Package[]).sort(packageSortByDate);
 	}
-
 }
 
 const packageSortByDate = (packageA: Package, packageB: Package) => {
-	const [dateA, dateB] = [new Date(packageA.date), new Date(packageB.date)]
+	const [dateA, dateB] = [new Date(packageA.date), new Date(packageB.date)];
 	return dateA > dateB ? -1 : 1;
-}
+};

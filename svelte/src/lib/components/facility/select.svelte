@@ -13,11 +13,11 @@
 	export let multiple = false;
 
 	let facilitiesLoaded = new Promise(() => {});
-	if(facilityList.length === 0) {
-		facilities.fetch().then(facilities => {
+	if (facilityList.length === 0) {
+		facilities.fetch().then((facilities) => {
 			facilityList = facilities;
 			facilitiesLoaded = Promise.resolve();
-		})
+		});
 	} else {
 		facilitiesLoaded = Promise.resolve();
 	}
@@ -27,35 +27,38 @@
 	};
 
 	const emitMultiUpdate = (selectedFacilities: Facility[]) => {
-		dispatch('update-multiple', selectedFacilities)
-	}
+		dispatch('update-multiple', selectedFacilities);
+	};
 </script>
 
 {#if multiple}
-	<select multiple disabled={disabled} name="facility" 
-		bind:value={multipleFacilities} 
-		on:change={() => emitMultiUpdate(multipleFacilities)}>
+	<select
+		multiple
+		{disabled}
+		name="facility"
+		bind:value={multipleFacilities}
+		on:change={() => emitMultiUpdate(multipleFacilities)}
+	>
 		{#await facilitiesLoaded}
 			<option value={undefined}>Loading Facilities</option>
 		{:then}
 			<option disabled selected={!!!selected} value={null}>Select Facility</option>
 			{#each facilityList as f}
-				<option value={f} selected={selected === f.facility_name}>{f.facility_name}{f.state ? ',' : ''} {f.state}</option
+				<option value={f} selected={selected === f.facility_name}
+					>{f.facility_name}{f.state ? ',' : ''} {f.state}</option
 				>
 			{/each}
 		{/await}
 	</select>
 {:else}
-	<select name="facility" 
-		bind:value={facility} 
-		disabled={disabled}
-		on:change={() => emitUpdate(facility)}>
+	<select name="facility" bind:value={facility} {disabled} on:change={() => emitUpdate(facility)}>
 		{#await facilitiesLoaded}
 			<option value={undefined}>Loading Facilities</option>
 		{:then _}
 			<option disabled selected={!!!selected} value={null}>Select Facility</option>
 			{#each facilityList as f}
-				<option value={f} selected={selected === f.facility_name}>{f.facility_name}, {f.state}</option
+				<option value={f} selected={selected === f.facility_name}
+					>{f.facility_name}, {f.state}</option
 				>
 			{/each}
 		{/await}

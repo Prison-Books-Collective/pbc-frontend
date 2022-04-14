@@ -32,7 +32,7 @@ const emptyPackage: LocalStoragePackage = {
 	existsInDatabase: false
 };
 
-const emptyPackages: Package[] = []
+const emptyPackages: Package[] = [];
 
 const createPackage = () => {
 	const { subscribe, set, update } = writable(emptyPackage);
@@ -146,11 +146,10 @@ const createPackage = () => {
 	};
 };
 
-
 const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 	const { subscribe, set } = writable(emptyPackages);
 
-	focusedInmate.subscribe(async $inmate => {
+	focusedInmate.subscribe(async ($inmate) => {
 		const packages = await (isInmateNoID($inmate)
 			? PackageService.getPackagesForInmateNoID($inmate.id)
 			: PackageService.getPackagesForInmate($inmate.id));
@@ -158,40 +157,42 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 	});
 
 	const fetchForInmate = (inmateID: string) => {
-		focusedInmate.fetch(inmateID)
-	}
+		focusedInmate.fetch(inmateID);
+	};
 
 	const fetchForDate = async (date: string) => {
 		try {
-			const packages = await PackageService.getPackagesForDate(date)
+			const packages = await PackageService.getPackagesForDate(date);
 			set(packages);
 			return packages;
-		} catch(error) {
+		} catch (error) {
 			console.error(error);
 			console.error(`failed to retrieve packages for Date "${date}" via remote`);
 		}
-	}
+	};
 
 	const fetchForDateRange = async (startDate: string, endDate: string) => {
 		try {
-			const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
+			const packages = await PackageService.getPackagesForDateRange(startDate, endDate);
 			set(packages);
 			return packages;
-		} catch(error) {
+		} catch (error) {
 			console.error(error);
-			console.error(`failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`);
+			console.error(
+				`failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`
+			);
 		}
-	}
-	
+	};
+
 	return {
 		subscribe,
 		set,
 
 		fetchForInmate,
 		fetchForDate,
-		fetchForDateRange,
+		fetchForDateRange
 	};
-}
+};
 
 export const focusedPackage = createPackage();
 export const focusedPackages = createFocusedPackages(focusedInmate);
