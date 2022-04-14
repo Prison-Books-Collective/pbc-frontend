@@ -18,6 +18,9 @@ export interface Package {
 	date: string;
 }
 
+export const undefinedInmate = { firstName: 'Unavailable', middleInitial: undefined, lastName: 'Unavailable', id: 'No-ID', location: undefined };
+export const resolveInmate = (pbcPackage: Package) => pbcPackage.inmate || pbcPackage.inmateNoId || undefinedInmate;
+
 export const stringify = (p: Package) => {
 	const inmate = p.inmate || p.inmateNoId || null
 	return `

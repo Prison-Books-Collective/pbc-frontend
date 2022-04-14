@@ -1,14 +1,10 @@
 <script lang="ts" context="module">
   import { formatDate } from "$util/time";
+  import { getQueryParam } from "$lib/util/web";
   import { SearchMode } from '$models/search-packages-mode';
 
 	export function load({ url }) {
-		let searchMode: SearchMode = url.searchParams.get('search') 
-      || url.searchParams.get('mode') 
-      || url.searchParams.get('search-mode') 
-      || url.searchParams.get('search_mode') 
-      || url.searchParams.get('searchMode') 
-      || null;
+		let searchMode: SearchMode = getQueryParam(url, 'search mode', 'search', 'mode') as SearchMode;
     
     const props = { searchMode }
     switch(searchMode) {
@@ -16,8 +12,8 @@
         props['date'] = url.searchParams.get('date') || formatDate(new Date());
         break;
       case SearchMode.DATE_RANGE:
-        props['startDate'] = url.searchParams.get('start-date') || url.searchParams.get('start_date') || url.searchParams.get('startDate') || formatDate(new Date());
-        props['endDate'] = url.searchParams.get('end-date') || url.searchParams.get('end_date') || url.searchParams.get('endDate') || formatDate(new Date());
+        props['startDate'] = getQueryParam(url, 'start date') || formatDate(new Date());
+        props['endDate'] = getQueryParam(url, 'end date') || formatDate(new Date());
         break;
       case SearchMode.BOOK:
         
@@ -34,7 +30,7 @@
   import { printPackage } from '$util/routing';
   import { isEmpty } from '$util/strings';
   import { ValidCreatePackageModal } from "$models/create-package-modal";
-  import { stringify, type Package } from "$models/pbc/package";
+  import { resolveInmate, stringify, type Package } from "$models/pbc/package";
   
   import filterIcon from '$assets/icons/filter.png'
   import PackageTable from "$lib/components/package/table.svelte";
@@ -49,6 +45,7 @@
 
   let activeModal: ValidCreatePackageModal;
   let activeModalParams = {};
+  let selectedInmate = null;
 
   let showFilters = false;
   let filteredPackages = []
@@ -84,7 +81,17 @@
     facility_type: '',
   }
 
-  focusedPackages.subscribe(packages => {
+  const loadPackages = (searchMode: SearchMode) => {
+    switch(searchMode) {
+      case SearchMode.DATE:
+        focusedPackages.fetchForDate(date)
+        break;
+      case SearchMode.DATE_RANGE:
+        focusedPackages.fetchForDateRange(startDate, endDate);
+        break;
+    }
+  }
+  const parsePackages = (packages: Package[]) => {
     availableFacilities = [];
     availableZines = [];
     packages.forEach(p => {
@@ -108,14 +115,20 @@
     availableFacilities.sort((a, b) => a.facility_name < b.facility_name ? -1 : 1);
     availableZines.sort((a, b) => a.threeLetterCode < b.threeLetterCode ? -1 : 1);
     facilitiesLoaded = Promise.resolve()
-  })
+  }
+
+  const selectInmate = (pbcPackage: Package) => {
+    selectedInmate = resolveInmate(pbcPackage)
+  }
 
   const presentEditPackageModal = (pbcPackage: Package) => {
+    selectInmate(pbcPackage)
 		focusedPackage.load(pbcPackage);
 		activeModal = ValidCreatePackageModal.EDIT_PACKAGE;
 	};
 
   const presentAlertModal = (pbcPackage: Package) => {
+    selectInmate(pbcPackage)
 		focusedPackage.load(pbcPackage);
 		activeModal = ValidCreatePackageModal.VIEW_ALERT;
 		activeModalParams = { packageId: pbcPackage.id };
@@ -151,6 +164,8 @@
       filteredPackages = applyKeywordFilter(filteredPackages, filterKeywordList, filterKeywordMode);
     }
   }
+
+  focusedPackages.subscribe(parsePackages)
 
   const applyFacilityFilter = (packages, filterFacilities) => {
     return packages.filter(p => filterFacilities.find(f => f.id === p.facility?.id))
@@ -199,9 +214,13 @@
   $: shouldFilter = () => {
     return filterByFacilities || filterByZines || filterByKeyword;
   }
+
+  const refresh = (searchMode: SearchMode) => {
+    loadPackages(searchMode);
+  }
 </script>
 
-<CreatePackageModal bind:activeModal bind:activeModalParams />
+<CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} on:refresh={() => refresh(searchMode)}/>
 
 <main class="svelte-page">
 
@@ -230,82 +249,82 @@
   {/if}
 
   {#if showFilters}
-  <section id="filters" transition:fade>
-    <label for="facility-select">
-      <input type="checkbox" id="facility-select" bind:checked={filterByFacilities}/>
-      Filter by Facility
-      {#if filterByFacilities}
-      {#await facilitiesLoaded then}
-        <FacilitySelect multiple disabled={!filterByFacilities} facilityList={availableFacilities} bind:multipleFacilities={filterFacilities}/>
-      {/await}
-      {/if}
-    </label>
-
-    <label for="zine-select">
-      <input type="checkbox" id="zine-select" bind:checked={filterByZines}/>
-      Filter by Zines
-    </label>
-    {#if filterByZines}
-    <div class="options">
-      <label for="any-zines" class="non-bold" class:disabled={!filterByZines}>
-        <input type="radio" id="any-zines" value="any" disabled={!filterByZines} bind:group={filterZinesMode}/>
-        Contains <strong class="any">Any</strong> of the Zines
+    <section id="filters" transition:fade>
+      <label for="facility-select">
+        <input type="checkbox" id="facility-select" bind:checked={filterByFacilities}/>
+        Filter by Facility
+        {#if filterByFacilities}
+        {#await facilitiesLoaded then}
+          <FacilitySelect multiple disabled={!filterByFacilities} facilityList={availableFacilities} bind:multipleFacilities={filterFacilities}/>
+        {/await}
+        {/if}
       </label>
-      <label for="all-zines" class="non-bold" class:disabled={!filterByZines}>
-        <input type="radio" id="all-zines" value="all" disabled={!filterByZines} bind:group={filterZinesMode}/>
-        Contains <strong class="all">All</strong> of the Zines
+
+      <label for="zine-select">
+        <input type="checkbox" id="zine-select" bind:checked={filterByZines}/>
+        Filter by Zines
       </label>
-    </div>
-
-    <section class="keywords">
-      {#each availableZines as zine}
-        <label for={zine.id} class="zine-item">
-          <input type="checkbox" id={zine.id} bind:group={filterZinesList} value={zine}/>
-          {zine.threeLetterCode} &mdash; {zine.title}
-        </label>
-      {/each}
-    </section>
-    {/if}
-
-    <label for="keyword-select">
-      <input type="checkbox" id="keyword-select" bind:checked={filterByKeyword}/>
-      Filter by Keywords
-    </label>
-    
-    {#if filterByKeyword}
+      {#if filterByZines}
       <div class="options">
-        <label for="any-keywords" class="non-bold" class:disabled={!filterByKeyword}>
-          <input type="radio" id="any-keywords" value="any" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
-          Contains <strong class="any">Any</strong> of the Keywords
+        <label for="any-zines" class="non-bold" class:disabled={!filterByZines}>
+          <input type="radio" id="any-zines" value="any" disabled={!filterByZines} bind:group={filterZinesMode}/>
+          Contains <strong class="any">Any</strong> of the Zines
         </label>
-        <label for="all-keywords" class="non-bold" class:disabled={!filterByKeyword}>
-          <input type="radio" id="all-keywords" value="all" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
-          Contains <strong class="all">All</strong> of the Keywords
+        <label for="all-zines" class="non-bold" class:disabled={!filterByZines}>
+          <input type="radio" id="all-zines" value="all" disabled={!filterByZines} bind:group={filterZinesMode}/>
+          Contains <strong class="all">All</strong> of the Zines
         </label>
       </div>
-      
-      <form on:submit|preventDefault={() => addKeyword(keywordInput)}>
-        <label for="keyword-input">
-          Keyword <span class="light-text">(<em>All or part of: Author, Title, ISBN, Inmate Name, etc.</em>)</span>
-          <div class="options">
-            <input id="keyword-input" type="text" bind:value={keywordInput} placeholder="Keyword"/>
-            <button class="button-success" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>Add</button>
-          </div>
-        </label>
-      </form>
 
-      {#if filterKeywordList && filterKeywordList.length > 0}
       <section class="keywords">
-        {#each filterKeywordList as keyword, index}
-          <span class="chip">
-            {keyword}
-            <button class="chip-close" on:click={() => removeKeyword(index)}>&times;</button>
-          </span>
+        {#each availableZines as zine}
+          <label for={zine.id} class="zine-item">
+            <input type="checkbox" id={zine.id} bind:group={filterZinesList} value={zine}/>
+            {zine.threeLetterCode} &mdash; {zine.title}
+          </label>
         {/each}
       </section>
       {/if}
-    {/if}
-  </section>
+
+      <label for="keyword-select">
+        <input type="checkbox" id="keyword-select" bind:checked={filterByKeyword}/>
+        Filter by Keywords
+      </label>
+      
+      {#if filterByKeyword}
+        <div class="options">
+          <label for="any-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+            <input type="radio" id="any-keywords" value="any" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
+            Contains <strong class="any">Any</strong> of the Keywords
+          </label>
+          <label for="all-keywords" class="non-bold" class:disabled={!filterByKeyword}>
+            <input type="radio" id="all-keywords" value="all" disabled={!filterByKeyword} bind:group={filterKeywordMode}/>
+            Contains <strong class="all">All</strong> of the Keywords
+          </label>
+        </div>
+        
+        <form on:submit|preventDefault={() => addKeyword(keywordInput)}>
+          <label for="keyword-input">
+            Keyword <span class="light-text">(<em>All or part of: Author, Title, ISBN, Inmate Name, etc.</em>)</span>
+            <div class="options">
+              <input id="keyword-input" type="text" bind:value={keywordInput} placeholder="Keyword"/>
+              <button class="button-success" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>Add</button>
+            </div>
+          </label>
+        </form>
+
+        {#if filterKeywordList && filterKeywordList.length > 0}
+        <section class="keywords">
+          {#each filterKeywordList as keyword, index}
+            <span class="chip">
+              {keyword}
+              <button class="chip-close" on:click={() => removeKeyword(index)}>&times;</button>
+            </span>
+          {/each}
+        </section>
+        {/if}
+      {/if}
+    </section>
   {/if}
 
   <PackageTable 

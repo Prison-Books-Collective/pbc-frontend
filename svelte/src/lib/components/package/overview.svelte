@@ -1,21 +1,23 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 
-	import { focusedInmate } from '$stores/inmate';
 	import { focusedPackage, focusedPackages } from '$stores/package';
 	import { FacilityService } from '$services/pbc/facility.service';
 
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
 	import FacilitySelect from '$components/facility/select.svelte';
+	import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate';
 
 	const dispatch = createEventDispatcher();
+
+	export let inmate: Inmate|InmateNoID;
 
 	let removeItems = [];
 	let facility = $focusedPackage.facility;
 	(async () => {
-		if (!facility && $focusedInmate.location) {
-			facility = await FacilityService.resolveFacilityByName($focusedInmate.location);
+		if (!facility && inmate.location) {
+			facility = await FacilityService.resolveFacilityByName(inmate.location);
 			focusedPackage.setDestination(facility);
 		} else if (!facility) {
 			if (!$focusedPackages || $focusedPackages.length === 0) {
@@ -39,7 +41,7 @@
 	const addBooksClicked = () => dispatch('add-books');
 	$: completePackageClicked = async () => {
 		try {
-			focusedPackage.setInmate($focusedInmate);
+			focusedPackage.setInmate(inmate);
 			const updatedPackage = await focusedPackage.sync($focusedPackage);
 			dispatch('update', updatedPackage);
 		} catch (error) {
@@ -119,8 +121,8 @@
 
 	{#if isPackageEmpty()}
 		<p>
-			Add one or more books or zines to start a package for {$focusedInmate.firstName}
-			{$focusedInmate.lastName}
+			Add one or more books or zines to start a package for {inmate.firstName}
+			{inmate.lastName}
 		</p>
 	{:else}
 		<p>

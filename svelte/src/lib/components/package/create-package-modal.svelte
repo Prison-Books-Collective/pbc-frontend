@@ -17,12 +17,11 @@
 
 	const dispatch = createEventDispatcher();
 
+	export let inmate = null;
 	export let activeModal: ValidCreatePackageModal = ValidCreatePackageModal.NONE;
 	export let activeModalParams = {};
 
-	const refresh = async () => {
-		return await focusedInmate.fetch($focusedInmate.id);
-	};
+	const refresh = () => dispatch('refresh')
 
 	const closeModal = () => {
 		activeModal = ValidCreatePackageModal.NONE;
@@ -60,6 +59,7 @@
 >
 	{#if activeModal == ValidCreatePackageModal.VIEW_PACKAGE}
 		<PackageOverview
+			inmate={inmate}
 			on:add-zines={() => presentModal(ValidCreatePackageModal.ADD_ZINE)}
 			on:add-books={() => presentModal(ValidCreatePackageModal.ADD_BOOK)}
 			on:update={() => presentPrintModal()}

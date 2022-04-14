@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { focusedPackages } from '$stores/package';
-	import type { Package } from '$models/pbc/package';
+	import { resolveInmate, type Package } from '$models/pbc/package';
 	import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate';
 
 	import Book from '$components/book.svelte';
@@ -27,9 +27,6 @@
 	const printPackageClicked = (pbcPackage: Package) => {
 		dispatch('print', pbcPackage);
 	};
-
-	const undefinedInmate = { firstName: 'Unavailable', middleInitial: undefined, lastName: 'Unavailable', id: 'No-ID', location: undefined };
-	const resolveInmate = (pbcPackage: Package) => pbcPackage.inmate || pbcPackage.inmateNoId || undefinedInmate;
 </script>
 
 <section id="package-table-container">

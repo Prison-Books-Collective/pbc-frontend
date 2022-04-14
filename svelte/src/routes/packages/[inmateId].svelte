@@ -35,13 +35,19 @@
 		focusedPackage.load(pbcPackage);
 		activeModal = ValidCreatePackageModal.EDIT_PACKAGE;
 	};
+	const refresh = async () => {
+		return await focusedInmate.fetch($focusedInmate.id);
+	}
 </script>
 
 <svelte:head>
 	<title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
 </svelte:head>
 
-<CreatePackageModal bind:activeModal bind:activeModalParams />
+<CreatePackageModal 
+	inmate={$focusedInmate} 
+	bind:activeModal bind:activeModalParams
+	on:refresh={refresh}/>
 
 {#await inmateIsLoaded}
 	<h1>Loading</h1>
