@@ -315,19 +315,23 @@
 
 	{#if (searchMode === SearchMode.ISBN || searchMode === SearchMode.AUTHOR_AND_TITLE) && book}
 		<header id="book-header">
-			<h2>Displaying results for &emsp;</h2>
-			<h2 class="book-title">{book.title}</h2>
-			<span class="book-text"> by </span>
-			<h2 class="book-author">{book.authors?.[0]}</h2>
-			<img
-				src={filterIcon}
-				class="icon filter-icon active"
-				class:active={showFilters}
-				width="20"
-				height="20"
-				alt="filter icon; click to filter the list of packages"
-				on:click={toggleShowFilters}
-			/>
+			<h2>
+				Displaying Packages containing
+				<img
+					src={filterIcon}
+					class="icon filter-icon active"
+					class:active={showFilters}
+					width="20"
+					height="20"
+					alt="filter icon; click to filter the list of packages"
+					on:click={toggleShowFilters}
+				/>
+			</h2>
+			<h2> 
+				<span class="book-title">{book.title}</span>
+				<span class="book-text">&emsp;by&emsp;</span>
+				<span class="book-author">{book.authors?.[0]}</span>
+			</h2>
 		</header>
 	{/if}
 
@@ -505,12 +509,19 @@
 		font-weight: normal;
 	}
 
-	#date-header, #book-header {
+	#date-header {
 		display: flex;
 		flex-flow: row nowrap;
 		align-items: baseline;
 		justify-content: center;
 		gap: 1rem;
+	}
+
+	#book-header {
+		display: flex;
+		flex-flow: column nowrap;
+		align-items: center;
+		justify-content: center;
 	}
 
 	#filters {
@@ -523,6 +534,19 @@
 
 		display: flex;
 		flex-flow: column nowrap;
+	}
+
+	.book-title {
+		font-style: italic;
+		color: #333;
+	}
+
+	.book-author {
+		color: #333;
+	}
+
+	.book-text {
+
 	}
 
 	input[type='date'] {
