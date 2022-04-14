@@ -27,6 +27,18 @@
 		return threeLetterCode.includes(filter) || title.includes(filter);
 	});
 
+	const toggle = (zine: Zine) => {
+		if(shouldAdd(zine)) {
+			const removeIndex = addZines.indexOf(zine)
+			addZines.splice(removeIndex, 1);
+			addZines = addZines;
+		} else {
+			addZines = [ ...addZines, zine ]
+		}
+	}
+
+	const shouldAdd = (zine: Zine) => addZines.includes(zine);
+
 	const cancelClicked = () => dispatch('cancel');
 	$: addClicked = () => {
 		addZines.forEach((z) => focusedPackage.addZine(z));
@@ -49,16 +61,20 @@
 				placeholder="Filter Zine List"
 				bind:value={filter}
 			/>
+			<!-- {#key addZines} -->
 			{#each availableZines as zine}
 				<label for={zine.id.toString()} transition:fly|local={{ duration: 300, x: -50 }}>
-					<input type="checkbox" id={zine.id.toString()} value={zine} bind:group={addZines} />
-					<strong>
-						{zine.threeLetterCode}
-					</strong>
-					&mdash;
-					{zine.title}
+					{#key availableZines}
+						<input type="checkbox" id={zine.id.toString()} value={zine} checked={shouldAdd(zine)} on:change={() => toggle(zine)}/>
+						<strong>
+							{zine.threeLetterCode}
+						</strong>
+						&mdash;
+						{zine.title}
+					{/key}
 				</label>
 			{/each}
+			<!-- {/key} -->
 		</div>
 	{/if}
 
