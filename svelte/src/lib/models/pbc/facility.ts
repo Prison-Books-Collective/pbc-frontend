@@ -15,3 +15,10 @@ export enum State {
 	NC = 'NC',
 	AL = 'AL'
 }
+
+export const INVALID_FACILITY: Facility = {
+	id: -1,
+	facility_name: 'Invalid Facility',
+	state: '' as any,
+	facility_type: '' as any
+}

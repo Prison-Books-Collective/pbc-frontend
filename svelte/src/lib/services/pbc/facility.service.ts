@@ -1,6 +1,6 @@
 import { BASE_PBC_URI } from '.';
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$util/web';
-import type { Facility } from '../../models/pbc/facility';
+import { INVALID_FACILITY, type Facility } from '../../models/pbc/facility';
 
 export class FacilityService {
 	public static readonly URI_GET_FACILITIES = `${BASE_PBC_URI}/getAllFacilities`;
@@ -47,6 +47,6 @@ export class FacilityService {
 	public static async resolveFacilityByName(facilityName: string): Promise<Facility> {
 		if (!facilityName || facilityName === '') return null;
 		const allFacilities = await this.getAllFacilities();
-		return allFacilities.find((facility) => facility.facility_name === facilityName);
+		return allFacilities.find((facility) => facility.facility_name === facilityName) || INVALID_FACILITY;
 	}
 }
