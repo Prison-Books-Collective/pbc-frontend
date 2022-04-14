@@ -14,7 +14,7 @@
 {/await}
 
 <style>
-	#package-count {
+	#package-count, date {
 		font-weight: 700;
 	}
 </style>
