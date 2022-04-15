@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte/internal';
 	import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
 	import { FacilityService } from '$services/pbc/facility.service';
-	import FacilitySelect from '$components/facility/select.svelte';
+	import FacilitySelect from '$lib/components/facility/select-facility.svelte';
 	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
 	import { focusedInmate } from '$stores/inmate';
 
@@ -77,7 +77,12 @@
 
 			<label for="first-name">
 				First Name:
-				<input type="text" name="first-name" placeholder="First Name" bind:value={updateFirstName} />
+				<input
+					type="text"
+					name="first-name"
+					placeholder="First Name"
+					bind:value={updateFirstName}
+				/>
 			</label>
 
 			<label for="last-name">

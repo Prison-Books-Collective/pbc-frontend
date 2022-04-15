@@ -22,3 +22,10 @@ export const INVALID_FACILITY: Facility = {
 	state: '' as any,
 	facility_type: '' as any
 }
+
+export const invalidFacility: Facility = {
+	id: undefined,
+	facility_name: ' No Facility Provided ',
+	state: '' as any,
+	facility_type: '' as any,
+};

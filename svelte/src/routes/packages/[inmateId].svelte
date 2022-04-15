@@ -13,7 +13,7 @@
 	import type { Package } from '$models/pbc/package';
 
 	import InmateName from '$components/inmate/inmate-name.svelte';
-	import PackageTable from '$components/package/table.svelte';
+	import PackageTable from '$lib/components/package/package-table.svelte';
 	import CreatePackageModal from '$components/package/create-package-modal.svelte';
 
 	export let inmateId: string;

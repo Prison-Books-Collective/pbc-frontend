@@ -63,14 +63,14 @@
 					<td class="package-col">
 						<h2>
 							{#if pbcPackage.facility}
-								<em class:non-bold={!!inmate}>{pbcPackage.facility.facility_name}</em>,
+								<em class:font-normal={!!inmate}>{pbcPackage.facility.facility_name}</em>,
 							{/if}
 							<date>
 								{pbcPackage.date}:
 							</date>
 						</h2>
 						{#if !inmate}
-							<h2 class="non-bold">
+							<h2 class="font-normal">
 								{resolveInmate(pbcPackage).firstName}
 								{resolveInmate(pbcPackage).middleInitial
 									? resolveInmate(pbcPackage).middleInitial + ' '
@@ -156,10 +156,6 @@
 		color: blue;
 		width: 10px;
 		text-align: center;
-	}
-
-	.non-bold {
-		font-weight: normal;
 	}
 
 	.no-packages-message {

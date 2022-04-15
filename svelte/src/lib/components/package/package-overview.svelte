@@ -6,7 +6,7 @@
 
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
-	import FacilitySelect from '$components/facility/select.svelte';
+	import FacilitySelect from '$lib/components/facility/select-facility.svelte';
 	import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate';
 
 	const dispatch = createEventDispatcher();

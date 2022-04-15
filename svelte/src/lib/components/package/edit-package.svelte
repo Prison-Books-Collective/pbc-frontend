@@ -2,7 +2,6 @@
 	import { createEventDispatcher } from 'svelte';
 	import { PackageService } from '$services/pbc/package.service';
 	import { focusedPackage } from '$stores/package';
-	import { focusedInmate } from '$stores/inmate';
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
 

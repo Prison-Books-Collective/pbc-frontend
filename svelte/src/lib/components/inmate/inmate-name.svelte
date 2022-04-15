@@ -3,7 +3,7 @@
 	import { focusedInmate } from '$stores/inmate';
 	import { isInmateNoID } from '$services/pbc/inmate.service';
 	import Modal from '$components/modal.svelte';
-	import EditInmate from '$components/inmate/edit.svelte';
+	import EditInmate from '$lib/components/inmate/edit-inmate.svelte';
 	import editIcon from '$assets/icons/edit.png';
 
 	const dispatch = createEventDispatcher();

@@ -17,7 +17,7 @@
 	import { focusedInmate } from '$stores/inmate';
 	import type { Facility } from '$models/pbc/facility';
 	import { InmateService } from '$services/pbc/inmate.service';
-	import FacilitySelect from '$components/facility/select.svelte';
+	import FacilitySelect from '$lib/components/facility/select-facility.svelte';
 
 	export let id = null;
 	export let firstName = null;

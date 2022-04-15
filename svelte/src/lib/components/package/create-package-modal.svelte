@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate } from '$stores/inmate';
 	import { focusedPackage } from '$stores/package';
 	import { printPackage } from '$util/routing';
 	import { ValidCreatePackageModal } from '$models/create-package-modal';
 	import type { Package } from '$models/pbc/package';
 
 	import Modal from '$components/modal.svelte';
-	import PackageOverview from '$components/package/overview.svelte';
-	import EditPackage from '$components/package/edit.svelte';
-	import PrintPackage from '$components/package/print.svelte';
-	import AddZine from '$components/package/zine/add.svelte';
-	import AddBook from '$components/package/book/add.svelte';
-	import BookDetail from '$components/package/book/detail.svelte';
-	import PackageAlert from '$components/package/alert.svelte';
+	import PackageOverview from '$lib/components/package/package-overview.svelte';
+	import EditPackage from '$lib/components/package/edit-package.svelte';
+	import ConfirmPrint from '$lib/components/package/confirm-print.svelte';
+	import AddZine from '$lib/components/package/zine/add-zine.svelte';
+	import AddBook from '$lib/components/package/book/add-book.svelte';
+	import BookDetails from '$lib/components/package/book/book-details.svelte';
+	import RejectionLog from '$lib/components/package/rejection-log.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -88,14 +87,14 @@
 			on:update={() => presentModal(ValidCreatePackageModal.VIEW_PACKAGE)}
 		/>
 	{:else if activeModal == ValidCreatePackageModal.DETAIL_BOOK}
-		<BookDetail
+		<BookDetails
 			{...activeModalParams}
 			on:cancel={() => presentModal(ValidCreatePackageModal.VIEW_PACKAGE)}
 			on:search={() => presentModal(ValidCreatePackageModal.ADD_BOOK)}
 			on:add-book={() => presentModal(ValidCreatePackageModal.VIEW_PACKAGE)}
 		/>
 	{:else if activeModal == ValidCreatePackageModal.VIEW_ALERT}
-		<PackageAlert
+		<RejectionLog
 			{...activeModalParams}
 			on:update={() => {
 				refresh();
@@ -104,7 +103,7 @@
 			on:error={(e) => console.error(e.detail)}
 		/>
 	{:else if activeModal == ValidCreatePackageModal.PRINT_PACKAGE}
-		<PrintPackage
+		<ConfirmPrint
 			on:done={closeModal}
 			on:print={() => {
 				printPackage($focusedPackage);
