@@ -6,12 +6,7 @@
 	import CreateFacility from '$components/facility/create-facility.svelte';
 	import SearchByDate from '$components/package/search/search-by-date.svelte';
 	import SearchByBook from '$components/package/search/search-by-book.svelte';
-	import {
-		searchByDate,
-		searchByDateRange,
-		searchByISBN,
-		searchByAuthorAndTitle
-	} from '$util/routing';
+	import { gotoPackageSearch } from '$util/routing';
 
 	const alertZineCreated = ({ detail: zine }) =>
 		alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`);
@@ -23,26 +18,6 @@
 		alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
 		console.error(error);
 	};
-
-	enum PackageSearch {
-		NONE,
-		DATE,
-		DATE_RANGE,
-		BOOK,
-		FACILITY
-	}
-
-	const gotoPackageSearch = (detail) => {
-		if (detail.date) {
-			searchByDate(detail.date);
-		} else if (detail.startDate && detail.endDate) {
-			searchByDateRange(detail.startDate, detail.endDate);
-		} else if (detail.isbn) {
-			searchByISBN(detail.isbn);
-		} else if (detail.author && detail.title) {
-			searchByAuthorAndTitle(detail.author, detail.title);
-		}
-	};
 </script>
 
 <svelte:head>
@@ -51,17 +26,17 @@
 
 <main class="page">
 	<section>
-		<h2>Packages</h2>
+		<h1>Packages</h1>
 
-		<h3>Search Packages by Date</h3>
+		<h2>Search Packages by Date</h2>
 		<SearchByDate on:search={({ detail }) => gotoPackageSearch(detail)} />
 
-		<h3>Search Packages by Book</h3>
+		<h2>Search Packages by Book</h2>
 		<SearchByBook on:search={({ detail }) => gotoPackageSearch(detail)} />
 	</section>
 
 	<section>
-		<h2>Zines</h2>
+		<h1>Zines</h1>
 		<CreateZine on:update={alertZineCreated} on:error={alertCreationError} />
 		<div class="spacer" />
 		<ZineList />
@@ -71,7 +46,7 @@
 	<div class="spacer" />
 
 	<section>
-		<h2>Facilities</h2>
+		<h1>Facilities</h1>
 		<CreateFacility on:update={alertFacilityCreated} on:error={alertCreationError} />
 		<div class="spacer" />
 		<FacilityList />
@@ -87,18 +62,6 @@
 		max-width: 800px !important;
 	}
 
-	h2 {
-		font-size: 2rem;
-		text-align: center;
-		color: inherit;
-	}
-
-	main {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: flex-start;
-	}
-
 	section {
 		display: flex;
 		flex-flow: column nowrap;
@@ -106,16 +69,12 @@
 		width: 100%;
 	}
 
+	.page {
+		justify-content: flex-start;
+	}
+
 	.spacer {
 		width: 1px;
 		height: 2rem;
-	}
-
-	h3 {
-		font-weight: 600;
-		font-size: 1.25rem;
-		color: darkslategray;
-		text-align: center;
-		width: 100%;
 	}
 </style>

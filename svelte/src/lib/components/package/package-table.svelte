@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { focusedPackages } from '$stores/package';
 	import { resolveInmate, type Package } from '$models/pbc/package';
-	import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate';
+	import type { Inmate } from '$lib/models/pbc/inmate';
 
 	import Book from '$components/book.svelte';
 	import Zine from '$components/zine/zine.svelte';
@@ -12,7 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let packages: Package[] = [];
-	export let inmate: Inmate | InmateNoID = null;
+	export let inmate: Inmate = null;
 
 	if (!packages || packages.length === 0) {
 		packages = $focusedPackages;
@@ -63,14 +63,14 @@
 					<td class="package-col">
 						<h2>
 							{#if pbcPackage.facility}
-								<em class:font-normal={!!inmate}>{pbcPackage.facility.facility_name}</em>,
+								<em class:text-normal={!!inmate}>{pbcPackage.facility.facility_name}</em>,
 							{/if}
 							<date>
 								{pbcPackage.date}:
 							</date>
 						</h2>
 						{#if !inmate}
-							<h2 class="font-normal">
+							<h2 class="text-normal">
 								{resolveInmate(pbcPackage).firstName}
 								{resolveInmate(pbcPackage).middleInitial
 									? resolveInmate(pbcPackage).middleInitial + ' '

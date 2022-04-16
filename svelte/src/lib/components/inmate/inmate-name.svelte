@@ -1,47 +1,40 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { focusedInmate } from '$stores/inmate';
-	import { isInmateNoID } from '$services/pbc/inmate.service';
-	import Modal from '$components/modal.svelte';
-	import EditInmate from '$lib/components/inmate/edit-inmate.svelte';
+	import { isInmateNoID, type Inmate } from '$models/pbc/inmate';
 	import editIcon from '$assets/icons/edit.png';
+	import Modal from '$components/modal.svelte';
+	import EditInmate from '$components/inmate/edit-inmate.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	let isModalVisible = false;
+	export let inmate: Inmate;
+	export let shouldDisplayModal = false;
 
-	const refresh = (inmate) => {
-		focusedInmate.set(inmate);
-	};
-	const presentModal = () => (isModalVisible = true);
-	const closeModal = () => (isModalVisible = false);
+	const presentModal = () => (shouldDisplayModal = true);
+	const closeModal = () => (shouldDisplayModal = false);
 
-	const onUpdate = (event) => {
-		refresh(event.detail);
+	const onUpdateInmate = (event) => {
 		closeModal();
 		dispatch('update', event.detail);
 	};
-	const onError = (event) => dispatch('error', event.detail);
+	const onUpdateInmateError = (event) => {
+		closeModal();
+		dispatch('error', event.detail);
+	};
 </script>
 
-<Modal bind:visible={isModalVisible}>
-	<EditInmate id={$focusedInmate.id} on:update={(e) => onUpdate(e)} on:error={(e) => onError(e)} />
+<Modal bind:visible={shouldDisplayModal}>
+	<EditInmate {inmate} on:update={onUpdateInmate} on:error={onUpdateInmateError} />
 </Modal>
 
 <div id="inmate-name">
 	<h1 aria-label="Inmate's first and last name, and inmate ID if available">
-		{#if isInmateNoID($focusedInmate)}
-			{$focusedInmate.firstName}
-			{$focusedInmate.middleInitial
-				? $focusedInmate.middleInitial + '. '
-				: ''}{$focusedInmate.lastName}
-			- <span>{$focusedInmate.location}</span>
+		{inmate.firstName}
+		{inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}
+		{#if isInmateNoID(inmate)}
+			- <span>{inmate.location}</span>
 		{:else}
-			{$focusedInmate.firstName}
-			{$focusedInmate.middleInitial
-				? $focusedInmate.middleInitial + '. '
-				: ''}{$focusedInmate.lastName}&ensp;
-			<span>ID#{$focusedInmate.id}</span>
+			&ensp;<span>ID#{inmate.id}</span>
 		{/if}
 
 		<img
@@ -62,23 +55,10 @@
 		justify-content: space-between;
 		align-items: center;
 
-		h1 {
-			font-size: 2rem;
-			text-align: center;
-			margin-bottom: 0;
-		}
-
 		span {
 			color: darkslategray;
 			font-weight: 700;
 			font-size: 1.75rem;
-		}
-	}
-
-	.icon {
-		&:hover {
-			opacity: 1;
-			cursor: pointer;
 		}
 	}
 </style>

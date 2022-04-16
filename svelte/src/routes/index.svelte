@@ -1,29 +1,36 @@
+<script lang="ts" context="module">
+	import { getQueryParam } from '$util/web';
+	import { HomepageSearch } from '$util/routing';
+
+	export function load({ url }) {
+		const mode = getQueryParam(url, 'search mode', 'search', 'mode') || HomepageSearch.ID;
+
+		return { props: { mode } };
+	}
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { VALID_HOMEPAGE_SEARCH, gotoSearchForInmate } from '$util/routing';
+	import { gotoHomeSearch, gotoSearchForInmate } from '$util/routing';
 	import { isEmpty } from '$util/strings';
 	import PackageCount from '$components/package/package-count.svelte';
-	import { uriQueryJoin } from '$util/web';
 
-	let id = null;
+	export let mode: HomepageSearch = HomepageSearch.ID;
+	let focusOnLoadElement;
+
+	let inmateID = null;
 	let firstName = null;
 	let lastName = null;
 
-	let searchByIdElement;
-	let searchBy = VALID_HOMEPAGE_SEARCH.ID;
-
 	onMount(() => {
-		searchByIdElement.focus();
+		focusOnLoadElement.focus();
 	});
 
-	$: searchText =
-		searchBy === VALID_HOMEPAGE_SEARCH.ID ? 'Search by Name?' : 'Search by Inmate ID?';
-	$: toggleSearch = () =>
-		(searchBy =
-			searchBy === VALID_HOMEPAGE_SEARCH.ID
-				? VALID_HOMEPAGE_SEARCH.NAME
-				: VALID_HOMEPAGE_SEARCH.ID);
-	$: shouldDisableSearch = () => isEmpty(firstName) && isEmpty(lastName);
+	const shouldDisableSearch = (firstName, lastName) => isEmpty(firstName) && isEmpty(lastName);
+	const toggleSearch = (mode) =>
+		gotoHomeSearch(mode === HomepageSearch.ID ? HomepageSearch.NAME : HomepageSearch.ID);
+
+	$: searchText = mode === HomepageSearch.ID ? 'Search by Name?' : 'Search by Inmate ID?';
 </script>
 
 <svelte:head>
@@ -31,23 +38,29 @@
 </svelte:head>
 
 <main class="page">
-	<form on:submit|preventDefault={() => gotoSearchForInmate(searchBy, { id, firstName, lastName })}>
-		{#if searchBy === VALID_HOMEPAGE_SEARCH.ID}
+	<form
+		on:submit|preventDefault={() =>
+			gotoSearchForInmate(mode, { id: inmateID, firstName, lastName })}
+	>
+		{#if mode === HomepageSearch.ID}
 			<input
 				id="inmate-id"
 				type="text"
 				placeholder="Enter Inmate ID #, press Enter"
 				name="inmateNumber"
-				bind:value={id}
-				bind:this={searchByIdElement}
+				class="big"
+				bind:value={inmateID}
+				bind:this={focusOnLoadElement}
 			/>
-		{:else if searchBy === VALID_HOMEPAGE_SEARCH.NAME}
+		{:else if mode === HomepageSearch.NAME}
 			<input
 				id="inmateFirstName"
 				type="text"
 				name="inmateFirstName"
 				placeholder="First Name"
+				class="big"
 				bind:value={firstName}
+				bind:this={focusOnLoadElement}
 			/>
 
 			<input
@@ -55,42 +68,25 @@
 				type="text"
 				name="inmateLastName"
 				placeholder="Last Name"
+				class="big"
 				bind:value={lastName}
 			/>
 
-			<button type="submit" disabled={shouldDisableSearch()}>Search</button>
+			<button type="submit" class="slim" disabled={shouldDisableSearch(firstName, lastName)}>
+				Find Inmate(s)
+			</button>
 		{/if}
 	</form>
 
-	<p class="link" on:click={toggleSearch}>
+	<p class="link" on:click={() => toggleSearch(mode)}>
 		{searchText}
 	</p>
 
 	<PackageCount />
 </main>
 
-<style lang="scss">
-	form {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: center;
-		align-items: center;
-
-		input[type='text'] {
-			border: none;
-			font-size: 1.5rem;
-			text-align: center;
-			max-width: 100vw;
-			width: calc(100vw - 5rem);
-			margin-bottom: 1rem;
-			outline: none;
-		}
-
-		button {
-			display: flex;
-			flex-flow: row nowrap;
-			align-items: center;
-			justify-content: space-between;
-		}
+<style>
+	button {
+		align-self: center;
 	}
 </style>

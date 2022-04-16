@@ -1,168 +1,128 @@
 <script lang="ts" context="module">
+	import { PackageSearchMode } from '$util/routing';
 	import { formatDate } from '$util/time';
 	import { getQueryParam } from '$util/web';
-	import { SearchMode } from '$models/search-packages-mode';
 
 	export function load({ url }) {
-		let searchMode: SearchMode = getQueryParam(url, 'search mode', 'search', 'mode') as SearchMode;
+		const searchMode: PackageSearchMode = getQueryParam(
+			url,
+			'search mode',
+			'search',
+			'mode'
+		) as PackageSearchMode;
 
-		const props = { searchMode };
 		switch (searchMode) {
-			case SearchMode.DATE:
-				props['date'] = url.searchParams.get('date') || formatDate(new Date());
-				break;
-			case SearchMode.DATE_RANGE:
-				props['startDate'] = getQueryParam(url, 'start date') || formatDate(new Date());
-				props['endDate'] = getQueryParam(url, 'end date') || formatDate(new Date());
-				break;
-			case SearchMode.ISBN:
-				props['isbn'] = url.searchParams.get('isbn') || null;
-				break;
-			case SearchMode.AUTHOR_AND_TITLE:
-				props['author'] = url.searchParams.get('author') || null;
-				props['title'] = url.searchParams.get('title') || null;
-				break;
+			case PackageSearchMode.DATE:
+				return {
+					props: { searchMode, date: url.searchParams.get('date') || formatDate(new Date()) }
+				};
+			case PackageSearchMode.DATE_RANGE:
+				return {
+					props: {
+						searchMode,
+						startDate: getQueryParam(url, 'start date') || formatDate(new Date()),
+						endDate: getQueryParam(url, 'end date') || formatDate(new Date())
+					}
+				};
+			case PackageSearchMode.ISBN:
+				return { props: { searchMode, isbn: url.searchParams.get('isbn') } };
+			case PackageSearchMode.AUTHOR_AND_TITLE:
+				return {
+					props: {
+						searchMode,
+						author: url.searchParams.get('author'),
+						title: url.searchParams.get('title')
+					}
+				};
+			default:
+				return { props: { searchMode } };
 		}
-
-		return { props };
 	}
 </script>
 
 <script lang="ts">
-	import { focusedPackage, focusedPackages } from '$stores/package';
-	import { printPackage } from '$util/routing';
-	import { isEmpty } from '$util/strings';
-	import { ValidCreatePackageModal } from '$models/create-package-modal';
 	import { resolveInmate, type Package } from '$models/pbc/package';
-	import type { Book } from '$models/pbc/book';
+	import { focusedPackage, focusedPackages } from '$stores/package';
+	import { isEmpty } from '$util/strings';
+	import { printPackage, CreatePackageModalState } from '$util/routing';
 
 	import filterIcon from '$assets/icons/filter.png';
-	import PackageTable from '$lib/components/package/package-table.svelte';
+	import PackageTable from '$components/package/package-table.svelte';
 	import CreatePackageModal from '$components/package/create-package-modal.svelte';
 	import FilterPackages from '$components/package/search/filter/filter-packages.svelte';
+	import Loading from '$components/loading.svelte';
+	import BookTitleResolver from '$components/book-title-resolver.svelte';
 
-	export let searchMode = SearchMode.DATE;
-
+	export let searchMode = PackageSearchMode.DATE;
 	export let date: string = formatDate(new Date());
-	export let startDate: string = formatDate(new Date());
-	export let endDate: string = formatDate(new Date());
-
+	export let [startDate, endDate] = [formatDate(new Date()), formatDate(new Date())];
 	export let isbn = '';
 	export let [author, title] = ['', ''];
 
-	let activeModal: ValidCreatePackageModal;
-	let activeModalParams = {};
-	let selectedInmate = null;
-
-	let book: Book;
 	let loading = true;
-
 	let showFilters = false;
 	let shouldFilter = false;
 	let filteredPackages = [];
 
-	$: {
-		loadPackages(searchMode);
-		[date, startDate, endDate, isbn, author, title];
-	}
+	let activeModal: CreatePackageModalState;
+	let activeModalParams = {};
+	let selectedInmate = null;
 
-	const doneLoading = () => {
-		loading = false;
-	};
+	const toggleShowFilters = () => (showFilters = !showFilters);
+	const selectInmate = (pbcPackage: Package) => (selectedInmate = resolveInmate(pbcPackage));
+	const refresh = (searchMode: PackageSearchMode) => loadPackages(searchMode);
+	const startLoading = () => (loading = true);
+	const doneLoading = () => (loading = false);
 
-	const findBook = (searchMode) => (packages) => {
-		if (packages && packages.length > 0) {
-			let p = packages[0];
-			if (searchMode === SearchMode.AUTHOR_AND_TITLE && p.noISBNBooks && p.noISBNBooks.length > 0) {
-				const matchingBook = p.noISBNBooks.find(
-					(book) =>
-						book.authors
-							.map((s) => s.toLowerCase())
-							.join(',')
-							.includes(author.toLowerCase()) &&
-						book.title.toLowerCase().includes(title.toLowerCase())
-				);
-				if (matchingBook) {
-					book = matchingBook;
-					return;
-				}
-			}
-
-			if (searchMode === SearchMode.AUTHOR_AND_TITLE) {
-				const matchingBook = p.books.find(
-					(book) =>
-						book.authors
-							.map((s) => s.toLowerCase())
-							.join(',')
-							.includes(author.toLowerCase()) &&
-						book.title.toLowerCase().includes(title.toLowerCase())
-				);
-				if (matchingBook) {
-					book = matchingBook;
-					return;
-				}
-			}
-
-			if (searchMode === SearchMode.ISBN) {
-				const matchingBook = p.books.find((book) => book.isbn10 === isbn || book.isbn13 === isbn);
-				if (matchingBook) {
-					book = matchingBook;
-					return;
-				}
-			}
-		}
-	};
-
-	const loadPackages = (searchMode: SearchMode) => {
+	const loadPackages = (searchMode: PackageSearchMode) => {
 		switch (searchMode) {
-			case SearchMode.DATE:
+			case PackageSearchMode.DATE:
+				startLoading();
 				focusedPackages.fetchForDate(date).then(doneLoading);
-				loading = true;
 				break;
-			case SearchMode.DATE_RANGE:
+			case PackageSearchMode.DATE_RANGE:
+				startLoading();
 				focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading);
-				loading = true;
 				break;
-			case SearchMode.ISBN:
+			case PackageSearchMode.ISBN:
 				if (!isEmpty(isbn)) {
-					focusedPackages.fetchForISBN(isbn).then(findBook(searchMode)).then(doneLoading);
-					loading = true;
+					startLoading();
+					focusedPackages.fetchForISBN(isbn).then(doneLoading);
 				}
-			case SearchMode.AUTHOR_AND_TITLE:
+				break;
+			case PackageSearchMode.AUTHOR_AND_TITLE:
+				startLoading();
 				if (!isEmpty(author) && !isEmpty(title)) {
-					focusedPackages
-						.fetchForAuthorAndTitle(author, title)
-						.then(findBook(searchMode))
-						.then(doneLoading);
-					loading = true;
+					focusedPackages.fetchForAuthorAndTitle(author, title).then(doneLoading);
 				}
+				break;
 		}
-	};
-
-	const selectInmate = (pbcPackage: Package) => {
-		selectedInmate = resolveInmate(pbcPackage);
 	};
 
 	const presentEditPackageModal = (pbcPackage: Package) => {
 		selectInmate(pbcPackage);
 		focusedPackage.load(pbcPackage);
-		activeModal = ValidCreatePackageModal.EDIT_PACKAGE;
+		activeModal = CreatePackageModalState.EDIT_PACKAGE;
 	};
 
 	const presentAlertModal = (pbcPackage: Package) => {
 		selectInmate(pbcPackage);
 		focusedPackage.load(pbcPackage);
-		activeModal = ValidCreatePackageModal.VIEW_ALERT;
+		activeModal = CreatePackageModalState.VIEW_ALERT;
 		activeModalParams = { packageId: pbcPackage.id };
 	};
 
-	const toggleShowFilters = () => (showFilters = !showFilters);
-
-	const refresh = (searchMode: SearchMode) => {
+	$: {
 		loadPackages(searchMode);
-	};
+		[date, startDate, endDate, isbn, author, title];
+	}
 </script>
 
+<svelte:head>
+	<title>BellBooks - Search Packages</title>
+</svelte:head>
+
+<Loading visible={loading} />
 <CreatePackageModal
 	bind:activeModal
 	bind:activeModalParams
@@ -171,12 +131,16 @@
 />
 
 <main class="page">
-	{#if searchMode === SearchMode.DATE || searchMode === SearchMode.DATE_RANGE}
+	{#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}
 		<header id="date-header">
-			<h2>Displaying results for &emsp;</h2>
-			{#if searchMode === SearchMode.DATE}
+			{#if loading}
+				<h2>Searching Date(s)</h2>
+			{:else}
+				<h2>Displaying results for &emsp;</h2>
+			{/if}
+			{#if searchMode === PackageSearchMode.DATE}
 				<input type="date" bind:value={date} max={new Date().toISOString().split('T')[0]} />
-			{:else if searchMode === SearchMode.DATE_RANGE}
+			{:else if searchMode === PackageSearchMode.DATE_RANGE}
 				<input type="date" bind:value={startDate} max={endDate} />
 				<span class="through" />
 				<input
@@ -189,7 +153,7 @@
 
 			<img
 				src={filterIcon}
-				class="icon filter-icon"
+				class="icon filter"
 				class:active={showFilters}
 				class:passive={!showFilters && shouldFilter}
 				width="20"
@@ -200,25 +164,24 @@
 		</header>
 	{/if}
 
-	{#if (searchMode === SearchMode.ISBN || searchMode === SearchMode.AUTHOR_AND_TITLE) && book}
+	{#if searchMode === PackageSearchMode.ISBN || searchMode === PackageSearchMode.AUTHOR_AND_TITLE}
 		<header id="book-header">
 			<h2>
 				Displaying Packages containing
 				<img
 					src={filterIcon}
-					class="icon filter-icon active"
+					class="icon filter"
 					class:active={showFilters}
+					class:passive={!showFilters && shouldFilter}
 					width="20"
 					height="20"
 					alt="filter icon; click to filter the list of packages"
 					on:click={toggleShowFilters}
 				/>
 			</h2>
-			<h2>
-				<span class="book-title">{book.title}</span>
-				<span class="book-text">&emsp;by&emsp;</span>
-				<span class="book-author">{book.authors?.[0]}</span>
-			</h2>
+			{#if !loading && $focusedPackages.length > 0}
+				<BookTitleResolver pbcPackage={$focusedPackages[0]} {author} {title} />
+			{/if}
 		</header>
 	{/if}
 
@@ -228,6 +191,7 @@
 		on:update={({ detail }) => (filteredPackages = detail)}
 		on:should-filter={({ detail }) => (shouldFilter = detail)}
 	/>
+
 	{#if !loading}
 		{#if !shouldFilter}
 			<p>
@@ -242,11 +206,7 @@
 				<strong>{$focusedPackages.length}</strong> Packages
 			</p>
 		{/if}
-	{/if}
 
-	{#if loading}
-		<h2>Loading</h2>
-	{:else}
 		<PackageTable
 			packages={shouldFilter ? filteredPackages : $focusedPackages}
 			on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
@@ -257,14 +217,6 @@
 </main>
 
 <style lang="scss">
-	main {
-		display: flex;
-		flex-flow: column nowrap;
-		justify-content: flex-start;
-		align-items: stretch;
-		text-align: center;
-	}
-
 	h2 {
 		text-align: center !important;
 	}
@@ -288,36 +240,26 @@
 		justify-content: center;
 	}
 
-	.book-title {
-		font-style: italic;
-		color: #333;
-	}
-
-	.book-author {
-		color: #333;
+	.page {
+		justify-content: flex-start;
+		align-items: stretch;
+		text-align: center;
 	}
 
 	.through::before {
 		content: '\2192';
 	}
 
-	.filter-icon {
-		transition-duration: 0.3s;
-		opacity: 0.5;
-		cursor: pointer;
+	.filter {
 		margin-left: 1rem;
 
-		&:hover {
-			opacity: 0.9;
+		&.active {
+			filter: invert(57%) sepia(89%) saturate(225%) hue-rotate(159deg) brightness(102%)
+				contrast(93%);
+			opacity: 1;
 		}
-	}
-
-	.filter-icon.active {
-		filter: invert(57%) sepia(89%) saturate(225%) hue-rotate(159deg) brightness(102%) contrast(93%);
-		opacity: 1;
-	}
-
-	.filter-icon.passive {
-		filter: invert(74%) sepia(48%) saturate(4112%) hue-rotate(91deg) brightness(94%) contrast(98%);
+		&.passive {
+			filter: invert(74%) sepia(48%) saturate(4112%) hue-rotate(91deg) brightness(94%) contrast(98%);
+		}
 	}
 </style>

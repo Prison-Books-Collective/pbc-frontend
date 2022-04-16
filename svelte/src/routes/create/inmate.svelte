@@ -1,31 +1,34 @@
 <script lang="ts" context="module">
+	import { getQueryParam } from '$lib/util/web';
+
 	export function load({ url }) {
 		const id = url.searchParams.get('id') || null;
-		let firstName = url.searchParams.get('firstName') || url.searchParams.get('first_name') || null;
-		let lastName = url.searchParams.get('lastName') || url.searchParams.get('last_name') || null;
+		let firstName = getQueryParam(url, 'first name');
+		let lastName = getQueryParam(url, 'last name');
 
-		if (firstName === 'null') firstName = null;
-		if (lastName === 'null') lastName = null;
-
-		return { props: { id, firstName, lastName, wasIDProvided: !!id } };
+		return { props: { id, firstName, lastName, isInmateNoID: !id } };
 	}
 </script>
 
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { ROUTE_PACKAGES_FOR_INMATE } from '$util/routing';
+	import { gotoPackagesForInmate } from '$util/routing';
 	import { focusedInmate } from '$stores/inmate';
 	import type { Facility } from '$models/pbc/facility';
 	import { InmateService } from '$services/pbc/inmate.service';
-	import FacilitySelect from '$lib/components/facility/select-facility.svelte';
+	import FacilitySelect from '$components/facility/select-facility.svelte';
+	import { isEmpty } from '$util/strings';
 
 	export let id = null;
 	export let firstName = null;
 	export let lastName = null;
-	export let wasIDProvided = false;
-	let location: Facility = null;
+	export let isInmateNoID = true;
+	export let location: Facility = null;
 
-	$: shouldDisableCreateInmate = () => !firstName || !lastName || (!location && !id);
+	const shouldDisableCreateInmate = ({ isInmateNoID, firstName, lastName, location, id }) =>
+		isInmateNoID
+			? isEmpty(firstName) || isEmpty(lastName) || !location
+			: isEmpty(firstName) || isEmpty(lastName) || isEmpty(id);
+
 	const createInmate = async () => {
 		let createdInmate;
 		if (!id && !!location) {
@@ -37,7 +40,7 @@
 
 		if (!!createdInmate && !!createdInmate.id) {
 			focusedInmate.set(createdInmate);
-			goto(ROUTE_PACKAGES_FOR_INMATE(createdInmate.id));
+			gotoPackagesForInmate(createdInmate.id);
 		}
 	};
 </script>
@@ -50,7 +53,14 @@
 	<h1>Add New Inmate</h1>
 
 	<form on:submit|preventDefault={createInmate}>
-		{#if wasIDProvided}
+		<label for="no-id" class="checkbox">
+			<input type="checkbox" name="no-id" id="no-id" bind:checked={isInmateNoID} />
+			This Inmate does not have an ID
+		</label>
+
+		{#if isInmateNoID}
+			<FacilitySelect bind:facility={location} selected={location?.facility_name} />
+		{:else}
 			<label for="inmateNumber">
 				Inmate ID
 				<input
@@ -85,11 +95,11 @@
 			/>
 		</label>
 
-		{#if !wasIDProvided}
-			<FacilitySelect bind:facility={location} />
-		{/if}
-
-		<button type="submit" class="button-success" disabled={shouldDisableCreateInmate()}>
+		<button
+			type="submit"
+			class="button-success slim"
+			disabled={shouldDisableCreateInmate({ isInmateNoID, firstName, lastName, id, location })}
+		>
 			Add Inmate
 		</button>
 	</form>

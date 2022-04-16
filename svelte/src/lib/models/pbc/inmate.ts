@@ -8,8 +8,10 @@ export interface Inmate {
 	middleInitial: string;
 
 	packages: Package[];
-}
 
-export interface InmateNoID extends Inmate {
 	location?: string;
 }
+
+export const isInmateNoID = (inmate: Inmate) => {
+	return !!inmate[ 'location' ];
+};

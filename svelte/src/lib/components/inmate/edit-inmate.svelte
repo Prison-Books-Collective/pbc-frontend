@@ -1,113 +1,105 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
-	import { InmateService, isInmateNoID } from '$services/pbc/inmate.service';
+	import { isInmateNoID, type Inmate } from '$models/pbc/inmate';
+	import type { Facility } from '$models/pbc/facility';
 	import { FacilityService } from '$services/pbc/facility.service';
-	import FacilitySelect from '$lib/components/facility/select-facility.svelte';
-	import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
-	import { focusedInmate } from '$stores/inmate';
+	import { InmateService } from '$services/pbc/inmate.service';
+	import { isEmpty } from '$util/strings';
+	import FacilitySelect from '$components/facility/select-facility.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let id: string;
+	export let inmate: Inmate;
 
-	let updateFirstName = $focusedInmate.firstName;
-	let updateLastName = $focusedInmate.lastName;
-	let updateLocation;
-	(async () => {
-		updateLocation = await FacilityService.resolveFacilityByName($focusedInmate.location);
-	})();
+	let { firstName, lastName } = inmate;
+	let location: Facility;
+	let didLoadFacility = new Promise(() => {});
 
-	$: shouldDisableForm = () => {
-		return (
-			!updateFirstName ||
-			updateFirstName === '' ||
-			!updateLastName ||
-			updateLastName === '' ||
-			(isInmateNoID($focusedInmate) && !updateLocation)
-		);
+	const loadFacility = (inmate: Inmate) => {
+		didLoadFacility = new Promise(() => {});
+		FacilityService.resolveFacilityByName(inmate.location).then((facility) => {
+			location = facility;
+			if (facility) didLoadFacility = Promise.resolve();
+		});
 	};
 
-	const updateInmateRecord = async (inmate) => {
+	const shouldDisableForm = ({ inmate, firstName, lastName, location }) =>
+		isEmpty(firstName) || isEmpty(lastName) || (isInmateNoID(inmate) && !location);
+
+	const submit = async (inmate: Inmate) => {
 		try {
-			let createdInmate;
+			let createdInmate: Inmate;
 			if (isInmateNoID(inmate)) {
 				createdInmate = await InmateService.updateInmateNoID({
-					initialId: id,
+					initialId: inmate.id,
 					...inmate,
-					firstName: updateFirstName,
-					lastName: updateLastName,
+					firstName,
+					lastName,
 					inmateId: inmate.id,
-					location: updateLocation.facility_name
+					location: location.facility_name
 				});
 			} else {
 				createdInmate = await InmateService.updateInmate({
-					initialId: id,
+					initialId: inmate.id,
 					...inmate,
-					firstName: updateFirstName,
-					lastName: updateLastName,
+					firstName,
+					lastName,
 					inmateId: inmate.id
 				});
 			}
+
 			dispatch('update', createdInmate);
 		} catch (error) {
-			alert(ERROR_MESSAGE_SERVER_COMMUNICATION);
-			console.error(error);
 			dispatch('error', error);
 		}
 	};
+
+	$: loadFacility(inmate);
 </script>
 
-{#if $focusedInmate}
-	<section>
-		<form id="edit-inmate" on:submit|preventDefault={() => updateInmateRecord($focusedInmate)}>
-			<h1>Edit Inmate Record</h1>
+{#if inmate}
+	<form id="edit-inmate" on:submit|preventDefault={() => submit(inmate)}>
+		<h1>Edit Inmate Record</h1>
 
-			{#if !isInmateNoID($focusedInmate)}
-				<label for="inmate-number">
-					Inmate ID:
-					<input
-						type="text"
-						name="inmate-number"
-						placeholder="Inmate ID"
-						disabled
-						bind:value={$focusedInmate.id}
-					/>
-				</label>
-			{/if}
-
-			<label for="first-name">
-				First Name:
+		{#if !isInmateNoID(inmate)}
+			<label for="inmate-number">
+				Inmate ID:
 				<input
 					type="text"
-					name="first-name"
-					placeholder="First Name"
-					bind:value={updateFirstName}
+					name="inmate-number"
+					placeholder="Inmate ID"
+					disabled
+					bind:value={inmate.id}
 				/>
 			</label>
+		{/if}
 
-			<label for="last-name">
-				Last Name:
-				<input type="text" name="last-name" placeholder="Last Name" bind:value={updateLastName} />
+		<label for="first-name">
+			First Name:
+			<input type="text" id="first-name" placeholder="First Name" bind:value={firstName} />
+		</label>
+
+		<label for="last-name">
+			Last Name:
+			<input type="text" id="last-name" placeholder="Last Name" bind:value={lastName} />
+		</label>
+
+		{#await didLoadFacility then}
+			<label for="facility">
+				Facility:
+				<FacilitySelect selected={inmate.location} bind:facility={location} />
 			</label>
+		{/await}
 
-			{#if isInmateNoID($focusedInmate) && updateLocation}
-				<label for="facility">
-					Facility:
-					<FacilitySelect selected={$focusedInmate.location} bind:facility={updateLocation} />
-				</label>
-			{/if}
-
-			<button class="slim" disabled={shouldDisableForm()}>Update Inmate Record</button>
-		</form>
-	</section>
+		<button class="slim" disabled={shouldDisableForm({ inmate, firstName, lastName, location })}>
+			Update Inmate Record
+		</button>
+	</form>
 {/if}
 
-<style lang="scss">
-	section {
-		max-width: 100%;
+<style>
+	#edit-inmate {
 		width: 400px;
-	}
-	button {
-		width: 100%;
+		max-width: 80vw;
 	}
 </style>

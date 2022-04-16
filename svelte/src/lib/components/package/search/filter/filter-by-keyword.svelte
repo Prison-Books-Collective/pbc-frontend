@@ -60,15 +60,15 @@
 </script>
 
 <section class="filter-options">
-	<label for="any-keywords" class="checkbox outline font-normal">
+	<label for="any-keywords" class="checkbox outline text-normal">
 		<input id="any-keywords" name="any-keywords" type="radio" value="any" bind:group={mode} />
 		Contains <span class="any">Any</span> of the Keywords
 	</label>
-	<label for="all-keywords" class="checkbox outline font-normal">
+	<label for="all-keywords" class="checkbox outline text-normal">
 		<input id="all-keywords" name="all-keywords" type="radio" value="all" bind:group={mode} />
 		Contains <span class="all">All</span> of the Keywords
 	</label>
-	<label for="remove-keywords" class="checkbox outline font-normal">
+	<label for="remove-keywords" class="checkbox outline text-normal">
 		<input
 			id="remove-keywords"
 			name="remove-keywords"
@@ -83,7 +83,7 @@
 <form on:submit|preventDefault={() => addKeyword(keywordInput)}>
 	<label for="keyword-input">
 		Keyword
-		<span class="light-text">
+		<span class="text-light">
 			(<em>All or part of: Author, Title, ISBN, Inmate Name, etc.</em>)
 		</span>
 	</label>

@@ -79,37 +79,39 @@
 	$: fn = getFilterFn(mode, selectedZines);
 </script>
 
-<section class="filter-options">
-	<label for="any-zines" class="checkbox outline font-normal">
-		<input id="any-zines" name="any-zines" type="radio" value="any" bind:group={mode} />
-		Contains <span class="any">Any</span> of the Zines
-	</label>
-	<label for="all-zines" class="checkbox outline font-normal">
-		<input id="all-zines" name="all-zines" type="radio" value="all" bind:group={mode} />
-		Contains <span class="all">All</span> of the Zines
-	</label>
-	<label for="no-zines" class="checkbox outline font-normal">
-		<input id="no-zines" name="no-zines" type="radio" value="none" bind:group={mode} />
-		<strong>Does not</strong> contain Zines
-	</label>
-</section>
-
-<section class="inner-window">
-	{#each availableZines as zine}
-		<label for={zine.id.toString()} class="checkbox item">
-			{#key packages}
-				<input
-					type="checkbox"
-					id={zine.id.toString()}
-					value={zine}
-					checked={isSelected(zine)}
-					on:change={() => toggleSelection(zine)}
-				/>
-				{zine.threeLetterCode} &mdash; {zine.title}
-			{/key}
+{#if availableZines && availableZines.length > 0}
+	<section class="filter-options">
+		<label for="any-zines" class="checkbox outline text-normal">
+			<input id="any-zines" name="any-zines" type="radio" value="any" bind:group={mode} />
+			Contains <span class="any">Any</span> of the Zines
 		</label>
-	{/each}
-</section>
+		<label for="all-zines" class="checkbox outline text-normal">
+			<input id="all-zines" name="all-zines" type="radio" value="all" bind:group={mode} />
+			Contains <span class="all">All</span> of the Zines
+		</label>
+		<label for="no-zines" class="checkbox outline text-normal">
+			<input id="no-zines" name="no-zines" type="radio" value="none" bind:group={mode} />
+			<strong>Does not</strong> contain Zines
+		</label>
+	</section>
+
+	<section class="inner-window">
+		{#each availableZines as zine}
+			<label for={zine.id.toString()} class="checkbox item">
+				{#key packages}
+					<input
+						type="checkbox"
+						id={zine.id.toString()}
+						value={zine}
+						checked={isSelected(zine)}
+						on:change={() => toggleSelection(zine)}
+					/>
+					{zine.threeLetterCode} &mdash; {zine.title}
+				{/key}
+			</label>
+		{/each}
+	</section>
+{/if}
 
 <style>
 	.filter-options {

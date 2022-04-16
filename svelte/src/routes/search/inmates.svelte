@@ -1,10 +1,8 @@
 <script lang="ts" context="module">
+	import { getQueryParam } from '$util/web';
 	export function load({ url }) {
-		let firstName = url.searchParams.get('firstName') || url.searchParams.get('first_name') || null;
-		let lastName = url.searchParams.get('lastName') || url.searchParams.get('last_name') || null;
-
-		if (firstName == 'null') firstName = null;
-		if (lastName == 'null') lastName = null;
+		let firstName = getQueryParam(url, 'first name');
+		let lastName = getQueryParam(url, 'last name');
 		return { props: { firstName, lastName } };
 	}
 </script>
@@ -12,6 +10,7 @@
 <script lang="ts">
 	import { InmateService } from '$services/pbc/inmate.service';
 	import { ROUTE_PACKAGES_FOR_INMATE, ROUTE_INMATE_CREATE_NAMED } from '$util/routing';
+	import Loading from '$components/loading.svelte';
 
 	export let firstName = null;
 	export let lastName = null;
@@ -30,7 +29,7 @@
 	</p>
 
 	{#await getInmates}
-		<p>Loading...</p>
+		<Loading />
 	{:then inmates}
 		<nav>
 			{#each inmates as inmate}
@@ -47,11 +46,13 @@
 				</p>
 			{/each}
 
-			<p id="create-new-inmate">
-				<a href={ROUTE_INMATE_CREATE_NAMED({ firstName, lastName })}>
-					Click here to create a new inmate record
-				</a>
-			</p>
+			<a
+				id="create-new-inmate"
+				class="text-normal link"
+				href={ROUTE_INMATE_CREATE_NAMED({ firstName, lastName })}
+			>
+				<p id="create-new-inmate" class="link">Click here to create a new inmate record</p>
+			</a>
 		</nav>
 	{/await}
 </main>

@@ -10,6 +10,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { focusedBook } from '$stores/book';
 	import { focusedPackage } from '$stores/package';
+	import { bookHasISBN } from '$models/pbc/book';
 
 	const dispatch = createEventDispatcher();
 
@@ -61,13 +62,13 @@
 	<section class="book-flow">
 		<p>
 			We found a book that matched
-			{#if $focusedBook.isbn10}
+			{#if bookHasISBN($focusedBook).isbn10}
 				ISBN10: <strong>{$focusedBook.isbn10}</strong>
 			{/if}
-			{#if $focusedBook.isbn10 && $focusedBook.isbn13}
+			{#if bookHasISBN($focusedBook).isbn10 && bookHasISBN($focusedBook).isbn13}
 				and
 			{/if}
-			{#if $focusedBook.isbn13}
+			{#if bookHasISBN($focusedBook).isbn13}
 				ISBN13: <strong>{$focusedBook.isbn13}</strong>
 			{/if}
 		</p>

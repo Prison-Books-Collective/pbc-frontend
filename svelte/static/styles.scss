@@ -22,6 +22,11 @@
 	}
 }
 
+h1 {
+	width: 100%;
+	text-align: center;
+}
+
 h2 {
 	font-weight: 600;
 	font-size: 1.25rem;
@@ -60,11 +65,16 @@ th {
 	display: none !important;
 }
 
-.outline {
-	border: 1px solid rgba(0, 0, 0, 0.3);
-	border-radius: 3px;
-	padding: 0.25rem;
+.text-normal {
+	font-weight: normal;
+	text-decoration: none;
 }
+
+.text-light {
+	font-weight: normal;
+	opacity: 0.6;
+}
+
 
 .page {
 	display: flex;
@@ -80,14 +90,19 @@ th {
 
 .icon {
 	max-height: 1.5rem;
-
 	opacity: 0.5;
 	transition-duration: 0.3s;
 	cursor: pointer;
+}
 
-	&:hover {
-		opacity: 0.9;
-	}
+.icon:hover {
+	opacity: 0.9;
+}
+
+.outline {
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 3px;
+	padding: 0.25rem;
 }
 
 .inner-window {
@@ -103,11 +118,6 @@ th {
 	border: 1px dashed rgba(0, 0, 0, 0.3);
 	border-radius: 3px;
 	margin-bottom: 1rem;
-}
-
-.font-normal {
-	font-weight: normal;
-	text-decoration: none;
 }
 
 .link {
@@ -136,9 +146,4 @@ th {
 .link:focus-visible::before {
 	transform: scale(1);
 	transform-origin: left;
-}
-
-.light-text {
-	font-weight: normal;
-	opacity: 0.6;
 }

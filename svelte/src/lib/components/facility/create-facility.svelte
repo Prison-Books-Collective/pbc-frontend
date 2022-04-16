@@ -31,7 +31,13 @@
 	<form id="new-facility-form" on:submit|preventDefault={createFacility}>
 		<label for="facility-name">
 			Facility Name:
-			<input type="text" name="facility-name" id="facility-name" bind:value={facilityName} />
+			<input
+				type="text"
+				name="facility-name"
+				id="facility-name"
+				placeholder="Facility Name"
+				bind:value={facilityName}
+			/>
 		</label>
 
 		<select bind:value={state}>

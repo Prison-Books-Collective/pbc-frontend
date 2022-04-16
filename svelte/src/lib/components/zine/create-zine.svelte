@@ -37,13 +37,14 @@
 				type="text"
 				name="three-letter-code"
 				id="three-letter-code"
+				placeholder="Zine Code"
 				bind:value={threeLetterCode}
 			/>
 		</label>
 
 		<label for="title">
 			Title:
-			<input type="text" name="title" id="title" bind:value={title} />
+			<input type="text" name="title" id="title" placeholder="Zine Title" bind:value={title} />
 		</label>
 
 		<button disabled={shouldDisableCreate} class="button-success">Add Zine</button>

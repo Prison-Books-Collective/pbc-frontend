@@ -18,11 +18,11 @@
 </script>
 
 <section class="filter-options">
-	<label for="only-rejected" class="checkbox outline font-normal">
+	<label for="only-rejected" class="checkbox outline text-normal">
 		<input id="only-rejected" name="only-rejected" type="radio" value="only" bind:group={mode} />
 		<strong>Only</strong> Rejected Packages
 	</label>
-	<label for="remove-rejected" class="checkbox outline font-normal">
+	<label for="remove-rejected" class="checkbox outline text-normal">
 		<input
 			id="remove-rejected"
 			name="remove-rejected"

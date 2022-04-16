@@ -1,13 +1,13 @@
 import type { Alert } from './alert';
 import type { Book, NoISBNBook } from './book';
 import type { Facility } from './facility';
-import type { Inmate, InmateNoID } from './inmate';
+import type { Inmate } from './inmate';
 import type { Zine } from './zine';
 
 export interface Package {
 	id: number;
 	inmate?: Inmate;
-	inmateNoId?: InmateNoID;
+	inmateNoId?: Inmate;
 
 	books?: Book[];
 	zines?: Zine[];

@@ -84,12 +84,5 @@
 
 	.icon {
 		max-height: 1.5rem;
-
-		opacity: 0.5;
-		transition-duration: 0.3s;
-
-		&:hover {
-			opacity: 1;
-		}
 	}
 </style>

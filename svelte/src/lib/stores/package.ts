@@ -1,12 +1,11 @@
 import { writable } from 'svelte/store';
-import { isInmateNoID } from '$services/pbc/inmate.service';
 import { isNoISBNBook } from '$services/pbc/book.service';
 import { PackageService } from '$services/pbc/package.service';
 import { focusedInmate } from '$stores/inmate';
 import type { FocusedInmateStore } from '$stores/inmate';
 import type { Book, NoISBNBook } from '$models/pbc/book';
 import type { Facility } from '$models/pbc/facility';
-import type { Inmate, InmateNoID } from '$models/pbc/inmate';
+import { isInmateNoID, type Inmate } from '$models/pbc/inmate';
 import type { Package } from '$models/pbc/package';
 import type { Zine } from '$models/pbc/zine';
 import { formatDate } from '$util/time';
@@ -56,12 +55,12 @@ const createPackage = () => {
 			zines: [...currentPackage.zines, zine]
 		}));
 
-	const setInmate = (inmate: Inmate | InmateNoID) => {
+	const setInmate = (inmate: Inmate) => {
 		if (isInmateNoID(inmate)) {
 			update((currentPackage) => ({
 				...currentPackage,
 				inmate: null,
-				inmateNoId: inmate as InmateNoID
+				inmateNoId: inmate as Inmate
 			}));
 		} else {
 			update((currentPackage) => ({

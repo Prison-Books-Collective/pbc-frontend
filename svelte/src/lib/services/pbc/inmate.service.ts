@@ -1,11 +1,8 @@
 import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web';
 import { BASE_PBC_URI } from '.';
-import type { Inmate, InmateNoID } from './models/inmate';
-import type { Facility } from '../../models/pbc/facility';
+import type { Inmate } from '$models/pbc/inmate';
+import type { Facility } from '$models/pbc/facility';
 
-export const isInmateNoID = (inmate: Inmate | InmateNoID) => {
-	return !!inmate.location;
-};
 export class InmateService {
 	public static readonly URI_GET_INMATE = (inmateId: string) =>
 		`${BASE_PBC_URI}/getInmate${uriQueryJoin({ id: inmateId })}`;
@@ -97,7 +94,7 @@ export class InmateService {
 		return (await response.json()) as Inmate;
 	}
 
-	public static async getInmateNoIdByDatabaseID(databaseId: string | number): Promise<InmateNoID> {
+	public static async getInmateNoIdByDatabaseID(databaseId: string | number): Promise<Inmate> {
 		const response = await fetch(this.URI_GET_INMATE__NO_ID__BY_DATABASE_ID(databaseId), {
 			...METHOD_GET
 		});
@@ -112,7 +109,7 @@ export class InmateService {
 			);
 		}
 
-		return (await response.json()) as InmateNoID;
+		return (await response.json()) as Inmate;
 	}
 
 	public static async getAllInmatesByName({
@@ -121,7 +118,7 @@ export class InmateService {
 	}: {
 		firstName: string;
 		lastName: string;
-	}): Promise<Inmate[] | InmateNoID[]> {
+	}): Promise<Inmate[]> {
 		const inmatesWithIDs = await this.getInmatesByName({ firstName, lastName });
 		const inmatesWithoutIDs = await this.getInmateNoIdByName({ firstName, lastName });
 
@@ -144,7 +141,7 @@ export class InmateService {
 			throw new Error(
 				`unexpected response ${
 					response.status
-				} when searching for inmate with name "${firstName} ${lastName}" at "${URI_GET_INMATE__BY_NAME(
+				} when searching for inmate with name "${firstName} ${lastName}" at "${this.URI_GET_INMATE__BY_NAME(
 					{ firstName, lastName }
 				)}"`
 			);
@@ -159,7 +156,7 @@ export class InmateService {
 	}: {
 		firstName: string;
 		lastName: string;
-	}): Promise<InmateNoID[]> {
+	}): Promise<Inmate[]> {
 		const response = await fetch(this.URI_GET_INMATE__NO_ID__BY_NAME({ firstName, lastName }), {
 			...METHOD_GET
 		});
@@ -175,10 +172,10 @@ export class InmateService {
 			);
 		}
 
-		return (await response.json()) as InmateNoID[];
+		return (await response.json()) as Inmate[];
 	}
 
-	public static async getInmateUnknownIdStatus(id: string | number): Promise<Inmate | InmateNoID> {
+	public static async getInmateUnknownIdStatus(id: string | number): Promise<Inmate> {
 		let inmate = await this.getInmate(id.toString());
 		if (!inmate) {
 			inmate = await this.getInmateNoIdByDatabaseID(id);
@@ -238,7 +235,7 @@ export class InmateService {
 			);
 		}
 
-		return (await response.json()) as InmateNoID;
+		return (await response.json()) as Inmate;
 	}
 
 	public static async updateInmate({
@@ -283,7 +280,7 @@ export class InmateService {
 		lastName: string;
 		location: string;
 		inmateId: string;
-	}): Promise<InmateNoID> {
+	}): Promise<Inmate> {
 		const response = await fetch(
 			this.URI_UPDATE_INMATE__NO_ID({ initialId, firstName, lastName, location, inmateId }),
 			{ ...METHOD_PUT }
@@ -303,6 +300,6 @@ export class InmateService {
 			);
 		}
 
-		return (await response.json()) as InmateNoID;
+		return (await response.json()) as Inmate;
 	}
 }

@@ -11,7 +11,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let inmate: Inmate | InmateNoID;
+	export let inmate: Inmate;
 
 	let removeItems = [];
 	let facility = $focusedPackage.facility;
