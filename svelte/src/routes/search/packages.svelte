@@ -228,18 +228,20 @@
 		on:update={({ detail }) => (filteredPackages = detail)}
 		on:should-filter={({ detail }) => (shouldFilter = detail)}
 	/>
-	{#if showFilters || shouldFilter}
-		<p>
-			Showing <strong
-				><span>{shouldFilter ? filteredPackages.length : $focusedPackages.length}</span></strong
-			>
-			of
-			<strong>{$focusedPackages.length}</strong> Packages
-		</p>
-	{:else if !loading}
-		<p>
-			<strong>{$focusedPackages.length}</strong> Packages
-		</p>
+	{#if !loading}
+		{#if !shouldFilter}
+			<p>
+				<strong>{$focusedPackages.length}</strong> Packages
+			</p>
+		{:else if shouldFilter && filteredPackages.length > 0}
+			<p>
+				Showing <strong
+					><span>{shouldFilter ? filteredPackages.length : $focusedPackages.length}</span></strong
+				>
+				of
+				<strong>{$focusedPackages.length}</strong> Packages
+			</p>
+		{/if}
 	{/if}
 
 	{#if loading}
