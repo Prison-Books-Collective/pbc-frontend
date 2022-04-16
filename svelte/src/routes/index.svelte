@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { gotoHomeSearch, gotoSearchForInmate } from '$util/routing';
+	import { gotoHomeSearch, gotoInmateSearch } from '$util/routing';
 	import { isEmpty } from '$util/strings';
 	import PackageCount from '$components/package/package-count.svelte';
 
@@ -39,8 +39,7 @@
 
 <main class="page">
 	<form
-		on:submit|preventDefault={() =>
-			gotoSearchForInmate(mode, { id: inmateID, firstName, lastName })}
+		on:submit|preventDefault={() => gotoInmateSearch(mode, { id: inmateID, firstName, lastName })}
 	>
 		{#if mode === HomepageSearch.ID}
 			<input

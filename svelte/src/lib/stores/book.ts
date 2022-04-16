@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Book, NoISBNBook } from '$models/pbc/book';
+import type { Book } from '$models/pbc/book';
 import { BookService, isNoISBNBook } from '$services/pbc/book.service';
 
 interface LocalStorageBook extends Book {
@@ -44,7 +44,7 @@ const createFocusedBook = () => {
 	const sync = async () =>
 		new Promise((resolve, reject) => {
 			update((book) => {
-				let operation: Promise<Book | NoISBNBook>;
+				let operation: Promise<Book>;
 
 				if (isNoISBNBook(book)) {
 					operation = BookService.createBookNoISBN(book);

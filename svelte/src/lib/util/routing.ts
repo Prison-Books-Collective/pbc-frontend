@@ -1,12 +1,12 @@
 import { goto } from '$app/navigation';
+import type { Inmate } from '$models/pbc/inmate';
+import type { Package } from '$models/pbc/package';
 import { InmateService } from '$services/pbc/inmate.service';
 import { focusedInmate } from '$stores/inmate';
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error';
-import { delay } from '$util/time';
-import type { Package } from '$models/pbc/package';
 import { isEmpty } from '$util/strings';
+import { delay } from '$util/time';
 import { uriQueryJoin } from '$util/web';
-import type { Inmate } from '$lib/models/pbc/inmate';
 
 export enum HomepageSearch {
 	ID = 'id',
@@ -47,36 +47,18 @@ export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=t
 export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) =>
 	`/search/packages/${uriQueryJoin({ searchMode, ...params })}`;
 
-export const gotoHomeSearch = async (searchMode: HomepageSearch) => {
-	goto(ROUTE_HOME(searchMode))
-}
-
-export const gotoSearchForInmate = async (
+export const gotoHomeSearch = async (searchMode: HomepageSearch) => goto(ROUTE_HOME(searchMode));
+export const gotoInmateSearch = async (
 	searchBy: HomepageSearch,
 	{ id, firstName, lastName }
 ) => {
 	if (searchBy === HomepageSearch.ID) {
-		return searchForInmateByID(id);
+		return gotoInmateSearchByID(id);
 	} else if (searchBy === HomepageSearch.NAME) {
-		return searchForInmatesByName({ firstName, lastName });
+		return gotoInmateSearchByName({ firstName, lastName });
 	}
 };
-
-export const gotoPackagesForInmate = async (inmate: Inmate) => goto(ROUTE_PACKAGES_FOR_INMATE(inmate.id));
-
-export const gotoPackageSearch = async ({ date, startDate, endDate, isbn, author, title }) => {
-	if (date) {
-		searchByDate(date);
-	} else if (startDate && endDate) {
-		searchByDateRange(startDate, endDate);
-	} else if (isbn) {
-		searchByISBN(isbn);
-	} else if (author && title) {
-		searchByAuthorAndTitle(author, title);
-	}
-}
-
-const searchForInmateByID = async (id) => {
+const gotoInmateSearchByID = async (id) => {
 	if (id === null) return;
 	try {
 		const foundInmate = await InmateService.getInmate(id);
@@ -94,8 +76,7 @@ const searchForInmateByID = async (id) => {
 		console.error(error);
 	}
 };
-
-const searchForInmatesByName = async ({ firstName, lastName }) => {
+const gotoInmateSearchByName = async ({ firstName, lastName }) => {
 	if (isEmpty(firstName) && isEmpty(lastName)) return;
 
 	try {
@@ -120,6 +101,25 @@ const searchForInmatesByName = async ({ firstName, lastName }) => {
 	}
 };
 
+
+export const gotoPackagesForInmate = async (inmate: Inmate) => goto(ROUTE_PACKAGES_FOR_INMATE(inmate.id));
+
+export const gotoPackageSearch = async ({ date, startDate, endDate, isbn, author, title }) => {
+	if (date) {
+		gotoSearchByDate(date);
+	} else if (startDate && endDate) {
+		gotoSearchByDateRange(startDate, endDate);
+	} else if (isbn) {
+		gotoSearchByISBN(isbn);
+	} else if (author && title) {
+		gotoSearchByAuthorAndTitle(author, title);
+	}
+}
+export const gotoSearchByDate = (date: string) => goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.DATE, params: { date } }));
+export const gotoSearchByDateRange = (startDate: string, endDate: string) => goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.DATE_RANGE, params: { startDate, endDate } }));
+export const gotoSearchByISBN = (isbn: string) => goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.ISBN, params: { isbn } }));
+export const gotoSearchByAuthorAndTitle = (author: string, title: string) => goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.AUTHOR_AND_TITLE, params: { author, title } }));
+
 export const printPackage = async (pbcPackage: Package) => {
 	const printWindow = window.open(ROUTE_PRINT_INVOICE(pbcPackage.id), 'title', 'attributes');
 
@@ -127,20 +127,4 @@ export const printPackage = async (pbcPackage: Package) => {
 	await delay(3500);
 	printWindow.document.close();
 	printWindow.close();
-};
-
-export const searchByDate = (date: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.DATE, params: { date } }));
-};
-
-export const searchByDateRange = (startDate: string, endDate: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.DATE_RANGE, params: { startDate, endDate } }));
-};
-
-export const searchByISBN = (isbn: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.ISBN, params: { isbn } }));
-};
-
-export const searchByAuthorAndTitle = (author: string, title: string) => {
-	goto(ROUTE_PACKAGE_SEARCH({ searchMode: PackageSearchMode.AUTHOR_AND_TITLE, params: { author, title } }));
 };

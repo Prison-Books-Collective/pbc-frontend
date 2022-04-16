@@ -1,83 +1,28 @@
-import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web';
 import { BASE_PBC_URI } from '.';
-import type { Inmate } from '$models/pbc/inmate';
 import type { Facility } from '$models/pbc/facility';
+import type { Inmate } from '$models/pbc/inmate';
+import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web';
 
 export class InmateService {
-	public static readonly URI_GET_INMATE = (inmateId: string) =>
-		`${BASE_PBC_URI}/getInmate${uriQueryJoin({ id: inmateId })}`;
-	public static readonly URI_GET_INMATE__NO_ID__BY_DATABASE_ID = (databaseId: string | number) =>
-		`${BASE_PBC_URI}/getInmateNoIDByDatabaseID${uriQueryJoin({ id: databaseId })}`;
-	public static readonly URI_GET_INMATE__BY_NAME = ({
-		firstName,
-		lastName
-	}: {
-		firstName: string;
-		lastName: string;
-	}) => `${BASE_PBC_URI}/searchInmatesByName${uriQueryJoin({ firstName, lastName })}`;
-	public static readonly URI_GET_INMATE__NO_ID__BY_NAME = ({
-		firstName,
-		lastName
-	}: {
-		firstName: string;
-		lastName: string;
-	}) => `${BASE_PBC_URI}/getInmateNoID${uriQueryJoin({ firstName, lastName })}`;
-	public static readonly URI_CREATE_INMATE = ({
-		firstName,
-		lastName,
-		inmateId
-	}: {
-		firstName: string;
-		lastName: string;
-		inmateId: string;
-	}) => `${BASE_PBC_URI}/addInmate${uriQueryJoin({ firstName, lastName, id: inmateId })}`;
-	public static readonly URI_CREATE_INMATE__NO_ID = ({
-		firstName,
-		lastName,
-		location
-	}: {
-		firstName: string;
-		lastName: string;
-		location: string;
-	}) => `${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`;
+	public static readonly URI_GET_INMATE = (inmateId: string) => `${BASE_PBC_URI}/getInmate${uriQueryJoin({ id: inmateId })}`;
+	public static readonly URI_GET_INMATE__NO_ID__BY_DATABASE_ID = (databaseId: string | number) => `${BASE_PBC_URI}/getInmateNoIDByDatabaseID${uriQueryJoin({ id: databaseId })}`;
+	public static readonly URI_GET_INMATE__BY_NAME = ({ firstName, lastName }) => `${BASE_PBC_URI}/searchInmatesByName${uriQueryJoin({ firstName, lastName })}`;
+	public static readonly URI_GET_INMATE__NO_ID__BY_NAME = ({ firstName, lastName }) => `${BASE_PBC_URI}/getInmateNoID${uriQueryJoin({ firstName, lastName })}`;
+	public static readonly URI_CREATE_INMATE = ({ firstName, lastName, inmateId }) => `${BASE_PBC_URI}/addInmate${uriQueryJoin({ firstName, lastName, id: inmateId })}`;
+	public static readonly URI_CREATE_INMATE__NO_ID = ({ firstName, lastName, location }) => `${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`;
 	public static readonly URI_UPDATE_INMATE = ({
 		initialId,
 		firstName,
 		lastName,
 		inmateId
-	}: {
-		initialId: string;
-		firstName: string;
-		lastName: string;
-		inmateId: string;
-	}) =>
-		`${BASE_PBC_URI}/updateInmate${uriQueryJoin({
-			originalId: initialId,
-			firstName,
-			lastName,
-			id: inmateId
-		})}`;
-
+	}) => `${BASE_PBC_URI}/updateInmate${uriQueryJoin({ originalId: initialId, firstName, lastName, id: inmateId })}`;
 	public static readonly URI_UPDATE_INMATE__NO_ID = ({
 		initialId,
 		firstName,
 		lastName,
 		location,
 		inmateId
-	}: {
-		initialId: string;
-		firstName: string;
-		lastName: string;
-		location: string;
-		inmateId: string;
-	}) =>
-		`${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({
-			originalId: initialId,
-			firstName,
-			lastName,
-			location,
-			id: inmateId
-		})}`;
+	}) => `${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({ originalId: initialId, firstName, lastName, location, id: inmateId })}`;
 
 	public static async getInmate(inmateId: string): Promise<Inmate | null> {
 		const response = await fetch(this.URI_GET_INMATE(inmateId), { ...METHOD_GET });

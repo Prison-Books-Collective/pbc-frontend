@@ -1,5 +1,5 @@
 import type { Alert } from './alert';
-import type { Book, NoISBNBook } from './book';
+import type { Book } from './book';
 import type { Facility } from './facility';
 import type { Inmate } from './inmate';
 import type { Zine } from './zine';
@@ -11,7 +11,7 @@ export interface Package {
 
 	books?: Book[];
 	zines?: Zine[];
-	noISBNBooks?: NoISBNBook[];
+	noISBNBooks?: Book[];
 
 	alert?: Alert;
 	facility?: Facility;

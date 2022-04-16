@@ -3,7 +3,7 @@ import { isNoISBNBook } from '$services/pbc/book.service';
 import { PackageService } from '$services/pbc/package.service';
 import { focusedInmate } from '$stores/inmate';
 import type { FocusedInmateStore } from '$stores/inmate';
-import type { Book, NoISBNBook } from '$models/pbc/book';
+import type { Book } from '$models/pbc/book';
 import type { Facility } from '$models/pbc/facility';
 import { isInmateNoID, type Inmate } from '$models/pbc/inmate';
 import type { Package } from '$models/pbc/package';
@@ -33,10 +33,10 @@ const emptyPackage: LocalStoragePackage = {
 
 const emptyPackages: Package[] = [];
 
-const createPackage = () => {
+const createFocusedPackage = () => {
 	const { subscribe, set, update } = writable(emptyPackage);
 
-	const addBook = (book: Book | NoISBNBook) => {
+	const addBook = (book: Book) => {
 		if (isNoISBNBook(book)) {
 			update((currentPackage) => ({
 				...currentPackage,
@@ -149,6 +149,7 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 	const { subscribe, set } = writable(emptyPackages);
 
 	focusedInmate.subscribe(async ($inmate) => {
+		if(!$inmate) return
 		const packages = await (isInmateNoID($inmate)
 			? PackageService.getPackagesForInmateNoID($inmate.id)
 			: PackageService.getPackagesForInmate($inmate.id));
@@ -219,5 +220,5 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 	};
 };
 
-export const focusedPackage = createPackage();
+export const focusedPackage = createFocusedPackage();
 export const focusedPackages = createFocusedPackages(focusedInmate);

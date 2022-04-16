@@ -1,6 +1,6 @@
 import { BASE_PBC_URI } from '.';
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$util/web';
-import type { Zine } from './models/zine';
+import type { Zine } from '$models/pbc/zine';
 
 export class ZineService {
 	public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getZines`;

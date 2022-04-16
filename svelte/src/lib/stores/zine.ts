@@ -8,9 +8,9 @@ const createZineStore = () => {
 		try {
 			const zines = await ZineService.getZines();
 			set(zines);
+			return zines;
 		} catch (error) {
-			console.error(error);
-			console.error(`failed to sync $zines via remote`);
+			console.error(`failed to sync $zines via remote`, error);
 		}
 	};
 
@@ -25,12 +25,11 @@ const createZineStore = () => {
 			fetch();
 			return createdZine;
 		} catch (error) {
-			console.error(error);
 			console.error(
 				`failed to create new zine for $zines via remote using data: ${JSON.stringify({
 					threeLetterCode,
 					title
-				})}`
+				})}`, error
 			);
 		}
 	};

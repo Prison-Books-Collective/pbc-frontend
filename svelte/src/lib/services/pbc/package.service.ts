@@ -1,6 +1,6 @@
 import { BASE_PBC_URI } from '.';
+import type { Package } from '$models/pbc/package';
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT } from '$util/web';
-import type { Package } from '../../models/pbc/package';
 
 export class PackageService {
 	public static readonly URI_GET_PACKAGE = (packageId: number) =>
