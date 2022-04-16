@@ -10,51 +10,53 @@ form {
 	margin-block-end: 2rem;
 }
 
-:disabled { cursor: not-allowed }
+:disabled {
+	cursor: not-allowed;
+}
 
 button {
-  display: inline-block;
-  padding: 11px 23px;
-  margin: 20px 10px 0px;
+	display: inline-block;
+	padding: 11px 23px;
+	margin: 20px 10px 0px;
 
-  background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-  border: 1px solid #566963;
-  border-radius: 5px;
-  box-shadow: inset 0px 1px 3px 0px #91b8b3;
+	background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+	border: 1px solid #566963;
+	border-radius: 5px;
+	box-shadow: inset 0px 1px 3px 0px #91b8b3;
 
-  font-family: roboto;
-  color: #ffffff;
-  font-size: 15px;
-  text-decoration: none;
-  text-shadow: 0px -1px 0px #2b665e;
+	font-family: roboto;
+	color: #ffffff;
+	font-size: 15px;
+	text-decoration: none;
+	text-shadow: 0px -1px 0px #2b665e;
 
-  transition-duration: 0.3s;
-  cursor: pointer;
+	transition-duration: 0.3s;
+	cursor: pointer;
 }
 
 button:disabled {
-  background: #838383;
-  border: #444 solid 1px;
-  text-shadow: 0px -1px 0px #444;
-  box-shadow: inset 0px 1px 3px 0px #ccc;
+	background: #838383;
+	border: #444 solid 1px;
+	text-shadow: 0px -1px 0px #444;
+	box-shadow: inset 0px 1px 3px 0px #ccc;
 }
 
 button.slim {
-  margin: 0px;
+	margin: 0px;
 }
 
 .button-danger {
-  background: lightcoral;
-  border: rgb(171, 68, 68) solid 1px;
-  text-shadow: 0px -1px 0px rgb(171, 68, 68);
-  box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
+	background: lightcoral;
+	border: rgb(171, 68, 68) solid 1px;
+	text-shadow: 0px -1px 0px rgb(171, 68, 68);
+	box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
 }
 
 .button-success {
-  background: darkseagreen;
-  border: rgb(61, 130, 61) solid 1px;
-  text-shadow: 0px -1px 0px rgb(61, 130, 61);
-  box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
+	background: darkseagreen;
+	border: rgb(61, 130, 61) solid 1px;
+	text-shadow: 0px -1px 0px rgb(61, 130, 61);
+	box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
 }
 
 label {

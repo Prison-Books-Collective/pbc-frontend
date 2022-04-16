@@ -1,7 +1,9 @@
 @import url('./fonts.scss');
 
 @media not print {
-	* { font-family: roboto }
+	* {
+		font-family: roboto;
+	}
 
 	body {
 		margin: 0px !important;
@@ -10,9 +12,14 @@
 }
 
 @media print {
-	#nav-primary, #nav-spacer { display: none }
+	#nav-primary,
+	#nav-spacer {
+		display: none;
+	}
 
-	.page-break { page-break-after: always }
+	.page-break {
+		page-break-after: always;
+	}
 }
 
 h2 {
@@ -33,15 +40,25 @@ table {
 	margin-top: 20px;
 	width: auto;
 }
-table, th, td { border: 1px solid black }
-tr { background-color: #f0f0f0 }
-tr:nth-child(2n) { background-color: gainsboro; }
+table,
+th,
+td {
+	border: 1px solid black;
+}
+tr {
+	background-color: #f0f0f0;
+}
+tr:nth-child(2n) {
+	background-color: gainsboro;
+}
 th {
 	background-color: #c1e3de;
 	height: 30px;
 }
 
-.hidden { display: none !important }
+.hidden {
+	display: none !important;
+}
 
 .outline {
 	border: 1px solid rgba(0, 0, 0, 0.3);

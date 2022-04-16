@@ -190,12 +190,10 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 			set(packages);
 			return packages;
 		} catch (error) {
-			console.error(error)
-			console.error(
-				`failed to retrieve packages containing ISBN "${isbn}" via remote`
-			);
+			console.error(error);
+			console.error(`failed to retrieve packages containing ISBN "${isbn}" via remote`);
 		}
-	}
+	};
 
 	const fetchForAuthorAndTitle = async (author: string, title: string) => {
 		try {
@@ -203,12 +201,12 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 			set(packages);
 			return packages;
 		} catch (error) {
-			console.error(error)
+			console.error(error);
 			console.error(
 				`failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`
 			);
 		}
-	}
+	};
 
 	return {
 		subscribe,
@@ -218,7 +216,7 @@ const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
 		fetchForDate,
 		fetchForDateRange,
 		fetchForISBN,
-		fetchForAuthorAndTitle,
+		fetchForAuthorAndTitle
 	};
 };
 

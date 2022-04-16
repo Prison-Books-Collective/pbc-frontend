@@ -21,11 +21,11 @@ export const INVALID_FACILITY: Facility = {
 	facility_name: 'Invalid Facility',
 	state: '' as any,
 	facility_type: '' as any
-}
+};
 
 export const invalidFacility: Facility = {
 	id: undefined,
 	facility_name: ' No Facility Provided ',
 	state: '' as any,
-	facility_type: '' as any,
+	facility_type: '' as any
 };

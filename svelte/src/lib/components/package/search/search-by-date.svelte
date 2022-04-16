@@ -96,7 +96,7 @@
 		justify-content: stretch;
 	}
 
-	input[type=date] {
+	input[type='date'] {
 		width: auto;
 	}
 
@@ -108,5 +108,5 @@
 	p {
 		width: fit-content;
 		margin-inline: auto;
-  }
+	}
 </style>
