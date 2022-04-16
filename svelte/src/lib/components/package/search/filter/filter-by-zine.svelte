@@ -2,7 +2,7 @@
 	import type { Package } from '$lib/models/pbc/package';
 	import type { Zine } from '$lib/models/pbc/zine';
 
-	type Mode = 'any' | 'all';
+	type Mode = 'any' | 'all' | 'none';
 	const defaultFn = (packages: Package[]) => packages;
 
 	export let packages: Package[] = [];
@@ -27,8 +27,22 @@
 	};
 
 	const getFilterFn = (mode: Mode, selectedZines: Zine[]) => {
-		if (!selectedZines || selectedZines.length === 0) return defaultFn;
+		if (mode === 'none') {
+			if (!selectedZines || selectedZines.length === 0)
+				return (packages: Package[]) => packages.filter((p) => !p.zines || p.zines.length === 0);
+			return (packages: Package[]) =>
+				packages.filter((p) => {
+					if (!p.zines || p.zines.length === 0) return true;
+					for (let fz of selectedZines) {
+						if (p.zines.find((z) => fz.id === z.id)) return false;
+					}
+					return true;
+				});
+		}
+
 		if (mode === 'any') {
+			if (!selectedZines || selectedZines.length === 0)
+				return (packages: Package[]) => packages.filter((p) => p.zines && p.zines.length > 0);
 			return (packages: Package[]) =>
 				packages.filter((p) => {
 					if (!p.zines || p.zines.length === 0) return false;
@@ -38,6 +52,8 @@
 					return false;
 				});
 		}
+
+		if (!selectedZines || selectedZines.length === 0) return defaultFn;
 		return (packages: Package[]) =>
 			packages.filter((p) => {
 				if (!p.zines || p.zines.length === 0) return false;
@@ -72,9 +88,13 @@
 		<input id="all-zines" name="all-zines" type="radio" value="all" bind:group={mode} />
 		Contains <span class="all">All</span> of the Zines
 	</label>
+	<label for="no-zines" class="checkbox outline font-normal">
+		<input id="no-zines" name="no-zines" type="radio" value="none" bind:group={mode} />
+		<strong>Does not</strong> contain Zines
+	</label>
 </section>
 
-<section class="outline-panel">
+<section class="inner-window">
 	{#each availableZines as zine}
 		<label for={zine.id.toString()} class="checkbox item">
 			{#key packages}

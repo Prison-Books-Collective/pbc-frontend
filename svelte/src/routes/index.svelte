@@ -30,7 +30,7 @@
 	<title>BellBooks - Search</title>
 </svelte:head>
 
-<main class="svelte-page">
+<main class="page">
 	<form on:submit|preventDefault={() => gotoSearchForInmate(searchBy, { id, firstName, lastName })}>
 		{#if searchBy === VALID_HOMEPAGE_SEARCH.ID}
 			<input

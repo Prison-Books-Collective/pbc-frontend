@@ -22,7 +22,7 @@
 	<title>Search Results for: {firstName} {lastName}</title>
 </svelte:head>
 
-<main class="svelte-page">
+<main class="page">
 	<h1>Inmate Selection</h1>
 	<p>
 		The following inmates with this name were found, please select which inmate you're creating a

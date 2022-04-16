@@ -159,6 +159,19 @@
 </section>
 
 <style lang="scss">
+	h1 {
+		text-decoration: underline;
+		font-weight: normal;
+	}
+
+	p {
+		max-width: 600px;
+	}
+
+	button {
+		flex-grow: 1;
+	}
+
 	.package-overview {
 		display: flex;
 		flex-flow: column nowrap;
@@ -189,14 +202,5 @@
 		flex-flow: row wrap;
 		justify-content: space-around;
 		align-items: center;
-	}
-
-	button {
-		flex-grow: 1;
-	}
-
-	h1 {
-		text-decoration: underline;
-		font-weight: normal;
 	}
 </style>

@@ -46,7 +46,7 @@
 	<title>BellBooks - Register Inmate</title>
 </svelte:head>
 
-<main class="svelte-page">
+<main class="page">
 	<h1>Add New Inmate</h1>
 
 	<form on:submit|preventDefault={createInmate}>

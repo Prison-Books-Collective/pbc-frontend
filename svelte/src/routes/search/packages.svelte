@@ -170,7 +170,7 @@
 	on:refresh={() => refresh(searchMode)}
 />
 
-<main class="svelte-page">
+<main class="page">
 	{#if searchMode === SearchMode.DATE || searchMode === SearchMode.DATE_RANGE}
 		<header id="date-header">
 			<h2>Displaying results for &emsp;</h2>
@@ -178,6 +178,7 @@
 				<input type="date" bind:value={date} max={new Date().toISOString().split('T')[0]} />
 			{:else if searchMode === SearchMode.DATE_RANGE}
 				<input type="date" bind:value={startDate} max={endDate} />
+				<span class="through" />
 				<input
 					type="date"
 					bind:value={endDate}
@@ -188,8 +189,9 @@
 
 			<img
 				src={filterIcon}
-				class="icon filter-icon active"
+				class="icon filter-icon"
 				class:active={showFilters}
+				class:passive={!showFilters && shouldFilter}
 				width="20"
 				height="20"
 				alt="filter icon; click to filter the list of packages"
@@ -226,6 +228,19 @@
 		on:update={({ detail }) => (filteredPackages = detail)}
 		on:should-filter={({ detail }) => (shouldFilter = detail)}
 	/>
+	{#if showFilters || shouldFilter}
+		<p>
+			Showing <strong
+				><span>{shouldFilter ? filteredPackages.length : $focusedPackages.length}</span></strong
+			>
+			of
+			<strong>{$focusedPackages.length}</strong> Packages
+		</p>
+	{:else if !loading}
+		<p>
+			<strong>{$focusedPackages.length}</strong> Packages
+		</p>
+	{/if}
 
 	{#if loading}
 		<h2>Loading</h2>
@@ -256,10 +271,6 @@
 		flex-basis: 10rem;
 	}
 
-	input[type='date']:last-of-type {
-		margin-left: 1rem;
-	}
-
 	#date-header {
 		display: flex;
 		flex-flow: row nowrap;
@@ -284,6 +295,10 @@
 		color: #333;
 	}
 
+	.through::before {
+		content: '\2192';
+	}
+
 	.filter-icon {
 		transition-duration: 0.3s;
 		opacity: 0.5;
@@ -298,5 +313,9 @@
 	.filter-icon.active {
 		filter: invert(57%) sepia(89%) saturate(225%) hue-rotate(159deg) brightness(102%) contrast(93%);
 		opacity: 1;
+	}
+
+	.filter-icon.passive {
+		filter: invert(74%) sepia(48%) saturate(4112%) hue-rotate(91deg) brightness(94%) contrast(98%);
 	}
 </style>

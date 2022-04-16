@@ -54,7 +54,7 @@
 {#await inmateIsLoaded}
 	<h1>Loading</h1>
 {:then}
-	<main class="svelte-page">
+	<main class="page">
 		<InmateName />
 
 		<button

@@ -6,7 +6,12 @@
 	import CreateFacility from '$components/facility/create-facility.svelte';
 	import SearchByDate from '$components/package/search/search-by-date.svelte';
 	import SearchByBook from '$components/package/search/search-by-book.svelte';
-	import { searchByDate, searchByDateRange, searchByISBN, searchByAuthorAndTitle } from '$util/routing';
+	import {
+		searchByDate,
+		searchByDateRange,
+		searchByISBN,
+		searchByAuthorAndTitle
+	} from '$util/routing';
 
 	const alertZineCreated = ({ detail: zine }) =>
 		alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`);
@@ -30,11 +35,11 @@
 	const gotoPackageSearch = (detail) => {
 		if (detail.date) {
 			searchByDate(detail.date);
-		} else if(detail.startDate && detail.endDate) {
+		} else if (detail.startDate && detail.endDate) {
 			searchByDateRange(detail.startDate, detail.endDate);
-		} else if(detail.isbn) {
+		} else if (detail.isbn) {
 			searchByISBN(detail.isbn);
-		} else if(detail.author && detail.title) {
+		} else if (detail.author && detail.title) {
 			searchByAuthorAndTitle(detail.author, detail.title);
 		}
 	};
@@ -44,13 +49,13 @@
 	<title>BellBooks - Settings & Configuration</title>
 </svelte:head>
 
-<main class="svelte-page">
+<main class="page">
 	<section>
 		<h2>Packages</h2>
 
 		<h3>Search Packages by Date</h3>
 		<SearchByDate on:search={({ detail }) => gotoPackageSearch(detail)} />
-		
+
 		<h3>Search Packages by Book</h3>
 		<SearchByBook on:search={({ detail }) => gotoPackageSearch(detail)} />
 	</section>

@@ -2,7 +2,7 @@
 	import { isEmpty } from '$util/strings';
 	import { stringify, type Package } from '$models/pbc/package';
 
-	type Mode = 'any' | 'all';
+	type Mode = 'any' | 'all' | 'none';
 	const defaultFn = (packages: Package[]) => packages;
 
 	export let fn = defaultFn;
@@ -36,6 +36,16 @@
 					return false;
 				});
 		}
+		if (mode === 'none') {
+			return (packages: Package[]) =>
+				packages.filter((p) => {
+					const packageString = stringify(p);
+					for (let keyword of keywords) {
+						if (packageString.includes(keyword)) return false;
+					}
+					return true;
+				});
+		}
 		return (packages: Package[]) =>
 			packages.filter((p) => {
 				const packageString = stringify(p);
@@ -57,6 +67,16 @@
 	<label for="all-keywords" class="checkbox outline font-normal">
 		<input id="all-keywords" name="all-keywords" type="radio" value="all" bind:group={mode} />
 		Contains <span class="all">All</span> of the Keywords
+	</label>
+	<label for="remove-keywords" class="checkbox outline font-normal">
+		<input
+			id="remove-keywords"
+			name="remove-keywords"
+			type="radio"
+			value="none"
+			bind:group={mode}
+		/>
+		<strong>Remove</strong> the Keywords
 	</label>
 </section>
 
@@ -80,7 +100,7 @@
 </form>
 
 {#if keywords && keywords.length > 0}
-	<section class="outline-panel">
+	<section class="inner-window">
 		{#each keywords as keyword, index}
 			<span class="chip">
 				{keyword}

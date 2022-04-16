@@ -3,7 +3,7 @@
 	import Facility from './facility.svelte';
 </script>
 
-<details>
+<details class="outline">
 	<summary>All Facilities</summary>
 
 	<div>
@@ -17,7 +17,12 @@
 	</div>
 </details>
 
-<style>
+<style lang="scss">
+	details,
+	summary {
+		outline: none;
+	}
+
 	summary {
 		font-weight: 600;
 		font-size: 1.25rem;
@@ -25,21 +30,14 @@
 		text-align: center;
 	}
 
-	details,
-	summary {
-		outline: none;
-	}
-
 	details {
 		width: 100%;
 		padding-top: 1rem;
 		padding-bottom: 1rem;
-		border-radius: 3px;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-	}
 
-	details[open] {
-		max-height: 40ch;
-		overflow-y: scroll;
+		&[open] {
+			max-height: 40ch;
+			overflow-y: scroll;
+		}
 	}
 </style>
