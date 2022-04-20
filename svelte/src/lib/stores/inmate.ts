@@ -1,47 +1,47 @@
-import { writable } from 'svelte/store';
-import { InmateService } from '$services/pbc/inmate.service';
-import type { Inmate } from '$models/pbc/inmate';
+import { writable } from 'svelte/store'
+import { InmateService } from '$services/pbc/inmate.service'
+import type { Inmate } from '$models/pbc/inmate'
 
 interface LocalStorageInmate extends Inmate {
-	[additionalFields: string]: any;
+  [additionalFields: string]: any
 }
 
 const emptyInmate: LocalStorageInmate = {
-	id: null,
+  id: null,
 
-	firstName: null,
-	middleInitial: null,
-	lastName: null,
+  firstName: null,
+  middleInitial: null,
+  lastName: null,
 
-	packages: null,
-	location: null
-};
+  packages: null,
+  location: null
+}
 
 const createFocusedInmate = () => {
-	const { subscribe, set } = writable(emptyInmate);
+  const { subscribe, set } = writable(emptyInmate)
 
-	const fetch = async (id) => {
-		try {
-			const foundInmate = await InmateService.getInmateUnknownIdStatus(id);
-			set(foundInmate);
-			return foundInmate;
-		} catch (error) {
-			console.error(error);
-			console.error(`failed to set store $focusedInmate via remote using ID "${id}"`);
-			reset();
-			return emptyInmate;
-		}
-	};
+  const fetch = async (id) => {
+    try {
+      const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
+      set(foundInmate)
+      return foundInmate
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to set store $focusedInmate via remote using ID "${id}"`)
+      reset()
+      return emptyInmate
+    }
+  }
 
-	const reset = () => set({ ...emptyInmate });
+  const reset = () => set({ ...emptyInmate })
 
-	return {
-		subscribe,
-		set,
-		reset,
-		fetch
-	};
-};
+  return {
+    subscribe,
+    set,
+    reset,
+    fetch
+  }
+}
 
-export type FocusedInmateStore = ReturnType<typeof createFocusedInmate>;
-export const focusedInmate = createFocusedInmate();
+export type FocusedInmateStore = ReturnType<typeof createFocusedInmate>
+export const focusedInmate = createFocusedInmate()

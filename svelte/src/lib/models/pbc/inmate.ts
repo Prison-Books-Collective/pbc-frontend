@@ -1,17 +1,17 @@
-import type { Package } from './package';
+import type { Package } from './package'
 
 export interface Inmate {
-	id: string;
+  id: string
 
-	firstName: string;
-	lastName: string;
-	middleInitial: string;
+  firstName: string
+  lastName: string
+  middleInitial: string
 
-	packages: Package[];
+  packages: Package[]
 
-	location?: string;
+  location?: string
 }
 
 export const isInmateNoID = (inmate: Inmate) => {
-	return !!inmate[ 'location' ];
-};
+  return !!inmate['location']
+}
