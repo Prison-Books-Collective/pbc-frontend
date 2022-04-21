@@ -14,9 +14,11 @@
 
     let searchMode: PackageSearchMode
     if (isbn) searchMode = PackageSearchMode.ISBN
-    if (author && title) searchMode = PackageSearchMode.AUTHOR_AND_TITLE
-
-    console.log(`searching using mode: ${searchMode}`)
+    if (author && title) {
+      searchMode = PackageSearchMode.AUTHOR_AND_TITLE
+      author = author?.toLowerCase().trim()
+      title = title?.toLowerCase().trim()
+    }
 
     if (
       searchMode === PackageSearchMode.AUTHOR_AND_TITLE &&
