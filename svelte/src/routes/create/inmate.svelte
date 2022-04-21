@@ -30,19 +30,11 @@
       : isEmpty(firstName) || isEmpty(lastName) || isEmpty(id)
 
   const createInmate = async () => {
-    let createdInmate
-    console.log('create inmate request')
-    if (!id && !!location) {
-      createdInmate = await InmateService.createInmateNoID({ firstName, lastName, location })
-    }
-    if (!!id && !location) {
-      createdInmate = await InmateService.createInmate({ firstName, lastName, inmateId: id })
-    }
-    console.log('create inmate response', { createdInmate })
+    const createdInmate = await (isInmateNoID
+      ? InmateService.createInmateNoID({ firstName, lastName, location })
+      : InmateService.createInmate({ firstName, lastName, inmateId: id }))
 
     if (!!createdInmate && !!createdInmate.id) {
-      console.log('passed creation')
-      console.log({ id: createdInmate.id, createdInmate })
       focusedInmate.set(createdInmate)
       gotoPackagesForInmate(createdInmate)
     }
