@@ -660,7 +660,8 @@ function savePackageToInmate(packageJson){
 }
 
 function savePackageToInmateNoId(packageJson){
-    fetch(`http://localhost:8080/addPackageForInmateNoId`, {
+    const id = inmateHelperFunctions.getInmateDatabaseID();
+    fetch(`http://localhost:8080/addPackageInmateNoID?id=${id}`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
