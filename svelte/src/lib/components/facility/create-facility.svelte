@@ -54,7 +54,7 @@
       {/each}
     </select>
 
-    <button disabled={shouldDisableCreate} class="button-success">Add Facility</button>
+    <button disabled={shouldDisableCreate} class="success">Add Facility</button>
   </form>
 </section>
 

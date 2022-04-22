@@ -34,7 +34,7 @@
     <hr />
 
     <div id="print-options">
-      <button class="button-success" on:click={printClicked}>Print Invoice?</button>
+      <button class="success" on:click={printClicked}>Print Invoice?</button>
       <button on:click={doneClicked}>Done</button>
     </div>
   </section>

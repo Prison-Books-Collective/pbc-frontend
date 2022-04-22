@@ -87,7 +87,7 @@
   {/if}
 
   <div class="add-zine-options">
-    <button disabled={shouldDisableAdd()} on:click={addClicked} class="button-success"
+    <button disabled={shouldDisableAdd()} on:click={addClicked} class="success"
       >Add to Package</button
     >
     <button on:click={cancelClicked}>Cancel</button>

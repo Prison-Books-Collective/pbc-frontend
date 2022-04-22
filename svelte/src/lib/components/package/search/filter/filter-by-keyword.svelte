@@ -89,11 +89,7 @@
   </label>
   <div class="input-group">
     <input id="keyword-input" type="text" bind:value={keywordInput} placeholder="Keyword" />
-    <button
-      class="button-success slim"
-      type="submit"
-      disabled={shouldDisableAddKeyword(keywordInput)}
-    >
+    <button class="success slim" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>
       Add
     </button>
   </div>

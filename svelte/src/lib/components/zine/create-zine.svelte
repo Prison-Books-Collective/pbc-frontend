@@ -47,7 +47,7 @@
       <input type="text" name="title" id="title" placeholder="Zine Title" bind:value={title} />
     </label>
 
-    <button disabled={shouldDisableCreate} class="button-success">Add Zine</button>
+    <button disabled={shouldDisableCreate} class="success">Add Zine</button>
   </form>
 </section>
 

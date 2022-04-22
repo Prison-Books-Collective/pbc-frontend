@@ -101,10 +101,10 @@
 
   <nav class="package-options">
     <button on:click={addItemsClicked}>Add Items</button>
-    <button disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
+    <button class="danger" disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
       >Delete Selected Item(s)</button
     >
-    <button class="button-danger" on:click={() => deletePackage()}>Delete Entire Package</button>
+    <button class="danger" on:click={() => deletePackage()}>Delete Entire Package</button>
   </nav>
 
   <p class="package-rejected" on:click={logRejectionClicked}>

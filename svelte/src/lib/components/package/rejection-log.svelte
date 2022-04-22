@@ -72,7 +72,7 @@
         {#if $focusedPackage.alert && $focusedPackage.alert.id}
           <button
             type="button"
-            class="button-danger clear-button"
+            class="danger clear-button"
             on:click={() => removeAlert($focusedPackage)}>Clear</button
           >
         {/if}

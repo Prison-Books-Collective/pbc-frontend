@@ -88,8 +88,8 @@
     {/if}
 
     <div class="book-options">
-      <button class="button-success" on:click={addBookClicked}>Add book to package</button>
-      <button class="button-danger" on:click={editBookClicked}>Edit book info</button>
+      <button class="success" on:click={addBookClicked}>Add book to package</button>
+      <button class="danger" on:click={editBookClicked}>Edit book info</button>
       <button on:click={searchClicked}>Nevermind, search for different book</button>
       <button on:click={cancelClicked}>Cancel</button>
     </div>
@@ -128,7 +128,7 @@
     </label>
 
     <div class="book-options">
-      <button class="button-success" disabled={shouldDisableEditAndAdd()}>
+      <button class="success" disabled={shouldDisableEditAndAdd()}>
         Save book and add to package
       </button>
       <button type="button" on:click={mode === VALID_MODE.EDIT ? cancelEditClicked : cancelClicked}
@@ -174,7 +174,7 @@
     </label>
 
     <div class="book-options">
-      <button class="button-success" disabled={shouldDisableEditAndAdd()}>
+      <button class="success" disabled={shouldDisableEditAndAdd()}>
         Save book and add to package
       </button>
       <button type="button" on:click={cancelClicked}>Cancel</button>

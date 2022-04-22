@@ -93,7 +93,7 @@
 
     <button
       type="submit"
-      class="button-success slim"
+      class="success slim"
       disabled={shouldDisableCreateInmate({ isInmateNoID, firstName, lastName, id, location })}
     >
       Add Inmate

@@ -77,7 +77,7 @@
     </label>
   {/if}
 
-  <button disabled={shouldDisableForm()} class="button-success">
+  <button disabled={shouldDisableForm()} class="success">
     {submitText}
   </button>
 

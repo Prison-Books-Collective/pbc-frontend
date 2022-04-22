@@ -19,7 +19,8 @@ button {
   padding: 11px 23px;
   margin: 20px 10px 0px;
 
-  background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+  background-color: #888;
+  background-image: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
   border: 1px solid #566963;
   border-radius: 5px;
   box-shadow: inset 0px 1px 3px 0px #91b8b3;
@@ -34,25 +35,27 @@ button {
   cursor: pointer;
 }
 
-button:disabled {
-  background: #838383;
+:is(button, [type=button], [type=submit]):disabled {
+  background-color: #838383;
+  background-image: none;
   border: #444 solid 1px;
   text-shadow: 0px -1px 0px #444;
   box-shadow: inset 0px 1px 3px 0px #ccc;
 }
 
-button.slim {
+:is(button, [type=button], [type=submit]).slim {
   margin: 0px;
 }
 
-.button-danger {
-  background: lightcoral;
+:is(button, [type=button], [type=submit]).danger:not(:disabled) {
+  background-color: lightcoral;
+  background-image: none;
   border: rgb(171, 68, 68) solid 1px;
   text-shadow: 0px -1px 0px rgb(171, 68, 68);
   box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
 }
 
-.button-success {
+:is(button, [type=button], [type=submit]).success:not(:disabled) {
   background: darkseagreen;
   border: rgb(61, 130, 61) solid 1px;
   text-shadow: 0px -1px 0px rgb(61, 130, 61);

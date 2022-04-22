@@ -71,7 +71,7 @@
 
     <button
       id="add-package-button"
-      class="button-success slim"
+      class="success slim"
       on:click={() => presentCreatePackageModal()}
     >
       Add a <strong><u>new package</u></strong> (books or zines)

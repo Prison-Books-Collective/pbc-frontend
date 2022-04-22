@@ -76,10 +76,10 @@
     </label>
 
     <div class="options">
-      <button class="button-success" disabled={shouldDisableSearch()} type="submit">
+      <button class="success" disabled={shouldDisableSearch()} type="submit">
         Search for Book
       </button>
-      <button on:click={noISBNClicked} class="button-danger" type="button">No ISBN?</button>
+      <button on:click={noISBNClicked} class="danger" type="button">No ISBN?</button>
       <button on:click={cancelClicked} type="button">Cancel</button>
     </div>
   </form>
@@ -112,10 +112,10 @@
     </label>
 
     <div class="options">
-      <button class="button-success" disabled={shouldDisableSearchNoISBN()}>
+      <button class="success" disabled={shouldDisableSearchNoISBN()}>
         Save Book and Add to Package
       </button>
-      <button on:click={isbnClicked} class="button-danger" type="button">Search by ISBN?</button>
+      <button on:click={isbnClicked} class="danger" type="button">Search by ISBN?</button>
       <button on:click={cancelClicked} type="button">Cancel</button>
     </div>
   </form>

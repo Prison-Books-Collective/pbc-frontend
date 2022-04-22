@@ -138,20 +138,12 @@
     <button on:click={addBooksClicked}>Add Book</button>
     <button on:click={addZinesClicked}>Add Zine(s)</button>
     {#if !isPackageEmpty()}
-      <button
-        on:click={removeSelectedClicked}
-        class="button-danger"
-        disabled={shouldDisableRemove()}
-      >
+      <button on:click={removeSelectedClicked} class="danger" disabled={shouldDisableRemove()}>
         Remove Selected
       </button>
     {/if}
     {#if !isPackageEmpty()}
-      <button
-        on:click={completePackageClicked}
-        class="button-success"
-        disabled={shouldDisableComplete()}
-      >
+      <button on:click={completePackageClicked} class="success" disabled={shouldDisableComplete()}>
         Complete Package
       </button>
     {/if}
