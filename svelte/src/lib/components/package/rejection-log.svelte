@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
 
-  import { focusedPackage } from '$stores/package'
+  import { focusedPackage, focusedPackages } from '$stores/package'
   import { PackageService } from '$services/pbc/package.service'
 
   const dispatch = createEventDispatcher()
@@ -23,6 +23,7 @@
         ...pbcPackage,
         existsInDatabase: undefined
       })
+      focusedPackages.updatePackage({ ...pbcPackage })
       dispatch('update', packageUpdate)
     } catch (error) {
       dispatch('error', error)
@@ -32,12 +33,14 @@
 
   const removeAlert = async (pbcPackage) => {
     try {
-      const packageUpdate = await PackageService.updatePackage({
+      const packageUpdateData = {
         ...pbcPackage,
         alert: null,
         existsInDatabase: undefined
-      })
-      dispatch('update', packageUpdate)
+      }
+      const updatedPackage = await PackageService.updatePackage(packageUpdateData)
+      focusedPackages.updatePackage(packageUpdateData)
+      dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
       console.error('failed to save rejection log for package', error)

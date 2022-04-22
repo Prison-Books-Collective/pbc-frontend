@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
+  import { fade, fly } from 'svelte/transition'
   import { focusedPackages } from '$stores/package'
   import { resolveInmate, type Package } from '$models/pbc/package'
   import type { Inmate } from '$lib/models/pbc/inmate'
@@ -47,8 +48,8 @@
         <th>Print</th>
       </tr>
 
-      {#each packages as pbcPackage}
-        <tr>
+      {#each packages as pbcPackage (pbcPackage.id)}
+        <tr in:fade out:fly|local={{ x: 200 }}>
           <td class="spacer-col">
             {#if pbcPackage.alert}
               <div

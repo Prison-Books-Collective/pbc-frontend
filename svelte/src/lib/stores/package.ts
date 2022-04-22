@@ -142,7 +142,7 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   constructor(focusedInmateStore: FocusedInmateStore) {
     const { set, update, subscribe } = writable([])
-
+    
     this.set = set
     this.update = update
     this.subscribe = subscribe
@@ -221,6 +221,47 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
       this.set([])
       return []
     }
+  }
+
+  public removePackage(packageID: number): LocalStoragePackage[] {
+    let updatedPackages: LocalStoragePackage[]
+    this.update(packages => {
+      updatedPackages = packages
+      const removeIndex = updatedPackages.findIndex(p => p.id === packageID)
+      if(removeIndex > -1) {
+        updatedPackages.splice(removeIndex, 1)
+      } 
+      return updatedPackages
+    })
+    return updatedPackages
+  }
+
+  // packageUpdates MUST contain the package ID that's being updated
+  public updatePackage(packageUpdates: Partial<LocalStoragePackage>): LocalStoragePackage[] {
+    let updatedPackages: LocalStoragePackage[]
+    this.update(packages => {
+      updatedPackages = packages
+      const updateIndex = updatedPackages.findIndex(p => p.id === packageUpdates.id)
+      if(updateIndex > -1) {
+        const packageToUpdate = updatedPackages[updateIndex]
+        updatedPackages[updateIndex] = {
+          ...packageToUpdate,
+          ...packageUpdates,
+        }
+      }
+      return updatedPackages
+    })
+
+    return updatedPackages
+  }
+
+  public addPackage(pbcPackage: LocalStoragePackage): LocalStoragePackage[] {
+    let updatedPackages: LocalStoragePackage[]
+    this.update(packages => {
+      updatedPackages = [ pbcPackage, ...packages ]
+      return updatedPackages
+    })
+    return updatedPackages
   }
 
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { PackageService } from '$services/pbc/package.service'
-  import { focusedPackage } from '$stores/package'
+  import { focusedPackage, focusedPackages } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
 
@@ -17,6 +17,7 @@
     try {
       focusedPackage.removeItemsById(...selectedItems)
       const updatedPackage = PackageService.updatePackage($focusedPackage)
+      focusedPackages.updatePackage($focusedPackage)
       dispatch('update', updatedPackage)
       selectedItems = []
     } catch (error) {
@@ -30,6 +31,7 @@
     if (shouldDelete) {
       try {
         await PackageService.deletePackage($focusedPackage.id)
+        focusedPackages.removePackage($focusedPackage.id)
         dispatch('delete', {})
       } catch (error) {
         console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error)

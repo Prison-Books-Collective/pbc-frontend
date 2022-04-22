@@ -19,8 +19,6 @@
   export let activeModal: CreatePackageModalState = CreatePackageModalState.NONE
   export let activeModalParams = {}
 
-  const refresh = () => dispatch('refresh')
-
   const closeModal = () => {
     activeModal = CreatePackageModalState.NONE
     dispatch('close')
@@ -33,10 +31,6 @@
   const presentAlertModal = (pbcPackage: Package) => {
     focusedPackage.load(pbcPackage)
     presentModal(CreatePackageModalState.VIEW_ALERT, { packageId: pbcPackage.id })
-  }
-  const presentPrintModal = () => {
-    refresh()
-    presentModal(CreatePackageModalState.PRINT_PACKAGE)
   }
 
   $: shouldConfirmCancel =
@@ -60,18 +54,15 @@
       {inmate}
       on:add-zines={() => presentModal(CreatePackageModalState.ADD_ZINE)}
       on:add-books={() => presentModal(CreatePackageModalState.ADD_BOOK)}
-      on:update={() => presentPrintModal()}
+      on:update={() => presentModal(CreatePackageModalState.PRINT_PACKAGE)}
       on:error={(e) => console.error(e)}
     />
   {:else if activeModal == CreatePackageModalState.EDIT_PACKAGE}
     <EditPackage
-      on:update={() => presentPrintModal()}
+      on:update={() => presentModal(CreatePackageModalState.PRINT_PACKAGE)}
       on:error={(e) => console.error(e.detail)}
       on:add-items={() => presentModal(CreatePackageModalState.VIEW_PACKAGE)}
-      on:delete={() => {
-        closeModal()
-        refresh()
-      }}
+      on:delete={() => closeModal()}
       on:reject={() => presentAlertModal($focusedPackage)}
     />
   {:else if activeModal == CreatePackageModalState.ADD_ZINE}
@@ -96,7 +87,6 @@
     <RejectionLog
       {...activeModalParams}
       on:update={() => {
-        refresh()
         closeModal()
       }}
       on:error={(e) => console.error(e.detail)}
