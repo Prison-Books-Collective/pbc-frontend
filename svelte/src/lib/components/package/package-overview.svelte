@@ -60,7 +60,8 @@
       console.error('failed to update Package in database', error)
     }
   }
-  const removeSelected = (removeItems) => {
+
+  $: removeSelected = () => {
     focusedPackage.removeItemsById(...removeItems)
     removeItems = []
   }
@@ -73,47 +74,49 @@
       <em>There are currently no items in this package</em>
     </p>
   {:else}
-    <ol class="package-items-list">
-      {#each $focusedPackage.books as book}
-        <li>
-          <label for={book.id.toString()} class="checkbox">
-            <input
-              id={book.id.toString()}
-              type="checkbox"
-              bind:group={removeItems}
-              value={book.id}
-            />
-            <Book {book} />
-          </label>
-        </li>
-      {/each}
-      {#each $focusedPackage.noISBNBooks as book}
-        <li>
-          <label for={book.id.toString()} class="checkbox">
-            <input
-              id={book.id.toString()}
-              type="checkbox"
-              bind:group={removeItems}
-              value={book.id}
-            />
-            <Book {book} />
-          </label>
-        </li>
-      {/each}
-      {#each $focusedPackage.zines as zine}
-        <li>
-          <label for={zine.id.toString()} class="checkbox">
-            <input
-              id={zine.id.toString()}
-              type="checkbox"
-              bind:group={removeItems}
-              value={zine.id}
-            />
-            <Zine {zine} />
-          </label>
-        </li>
-      {/each}
-    </ol>
+    {#key removeItems}
+      <ol class="package-items-list">
+        {#each $focusedPackage.books as book}
+          <li>
+            <label for={book.id.toString()} class="checkbox">
+              <input
+                id={book.id.toString()}
+                type="checkbox"
+                bind:group={removeItems}
+                value={book.id}
+              />
+              <Book {book} />
+            </label>
+          </li>
+        {/each}
+        {#each $focusedPackage.noISBNBooks as book}
+          <li>
+            <label for={book.id.toString()} class="checkbox">
+              <input
+                id={book.id.toString()}
+                type="checkbox"
+                bind:group={removeItems}
+                value={book.id}
+              />
+              <Book {book} />
+            </label>
+          </li>
+        {/each}
+        {#each $focusedPackage.zines as zine}
+          <li>
+            <label for={zine.id.toString()} class="checkbox">
+              <input
+                id={zine.id.toString()}
+                type="checkbox"
+                bind:group={removeItems}
+                value={zine.id}
+              />
+              <Zine {zine} />
+            </label>
+          </li>
+        {/each}
+      </ol>
+    {/key}
   {/if}
 
   {#if facility || $focusedPackage.books.length > 0 || $focusedPackage.noISBNBooks.length > 0 || $focusedPackage.zines.length > 0}
@@ -152,7 +155,7 @@
       <button
         class="danger"
         disabled={shouldDisableRemove(removeItems)}
-        on:click={() => removeSelected(removeItems)}
+        on:click={() => removeSelected()}
       >
         Remove Selected
       </button>
