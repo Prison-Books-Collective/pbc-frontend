@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { zines } from '$stores/zine'
+  import { isEmpty } from '$util/strings'
 
   const dispatch = createEventDispatcher()
 
@@ -11,13 +12,10 @@
     ;[threeLetterCode, title] = [null, null]
   }
 
-  $: shouldDisableCreate =
-    !threeLetterCode ||
-    !title ||
-    threeLetterCode.trim().length === 0 ||
-    title.trim().length === 0 ||
-    threeLetterCode.length > 5
-  $: createZine = async () => {
+  const shouldDisableCreate = (threeLetterCode, title) =>
+    isEmpty(threeLetterCode) || isEmpty(title) || threeLetterCode.length > 5
+
+  const createZine = async (threeLetterCode, title) => {
     try {
       const createdZine = await zines.create({ threeLetterCode, title })
       resetInput()
@@ -30,7 +28,7 @@
 
 <section>
   <h2>Add New Zine</h2>
-  <form id="newZineForm" on:submit|preventDefault={createZine}>
+  <form id="newZineForm" on:submit|preventDefault={() => createZine(threeLetterCode, title)}>
     <label for="three-letter-code">
       Three Letter Code:
       <input
@@ -47,7 +45,7 @@
       <input type="text" name="title" id="title" placeholder="Zine Title" bind:value={title} />
     </label>
 
-    <button disabled={shouldDisableCreate} class="success">Add Zine</button>
+    <button disabled={shouldDisableCreate(threeLetterCode, title)} class="success">Add Zine</button>
   </form>
 </section>
 

@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import { facilities } from '$stores/facility'
   import { FacilityType, State } from '$models/pbc/facility'
+  import { isEmpty } from '$util/strings'
 
   const dispatch = createEventDispatcher()
 
@@ -13,9 +14,10 @@
     ;[facilityName, facilityType, state] = [null, null, null]
   }
 
-  $: shouldDisableCreate =
-    !facilityName || !facilityType || !state || facilityName.trim().length === 0
-  $: createFacility = async () => {
+  const shouldDisableCreate = (facilityName, facilityType, state) =>
+    isEmpty(facilityName) || isEmpty(facilityType) || isEmpty(state)
+
+  const createFacility = async (facilityName, facilityType, state) => {
     try {
       const createdFacility = await facilities.create({ facilityName, facilityType, state })
       resetInput()
@@ -28,7 +30,10 @@
 
 <section>
   <h2>Add New Facility</h2>
-  <form id="new-facility-form" on:submit|preventDefault={createFacility}>
+  <form
+    id="new-facility-form"
+    on:submit|preventDefault={() => createFacility(facilityName, facilityType, state)}
+  >
     <label for="facility-name">
       Facility Name:
       <input
@@ -54,7 +59,9 @@
       {/each}
     </select>
 
-    <button disabled={shouldDisableCreate} class="success">Add Facility</button>
+    <button class="success" disabled={shouldDisableCreate(facilityName, facilityType, state)}>
+      Add Facility
+    </button>
   </form>
 </section>
 

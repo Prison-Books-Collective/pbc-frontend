@@ -9,9 +9,9 @@
   const dispatch = createEventDispatcher()
 
   let filter: string = ''
-  let addZines: Zine[] = []
   let allZines: Zine[] = []
   let availableZines: Zine[] = []
+  let selectedZines: Zine[] = []
 
   allZines = $zines
   availableZines = allZines.filter((z) => !$focusedPackage.zines.includes(z))
@@ -27,25 +27,24 @@
     return threeLetterCode.includes(filter) || title.includes(filter)
   })
 
+  const isSelected = (zine: Zine) => selectedZines.includes(zine)
   const toggle = (zine: Zine) => {
-    if (shouldAdd(zine)) {
-      const removeIndex = addZines.indexOf(zine)
-      addZines.splice(removeIndex, 1)
-      addZines = addZines
+    if (isSelected(zine)) {
+      const removeIndex = selectedZines.indexOf(zine)
+      selectedZines.splice(removeIndex, 1)
+      selectedZines = selectedZines
     } else {
-      addZines = [...addZines, zine]
+      selectedZines = [...selectedZines, zine]
     }
   }
 
-  const shouldAdd = (zine: Zine) => addZines.includes(zine)
-
-  const cancelClicked = () => dispatch('cancel')
-  $: addClicked = () => {
-    addZines.forEach((z) => focusedPackage.addZine(z))
-    dispatch('add-zines', addZines)
-    addZines = []
+  const shouldDisableAdd = (zines: Zine[]) => !zines || zines.length === 0
+  const cancel = () => dispatch('cancel')
+  const addZines = (zines: Zine[]) => {
+    zines.forEach((z) => focusedPackage.addZine(z))
+    dispatch('add-zines', zines)
+    selectedZines = []
   }
-  $: shouldDisableAdd = () => !addZines || addZines.length === 0
 </script>
 
 <section class="add-zine">
@@ -72,7 +71,7 @@
               type="checkbox"
               id={zine.id.toString()}
               value={zine}
-              checked={shouldAdd(zine)}
+              checked={isSelected(zine)}
               on:change={() => toggle(zine)}
             />
             <strong>
@@ -87,10 +86,12 @@
   {/if}
 
   <div class="form-options">
-    <button class="success" disabled={shouldDisableAdd()} on:click={addClicked}
-      >Add to Package</button
+    <button
+      class="success"
+      disabled={shouldDisableAdd(selectedZines)}
+      on:click={() => addZines(selectedZines)}>Add to Package</button
     >
-    <button on:click={cancelClicked}>Cancel</button>
+    <button on:click={cancel}>Cancel</button>
   </div>
 </section>
 

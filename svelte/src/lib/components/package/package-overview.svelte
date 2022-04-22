@@ -16,8 +16,9 @@
 
   let removeItems = []
   let facility = $focusedPackage.facility
-  ;(async () => {
-    if (!facility && inmate.location) {
+
+  const loadFacility = async (currentFacility, inmate) => {
+    if (!currentFacility && inmate.location) {
       facility = await FacilityService.resolveFacilityByName(inmate.location)
       focusedPackage.setDestination(facility)
     } else if (!facility) {
@@ -28,19 +29,21 @@
       facility = $focusedPackages[0].facility
       focusedPackage.setDestination(facility)
     }
-  })()
+  }
+  loadFacility(facility, inmate)
 
   $: isPackageEmpty = () =>
     $focusedPackage.books.length === 0 &&
     $focusedPackage.noISBNBooks.length === 0 &&
     $focusedPackage.zines.length === 0
 
-  $: shouldDisableComplete = () => !isValidFacility(facility)
-  $: shouldDisableRemove = () => !removeItems || removeItems.length === 0
+  const shouldDisableComplete = (facility) => !isValidFacility(facility)
+  const shouldDisableRemove = (removeItems) => !removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')
-  $: completePackageClicked = async () => {
+
+  const completePackage = async (inmate) => {
     try {
       focusedPackage.setInmate(inmate)
       const updatedPackage = await focusedPackage.sync($focusedPackage)
@@ -50,7 +53,7 @@
       console.error('failed to update Package in database', error)
     }
   }
-  const removeSelectedClicked = () => {
+  const removeSelected = (removeItems) => {
     focusedPackage.removeItemsById(...removeItems)
     removeItems = []
   }
@@ -139,12 +142,20 @@
     <button on:click={addBooksClicked}>Add Book</button>
     <button on:click={addZinesClicked}>Add Zine(s)</button>
     {#if !isPackageEmpty()}
-      <button class="danger" disabled={shouldDisableRemove()} on:click={removeSelectedClicked}>
+      <button
+        class="danger"
+        disabled={shouldDisableRemove(removeItems)}
+        on:click={() => removeSelected(removeItems)}
+      >
         Remove Selected
       </button>
     {/if}
     {#if !isPackageEmpty()}
-      <button on:click={completePackageClicked} class="success" disabled={shouldDisableComplete()}>
+      <button
+        class="success"
+        disabled={shouldDisableComplete(facility)}
+        on:click={() => completePackage(inmate)}
+      >
         Complete Package
       </button>
     {/if}

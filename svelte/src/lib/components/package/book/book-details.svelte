@@ -11,6 +11,7 @@
   import { focusedBook } from '$stores/book'
   import { focusedPackage } from '$stores/package'
   import { bookHasISBN } from '$models/pbc/book'
+  import { isEmpty } from '$util/strings'
 
   const dispatch = createEventDispatcher()
 
@@ -40,10 +41,13 @@
   }
   const searchClicked = () => dispatch('search')
 
-  $: shouldDisableEditAndAdd = () => {
-    return !isbn || (isbn.length !== 10 && isbn.length !== 13) || !newAuthor || !newTitle
-  }
-  $: editAndAdd = async () => {
+  const shouldDisableEditAndAdd = (isbn, newAuthor, newTitle) =>
+    isEmpty(isbn) ||
+    (isbn.length !== 10 && isbn.length !== 13) ||
+    isEmpty(newAuthor) ||
+    isEmpty(newTitle)
+
+  const editAndAdd = async (isbn, newAuthor, newTitle) => {
     $focusedBook.title = newTitle
     $focusedBook.authors = newAuthor.split(',').map((author) => author.trim())
     if (isbn.length === 10) {
@@ -97,7 +101,7 @@
 {/if}
 
 {#if mode === VALID_MODE.EDIT}
-  <form class="book-flow" on:submit|preventDefault={editAndAdd}>
+  <form class="book-flow" on:submit|preventDefault={() => editAndAdd(isbn, newAuthor, newTitle)}>
     <p>Edit the book information below, then save the book</p>
 
     <label for="new-isbn">
@@ -128,7 +132,7 @@
     </label>
 
     <div class="form-options">
-      <button class="success" disabled={shouldDisableEditAndAdd()}>
+      <button class="success" disabled={shouldDisableEditAndAdd(isbn, newAuthor, newTitle)}>
         Save book and add to package
       </button>
       <button type="button" on:click={mode === VALID_MODE.EDIT ? cancelEditClicked : cancelClicked}
@@ -139,7 +143,7 @@
 {/if}
 
 {#if mode === VALID_MODE.CREATE && isbn}
-  <form class="book-flow" on:submit|preventDefault={editAndAdd}>
+  <form class="book-flow" on:submit|preventDefault={() => editAndAdd(isbn, newAuthor, newTitle)}>
     <p>
       We could not find the book with
       <strong>ISBN# {$focusedBook.isbn10 || $focusedBook.isbn13}</strong>
@@ -174,7 +178,7 @@
     </label>
 
     <div class="form-options">
-      <button class="success" disabled={shouldDisableEditAndAdd()}>
+      <button class="success" disabled={shouldDisableEditAndAdd(isbn, newAuthor, newTitle)}>
         Save book and add to package
       </button>
       <button type="button" on:click={cancelClicked}>Cancel</button>

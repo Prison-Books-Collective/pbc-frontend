@@ -9,7 +9,7 @@
 
   let selectedItems = []
 
-  $: shouldDisableSelectionOptions = () => {
+  const shouldDisableDeleteItems = (selectedItems) => {
     return !selectedItems || selectedItems.length === 0
   }
 
@@ -101,8 +101,10 @@
 
   <nav class="form-options">
     <button on:click={addItemsClicked}>Add Items</button>
-    <button class="danger" disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
-      >Delete Selected Item(s)</button
+    <button
+      class="danger"
+      disabled={shouldDisableDeleteItems(selectedItems)}
+      on:click={() => deleteItems()}>Delete Selected Item(s)</button
     >
     <button class="danger" on:click={() => deletePackage()}>Delete Entire Package</button>
   </nav>
