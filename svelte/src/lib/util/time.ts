@@ -2,6 +2,14 @@ export const getCurrentDate = () => {
   return formatDate(new Date())
 }
 
+export const getLastMonth = () => {
+  const today = new Date()
+  const lastMonth = new Date()
+  lastMonth.setMonth(today.getMonth() - 1)
+
+  return lastMonth
+}
+
 // returns date formatted as 'yyyy-mm-dd'
 export const formatDate = (date: Date): string => {
   const year = date.getFullYear()

@@ -28,6 +28,9 @@
   const printPackageClicked = (pbcPackage: Package) => {
     dispatch('print', pbcPackage)
   }
+
+  let transitionIn = $focusedPackages.length < 300 ? fade : () => {}
+  let transitionOut = $focusedPackages.length < 300 ? fly : () => {}
 </script>
 
 <section id="package-table-container">
@@ -49,7 +52,7 @@
       </tr>
 
       {#each packages as pbcPackage (pbcPackage.id)}
-        <tr in:fade out:fly|local={{ x: 200 }}>
+        <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
             {#if pbcPackage.alert}
               <div

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { formatDate } from '$util/time'
+  import { formatDate, getLastMonth } from '$util/time'
 
   enum SearchType {
     DATE,
@@ -9,9 +9,9 @@
 
   const dispatch = createEventDispatcher()
 
-  export let searchType: SearchType = SearchType.DATE
+  export let searchType: SearchType = SearchType.DATE_RANGE
   export let date = formatDate(new Date())
-  export let [startDate, endDate] = [formatDate(new Date()), formatDate(new Date())]
+  export let [startDate, endDate] = [formatDate(getLastMonth()), formatDate(new Date())]
 
   $: submitText =
     searchType === SearchType.DATE ? 'Search Packages by Date' : 'Search Packages by Date Range'
