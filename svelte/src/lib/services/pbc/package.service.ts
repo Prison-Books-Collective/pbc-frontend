@@ -212,6 +212,6 @@ export class PackageService {
 
 const packageSortByDate = (packageA: Package, packageB: Package) => {
   const [dateA, dateB] = [new Date(packageA.date), new Date(packageB.date)]
-  if (dateA === dateB) return 0;
+  if (dateA === dateB) return 0
   return dateA > dateB ? -1 : 1
 }

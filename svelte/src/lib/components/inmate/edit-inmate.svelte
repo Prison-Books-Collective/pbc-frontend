@@ -91,10 +91,7 @@
       </label>
     {/await}
 
-    <button
-      class="slim success"
-      disabled={shouldDisableForm({ inmate, firstName, lastName, location })}
-    >
+    <button class="success" disabled={shouldDisableForm({ inmate, firstName, lastName, location })}>
       Update Inmate Record
     </button>
   </form>

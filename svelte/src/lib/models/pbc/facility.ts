@@ -30,6 +30,6 @@ export const NO_FACILITY_PROVIDED: Facility = Object.freeze({
   facility_type: '' as any
 })
 
-export const isValidFacility = ( facility: Facility ) => {
-  return !!facility && facility != INVALID_FACILITY && facility != NO_FACILITY_PROVIDED;
+export const isValidFacility = (facility: Facility) => {
+  return !!facility && facility != INVALID_FACILITY && facility != NO_FACILITY_PROVIDED
 }
