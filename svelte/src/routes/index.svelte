@@ -39,6 +39,7 @@
 
 <main class="page">
   <form
+    autocomplete="off"
     on:submit|preventDefault={() => gotoInmateSearch(mode, { id: inmateID, firstName, lastName })}
   >
     {#if mode === HomepageSearch.ID}

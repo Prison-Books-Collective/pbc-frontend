@@ -48,7 +48,7 @@
 <main class="page">
   <h1>Add New Inmate</h1>
 
-  <form on:submit|preventDefault={createInmate}>
+  <form autocomplete="off" on:submit|preventDefault={createInmate}>
     <label for="no-id" class="checkbox">
       <input type="checkbox" name="no-id" id="no-id" bind:checked={isInmateNoID} />
       This Inmate does not have an ID
