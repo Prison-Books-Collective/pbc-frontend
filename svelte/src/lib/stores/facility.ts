@@ -1,22 +1,39 @@
-import { writable } from 'svelte/store'
+import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import type { Facility } from '$models/pbc/facility'
 import { FacilityService } from '$services/pbc/facility.service'
 
-const createFacilityStore = () => {
-  const { subscribe, set } = writable([])
+export class FacilityStore implements Writable<Facility[]> {
 
-  const fetch = async () => {
+  constructor() {
+    const { set, update, subscribe } = writable([])
+
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
+  }
+
+  public set: (value: Facility[]) => void
+  public update: (updater: Updater<Facility[]>) => void
+  public subscribe: (run: Subscriber<Facility[]>, invalidate?: (value?: Facility[]) => void) => Unsubscriber
+
+  public reset() {
+    this.set([])
+  }
+
+  public async fetch(): Promise<Facility[]> {
     try {
       const facilities = await FacilityService.getAllFacilities()
-      set(facilities)
+      this.set(facilities)
       return facilities
     } catch (error) {
       console.error(error)
       console.error(`failed to sync $facilities via remote`)
+      this.reset()
       return []
     }
   }
 
-  const create = async ({ facilityName, facilityType, state }) => {
+  public async create({ facilityName, facilityType, state }): Promise<Facility> {
     try {
       const createdFacility = await FacilityService.createFacility({
         id: null,
@@ -24,7 +41,7 @@ const createFacilityStore = () => {
         facility_type: facilityType,
         state
       })
-      fetch()
+      this.fetch()
       return createdFacility
     } catch (error) {
       console.error(error)
@@ -37,15 +54,7 @@ const createFacilityStore = () => {
       )
     }
   }
-
-  return {
-    subscribe,
-    set,
-
-    fetch,
-    create
-  }
 }
 
-export const facilities = createFacilityStore()
+export const facilities = new FacilityStore()
 facilities.fetch()

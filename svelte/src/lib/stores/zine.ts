@@ -1,20 +1,32 @@
-import { writable } from 'svelte/store'
+import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import type { Zine } from '$models/pbc/zine'
 import { ZineService } from '$services/pbc/zine.service'
 
-const createZineStore = () => {
-  const { subscribe, set } = writable([])
+export class ZineStore implements Writable<Zine[]> {
 
-  const fetch = async () => {
+  constructor() {
+    const { set, update, subscribe } = writable([])
+
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
+  }
+
+  public set: (this: void, value: Zine[]) => void
+  public update: (this: void, updater: Updater<Zine[]>) => void
+  public subscribe: (this: void, run: Subscriber<Zine[]>, invalidate?: (value?: Zine[]) => void) => Unsubscriber
+
+  public async fetch(): Promise<Zine[]> {
     try {
       const zines = await ZineService.getZines()
-      set(zines)
+      this.set(zines)
       return zines
     } catch (error) {
       console.error(`failed to sync $zines via remote`, error)
     }
   }
 
-  const create = async ({ threeLetterCode, title }) => {
+  public async create({ threeLetterCode, title }: Partial<Zine>): Promise<Zine> {
     try {
       const createdZine = await ZineService.createZine({
         id: null,
@@ -22,7 +34,7 @@ const createZineStore = () => {
         title,
         inUse: true
       })
-      fetch()
+      this.fetch()
       return createdZine
     } catch (error) {
       console.error(
@@ -32,17 +44,11 @@ const createZineStore = () => {
         })}`,
         error
       )
+      return null
     }
   }
 
-  return {
-    subscribe,
-    set,
-
-    fetch,
-    create
-  }
 }
 
-export const zines = createZineStore()
+export const zines = new ZineStore()
 zines.fetch()

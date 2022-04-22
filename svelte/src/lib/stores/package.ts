@@ -1,17 +1,228 @@
-import { writable } from 'svelte/store'
-import { isNoISBNBook } from '$services/pbc/book.service'
-import { PackageService } from '$services/pbc/package.service'
-import { focusedInmate } from '$stores/inmate'
-import type { FocusedInmateStore } from '$stores/inmate'
+import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
 import type { Book } from '$models/pbc/book'
 import type { Facility } from '$models/pbc/facility'
 import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
 import type { Package } from '$models/pbc/package'
 import type { Zine } from '$models/pbc/zine'
+import { isNoISBNBook } from '$services/pbc/book.service'
+import { PackageService } from '$services/pbc/package.service'
+import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
 import { formatDate } from '$util/time'
 
 interface LocalStoragePackage extends Package {
-  existsInDatabase: boolean
+  existsInDatabase?: boolean
+}
+
+export class FocusedPackageStore implements Writable<LocalStoragePackage> {
+
+  private readonly defaultPackage: LocalStoragePackage
+
+  constructor(defaultPackage: LocalStoragePackage) {
+    const { set, update, subscribe } = writable(defaultPackage)
+
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
+
+    this.defaultPackage = Object.freeze(defaultPackage)
+  }
+
+  public set: (this: void, value: LocalStoragePackage) => void
+  public update: (this: void, updater: Updater<LocalStoragePackage>) => void
+  public subscribe: (this: void, run: Subscriber<LocalStoragePackage>, invalidate?: (value?: LocalStoragePackage) => void) => Unsubscriber
+
+
+  public async fetch(packageId: number): Promise<LocalStoragePackage> {
+    try {
+      const pbcPackage = await PackageService.getPackage(packageId)
+      this.load(pbcPackage)
+      return pbcPackage
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to retrieve package with ID "${packageId}" via remote`)
+      this.load(this.defaultPackage)
+      return this.defaultPackage
+    }
+  }
+
+  public async sync(pbcPackage: Package): Promise<LocalStoragePackage> {
+    const createdPackage = pbcPackage.id
+      ? await PackageService.updatePackage(pbcPackage)
+      : await PackageService.createPackage(pbcPackage)
+    this.load(createdPackage)
+    return createdPackage
+  }
+
+  public load(pbcPackage: Package) {
+    this.set({ ...pbcPackage, existsInDatabase: true })
+  }
+
+  public reset() {
+    this.set({ ...this.defaultPackage })
+  }
+
+  public addBook(book: Book) {
+    if (isNoISBNBook(book)) {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        noISBNBooks: [...currentPackage.noISBNBooks, book]
+      }))
+    } else {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        books: [...currentPackage.books, book]
+      }))
+    }
+  }
+
+  public addZine(zine: Zine) {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      zines: [...currentPackage.zines, zine]
+    }))
+  }
+
+  public setInmate(inmate: Inmate) {
+    if (isInmateNoID(inmate)) {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        inmate: null,
+        inmateNoId: inmate as Inmate
+      }))
+    } else {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        inmateNoId: null,
+        inmate: inmate as Inmate
+      }))
+    }
+  }
+
+  public createAlert(alertText = '') {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      alert: {
+        id: null,
+        information: alertText
+      }
+    }))
+  }
+
+  public setDestination(facility: Facility) {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      facility
+    }))
+  }
+
+  public removeItemsById(...ids: (string | number)[]) {
+    this.update((currentPackage) => {
+      let { books, noISBNBooks, zines } = currentPackage
+
+      ids.forEach((id) => {
+        books = books.filter((b) => b.id != id)
+        noISBNBooks = noISBNBooks.filter((b) => b.id != id)
+        zines = zines.filter((z) => z.id != id)
+      })
+
+      return {
+        ...currentPackage,
+        books,
+        noISBNBooks,
+        zines
+      }
+    })
+  }
+
+}
+
+export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
+
+  private readonly focusedInmateStore: FocusedInmateStore
+
+  constructor(focusedInmateStore: FocusedInmateStore) {
+    const { set, update, subscribe } = writable([])
+
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
+
+    this.focusedInmateStore = focusedInmateStore
+
+    focusedInmateStore.subscribe(async ($inmate) => {
+      if (!$inmate) return
+      const packages = await (isInmateNoID($inmate)
+        ? PackageService.getPackagesForInmateNoID($inmate.id)
+        : PackageService.getPackagesForInmate($inmate.id))
+      this.set(packages)
+    })
+  }
+
+  public set: (this: void, value: LocalStoragePackage[]) => void
+  public update: (this: void, updater: Updater<LocalStoragePackage[]>) => void
+  public subscribe: (this: void, run: Subscriber<LocalStoragePackage[]>, invalidate?: (value?: LocalStoragePackage[]) => void) => Unsubscriber
+  
+  public async fetchForInmate(inmateID: string): Promise<void> {
+    // triggers the subscription that's set up in the constructor
+    await this.focusedInmateStore.fetch(inmateID)
+  }
+
+  public async fetchForDate(date: string): Promise<LocalStoragePackage[]> {
+    try {
+      const packages = await PackageService.getPackagesForDate(date)
+      this.set(packages)
+      return packages
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to retrieve packages for Date "${date}" via remote`)
+      this.set([])
+      return []
+    }
+  }
+
+  public async fetchForDateRange(startDate: string, endDate: string): Promise<LocalStoragePackage[]> {
+    try {
+      const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
+      this.set(packages)
+      return packages
+    } catch (error) {
+      console.error(error)
+      console.error(
+        `failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`
+      )
+      this.set([])
+      return []
+    }
+  }
+
+  public async fetchForISBN(isbn: string): Promise<LocalStoragePackage[]> {
+    try {
+      const packages = await PackageService.getPackagesForISBN(isbn)
+      this.set(packages)
+      return packages
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to retrieve packages containing ISBN "${isbn}" via remote`)
+      this.set([])
+      return []
+    }
+  }
+
+  public async fetchForAuthorAndTitle(author: string, title: string): Promise<LocalStoragePackage[]> {
+    try {
+      const packages = await PackageService.getPackagesForAuthorAndTitle(author, title)
+      this.set(packages)
+      return packages
+    } catch (error) {
+      console.error(error)
+      console.error(
+        `failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`
+      )
+      this.set([])
+      return []
+    }
+  }
+
 }
 
 const emptyPackage: LocalStoragePackage = {
@@ -31,194 +242,5 @@ const emptyPackage: LocalStoragePackage = {
   existsInDatabase: false
 }
 
-const emptyPackages: Package[] = []
-
-const createFocusedPackage = () => {
-  const { subscribe, set, update } = writable(emptyPackage)
-
-  const addBook = (book: Book) => {
-    if (isNoISBNBook(book)) {
-      update((currentPackage) => ({
-        ...currentPackage,
-        noISBNBooks: [...currentPackage.noISBNBooks, book]
-      }))
-    } else {
-      update((currentPackage) => ({
-        ...currentPackage,
-        books: [...currentPackage.books, book]
-      }))
-    }
-  }
-  const addZine = (zine: Zine) =>
-    update((currentPackage) => ({
-      ...currentPackage,
-      zines: [...currentPackage.zines, zine]
-    }))
-
-  const setInmate = (inmate: Inmate) => {
-    if (isInmateNoID(inmate)) {
-      update((currentPackage) => ({
-        ...currentPackage,
-        inmate: null,
-        inmateNoId: inmate as Inmate
-      }))
-    } else {
-      update((currentPackage) => ({
-        ...currentPackage,
-        inmateNoId: null,
-        inmate: inmate as Inmate
-      }))
-    }
-  }
-  const setDestination = (facility: Facility) =>
-    update((currentPackage) => ({
-      ...currentPackage,
-      facility
-    }))
-
-  const createAlert = (alertText = '') => {
-    update((currentPackage) => ({
-      ...currentPackage,
-      alert: {
-        id: null,
-        information: alertText
-      }
-    }))
-  }
-
-  const removeItemsById = (...ids: (string | number)[]) => {
-    update((currentPackage) => {
-      let { books, noISBNBooks, zines } = currentPackage
-
-      ids.forEach((id) => {
-        books = books.filter((b) => b.id != id)
-        noISBNBooks = noISBNBooks.filter((b) => b.id != id)
-        zines = zines.filter((z) => z.id != id)
-      })
-
-      return {
-        ...currentPackage,
-        books,
-        noISBNBooks,
-        zines
-      }
-    })
-  }
-
-  const fetch = async (packageId: number) => {
-    try {
-      const pbcPackage = await PackageService.getPackage(packageId)
-      load(pbcPackage)
-      return pbcPackage
-    } catch (error) {
-      console.error(error)
-      console.error(`failed to retrieve package with ID "${packageId}" via remote`)
-    }
-  }
-  const load = (pbcPackage: Package) => set({ ...pbcPackage, existsInDatabase: true })
-  const reset = () => set({ ...emptyPackage })
-  const sync = async (pbcPackage: Package) => {
-    const createdPackage = pbcPackage.id
-      ? await PackageService.updatePackage(pbcPackage)
-      : await PackageService.createPackage(pbcPackage)
-    load(createdPackage)
-  }
-
-  return {
-    subscribe,
-    set,
-
-    addBook,
-    addZine,
-
-    setInmate,
-    setDestination,
-
-    createAlert,
-
-    removeItemsById,
-
-    fetch,
-    sync,
-    load,
-    reset
-  }
-}
-
-const createFocusedPackages = (focusedInmate: FocusedInmateStore) => {
-  const { subscribe, set } = writable(emptyPackages)
-
-  focusedInmate.subscribe(async ($inmate) => {
-    if (!$inmate) return
-    const packages = await (isInmateNoID($inmate)
-      ? PackageService.getPackagesForInmateNoID($inmate.id)
-      : PackageService.getPackagesForInmate($inmate.id))
-    set(packages)
-  })
-
-  const fetchForInmate = (inmateID: string) => {
-    focusedInmate.fetch(inmateID)
-  }
-
-  const fetchForDate = async (date: string) => {
-    try {
-      const packages = await PackageService.getPackagesForDate(date)
-      set(packages)
-      return packages
-    } catch (error) {
-      console.error(error)
-      console.error(`failed to retrieve packages for Date "${date}" via remote`)
-    }
-  }
-
-  const fetchForDateRange = async (startDate: string, endDate: string) => {
-    try {
-      const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
-      set(packages)
-      return packages
-    } catch (error) {
-      console.error(error)
-      console.error(
-        `failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`
-      )
-    }
-  }
-
-  const fetchForISBN = async (isbn: string) => {
-    try {
-      const packages = await PackageService.getPackagesForISBN(isbn)
-      set(packages)
-      return packages
-    } catch (error) {
-      console.error(error)
-      console.error(`failed to retrieve packages containing ISBN "${isbn}" via remote`)
-    }
-  }
-
-  const fetchForAuthorAndTitle = async (author: string, title: string) => {
-    try {
-      const packages = await PackageService.getPackagesForAuthorAndTitle(author, title)
-      set(packages)
-      return packages
-    } catch (error) {
-      console.error(error)
-      console.error(
-        `failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`
-      )
-    }
-  }
-
-  return {
-    subscribe,
-    set,
-
-    fetchForInmate,
-    fetchForDate,
-    fetchForDateRange,
-    fetchForISBN,
-    fetchForAuthorAndTitle
-  }
-}
-
-export const focusedPackage = createFocusedPackage()
-export const focusedPackages = createFocusedPackages(focusedInmate)
+export const focusedPackage = new FocusedPackageStore(emptyPackage)
+export const focusedPackages = new FocusedPackagesStore(focusedInmate)

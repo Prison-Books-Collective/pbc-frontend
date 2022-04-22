@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store'
+import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
 import type { Book } from '$models/pbc/book'
 import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 
@@ -6,44 +6,56 @@ interface LocalStorageBook extends Book {
   [additionalFields: string]: any
 }
 
-const emptyBook: LocalStorageBook = {
-  id: null,
-  isbn10: null,
-  isbn13: null,
+export class FocusedBookStore implements Writable<LocalStorageBook> {
+  
+  private readonly defaultBook
 
-  title: null,
-  authors: [],
+  constructor(defaultBook: LocalStorageBook) {
+    const { set, update, subscribe } = writable(defaultBook)
 
-  existsInDatabase: false
-}
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
 
-const createFocusedBook = () => {
-  const { subscribe, set, update } = writable(emptyBook)
+    this.defaultBook = Object.freeze(defaultBook)
+  }
 
-  const fetch = async (isbn) => {
+  public set: (this: void, value: LocalStorageBook) => void
+  public update: (this: void, updater: Updater<LocalStorageBook>) => void
+  public subscribe: (this: void, run: Subscriber<LocalStorageBook>, invalidate?: (value?: LocalStorageBook) => void) => Unsubscriber
+
+  public reset() {
+    this.set({ ...this.defaultBook })
+  }
+
+  public async fetch(isbn: string): Promise<LocalStorageBook> {
     if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) return
     try {
       const foundBook = await BookService.findBook(isbn)
       if (!foundBook) throw new Error(`did not find book with ISBN ${isbn}`)
-      set({
+      const bookUpdate = {
         ...foundBook,
-        existsInDatabase: true
-      })
+        existsInDatabase: true,
+      }
+      this.set(bookUpdate)
+      return bookUpdate
     } catch (error) {
       console.error(error)
       console.error(`failed to set store $focusedBook via remote using ISBN "${isbn}"`)
-      set({
+      const bookUpdate = {
         ...emptyBook,
         isbn10: isbn.length === 10 ? isbn : null,
         isbn13: isbn.length === 13 ? isbn : null,
         existsInDatabase: false
-      })
+      }
+      this.set(bookUpdate)
+      return bookUpdate
     }
   }
 
-  const sync = async () =>
-    new Promise((resolve, reject) => {
-      update((book) => {
+  public async sync() {
+    return new Promise((resolve, reject) => {
+      this.update((book) => {
         let operation: Promise<Book>
 
         if (isNoISBNBook(book)) {
@@ -58,7 +70,7 @@ const createFocusedBook = () => {
 
         operation
           .then((updatedBook) => {
-            set({
+            this.set({
               ...updatedBook,
               existsInDatabase: true
             })
@@ -72,7 +84,7 @@ const createFocusedBook = () => {
             console.error(
               `failed to sync $focusedBook via remote using data ${JSON.stringify(book)}`
             )
-            set({
+            this.set({
               existsInDatabase: false,
               ...book
             })
@@ -85,17 +97,19 @@ const createFocusedBook = () => {
         return { ...book }
       })
     })
-
-  const reset = () => set({ ...emptyBook })
-
-  return {
-    subscribe,
-    set,
-
-    fetch,
-    sync,
-    reset
   }
+
 }
 
-export const focusedBook = createFocusedBook()
+const emptyBook: LocalStorageBook = {
+  id: null,
+  isbn10: null,
+  isbn13: null,
+
+  title: null,
+  authors: [],
+
+  existsInDatabase: false
+}
+
+export const focusedBook = new FocusedBookStore(emptyBook)
