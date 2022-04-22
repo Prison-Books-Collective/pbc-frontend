@@ -7,7 +7,8 @@
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
-  import type { Inmate, InmateNoID } from '$lib/models/pbc/inmate'
+  import type { Inmate } from '$lib/models/pbc/inmate'
+  import { isValidFacility } from '$models/pbc/facility'
 
   const dispatch = createEventDispatcher()
 
@@ -34,7 +35,7 @@
     $focusedPackage.noISBNBooks.length === 0 &&
     $focusedPackage.zines.length === 0
 
-  $: shouldDisableComplete = () => !facility
+  $: shouldDisableComplete = () => !isValidFacility(facility)
   $: shouldDisableRemove = () => !removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
@@ -127,18 +128,18 @@
   {:else}
     <p>
       Would you like to include additional books or zines? If you're finished,
-      {#if !facility}
+      {#if !isValidFacility(facility)}
         select a <strong>destination facility</strong>, and then
       {/if}
       click Complete Package.
     </p>
   {/if}
 
-  <nav class="package-options">
+  <nav class="form-options">
     <button on:click={addBooksClicked}>Add Book</button>
     <button on:click={addZinesClicked}>Add Zine(s)</button>
     {#if !isPackageEmpty()}
-      <button on:click={removeSelectedClicked} class="danger" disabled={shouldDisableRemove()}>
+      <button class="danger" disabled={shouldDisableRemove()} on:click={removeSelectedClicked}>
         Remove Selected
       </button>
     {/if}
@@ -187,12 +188,5 @@
       font-weight: 600;
       margin-right: 1em;
     }
-  }
-
-  .package-options {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
   }
 </style>

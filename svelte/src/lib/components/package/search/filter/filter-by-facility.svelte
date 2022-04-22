@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Package } from '$models/pbc/package'
-  import { invalidFacility, type Facility } from '$models/pbc/facility'
+  import { NO_FACILITY_PROVIDED, type Facility } from '$models/pbc/facility'
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
 
   const defaultFn = (packages: Package[]) => packages
@@ -15,8 +15,8 @@
   const parsePackages = (packages) => {
     packages.forEach((p) => {
       const facility = p.facility
-      if (!facility && !availableFacilities.includes(invalidFacility)) {
-        availableFacilities.push(invalidFacility)
+      if (!facility && !availableFacilities.includes(NO_FACILITY_PROVIDED)) {
+        availableFacilities.push(NO_FACILITY_PROVIDED)
       }
       if (facility && !availableFacilities.find((f) => f.id === facility.id)) {
         availableFacilities.push(facility)

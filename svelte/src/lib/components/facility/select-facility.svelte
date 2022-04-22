@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte/internal'
   import { facilities } from '$stores/facility'
-  import type { Facility } from '$models/pbc/facility'
+  import { INVALID_FACILITY, type Facility } from '$models/pbc/facility'
 
   const dispatch = createEventDispatcher()
 
@@ -11,6 +11,8 @@
   export let selected: string = undefined // facility name
   export let disabled = false
   export let multiple = false
+
+  console.log({ selected })
 
   let facilitiesLoaded = new Promise(() => {})
   if (facilityList.length === 0) {
@@ -56,6 +58,11 @@
       <option value={undefined}>Loading Facilities</option>
     {:then _}
       <option disabled selected={!!!selected} value={null}>Select Facility</option>
+      {#if selected === INVALID_FACILITY.facility_name}
+        <option disabled selected={selected === INVALID_FACILITY.facility_name} value={null}>
+          Invalid Facility, select a new one
+        </option>
+      {/if}
       {#each facilityList as f}
         <option value={f} selected={selected === f.facility_name}
           >{f.facility_name}, {f.state}</option

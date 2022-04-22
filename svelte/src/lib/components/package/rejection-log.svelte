@@ -88,14 +88,13 @@
     justify-content: flex-start;
     align-items: stretch;
     text-align: center;
+    height: fit-content;
   }
-  .form-options {
-    display: flex;
-    flex-flow: row nowrap;
-  }
+
   .log-button {
     flex: 3;
   }
+
   .clear-button {
     flex: 1;
     margin-left: 1em;
@@ -109,6 +108,7 @@
     background: none;
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 3px;
+    resize: none;
   }
 
   button {

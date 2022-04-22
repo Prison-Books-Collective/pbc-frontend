@@ -59,7 +59,7 @@
   $: fn = getFilterFn(mode, keywords)
 </script>
 
-<section class="filter-options">
+<section class="form-options stretch one-line snug">
   <label for="any-keywords" class="checkbox outline text-normal">
     <input id="any-keywords" name="any-keywords" type="radio" value="any" bind:group={mode} />
     Contains <span class="any">Any</span> of the Keywords
@@ -89,7 +89,7 @@
   </label>
   <div class="input-group">
     <input id="keyword-input" type="text" bind:value={keywordInput} placeholder="Keyword" />
-    <button class="success slim" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>
+    <button class="success" type="submit" disabled={shouldDisableAddKeyword(keywordInput)}>
       Add
     </button>
   </div>
@@ -124,14 +124,6 @@
     gap: 1rem;
     margin-top: -0.5rem;
     margin-bottom: 1rem;
-  }
-
-  .filter-options {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: stretch;
-    align-items: stretch;
-    gap: 1rem;
   }
 
   .all {

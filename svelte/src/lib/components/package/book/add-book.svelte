@@ -75,12 +75,12 @@
       />
     </label>
 
-    <div class="options">
+    <div class="form-options">
       <button class="success" disabled={shouldDisableSearch()} type="submit">
         Search for Book
       </button>
-      <button on:click={noISBNClicked} class="danger" type="button">No ISBN?</button>
-      <button on:click={cancelClicked} type="button">Cancel</button>
+      <button type="button" class="danger" on:click={noISBNClicked}>No ISBN?</button>
+      <button type="button" on:click={cancelClicked}>Cancel</button>
     </div>
   </form>
 {/if}
@@ -111,26 +111,18 @@
       />
     </label>
 
-    <div class="options">
+    <div class="form-options space">
       <button class="success" disabled={shouldDisableSearchNoISBN()}>
         Save Book and Add to Package
       </button>
-      <button on:click={isbnClicked} class="danger" type="button">Search by ISBN?</button>
-      <button on:click={cancelClicked} type="button">Cancel</button>
+      <button type="button" class="danger" on:click={isbnClicked}>Search by ISBN?</button>
+      <button type="button" on:click={cancelClicked}>Cancel</button>
     </div>
   </form>
 {/if}
 
 <style>
-  .options {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
   button {
     flex-grow: 1;
-    margin: 0;
   }
 </style>

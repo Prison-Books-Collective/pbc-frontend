@@ -7,7 +7,34 @@ form {
   align-items: stretch;
 
   max-width: 600px;
-  margin-block-end: 2rem;
+}
+
+.form-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-options.snug {
+  margin: 0px;
+}
+
+.form-options.one-line {
+  flex-wrap: nowrap;
+}
+
+.form-options.stretch {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.form-options.space {
+  justify-content: space-around;
+  align-items: center;
 }
 
 :disabled {
@@ -17,7 +44,6 @@ form {
 button {
   display: inline-block;
   padding: 11px 23px;
-  margin: 20px 10px 0px;
 
   background-color: #888;
   background-image: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
@@ -41,10 +67,6 @@ button {
   border: #444 solid 1px;
   text-shadow: 0px -1px 0px #444;
   box-shadow: inset 0px 1px 3px 0px #ccc;
-}
-
-:is(button, [type=button], [type=submit]).slim {
-  margin: 0px;
 }
 
 :is(button, [type=button], [type=submit]).danger:not(:disabled) {

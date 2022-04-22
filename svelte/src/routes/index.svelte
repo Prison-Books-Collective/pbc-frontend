@@ -71,7 +71,7 @@
         bind:value={lastName}
       />
 
-      <button type="submit" class="slim" disabled={shouldDisableSearch(firstName, lastName)}>
+      <button type="submit" disabled={shouldDisableSearch(firstName, lastName)}>
         Find Inmate(s)
       </button>
     {/if}

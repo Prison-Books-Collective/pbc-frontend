@@ -86,8 +86,8 @@
     </div>
   {/if}
 
-  <div class="add-zine-options">
-    <button disabled={shouldDisableAdd()} on:click={addClicked} class="success"
+  <div class="form-options">
+    <button class="success" disabled={shouldDisableAdd()} on:click={addClicked}
       >Add to Package</button
     >
     <button on:click={cancelClicked}>Cancel</button>
@@ -101,13 +101,6 @@
     justify-content: flex-start;
     align-items: stretch;
     text-align: center;
-  }
-
-  .add-zine-options {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
   }
 
   .add-zine-list {

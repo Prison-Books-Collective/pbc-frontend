@@ -69,11 +69,7 @@
       on:error={({ detail }) => updateInmateError(detail)}
     />
 
-    <button
-      id="add-package-button"
-      class="success slim"
-      on:click={() => presentCreatePackageModal()}
-    >
+    <button id="add-package-button" class="success" on:click={() => presentCreatePackageModal()}>
       Add a <strong><u>new package</u></strong> (books or zines)
     </button>
 

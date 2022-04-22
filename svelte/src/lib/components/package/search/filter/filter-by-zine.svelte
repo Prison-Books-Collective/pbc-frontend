@@ -80,7 +80,7 @@
 </script>
 
 {#if availableZines && availableZines.length > 0}
-  <section class="filter-options">
+  <section class="form-options stretch one-line snug">
     <label for="any-zines" class="checkbox outline text-normal">
       <input id="any-zines" name="any-zines" type="radio" value="any" bind:group={mode} />
       Contains <span class="any">Any</span> of the Zines
@@ -114,14 +114,6 @@
 {/if}
 
 <style>
-  .filter-options {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: stretch;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
   .all {
     font-weight: bold;
     text-decoration: underline;

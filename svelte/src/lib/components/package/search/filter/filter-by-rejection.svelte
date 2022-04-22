@@ -17,7 +17,7 @@
   $: fn = getFilterFn(mode)
 </script>
 
-<section class="filter-options">
+<section class="form-options stretch one-line snug">
   <label for="only-rejected" class="checkbox outline text-normal">
     <input id="only-rejected" name="only-rejected" type="radio" value="only" bind:group={mode} />
     <strong>Only</strong> Rejected Packages
@@ -33,13 +33,3 @@
     <strong>Remove</strong> Rejected Packages
   </label>
 </section>
-
-<style>
-  .filter-options {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: stretch;
-    align-items: stretch;
-    gap: 1rem;
-  }
-</style>

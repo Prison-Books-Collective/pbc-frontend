@@ -58,27 +58,6 @@ export class PackageService {
     return (await response.json()) as Package
   }
 
-  public static async createPackageForInmateNoID(
-    inmateDatabaseID: string,
-    pbcPackage: Package
-  ): Promise<Package> {
-    const response = await fetch(this.URI_CREATE_PACKAGE__INMATE_NO_ID(inmateDatabaseID), {
-      ...METHOD_POST,
-      headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(pbcPackage)
-    })
-
-    if (response.status !== 200) {
-      throw new Error(
-        `unexpected response ${response.status} when creating package: ${JSON.stringify(
-          pbcPackage
-        )}`
-      )
-    }
-
-    return (await response.json()) as Package
-  }
-
   // returns true when successfully deleted; otherwise throws an error
   public static async deletePackage(packageId: number): Promise<boolean> {
     const response = await fetch(this.URI_DELETE_PACKAGE(packageId), { ...METHOD_DELETE })

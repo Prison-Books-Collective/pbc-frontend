@@ -87,7 +87,7 @@
       <p>Add it to the package by clicking the button below, or search for another book instead.</p>
     {/if}
 
-    <div class="book-options">
+    <div class="form-options">
       <button class="success" on:click={addBookClicked}>Add book to package</button>
       <button class="danger" on:click={editBookClicked}>Edit book info</button>
       <button on:click={searchClicked}>Nevermind, search for different book</button>
@@ -127,7 +127,7 @@
       />
     </label>
 
-    <div class="book-options">
+    <div class="form-options">
       <button class="success" disabled={shouldDisableEditAndAdd()}>
         Save book and add to package
       </button>
@@ -173,7 +173,7 @@
       />
     </label>
 
-    <div class="book-options">
+    <div class="form-options">
       <button class="success" disabled={shouldDisableEditAndAdd()}>
         Save book and add to package
       </button>
@@ -194,13 +194,6 @@
   .book-title {
     font-size: 2rem;
     margin-bottom: 0.25rem;
-  }
-
-  .book-options {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
   }
 
   button {

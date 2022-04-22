@@ -99,7 +99,7 @@
     </em>
   </p>
 
-  <nav class="package-options">
+  <nav class="form-options">
     <button on:click={addItemsClicked}>Add Items</button>
     <button class="danger" disabled={shouldDisableSelectionOptions()} on:click={() => deleteItems()}
       >Delete Selected Item(s)</button
@@ -132,13 +132,6 @@
   .package-contents {
     width: 100%;
     text-align: left;
-  }
-
-  .package-options {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
   }
 
   button {

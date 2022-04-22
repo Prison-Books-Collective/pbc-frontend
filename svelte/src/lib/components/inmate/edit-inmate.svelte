@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte/internal'
   import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
-  import type { Facility } from '$models/pbc/facility'
+  import { isValidFacility, type Facility } from '$models/pbc/facility'
   import { FacilityService } from '$services/pbc/facility.service'
   import { InmateService } from '$services/pbc/inmate.service'
   import { isEmpty } from '$util/strings'
@@ -24,7 +24,7 @@
   }
 
   const shouldDisableForm = ({ inmate, firstName, lastName, location }) =>
-    isEmpty(firstName) || isEmpty(lastName) || (isInmateNoID(inmate) && !location)
+    isEmpty(firstName) || isEmpty(lastName) || (isInmateNoID(inmate) && !isValidFacility(location))
 
   const submit = async (inmate: Inmate) => {
     try {
@@ -87,11 +87,14 @@
     {#await didLoadFacility then}
       <label for="facility">
         Facility:
-        <FacilitySelect selected={inmate.location} bind:facility={location} />
+        <FacilitySelect selected={location.facility_name} bind:facility={location} />
       </label>
     {/await}
 
-    <button class="slim" disabled={shouldDisableForm({ inmate, firstName, lastName, location })}>
+    <button
+      class="slim success"
+      disabled={shouldDisableForm({ inmate, firstName, lastName, location })}
+    >
       Update Inmate Record
     </button>
   </form>
