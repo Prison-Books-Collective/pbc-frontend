@@ -16,9 +16,8 @@
   const deleteItems = () => {
     try {
       focusedPackage.removeItemsById(...selectedItems)
-      const updatedPackage = PackageService.updatePackage($focusedPackage)
-      focusedPackages.updatePackage($focusedPackage)
-      dispatch('update', updatedPackage)
+      focusedPackage.sync()
+      dispatch('update', $focusedPackage)
       selectedItems = []
     } catch (error) {
       console.error(`failed to delete items: [${selectedItems.join(', ')}]`, error)
@@ -30,8 +29,7 @@
     const shouldDelete = confirm('Are you sure you want to delete this entire package?')
     if (shouldDelete) {
       try {
-        await PackageService.deletePackage($focusedPackage.id)
-        focusedPackages.removePackage($focusedPackage.id)
+        focusedPackage.delete()
         dispatch('delete', {})
       } catch (error) {
         console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error)

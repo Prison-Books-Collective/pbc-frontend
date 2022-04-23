@@ -46,14 +46,7 @@
   const completePackage = async (inmate) => {
     try {
       focusedPackage.setInmate(inmate)
-      const doesPackageExistInDB = $focusedPackage.id
-      const updatedPackage = await focusedPackage.sync($focusedPackage)
-      if (doesPackageExistInDB) {
-        focusedPackages.updatePackage($focusedPackage)
-      } else {
-        console.log('package needs to be added')
-        focusedPackages.addPackage($focusedPackage)
-      }
+      const updatedPackage = await focusedPackage.sync()
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)

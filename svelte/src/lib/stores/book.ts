@@ -61,11 +61,9 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
         if (isNoISBNBook(book)) {
           operation = BookService.createBookNoISBN(book)
         } else {
-          if (book.existsInDatabase) {
-            operation = BookService.updateBook(book)
-          } else {
-            operation = BookService.createBook(book)
-          }
+          operation = book.existsInDatabase
+            ? BookService.updateBook(book)
+            : BookService.createBook(book)
         }
 
         operation

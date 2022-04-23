@@ -23,8 +23,12 @@ export class ZineService {
       )
     }
 
-    this.cachedZines = []
-    return (await response.json()) as Zine
+    const createdZine: Zine = await response.json()
+    if(this.cachedZines.length > 0) {
+      this.cachedZines = [ createdZine, ...this.cachedZines ].sort(zineSortAlphabetical)
+    }
+
+    return createdZine
   }
 
   public static async getZines(): Promise<Zine[]> {
@@ -40,10 +44,9 @@ export class ZineService {
     }
 
     const zines = await response.json()
-    this.cachedZines = zines.sort((a: Zine, b: Zine) =>
-      a.threeLetterCode.localeCompare(b.threeLetterCode)
-    )
-
+    this.cachedZines = zines.sort(zineSortAlphabetical)
     return this.cachedZines
   }
 }
+
+const zineSortAlphabetical = (zineA: Zine, zineB: Zine) => zineA.threeLetterCode.localeCompare(zineB.threeLetterCode)

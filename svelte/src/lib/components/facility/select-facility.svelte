@@ -12,8 +12,6 @@
   export let disabled = false
   export let multiple = false
 
-  console.log({ selected })
-
   let facilitiesLoaded = new Promise(() => {})
   if (facilityList.length === 0) {
     facilities.fetch().then((facilities) => {

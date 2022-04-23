@@ -13,129 +13,6 @@ interface LocalStoragePackage extends Package {
   existsInDatabase?: boolean
 }
 
-export class FocusedPackageStore implements Writable<LocalStoragePackage> {
-
-  private readonly defaultPackage: LocalStoragePackage
-
-  constructor(defaultPackage: LocalStoragePackage) {
-    const { set, update, subscribe } = writable(defaultPackage)
-
-    this.set = set
-    this.update = update
-    this.subscribe = subscribe
-
-    this.defaultPackage = Object.freeze(defaultPackage)
-  }
-
-  public set: (this: void, value: LocalStoragePackage) => void
-  public update: (this: void, updater: Updater<LocalStoragePackage>) => void
-  public subscribe: (this: void, run: Subscriber<LocalStoragePackage>, invalidate?: (value?: LocalStoragePackage) => void) => Unsubscriber
-
-
-  public async fetch(packageId: number): Promise<LocalStoragePackage> {
-    try {
-      const pbcPackage = await PackageService.getPackage(packageId)
-      this.load(pbcPackage)
-      return pbcPackage
-    } catch (error) {
-      console.error(error)
-      console.error(`failed to retrieve package with ID "${packageId}" via remote`)
-      this.load(this.defaultPackage)
-      return this.defaultPackage
-    }
-  }
-
-  public async sync(pbcPackage: Package): Promise<LocalStoragePackage> {
-    const createdPackage = pbcPackage.id
-      ? await PackageService.updatePackage(pbcPackage)
-      : await PackageService.createPackage(pbcPackage)
-    this.load(createdPackage)
-    return createdPackage
-  }
-
-  public load(pbcPackage: Package) {
-    this.set({ ...pbcPackage, existsInDatabase: true })
-  }
-
-  public reset() {
-    this.set({ ...this.defaultPackage })
-  }
-
-  public addBook(book: Book) {
-    if (isNoISBNBook(book)) {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        noISBNBooks: [...currentPackage.noISBNBooks, book]
-      }))
-    } else {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        books: [...currentPackage.books, book]
-      }))
-    }
-  }
-
-  public addZine(zine: Zine) {
-    this.update((currentPackage) => ({
-      ...currentPackage,
-      zines: [...currentPackage.zines, zine]
-    }))
-  }
-
-  public setInmate(inmate: Inmate) {
-    if (isInmateNoID(inmate)) {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        inmate: null,
-        inmateNoId: inmate as Inmate
-      }))
-    } else {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        inmateNoId: null,
-        inmate: inmate as Inmate
-      }))
-    }
-  }
-
-  public createAlert(alertText = '') {
-    this.update((currentPackage) => ({
-      ...currentPackage,
-      alert: {
-        id: null,
-        information: alertText
-      }
-    }))
-  }
-
-  public setDestination(facility: Facility) {
-    this.update((currentPackage) => ({
-      ...currentPackage,
-      facility
-    }))
-  }
-
-  public removeItemsById(...ids: (string | number)[]) {
-    this.update((currentPackage) => {
-      let { books, noISBNBooks, zines } = currentPackage
-
-      ids.forEach((id) => {
-        books = books.filter((b) => b.id != id)
-        noISBNBooks = noISBNBooks.filter((b) => b.id != id)
-        zines = zines.filter((z) => z.id != id)
-      })
-
-      return {
-        ...currentPackage,
-        books,
-        noISBNBooks,
-        zines
-      }
-    })
-  }
-
-}
-
 export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   private readonly focusedInmateStore: FocusedInmateStore
@@ -223,7 +100,7 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     }
   }
 
-  public removePackage(packageID: number): LocalStoragePackage[] {
+  public localRemovePackage(packageID: number): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
     this.update(packages => {
       updatedPackages = packages
@@ -237,7 +114,7 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   }
 
   // packageUpdates MUST contain the package ID that's being updated
-  public updatePackage(packageUpdates: Partial<LocalStoragePackage>): LocalStoragePackage[] {
+  public localUpdatePackage(packageUpdates: Partial<LocalStoragePackage>): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
     this.update(packages => {
       updatedPackages = packages
@@ -255,13 +132,154 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     return updatedPackages
   }
 
-  public addPackage(pbcPackage: LocalStoragePackage): LocalStoragePackage[] {
+  public localAddPackage(pbcPackage: LocalStoragePackage): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
     this.update(packages => {
       updatedPackages = [ pbcPackage, ...packages ]
       return updatedPackages
     })
     return updatedPackages
+  }
+
+}
+
+export class FocusedPackageStore implements Writable<LocalStoragePackage> {
+
+  private readonly defaultPackage: LocalStoragePackage
+  private readonly packagesStore: FocusedPackagesStore
+  private currentValue: Promise<LocalStoragePackage> = new Promise(() => null)
+
+  constructor(defaultPackage: LocalStoragePackage, packagesStore: FocusedPackagesStore) {
+    const { set, update, subscribe } = writable(defaultPackage)
+
+    this.set = set
+    this.update = update
+    this.subscribe = subscribe
+
+    this.defaultPackage = Object.freeze(defaultPackage)
+    this.packagesStore = packagesStore
+
+    this.subscribe(currentValue => this.currentValue = Promise.resolve(currentValue))
+  }
+
+  public set: (this: void, value: LocalStoragePackage) => void
+  public update: (this: void, updater: Updater<LocalStoragePackage>) => void
+  public subscribe: (this: void, run: Subscriber<LocalStoragePackage>, invalidate?: (value?: LocalStoragePackage) => void) => Unsubscriber
+  public async get(): Promise<LocalStoragePackage> { return await this.currentValue }
+
+  public async fetch(packageId: number): Promise<LocalStoragePackage> {
+    try {
+      const pbcPackage = await PackageService.getPackage(packageId)
+      this.load(pbcPackage)
+      return pbcPackage
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to retrieve package with ID "${packageId}" via remote`)
+      this.load(this.defaultPackage)
+      return this.defaultPackage
+    }
+  }
+
+  public async sync(): Promise<LocalStoragePackage> {
+    const pbcPackage = await this.get()
+    const createdPackage = pbcPackage.id
+      ? await PackageService.updatePackage(pbcPackage)
+      : await PackageService.createPackage(pbcPackage)
+    
+    pbcPackage.id
+      ? this.packagesStore.localUpdatePackage(createdPackage)
+      : this.packagesStore.localAddPackage(createdPackage)
+      
+    this.load(createdPackage)
+    return createdPackage
+  }
+
+  public async delete(): Promise<void> {
+    const pbcPackage = await this.get()
+    await PackageService.deletePackage(pbcPackage.id)
+    this.packagesStore.localRemovePackage(pbcPackage.id)
+    this.reset()
+  }
+
+  public load(pbcPackage: Package) {
+    this.set({ ...pbcPackage, existsInDatabase: true })
+  }
+
+  public reset() {
+    this.set({ ...this.defaultPackage })
+  }
+
+  public addBook(book: Book) {
+    if (isNoISBNBook(book)) {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        noISBNBooks: [...currentPackage.noISBNBooks, book]
+      }))
+    } else {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        books: [...currentPackage.books, book]
+      }))
+    }
+  }
+
+  public addZine(zine: Zine) {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      zines: [...currentPackage.zines, zine]
+    }))
+  }
+
+  public setInmate(inmate: Inmate) {
+    if (isInmateNoID(inmate)) {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        inmate: null,
+        inmateNoId: inmate as Inmate
+      }))
+    } else {
+      this.update((currentPackage) => ({
+        ...currentPackage,
+        inmateNoId: null,
+        inmate: inmate as Inmate
+      }))
+    }
+  }
+
+  public createAlert(alertText = '') {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      alert: {
+        id: null,
+        information: alertText
+      }
+    }))
+  }
+
+  public setDestination(facility: Facility) {
+    this.update((currentPackage) => ({
+      ...currentPackage,
+      facility
+    }))
+  }
+
+  public removeItemsById(...ids: (string | number)[]) {
+    this.update((currentPackage) => {
+      let { books, noISBNBooks, zines } = currentPackage
+
+      ids.forEach((id) => {
+        books = books.filter((b) => b.id != id)
+        noISBNBooks = noISBNBooks.filter((b) => b.id != id)
+        zines = zines.filter((z) => z.id != id)
+      })
+
+      return {
+        ...currentPackage,
+        books,
+        noISBNBooks,
+        zines
+      }
+    })
   }
 
 }
@@ -283,5 +301,5 @@ const emptyPackage: LocalStoragePackage = {
   existsInDatabase: false
 }
 
-export const focusedPackage = new FocusedPackageStore(emptyPackage)
 export const focusedPackages = new FocusedPackagesStore(focusedInmate)
+export const focusedPackage = new FocusedPackageStore(emptyPackage, focusedPackages)

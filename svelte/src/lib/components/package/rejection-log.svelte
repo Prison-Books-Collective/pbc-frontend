@@ -17,14 +17,10 @@
     }
   })
 
-  const saveAlert = async (pbcPackage) => {
+  const saveAlert = async () => {
     try {
-      const packageUpdate = await PackageService.updatePackage({
-        ...pbcPackage,
-        existsInDatabase: undefined
-      })
-      focusedPackages.updatePackage({ ...pbcPackage })
-      dispatch('update', packageUpdate)
+      focusedPackage.sync()
+      dispatch('update', $focusedPackage)
     } catch (error) {
       dispatch('error', error)
       console.error('failed to save rejection log for package', error)
@@ -39,7 +35,7 @@
         existsInDatabase: undefined
       }
       const updatedPackage = await PackageService.updatePackage(packageUpdateData)
-      focusedPackages.updatePackage(packageUpdateData)
+      focusedPackages.localUpdatePackage(packageUpdateData)
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
@@ -56,11 +52,10 @@
     {:else}
       <p>Enter details about the rejection to log below:</p>
     {/if}
-    <form on:submit|preventDefault={() => saveAlert($focusedPackage)}>
+    <form on:submit|preventDefault={() => saveAlert()}>
       <textarea
         name="package-rejection"
         placeholder="Reason the package was rejected"
-        cols="30"
         rows="10"
         bind:value={$focusedPackage.alert.information}
       />
@@ -100,22 +95,14 @@
 
   .clear-button {
     flex: 1;
-    margin-left: 1em;
   }
 
   textarea {
     padding: 0.5em;
-    width: 95%;
-    max-width: auto;
     font-size: 1rem;
     background: none;
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 3px;
     resize: none;
-  }
-
-  button {
-    margin-inline: 0px;
-    width: 100%;
   }
 </style>

@@ -9,7 +9,7 @@
 
   const dispatch = createEventDispatcher()
 
-  export let searchType: SearchType = SearchType.ISBN
+  export let searchType: SearchType = SearchType.AUTHOR_AND_TITLE
   export let isbn: string = ''
   export let author: string = '',
     title: string = ''

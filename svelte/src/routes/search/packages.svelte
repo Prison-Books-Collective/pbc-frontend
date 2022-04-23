@@ -180,7 +180,7 @@
         />
       </h2>
       {#if !loading && $focusedPackages.length > 0}
-        <BookTitleResolver pbcPackage={$focusedPackages[0]} {author} {title} />
+        <BookTitleResolver pbcPackage={$focusedPackages[0]} {author} {title} {isbn} />
       {/if}
     </header>
   {/if}
