@@ -1,4 +1,10 @@
-import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import {
+  writable,
+  type Subscriber,
+  type Unsubscriber,
+  type Updater,
+  type Writable
+} from 'svelte/store'
 import type { Inmate } from '$models/pbc/inmate'
 import { InmateService } from '$services/pbc/inmate.service'
 
@@ -6,8 +12,7 @@ interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
 }
 
-export class FocusedInmateStore implements Writable<LocalStorageInmate>{
-
+export class FocusedInmateStore implements Writable<LocalStorageInmate> {
   private readonly defaultInmate
 
   constructor(defaultInmate: LocalStorageInmate) {
@@ -19,22 +24,25 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate>{
 
     this.defaultInmate = Object.freeze(defaultInmate)
   }
-  
+
   public set: (this: void, value: LocalStorageInmate) => void
   public update: (this: void, updater: Updater<LocalStorageInmate>) => void
-  public subscribe: (this: void, run: Subscriber<LocalStorageInmate>, invalidate?: (value?: LocalStorageInmate) => void) => Unsubscriber
-
+  public subscribe: (
+    this: void,
+    run: Subscriber<LocalStorageInmate>,
+    invalidate?: (value?: LocalStorageInmate) => void
+  ) => Unsubscriber
 
   public reset() {
     this.set({ ...this.defaultInmate })
   }
 
-  public async fetch(id: string|number): Promise<Inmate> {
+  public async fetch(id: string | number): Promise<Inmate> {
     try {
       const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
       this.set(foundInmate)
       return foundInmate
-    } catch(error) {
+    } catch (error) {
       console.error(error)
       console.error(`failed to set store $focusedInmate via remote using ID "${id}"`)
       this.reset()
@@ -54,4 +62,4 @@ const emptyInmate: LocalStorageInmate = {
   location: null
 }
 
-export const focusedInmate = new FocusedInmateStore(emptyInmate);
+export const focusedInmate = new FocusedInmateStore(emptyInmate)

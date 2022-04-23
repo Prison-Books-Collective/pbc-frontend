@@ -1,9 +1,14 @@
-import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import {
+  writable,
+  type Subscriber,
+  type Unsubscriber,
+  type Updater,
+  type Writable
+} from 'svelte/store'
 import type { Zine } from '$models/pbc/zine'
 import { ZineService } from '$services/pbc/zine.service'
 
 export class ZineStore implements Writable<Zine[]> {
-
   constructor() {
     const { set, update, subscribe } = writable([])
 
@@ -14,7 +19,11 @@ export class ZineStore implements Writable<Zine[]> {
 
   public set: (this: void, value: Zine[]) => void
   public update: (this: void, updater: Updater<Zine[]>) => void
-  public subscribe: (this: void, run: Subscriber<Zine[]>, invalidate?: (value?: Zine[]) => void) => Unsubscriber
+  public subscribe: (
+    this: void,
+    run: Subscriber<Zine[]>,
+    invalidate?: (value?: Zine[]) => void
+  ) => Unsubscriber
 
   public async fetch(): Promise<Zine[]> {
     try {
@@ -47,7 +56,6 @@ export class ZineStore implements Writable<Zine[]> {
       return null
     }
   }
-
 }
 
 export const zines = new ZineStore()

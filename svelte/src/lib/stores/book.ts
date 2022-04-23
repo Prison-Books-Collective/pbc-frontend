@@ -1,4 +1,10 @@
-import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import {
+  writable,
+  type Subscriber,
+  type Unsubscriber,
+  type Updater,
+  type Writable
+} from 'svelte/store'
 import type { Book } from '$models/pbc/book'
 import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 
@@ -7,7 +13,6 @@ interface LocalStorageBook extends Book {
 }
 
 export class FocusedBookStore implements Writable<LocalStorageBook> {
-  
   private readonly defaultBook
 
   constructor(defaultBook: LocalStorageBook) {
@@ -22,7 +27,11 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
 
   public set: (this: void, value: LocalStorageBook) => void
   public update: (this: void, updater: Updater<LocalStorageBook>) => void
-  public subscribe: (this: void, run: Subscriber<LocalStorageBook>, invalidate?: (value?: LocalStorageBook) => void) => Unsubscriber
+  public subscribe: (
+    this: void,
+    run: Subscriber<LocalStorageBook>,
+    invalidate?: (value?: LocalStorageBook) => void
+  ) => Unsubscriber
 
   public reset() {
     this.set({ ...this.defaultBook })
@@ -35,7 +44,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
       if (!foundBook) throw new Error(`did not find book with ISBN ${isbn}`)
       const bookUpdate = {
         ...foundBook,
-        existsInDatabase: true,
+        existsInDatabase: true
       }
       this.set(bookUpdate)
       return bookUpdate
@@ -96,7 +105,6 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
       })
     })
   }
-
 }
 
 const emptyBook: LocalStorageBook = {

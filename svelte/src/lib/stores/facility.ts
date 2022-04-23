@@ -1,9 +1,14 @@
-import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import {
+  writable,
+  type Subscriber,
+  type Unsubscriber,
+  type Updater,
+  type Writable
+} from 'svelte/store'
 import type { Facility } from '$models/pbc/facility'
 import { FacilityService } from '$services/pbc/facility.service'
 
 export class FacilityStore implements Writable<Facility[]> {
-
   constructor() {
     const { set, update, subscribe } = writable([])
 
@@ -14,7 +19,10 @@ export class FacilityStore implements Writable<Facility[]> {
 
   public set: (value: Facility[]) => void
   public update: (updater: Updater<Facility[]>) => void
-  public subscribe: (run: Subscriber<Facility[]>, invalidate?: (value?: Facility[]) => void) => Unsubscriber
+  public subscribe: (
+    run: Subscriber<Facility[]>,
+    invalidate?: (value?: Facility[]) => void
+  ) => Unsubscriber
 
   public reset() {
     this.set([])

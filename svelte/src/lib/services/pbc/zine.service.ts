@@ -24,8 +24,8 @@ export class ZineService {
     }
 
     const createdZine: Zine = await response.json()
-    if(this.cachedZines.length > 0) {
-      this.cachedZines = [ createdZine, ...this.cachedZines ].sort(zineSortAlphabetical)
+    if (this.cachedZines.length > 0) {
+      this.cachedZines = [createdZine, ...this.cachedZines].sort(zineSortAlphabetical)
     }
 
     return createdZine
@@ -49,4 +49,5 @@ export class ZineService {
   }
 }
 
-const zineSortAlphabetical = (zineA: Zine, zineB: Zine) => zineA.threeLetterCode.localeCompare(zineB.threeLetterCode)
+const zineSortAlphabetical = (zineA: Zine, zineB: Zine) =>
+  zineA.threeLetterCode.localeCompare(zineB.threeLetterCode)

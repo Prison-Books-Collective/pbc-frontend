@@ -49,7 +49,7 @@
 </script>
 
 <svelte:head>
-  <title>BellBooks - Packages for {$focusedInmate?.firstName} {$focusedInmate?.lastName}</title>
+  <title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
 </svelte:head>
 
 <CreatePackageModal

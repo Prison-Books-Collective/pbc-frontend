@@ -1,4 +1,10 @@
-import { writable, type Subscriber, type Unsubscriber, type Updater, type Writable } from 'svelte/store'
+import {
+  writable,
+  type Subscriber,
+  type Unsubscriber,
+  type Updater,
+  type Writable
+} from 'svelte/store'
 import type { Book } from '$models/pbc/book'
 import type { Facility } from '$models/pbc/facility'
 import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
@@ -14,12 +20,11 @@ interface LocalStoragePackage extends Package {
 }
 
 export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
-
   private readonly focusedInmateStore: FocusedInmateStore
 
   constructor(focusedInmateStore: FocusedInmateStore) {
     const { set, update, subscribe } = writable([])
-    
+
     this.set = set
     this.update = update
     this.subscribe = subscribe
@@ -37,8 +42,12 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   public set: (this: void, value: LocalStoragePackage[]) => void
   public update: (this: void, updater: Updater<LocalStoragePackage[]>) => void
-  public subscribe: (this: void, run: Subscriber<LocalStoragePackage[]>, invalidate?: (value?: LocalStoragePackage[]) => void) => Unsubscriber
-  
+  public subscribe: (
+    this: void,
+    run: Subscriber<LocalStoragePackage[]>,
+    invalidate?: (value?: LocalStoragePackage[]) => void
+  ) => Unsubscriber
+
   public async fetchForInmate(inmateID: string): Promise<void> {
     // triggers the subscription that's set up in the constructor
     await this.focusedInmateStore.fetch(inmateID)
@@ -57,7 +66,10 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     }
   }
 
-  public async fetchForDateRange(startDate: string, endDate: string): Promise<LocalStoragePackage[]> {
+  public async fetchForDateRange(
+    startDate: string,
+    endDate: string
+  ): Promise<LocalStoragePackage[]> {
     try {
       const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
       this.set(packages)
@@ -85,7 +97,10 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     }
   }
 
-  public async fetchForAuthorAndTitle(author: string, title: string): Promise<LocalStoragePackage[]> {
+  public async fetchForAuthorAndTitle(
+    author: string,
+    title: string
+  ): Promise<LocalStoragePackage[]> {
     try {
       const packages = await PackageService.getPackagesForAuthorAndTitle(author, title)
       this.set(packages)
@@ -102,12 +117,12 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   public localRemovePackage(packageID: number): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
-    this.update(packages => {
+    this.update((packages) => {
       updatedPackages = packages
-      const removeIndex = updatedPackages.findIndex(p => p.id === packageID)
-      if(removeIndex > -1) {
+      const removeIndex = updatedPackages.findIndex((p) => p.id === packageID)
+      if (removeIndex > -1) {
         updatedPackages.splice(removeIndex, 1)
-      } 
+      }
       return updatedPackages
     })
     return updatedPackages
@@ -116,14 +131,14 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   // packageUpdates MUST contain the package ID that's being updated
   public localUpdatePackage(packageUpdates: Partial<LocalStoragePackage>): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
-    this.update(packages => {
+    this.update((packages) => {
       updatedPackages = packages
-      const updateIndex = updatedPackages.findIndex(p => p.id === packageUpdates.id)
-      if(updateIndex > -1) {
+      const updateIndex = updatedPackages.findIndex((p) => p.id === packageUpdates.id)
+      if (updateIndex > -1) {
         const packageToUpdate = updatedPackages[updateIndex]
         updatedPackages[updateIndex] = {
           ...packageToUpdate,
-          ...packageUpdates,
+          ...packageUpdates
         }
       }
       return updatedPackages
@@ -134,17 +149,15 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   public localAddPackage(pbcPackage: LocalStoragePackage): LocalStoragePackage[] {
     let updatedPackages: LocalStoragePackage[]
-    this.update(packages => {
-      updatedPackages = [ pbcPackage, ...packages ]
+    this.update((packages) => {
+      updatedPackages = [pbcPackage, ...packages]
       return updatedPackages
     })
     return updatedPackages
   }
-
 }
 
 export class FocusedPackageStore implements Writable<LocalStoragePackage> {
-
   private readonly defaultPackage: LocalStoragePackage
   private readonly packagesStore: FocusedPackagesStore
   private currentValue: Promise<LocalStoragePackage> = new Promise(() => null)
@@ -159,13 +172,19 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
     this.defaultPackage = Object.freeze(defaultPackage)
     this.packagesStore = packagesStore
 
-    this.subscribe(currentValue => this.currentValue = Promise.resolve(currentValue))
+    this.subscribe((currentValue) => (this.currentValue = Promise.resolve(currentValue)))
   }
 
   public set: (this: void, value: LocalStoragePackage) => void
   public update: (this: void, updater: Updater<LocalStoragePackage>) => void
-  public subscribe: (this: void, run: Subscriber<LocalStoragePackage>, invalidate?: (value?: LocalStoragePackage) => void) => Unsubscriber
-  public async get(): Promise<LocalStoragePackage> { return await this.currentValue }
+  public subscribe: (
+    this: void,
+    run: Subscriber<LocalStoragePackage>,
+    invalidate?: (value?: LocalStoragePackage) => void
+  ) => Unsubscriber
+  public async get(): Promise<LocalStoragePackage> {
+    return await this.currentValue
+  }
 
   public async fetch(packageId: number): Promise<LocalStoragePackage> {
     try {
@@ -185,11 +204,11 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
     const createdPackage = pbcPackage.id
       ? await PackageService.updatePackage(pbcPackage)
       : await PackageService.createPackage(pbcPackage)
-    
+
     pbcPackage.id
       ? this.packagesStore.localUpdatePackage(createdPackage)
       : this.packagesStore.localAddPackage(createdPackage)
-      
+
     this.load(createdPackage)
     return createdPackage
   }
@@ -281,7 +300,6 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
       }
     })
   }
-
 }
 
 const emptyPackage: LocalStoragePackage = {
