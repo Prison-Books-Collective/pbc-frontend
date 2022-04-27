@@ -6,6 +6,7 @@
 </script>
 
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import type { Package } from '$models/pbc/package'
   import { focusedInmate } from '$stores/inmate'
   import { focusedPackage, focusedPackages } from '$stores/package'
@@ -46,6 +47,10 @@
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
   }
+
+  onDestroy(() => {
+    focusedPackages.set([])
+  })
 </script>
 
 <svelte:head>

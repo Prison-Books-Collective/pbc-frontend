@@ -41,6 +41,7 @@
 </script>
 
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { resolveInmate, type Package } from '$models/pbc/package'
   import { focusedPackage, focusedPackages } from '$stores/package'
   import { isEmpty } from '$util/strings'
@@ -116,6 +117,10 @@
     loadPackages(searchMode)
     ;[date, startDate, endDate, isbn, author, title]
   }
+
+  onDestroy(() => {
+    focusedPackages.set([])
+  })
 </script>
 
 <svelte:head>
