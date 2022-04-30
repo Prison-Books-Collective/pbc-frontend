@@ -94,3 +94,5 @@ Thumbs.db
 .svelte-kit/*
 build
 build/*
+pbc-frontend
+pbc-frontend/*
