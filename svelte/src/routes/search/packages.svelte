@@ -75,7 +75,26 @@
   const startLoading = () => (loading = true)
   const doneLoading = () => (loading = false)
 
+  let previousQuery
+  const createQuery = ({ searchMode, date, startDate, endDate, isbn, author, title }) => {
+    return [searchMode, date, startDate, endDate, isbn, author, title]
+      .filter((input) => !isEmpty(input))
+      .join('-')
+  }
+
   const loadPackages = (searchMode: PackageSearchMode) => {
+    const currentQuery = createQuery({
+      searchMode,
+      date,
+      startDate,
+      endDate,
+      isbn,
+      author,
+      title
+    })
+    if (previousQuery === currentQuery) return
+    previousQuery = currentQuery
+
     switch (searchMode) {
       case PackageSearchMode.DATE:
         startLoading()

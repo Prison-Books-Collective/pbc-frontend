@@ -7,6 +7,7 @@ import {
 } from 'svelte/store'
 import type { Inmate } from '$models/pbc/inmate'
 import { InmateService } from '$services/pbc/inmate.service'
+import { isEmpty } from '$util/strings'
 
 interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
@@ -38,6 +39,8 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
   }
 
   public async fetch(id: string | number): Promise<Inmate> {
+    if(isEmpty(id as string)) return
+
     try {
       const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
       this.set(foundInmate)
