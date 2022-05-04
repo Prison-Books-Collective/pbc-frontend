@@ -3,7 +3,8 @@
   import { fade, fly } from 'svelte/transition'
   import { focusedPackages } from '$stores/package'
   import { resolveInmate, type Package } from '$models/pbc/package'
-  import type { Inmate } from '$lib/models/pbc/inmate'
+  import type { Inmate } from '$models/pbc/inmate'
+  import { gotoPackagesForInmate } from '$util/routing'
 
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
@@ -75,16 +76,21 @@
             </h2>
             {#if !inmate}
               <h2 class="text-normal">
-                {resolveInmate(pbcPackage).firstName}
-                {resolveInmate(pbcPackage).middleInitial
-                  ? resolveInmate(pbcPackage).middleInitial + ' '
-                  : ''}{resolveInmate(pbcPackage).lastName}
+                <span
+                  class="link"
+                  on:click={() => gotoPackagesForInmate(resolveInmate(pbcPackage))}
+                >
+                  {resolveInmate(pbcPackage).firstName}
+                  {resolveInmate(pbcPackage).middleInitial
+                    ? resolveInmate(pbcPackage).middleInitial + ' '
+                    : ''}{resolveInmate(pbcPackage).lastName}
 
-                {#if !resolveInmate(pbcPackage)['location']}
-                  #{pbcPackage.inmate.id}
-                {:else}
-                  (No ID available)
-                {/if}
+                  {#if !resolveInmate(pbcPackage)['location']}
+                    #{pbcPackage.inmate.id}
+                  {:else}
+                    (No ID available)
+                  {/if}
+                </span>
 
                 &mdash; Package #{pbcPackage.id}
               </h2>
@@ -222,5 +228,13 @@
   [data-tooltip]:focus-visible::before {
     transform: scale(1);
     color: black;
+  }
+
+  .link {
+    color: inherit;
+  }
+
+  .link::before {
+    background-color: currentColor;
   }
 </style>
