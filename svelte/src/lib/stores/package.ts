@@ -21,7 +21,6 @@ interface LocalStoragePackage extends Package {
 
 export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   private readonly focusedInmateStore: FocusedInmateStore
-  private previousQuery: string
 
   constructor(focusedInmateStore: FocusedInmateStore) {
     const { set, update, subscribe } = writable([])
@@ -34,8 +33,6 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
     focusedInmateStore.subscribe(async ($inmate) => {
       if (!$inmate || !$inmate.id) return
-      if ($inmate.id === this.previousQuery) return
-      this.previousQuery = $inmate.id
       
       const packages = await (isInmateNoID($inmate)
         ? PackageService.getPackagesForInmateNoID($inmate.id)

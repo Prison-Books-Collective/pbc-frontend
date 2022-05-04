@@ -16,6 +16,7 @@
   import PackageTable from '$components/package/package-table.svelte'
   import CreatePackageModal from '$components/package/create-package-modal.svelte'
   import Loading from '$components/loading.svelte'
+  import { onDestroy } from 'svelte'
 
   export let inmateId: string
 
@@ -46,6 +47,10 @@
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
   }
+
+  onDestroy(() => {
+    focusedPackages.set([])
+  })
 </script>
 
 <svelte:head>
