@@ -23,7 +23,8 @@
   let activeModal: CreatePackageModalState
   let activeModalParams = {}
 
-  const inmateIsLoaded = focusedInmate.fetch(inmateId)
+  const inmateIsLoaded =
+    $focusedInmate.id === inmateId ? Promise.resolve : focusedInmate.fetch(inmateId)
 
   const presentAlertModal = (pbcPackage: Package) => {
     focusedPackage.load(pbcPackage)
