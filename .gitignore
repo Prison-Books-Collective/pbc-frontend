@@ -89,3 +89,10 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+.svelte-kit
+.svelte-kit/*
+build
+build/*
+pbc-frontend
+pbc-frontend/*
