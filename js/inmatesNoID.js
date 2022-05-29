@@ -130,6 +130,8 @@ function createCenteredInmateDiv(){
             } else {
                 displayInmatesListNoID(data)
             }
+        }).catch(() => {
+            displayAddInmateNoID(firstName, lastName)
         })
 }
 

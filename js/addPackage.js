@@ -660,7 +660,7 @@ function savePackageToInmate(packageJson){
 }
 
 function savePackageToInmateNoId(packageJson){
-    fetch(`http://localhost:8080/addPackageForInmateNoId`, {
+    fetch(`http://localhost:8080/addPackage`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -698,7 +698,10 @@ function addPrintInvoiceButton(container, data){
     printButton.style.background = "DarkSeaGreen"
     printButton.onclick = () => {
         helperFunctions.generateInvoice(data)
-        inmateFunctions.findInmate(inmateHelperFunctions.getInmateDatabaseID())
+        const findInmate = inmateHelperFunctions.inmateHasPrisonID() 
+            ? inmateFunctions.findInmate
+            : inmateNoIDFunctions.findInmateNoIDByDatabaseID
+        findInmate(inmateHelperFunctions.getInmateDatabaseID())
         helperFunctions.hideModal()
     }
     container.appendChild(printButton)
