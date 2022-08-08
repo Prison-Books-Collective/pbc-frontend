@@ -91,8 +91,6 @@
                     (No ID available)
                   {/if}
                 </span>
-
-                &mdash; Package #{pbcPackage.id}
               </h2>
             {/if}
             <ul>
