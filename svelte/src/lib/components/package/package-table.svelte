@@ -13,6 +13,7 @@
 
   const dispatch = createEventDispatcher()
 
+  export let header = 'Package'
   export let packages: Package[] = []
   export let inmate: Inmate = null
 
@@ -47,7 +48,7 @@
     <table id="packageTable">
       <tr>
         <th style="width: 3ch;">!</th>
-        <th>Package</th>
+        <th>{header}</th>
         <th>Edit</th>
         <th>Print</th>
       </tr>

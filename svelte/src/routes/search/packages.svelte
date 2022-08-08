@@ -71,7 +71,6 @@
 
   const toggleShowFilters = () => (showFilters = !showFilters)
   const selectInmate = (pbcPackage: Package) => (selectedInmate = resolveInmate(pbcPackage))
-  const refresh = (searchMode: PackageSearchMode) => loadPackages(searchMode)
   const startLoading = () => (loading = true)
   const doneLoading = () => (loading = false)
 
@@ -147,12 +146,7 @@
 </svelte:head>
 
 <Loading visible={loading} />
-<CreatePackageModal
-  bind:activeModal
-  bind:activeModalParams
-  inmate={selectedInmate}
-  on:refresh={() => refresh(searchMode)}
-/>
+<CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} />
 
 <main class="page">
   {#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}
