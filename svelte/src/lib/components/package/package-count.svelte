@@ -5,14 +5,26 @@
 
   const today = formatDate(new Date())
   focusedPackages.fetchForDate(today)
+
+  let isExpanded = true
 </script>
 
 {#if $focusedPackages}
-  <p>
-    You have completed <span id="package-count">{$focusedPackages.length}</span> packages on
-    <date>{today}</date>
+  <p class="link" on:click={() => (isExpanded = !isExpanded)}>
+    <span class="small">
+      {#if isExpanded}
+        &#9660;
+      {:else}
+        &#9654;
+      {/if}
+    </span>
+    <span>
+      You have completed <span id="package-count">{$focusedPackages.length}</span> packages on
+      <date>{today}</date>
+    </span>
   </p>
-  {#if $focusedPackages.length > 0}
+
+  {#if isExpanded && $focusedPackages.length > 0}
     <PackageTable header="Today's Packages" packages={$focusedPackages} />
   {/if}
 {/if}
@@ -21,5 +33,21 @@
   #package-count,
   date {
     font-weight: 700;
+  }
+
+  .link {
+    display: flex;
+    color: inherit;
+    flex-flow: row nowrap;
+    align-items: center;
+  }
+
+  .link::before {
+    background-color: currentColor;
+  }
+
+  .small {
+    font-size: 0.7rem;
+    margin-right: 0.4rem;
   }
 </style>
