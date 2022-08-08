@@ -10,14 +10,16 @@
 </script>
 
 {#if $focusedPackages}
-  <p class="link" on:click={() => (isExpanded = !isExpanded)}>
-    <span class="small">
-      {#if isExpanded}
-        &#9660;
-      {:else}
-        &#9654;
-      {/if}
-    </span>
+  <p class:link={$focusedPackages.length > 0} on:click={() => (isExpanded = !isExpanded)}>
+    {#if $focusedPackages.length > 0}
+      <span class="small">
+        {#if isExpanded}
+          &#9660;
+        {:else}
+          &#9654;
+        {/if}
+      </span>
+    {/if}
     <span>
       You have completed <span id="package-count">{$focusedPackages.length}</span> packages on
       <date>{today}</date>
