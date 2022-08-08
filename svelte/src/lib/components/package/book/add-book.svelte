@@ -37,12 +37,7 @@
     return !inputISBN || (inputISBN.length !== 10 && inputISBN.length !== 13)
   }
   $: shouldDisableSearchNoISBN = () => {
-    return (
-      !inputTitle ||
-      !inputAuthor ||
-      inputTitle.trim().length === 0 ||
-      inputAuthor.trim().length === 0
-    )
+    return !inputTitle || inputTitle.trim().length === 0
   }
   $: loadISBN = () => {
     if (shouldDisableSearch()) return
@@ -53,7 +48,7 @@
     focusedBook.set({
       id: null,
       title: inputTitle,
-      authors: inputAuthor.split(',').map((a) => a.trim())
+      authors: inputAuthor?.split(',').map((a) => a.trim())
     })
     await focusedBook.sync()
     focusedPackage.addBook($focusedBook)

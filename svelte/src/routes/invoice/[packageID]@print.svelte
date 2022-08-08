@@ -14,6 +14,7 @@
   import logo from '$assets/invoice/invoice-logo.svg'
   import information from '$assets/invoice/invoice-information.svg'
   import Zine from '$components/zine/zine.svelte'
+  import Book from '$components/book.svelte'
 
   export let packageID: number
   export let print: boolean = false
@@ -97,7 +98,10 @@
       {/each}
       {#each $focusedPackage.noISBNBooks as book}
         <li>
-          <em>{book.title}</em> &mdash; {book.authors.join(', ')}
+          <em>{book.title}</em>
+          {#if book.authors && book.authors.length > 0}
+            &mdash; {book.authors.join(', ')}
+          {/if}
         </li>
       {/each}
     </ol>
