@@ -13,7 +13,7 @@
   import { onMount } from 'svelte'
   import { gotoHomeSearch, gotoInmateSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
-  import PackageCount from '$components/package/package-count.svelte'
+  import DailyPackages from '$components/package/daily-packages.svelte'
 
   export let mode: HomepageSearch = HomepageSearch.ID
   let focusOnLoadElement
@@ -82,7 +82,7 @@
     {searchText}
   </p>
 
-  <PackageCount />
+  <DailyPackages />
 </main>
 
 <style>

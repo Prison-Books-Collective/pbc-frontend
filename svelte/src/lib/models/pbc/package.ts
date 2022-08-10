@@ -24,7 +24,8 @@ export const undefinedInmate = {
   lastName: 'Unavailable',
   id: 'No-ID',
   location: undefined
-}
+} as Inmate
+
 export const resolveInmate = (pbcPackage: Package) =>
   pbcPackage.inmate || pbcPackage.inmateNoId || undefinedInmate
 

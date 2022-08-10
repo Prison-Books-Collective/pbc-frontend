@@ -1,18 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { fade, fly } from 'svelte/transition'
-  import { focusedPackages } from '$stores/package'
+  import { focusedPackage, focusedPackages } from '$stores/package'
   import { resolveInmate, type Package } from '$models/pbc/package'
   import type { Inmate } from '$models/pbc/inmate'
-  import { gotoPackagesForInmate } from '$util/routing'
+  import { CreatePackageModalState, gotoPackagesForInmate, printPackage } from '$util/routing'
 
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
   import editIcon from '$assets/icons/edit.png'
   import printIcon from '$assets/icons/print.png'
+  import CreatePackageModal from './create-package-modal.svelte'
 
   const dispatch = createEventDispatcher()
 
+  export let header = 'Package'
   export let packages: Package[] = []
   export let inmate: Inmate = null
 
@@ -22,17 +24,52 @@
 
   const alertPackageClicked = (pbcPackage: Package) => {
     dispatch('alert', pbcPackage)
+    presentAlertModal(pbcPackage)
   }
   const editPackageClicked = (pbcPackage: Package) => {
     dispatch('edit', pbcPackage)
+    presentEditPackageModal(pbcPackage)
   }
   const printPackageClicked = (pbcPackage: Package) => {
     dispatch('print', pbcPackage)
+    printPackage(pbcPackage)
   }
 
   let transitionIn = $focusedPackages.length < 300 ? fade : () => {}
   let transitionOut = $focusedPackages.length < 300 ? fly : () => {}
+
+  // -------------------- Modal Logic --------------------
+
+  let activeModal: CreatePackageModalState
+  let activeModalParams = {}
+  let selectedInmate = null
+
+  export function selectInmate(pbcPackage: Package) {
+    selectedInmate = resolveInmate(pbcPackage)
+  }
+
+  export function presentCreatePackageModal(inmate) {
+    selectedInmate = inmate
+    focusedPackage.reset()
+    console.log('daaayyyy oh')
+    activeModal = CreatePackageModalState.VIEW_PACKAGE
+  }
+
+  export function presentEditPackageModal(pbcPackage: Package) {
+    selectInmate(pbcPackage)
+    focusedPackage.load(pbcPackage)
+    activeModal = CreatePackageModalState.EDIT_PACKAGE
+  }
+
+  export function presentAlertModal(pbcPackage: Package) {
+    selectInmate(pbcPackage)
+    focusedPackage.load(pbcPackage)
+    activeModal = CreatePackageModalState.VIEW_ALERT
+    activeModalParams = { packageId: pbcPackage.id }
+  }
 </script>
+
+<CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} />
 
 <section id="package-table-container">
   {#if packages.length === 0}
@@ -47,7 +84,7 @@
     <table id="packageTable">
       <tr>
         <th style="width: 3ch;">!</th>
-        <th>Package</th>
+        <th>{header}</th>
         <th>Edit</th>
         <th>Print</th>
       </tr>

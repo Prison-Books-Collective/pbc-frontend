@@ -42,14 +42,11 @@
 
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { resolveInmate, type Package } from '$models/pbc/package'
-  import { focusedPackage, focusedPackages } from '$stores/package'
+  import { focusedPackages } from '$stores/package'
   import { isEmpty } from '$util/strings'
-  import { printPackage, CreatePackageModalState } from '$util/routing'
 
   import filterIcon from '$assets/icons/filter.png'
   import PackageTable from '$components/package/package-table.svelte'
-  import CreatePackageModal from '$components/package/create-package-modal.svelte'
   import FilterPackages from '$components/package/search/filter/filter-packages.svelte'
   import Loading from '$components/loading.svelte'
   import BookTitleResolver from '$components/book-title-resolver.svelte'
@@ -65,13 +62,7 @@
   let shouldFilter = false
   let filteredPackages = []
 
-  let activeModal: CreatePackageModalState
-  let activeModalParams = {}
-  let selectedInmate = null
-
   const toggleShowFilters = () => (showFilters = !showFilters)
-  const selectInmate = (pbcPackage: Package) => (selectedInmate = resolveInmate(pbcPackage))
-  const refresh = (searchMode: PackageSearchMode) => loadPackages(searchMode)
   const startLoading = () => (loading = true)
   const doneLoading = () => (loading = false)
 
@@ -119,19 +110,6 @@
     }
   }
 
-  const presentEditPackageModal = (pbcPackage: Package) => {
-    selectInmate(pbcPackage)
-    focusedPackage.load(pbcPackage)
-    activeModal = CreatePackageModalState.EDIT_PACKAGE
-  }
-
-  const presentAlertModal = (pbcPackage: Package) => {
-    selectInmate(pbcPackage)
-    focusedPackage.load(pbcPackage)
-    activeModal = CreatePackageModalState.VIEW_ALERT
-    activeModalParams = { packageId: pbcPackage.id }
-  }
-
   $: {
     loadPackages(searchMode)
     ;[date, startDate, endDate, isbn, author, title]
@@ -147,12 +125,6 @@
 </svelte:head>
 
 <Loading visible={loading} />
-<CreatePackageModal
-  bind:activeModal
-  bind:activeModalParams
-  inmate={selectedInmate}
-  on:refresh={() => refresh(searchMode)}
-/>
 
 <main class="page">
   {#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}
@@ -231,12 +203,7 @@
       </p>
     {/if}
 
-    <PackageTable
-      packages={shouldFilter ? filteredPackages : $focusedPackages}
-      on:edit={({ detail: pbcPackage }) => presentEditPackageModal(pbcPackage)}
-      on:print={({ detail: pbcPackage }) => printPackage(pbcPackage)}
-      on:alert={({ detail: pbcPackage }) => presentAlertModal(pbcPackage)}
-    />
+    <PackageTable packages={shouldFilter ? filteredPackages : $focusedPackages} />
   {/if}
 </main>
 
