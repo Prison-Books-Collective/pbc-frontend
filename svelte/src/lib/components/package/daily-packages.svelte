@@ -1,12 +1,17 @@
 <script lang="ts">
   import { focusedPackages } from '$stores/package'
   import { formatDate } from '$util/time'
+  import { onDestroy } from 'svelte'
   import PackageTable from './package-table.svelte'
 
   const today = formatDate(new Date())
   focusedPackages.fetchForDate(today)
 
   let isExpanded = true
+
+  onDestroy(() => {
+    focusedPackages.set([])
+  })
 </script>
 
 {#if $focusedPackages}
