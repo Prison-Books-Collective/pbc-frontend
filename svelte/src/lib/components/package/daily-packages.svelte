@@ -26,6 +26,9 @@
       </span>
     {/if}
     <span>
+      {#if !isExpanded && $focusedPackages.length > 0}
+        <span class="expand-table">&lt;Click to Expand&gt;</span>
+      {/if}
       You have completed <span id="package-count">{$focusedPackages.length}</span> packages on
       <date>{today}</date>
     </span>
@@ -56,5 +59,9 @@
   .small {
     font-size: 0.7rem;
     margin-right: 0.4rem;
+  }
+
+  .expand-table {
+    color: blue;
   }
 </style>
