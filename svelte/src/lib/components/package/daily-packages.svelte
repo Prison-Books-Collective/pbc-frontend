@@ -32,7 +32,7 @@
   </p>
 
   {#if isExpanded && $focusedPackages.length > 0}
-    <PackageTable header="Today's Packages" packages={$focusedPackages} />
+    <PackageTable header="Today's Packages" packages={$focusedPackages.reverse()} />
   {/if}
 {/if}
 
