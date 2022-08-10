@@ -1,14 +1,14 @@
 <script>
   import logo from '$assets/pbc-logo-small.png'
   import logoText from '$assets/pbc-text.svg'
-  import search from '$assets/icons/search.png'
+  import home from '$assets/icons/home.png'
   import settings from '$assets/icons/gear.png'
 </script>
 
 <nav id="nav-primary">
   <div id="navigation-buttons">
     <a href="/">
-      <img src={search} alt="Magnifying Glass Search Icon" class="icon" />
+      <img src={home} alt="Home Icon" class="icon home" />
     </a>
     <a href="/admin">
       <img src={settings} alt="Gear Settings Icon" class="icon" />
@@ -83,5 +83,8 @@
 
   .icon {
     max-height: 1.5rem;
+  }
+  .home {
+    max-height: 2.15rem;
   }
 </style>
