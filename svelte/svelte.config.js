@@ -1,6 +1,5 @@
-import adapter from '@sveltejs/adapter-node'
+import appengine from 'svelte-adapter-appengine'
 import preprocess from 'svelte-preprocess'
-import { resolve } from 'path'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -9,20 +8,7 @@ const config = {
   preprocess: preprocess(),
 
   kit: {
-    adapter: adapter({ out: 'pbc-frontend' }),
-    trailingSlash: 'always',
-    vite: {
-      resolve: {
-        alias: {
-          $assets: resolve('./src/lib/assets'),
-          $components: resolve('./src/lib/components'),
-          $models: resolve('./src/lib/models'),
-          $services: resolve('./src/lib/services'),
-          $stores: resolve('./src/lib/stores'),
-          $util: resolve('./src/lib/util')
-        }
-      }
-    }
+    adapter: appengine()
   }
 }
 
