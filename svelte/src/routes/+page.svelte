@@ -1,21 +1,14 @@
-<script lang="ts" context="module">
-  import { getQueryParam } from '$util/web'
-  import { HomepageSearch } from '$util/routing'
-
-  export function load({ url }) {
-    const mode = getQueryParam(url, 'search mode', 'search', 'mode') || HomepageSearch.ID
-
-    return { props: { mode } }
-  }
-</script>
-
 <script lang="ts">
   import { onMount } from 'svelte'
   import { gotoHomeSearch, gotoInmateSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
+  import { HomepageSearch } from '$util/routing'
   import DailyPackages from '$components/package/daily-packages.svelte'
 
-  export let mode: HomepageSearch = HomepageSearch.ID
+  /** @type {import('./$types').LayoutData} */
+  export let data;
+
+  export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID
   let focusOnLoadElement
 
   let inmateID = null
@@ -27,8 +20,10 @@
   })
 
   const shouldDisableSearch = (firstName, lastName) => isEmpty(firstName) && isEmpty(lastName)
-  const toggleSearch = (mode) =>
+  const toggleSearch = (mode) => {
     gotoHomeSearch(mode === HomepageSearch.ID ? HomepageSearch.NAME : HomepageSearch.ID)
+    mode = ( mode === HomepageSearch.ID ) ? HomepageSearch.NAME : HomepageSearch.ID
+  }
 
   $: searchText = mode === HomepageSearch.ID ? 'Search by Name?' : 'Search by Inmate ID?'
 </script>
