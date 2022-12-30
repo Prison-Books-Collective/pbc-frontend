@@ -1,10 +1,12 @@
 import { BASE_PBC_URI } from '.'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$util/web'
 import type { Zine } from '$models/pbc/zine'
+import type { NewZine } from '$models/pbc/newZine'
 
 export class ZineService {
   public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getZines`
-  public static readonly URI_CREATE_ZINE = `${BASE_PBC_URI}/addZine`
+  public static readonly URI_CREATE_ZINE = `${BASE_PBC_URI}/addContent`
+  public static readonly URI_GET_ZINE_BY_CODE = (code : string)=>`${BASE_PBC_URI}/getZineByCode?code=${code}`
 
   private static cachedZines: Zine[] = []
 
@@ -31,6 +33,16 @@ export class ZineService {
     return createdZine
   }
 
+  public static async getZineByCode(code: string): Promise<NewZine>{
+    const response = await fetch(this.URI_GET_ZINE_BY_CODE(code), { ...METHOD_GET })
+    if (response.status !== 200) {
+      throw new Error(
+        `unexpected response ${response.status} when retrieving all zines from ${this.URI_GET_ZINES}`
+      )
+    }
+    return await response.json()
+  }
+  
   public static async getZines(): Promise<Zine[]> {
     if (this.cachedZines.length > 0) {
       return this.cachedZines
