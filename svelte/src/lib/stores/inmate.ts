@@ -8,6 +8,8 @@ import {
 import type { Inmate } from '$models/pbc/inmate'
 import { InmateService } from '$services/pbc/inmate.service'
 import { isEmpty } from '$util/strings'
+import type { Recipient } from '$models/pbc/recipient'
+import { RecipientService } from '$services/pbc/recipient.service'
 
 interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
@@ -36,6 +38,33 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
 
   public reset() {
     this.set({ ...this.defaultInmate })
+  }
+
+  public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageInmate> {
+    if(isEmpty(assignedId)) return
+
+    try {
+      const foundRecipient = await RecipientService.getRecipientByAssignedId(assignedId)
+      
+      if(foundRecipient) {
+        const convertedRecipient = {
+          id: foundRecipient.assignedId,
+          firstName: foundRecipient.firstName,
+          lastName: foundRecipient.lastName,
+          middleInitial: foundRecipient.middleName || undefined,
+          packages: foundRecipient.shipments || undefined,
+          location: foundRecipient.facility || undefined
+        }
+        this.set(convertedRecipient)
+        return convertedRecipient
+      } else {
+        return null
+      }
+    } catch (error) {
+      console.error(`failed to set store $focusedInmate via remote using ID "${assignedId}"`)
+      this.reset()
+      throw error
+    }
   }
 
   public async fetch(id: string | number): Promise<Inmate> {

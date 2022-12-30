@@ -77,7 +77,7 @@
     {searchText}
   </p>
 
-  <DailyPackages />
+  <!-- <DailyPackages /> -->
 </main>
 
 <style>

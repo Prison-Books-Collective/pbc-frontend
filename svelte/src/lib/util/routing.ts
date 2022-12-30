@@ -2,6 +2,7 @@ import { goto } from '$app/navigation'
 import type { Inmate } from '$models/pbc/inmate'
 import type { Package } from '$models/pbc/package'
 import { InmateService } from '$services/pbc/inmate.service'
+import { RecipientService } from '$services/pbc/recipient.service'
 import { focusedInmate } from '$stores/inmate'
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error'
 import { isEmpty } from '$util/strings'
@@ -57,22 +58,23 @@ export const gotoInmateSearch = async (searchBy: HomepageSearch, { id, firstName
 }
 const gotoInmateSearchByID = async (id) => {
   if (id === null) return
+  
   try {
-    const foundInmate = await InmateService.getInmate(id)
-    if (foundInmate) {
-      focusedInmate.set(foundInmate)
+    const foundRecipient = await focusedInmate.TODO_fetchByAssignedId(id)
+    if (foundRecipient) {
       return goto(ROUTE_PACKAGES_FOR_INMATE(id))
+    } else {
+      const shouldCreateNewInmate = confirm(
+        `Failed to find any inmates with ID#${id}. To create a new inmate, click OK`
+      )
+      if (shouldCreateNewInmate) return goto(ROUTE_INMATE_CREATE_ID(id))
     }
-
-    const shouldCreateNewInmate = confirm(
-      `Failed to find any inmates with ID#${id}. To create a new inmate, click OK`
-    )
-    if (shouldCreateNewInmate) return goto(ROUTE_INMATE_CREATE_ID(id))
-  } catch (error) {
+  } catch(error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
   }
 }
+
 const gotoInmateSearchByName = async ({ firstName, lastName }) => {
   if (isEmpty(firstName) && isEmpty(lastName)) return
 
