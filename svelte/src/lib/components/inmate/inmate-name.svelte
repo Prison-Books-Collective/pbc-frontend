@@ -34,7 +34,7 @@
     {#if isInmateNoID(inmate)}
       - <span>{inmate.location}</span>
     {:else}
-      &ensp;<span>ID#{inmate.id}</span>
+      &ensp;<span>ID#{inmate.assignedId}</span>
     {/if}
 
     <img

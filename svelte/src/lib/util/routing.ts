@@ -60,8 +60,9 @@ const gotoInmateSearchByID = async (id) => {
   if (id === null) return
   
   try {
-    const foundRecipient = await focusedInmate.TODO_fetchByAssignedId(id)
+    const foundRecipient = await RecipientService.getRecipientByAssignedId(id)
     if (foundRecipient) {
+      focusedInmate.set(foundRecipient)
       return goto(ROUTE_PACKAGES_FOR_INMATE(id))
     } else {
       const shouldCreateNewInmate = confirm(

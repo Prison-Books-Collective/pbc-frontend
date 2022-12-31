@@ -15,6 +15,10 @@ interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
 }
 
+interface LocalStorageRecipient extends Recipient {
+
+}
+
 export class FocusedInmateStore implements Writable<LocalStorageInmate> {
   private readonly defaultInmate
 
@@ -40,30 +44,23 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
     this.set({ ...this.defaultInmate })
   }
 
-  public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageInmate> {
+  public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageRecipient> {
     if(isEmpty(assignedId)) return
 
     try {
       const foundRecipient = await RecipientService.getRecipientByAssignedId(assignedId)
       
       if(foundRecipient) {
-        const convertedRecipient = {
-          id: foundRecipient.assignedId,
-          firstName: foundRecipient.firstName,
-          lastName: foundRecipient.lastName,
-          middleInitial: foundRecipient.middleName || undefined,
-          packages: foundRecipient.shipments || undefined,
-          location: foundRecipient.facility || undefined
-        }
-        this.set(convertedRecipient)
-        return convertedRecipient
+        this.set(foundRecipient as any) // todo: forcing typechecker to allow
+        return foundRecipient
       } else {
         return null
       }
     } catch (error) {
+      console.error(error)
       console.error(`failed to set store $focusedInmate via remote using ID "${assignedId}"`)
       this.reset()
-      throw error
+      return null
     }
   }
 

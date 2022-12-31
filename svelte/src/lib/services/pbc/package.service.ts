@@ -1,10 +1,13 @@
 import { BASE_PBC_URI } from '.'
 import type { Package } from '$models/pbc/package'
-import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT } from '$util/web'
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
+import type { Shipment } from '$models/pbc/shipment'
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>
     `${BASE_PBC_URI}/getPackageById?id=${packageId}`
+  public static readonly URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID = (id: string) =>
+    `${BASE_PBC_URI}/getAllShipmentsByRecipient${uriQueryJoin({ id })}`
   public static readonly URI_GET_PACKAGES = (inmateId: string) =>
     `${BASE_PBC_URI}/getPackagesForInmate?inmateId=${inmateId}`
   public static readonly URI_GET_PACKAGES__INMATE_NO_ID = (database_id: string | number) =>
@@ -25,6 +28,20 @@ export class PackageService {
     `${BASE_PBC_URI}/getPackagesByISBN?isbn=${isbn}`
   public static readonly URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE = (author: string, title: string) =>
     `${BASE_PBC_URI}/getPackagesByAuthorAndTitle?author=${author}&title=${title}`
+
+  public static async TODO_getPackagesForRecipient(assignedId: string): Promise<Shipment[]> {
+    const response = await fetch(this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId), { ...METHOD_GET })
+
+    if( response.status !== 200 ) {
+      throw new Error(
+        `unexpected response ${
+          response.status
+        } when retrieving package for recipient with assigned ID "${assignedId}" at "${this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId)}"`
+      )
+    }
+
+    return await response.json()
+  }
 
   public static async getPackage(packageId: number): Promise<Package> {
     const response = await fetch(this.URI_GET_PACKAGE(packageId), { ...METHOD_GET })
