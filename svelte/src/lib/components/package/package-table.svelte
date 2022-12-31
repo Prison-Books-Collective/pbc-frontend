@@ -11,16 +11,19 @@
   import editIcon from '$assets/icons/edit.png'
   import printIcon from '$assets/icons/print.png'
   import CreatePackageModal from './create-package-modal.svelte'
+  import type { Shipment, Book as BookModel } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
-  export let header = 'Package'
-  export let packages: Package[] = []
+  export let header = 'Shipment'
+  export let packages: Shipment[]
   export let inmate: Inmate = null
 
   if (!packages || packages.length === 0) {
     packages = $focusedPackages
   }
+
+  $: console.log('here are the packages', { packages })
 
   const alertPackageClicked = (pbcPackage: Package) => {
     dispatch('alert', pbcPackage)
@@ -92,7 +95,7 @@
       {#each packages as pbcPackage (pbcPackage.id)}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
-            {#if pbcPackage.alert}
+            <!-- {#if pbcPackage.alert}
               <div
                 class="alert"
                 data-tooltip={pbcPackage.alert.information}
@@ -100,7 +103,7 @@
               >
                 !
               </div>
-            {/if}
+            {/if} -->
           </td>
           <td class="package-col">
             <h2>
@@ -131,19 +134,13 @@
               </h2>
             {/if}
             <ul>
-              {#each pbcPackage.books as book}
+              {#each pbcPackage.content as content}
                 <li>
-                  <Book {book} />
-                </li>
-              {/each}
-              {#each pbcPackage.noISBNBooks as book}
-                <li>
-                  <Book {book} />
-                </li>
-              {/each}
-              {#each pbcPackage.zines as zine}
-                <li>
-                  <Zine {zine} />
+                  {#if content.type === 'book'}
+                    <Book book={content} />
+                  {:else if content.type === 'zine'}
+                    <Zine zine={content} />
+                  {/if}
                 </li>
               {/each}
             </ul>

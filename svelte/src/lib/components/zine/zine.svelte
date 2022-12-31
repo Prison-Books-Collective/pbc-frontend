@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Zine } from '$models/pbc/zine'
+  import type { Zine } from '$models/pbc/shipment'
 
   export let zine: Zine = null
   export let formatForInvoice: boolean = false
@@ -10,7 +10,7 @@
     {#if formatForInvoice}
       ZINE
     {:else}
-      {zine.threeLetterCode}
+      {zine.code}
     {/if}
   </strong>
   &mdash;

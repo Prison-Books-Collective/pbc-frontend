@@ -26,13 +26,14 @@ export class ZineStore implements Writable<Zine[]> {
   ) => Unsubscriber
 
   public async fetch(): Promise<Zine[]> {
-    try {
-      const zines = await ZineService.getZines()
-      this.set(zines)
-      return zines
-    } catch (error) {
-      console.error(`failed to sync $zines via remote`, error)
-    }
+    // try {
+    //   const zines = await ZineService.getZines()
+    //   this.set(zines)
+    //   return zines
+    // } catch (error) {
+    //   console.error(`failed to sync $zines via remote`, error)
+    // }
+    return null
   }
 
   public async create({ threeLetterCode, title }: Partial<Zine>): Promise<Zine> {
@@ -59,4 +60,4 @@ export class ZineStore implements Writable<Zine[]> {
 }
 
 export const zines = new ZineStore()
-zines.fetch()
+// zines.fetch()

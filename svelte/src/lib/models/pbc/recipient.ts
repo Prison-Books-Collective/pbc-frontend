@@ -1,3 +1,5 @@
+import type { Shipment } from "./shipment"
+
 export interface Recipient {
     id: number // database ID
     assignedId?: string // government-assigned ID
@@ -6,7 +8,9 @@ export interface Recipient {
     lastName: string
     middleName?: string
 
+    shipments: Shipment[]
+
     facility?: any // TODO
-    shipments?: any // TODO
+
     specialRequests?: any // TODO
 }

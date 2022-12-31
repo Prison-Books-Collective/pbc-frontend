@@ -31,13 +31,14 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
     this.focusedInmateStore = focusedInmateStore
 
-    focusedInmateStore.subscribe(async ($inmate) => {
-      if (!$inmate || !$inmate.id) return
-      
-      const packages = await (isInmateNoID($inmate)
-        ? PackageService.getPackagesForInmateNoID($inmate.id)
-        : PackageService.getPackagesForInmate($inmate.id))
-      this.set(packages)
+    focusedInmateStore.subscribe(async ($recipient) => {
+      if (!$recipient || !$recipient.id) return
+      // const shipments = await PackageService.TODO_getPackagesForRecipient($recipient.id)
+      this.set($recipient.shipments) // TODO: may prevent reloading when new packages are added
+      // const packages = await (isInmateNoID($recipient)
+      //   ? PackageService.getPackagesForInmateNoID($recipient.id)
+      //   : PackageService.getPackagesForInmate($recipient.id))
+      // this.set(packages)
     })
   }
 
