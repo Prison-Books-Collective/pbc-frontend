@@ -11,9 +11,11 @@ import { isEmpty } from '$util/strings'
 import type { Recipient } from '$models/pbc/recipient'
 import { RecipientService } from '$services/pbc/recipient.service'
 
+
 interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
 }
+
 
 interface LocalStorageRecipient extends Recipient {
 
@@ -64,6 +66,7 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
     }
   }
 
+ 
   public async fetch(id: string | number): Promise<Inmate> {
     if(isEmpty(id as string)) return
 
@@ -79,6 +82,7 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
     }
   }
 }
+
 
 const emptyInmate: LocalStorageInmate = {
   id: null,

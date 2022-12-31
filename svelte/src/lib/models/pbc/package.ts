@@ -1,5 +1,5 @@
 import type { Alert } from './alert'
-import type { Book } from './book'
+import type { Book } from './shipment'
 import type { Facility } from './facility'
 import type { Inmate } from './inmate'
 import type { Zine } from './zine'

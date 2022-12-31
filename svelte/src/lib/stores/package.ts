@@ -5,7 +5,7 @@ import {
   type Updater,
   type Writable
 } from 'svelte/store'
-import type { Book } from '$models/pbc/book'
+import type { Book } from '$models/pbc/shipment'
 import type { Facility } from '$models/pbc/facility'
 import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
 import type { Package } from '$models/pbc/package'
@@ -323,3 +323,5 @@ const emptyPackage: LocalStoragePackage = {
 
 export const focusedPackages = new FocusedPackagesStore(focusedInmate)
 export const focusedPackage = new FocusedPackageStore(emptyPackage, focusedPackages)
+
+

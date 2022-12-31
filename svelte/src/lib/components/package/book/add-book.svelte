@@ -8,7 +8,7 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
-  import { focusedPackage } from '$stores/package'
+  import { focusedPackage} from '$stores/package'
 
   const dispatch = createEventDispatcher()
 
@@ -41,7 +41,9 @@
   }
   $: loadISBN = () => {
     if (shouldDisableSearch()) return
-    focusedBook.fetch(inputISBN)
+    console.log("herheehrhehr")
+    focusedBook.fetchBookByISBN(inputISBN) // TODO need to separate the search book functionality from
+    //focusedBook.fetch(inputISBN)
     dispatch('search', inputISBN)
   }
   $: saveNoISBNBook = async () => {

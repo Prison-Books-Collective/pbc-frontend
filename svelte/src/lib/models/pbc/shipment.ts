@@ -10,7 +10,7 @@ export interface PackageContent{
 
 export interface Book extends PackageContent{
     type: 'book'
-    creators:Creator[]
+    creators: Creator[]
     isbn10?: string
     isbn13?: string
 }
@@ -44,6 +44,8 @@ export const getCreatorName = (creator: Creator): string => {
     }
 }
 
+
+
 export interface Zine extends PackageContent{
     type: 'zine'
     code: string
@@ -53,4 +55,11 @@ export interface Shipment {
     id: number
     content: PackageContent[]
     date: string
+  }
+
+  export const bookHasISBN = (book: Book) => {
+    return {
+      isbn10: !isEmpty(book.isbn10),
+      isbn13: !isEmpty(book.isbn13)
+    }
   }

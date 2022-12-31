@@ -1,5 +1,5 @@
 import { BASE_PBC_URI } from '.'
-import type { Book } from '$models/pbc/book'
+import type { Book } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
 
 export const isNoISBNBook = (book: Book) => {
@@ -8,19 +8,24 @@ export const isNoISBNBook = (book: Book) => {
 
 export class BookService {
   public static readonly URI_GET_BOOK__ISBN10 = (isbn: string) =>
-    `${BASE_PBC_URI}/getIsbn10${uriQueryJoin({ isbn10: isbn })}`
+    `${BASE_PBC_URI}/getBookByISBN10${uriQueryJoin({ isbn10: isbn })}`
   public static readonly URI_GET_BOOK__ISBN13 = (isbn: string) =>
-    `${BASE_PBC_URI}/getIsbn13${uriQueryJoin({ isbn13: isbn })}`
+    `${BASE_PBC_URI}/getBookByISBN13${uriQueryJoin({ isbn13: isbn })}`
   public static readonly URI_CREATE_BOOK = `${BASE_PBC_URI}/addBook`
   public static readonly URI_CREATE_BOOK__NO_ISBN = `${BASE_PBC_URI}/addNoISBNBook`
   public static readonly URI_UPDATE_BOOK = `${BASE_PBC_URI}/updateBook`
+
+
+
 
   public static async findBook(isbn: string): Promise<Book | null> {
     let uri: string
     if (isbn.length === 10) {
       uri = this.URI_GET_BOOK__ISBN10(isbn)
     } else if (isbn.length === 13) {
+      console.log("IM IN HERE")
       uri = this.URI_GET_BOOK__ISBN13(isbn)
+      console.log(uri)
     } else {
       throw new Error(
         `Failed to find book with ISBN ${isbn}; this value is not a valid ISBN10 or ISBN13 value`
@@ -39,70 +44,71 @@ export class BookService {
     return (await response.json()) as Book
   }
 
-  public static async createBook(book: Book): Promise<Book> {
-    if (!book.isbn10 || book.isbn10.length === 0) {
-      book.isbn10 = `no-10-${book.isbn13}`
-    }
-    if (!book.isbn13 || book.isbn13.length === 0) {
-      book.isbn13 = `no-13-${book.isbn10}`
-    }
+//   public static async createBook(book: Book): Promise<Book> {
+//     if (!book.isbn10 || book.isbn10.length === 0) {
+//       book.isbn10 = `no-10-${book.isbn13}`
+//     }
+//     if (!book.isbn13 || book.isbn13.length === 0) {
+//       book.isbn13 = `no-13-${book.isbn10}`
+//     }
 
-    const response = await fetch(this.URI_CREATE_BOOK, {
-      ...METHOD_POST,
-      headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(book)
-    })
+//     const response = await fetch(this.URI_CREATE_BOOK, {
+//       ...METHOD_POST,
+//       headers: { ...CONTENT_TYPE_JSON },
+//       body: JSON.stringify(book)
+//     })
 
-    if (response.status === 302) {
-      throw new Error(`failed to create book; book already exists`)
-    }
-    if (response.status !== 200) {
-      throw new Error(
-        `unexpected response ${response.status} when adding new book to "${
-          this.URI_CREATE_BOOK
-        }" with details: ${JSON.stringify(book)}`
-      )
-    }
+//     if (response.status === 302) {
+//       throw new Error(`failed to create book; book already exists`)
+//     }
+//     if (response.status !== 200) {
+//       throw new Error(
+//         `unexpected response ${response.status} when adding new book to "${
+//           this.URI_CREATE_BOOK
+//         }" with details: ${JSON.stringify(book)}`
+//       )
+//     }
 
-    return (await response.json()) as Book
-  }
+//     return (await response.json()) as Book
+//   }
 
-  public static async createBookNoISBN(book: Book): Promise<Book> {
-    const response = await fetch(this.URI_CREATE_BOOK__NO_ISBN, {
-      ...METHOD_POST,
-      headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(book)
-    })
+//   public static async createBookNoISBN(book: Book): Promise<Book> {
+//     const response = await fetch(this.URI_CREATE_BOOK__NO_ISBN, {
+//       ...METHOD_POST,
+//       headers: { ...CONTENT_TYPE_JSON },
+//       body: JSON.stringify(book)
+//     })
 
-    if (response.status === 302) {
-      throw new Error(`failed to create book; book already exists`)
-    }
-    if (response.status !== 200) {
-      throw new Error(
-        `unexpected response ${response.status} when adding new book to "${
-          this.URI_CREATE_BOOK__NO_ISBN
-        }" with details: ${JSON.stringify(book)}`
-      )
-    }
+//     if (response.status === 302) {
+//       throw new Error(`failed to create book; book already exists`)
+//     }
+//     if (response.status !== 200) {
+//       throw new Error(
+//         `unexpected response ${response.status} when adding new book to "${
+//           this.URI_CREATE_BOOK__NO_ISBN
+//         }" with details: ${JSON.stringify(book)}`
+//       )
+//     }
 
-    return (await response.json()) as Book
-  }
+//     return (await response.json()) as Book
+//   }
 
-  public static async updateBook(book: Book): Promise<Book> {
-    const response = await fetch(this.URI_UPDATE_BOOK, {
-      ...METHOD_PUT,
-      headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(book)
-    })
+//   public static async updateBook(book: Book): Promise<Book> {
+//     const response = await fetch(this.URI_UPDATE_BOOK, {
+//       ...METHOD_PUT,
+//       headers: { ...CONTENT_TYPE_JSON },
+//       body: JSON.stringify(book)
+//     })
 
-    if (response.status !== 200) {
-      throw new Error(
-        `unexpected response ${response.status} when updating book via "${
-          this.URI_UPDATE_BOOK
-        }" with details: ${JSON.stringify(book)}`
-      )
-    }
+//     if (response.status !== 200) {
+//       throw new Error(
+//         `unexpected response ${response.status} when updating book via "${
+//           this.URI_UPDATE_BOOK
+//         }" with details: ${JSON.stringify(book)}`
+//       )
+//     }
 
-    return (await response.json()) as Book
-  }
+//     return (await response.json()) as Book
+//   }
+// }
 }
