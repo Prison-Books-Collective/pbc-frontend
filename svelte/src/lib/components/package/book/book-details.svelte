@@ -10,8 +10,9 @@
   import { createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage } from '$stores/package'
-  import { bookHasISBN } from '$models/pbc/book'
+  import { bookHasISBN } from '$models/pbc/shipment'
   import { isEmpty } from '$util/strings'
+    import Book from '$components/book.svelte'
 
   const dispatch = createEventDispatcher()
 
@@ -76,20 +77,9 @@
         ISBN13: <strong>{$focusedBook.isbn13}</strong>
       {/if}
     </p>
-
-    {#if $focusedBook.title}
-      <h1 class="book-title">
-        {$focusedBook.title}
-      </h1>
-    {/if}
-    {#if $focusedBook.authors && $focusedBook.authors.length > 0}
-      <p>
-        <em>
-          By: {$focusedBook.authors.join(', ')}
-        </em>
-      </p>
+    <Book book={$focusedBook} />
+    
       <p>Add it to the package by clicking the button below, or search for another book instead.</p>
-    {/if}
 
     <div class="form-options">
       <button class="success" on:click={addBookClicked}>Add book to package</button>

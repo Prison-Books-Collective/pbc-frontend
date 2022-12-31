@@ -5,13 +5,12 @@ import {
   type Updater,
   type Writable
 } from 'svelte/store'
-import type { Book } from '$models/pbc/book'
+import type { Book } from '$models/pbc/shipment'
 import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 
-interface LocalStorageBook extends Book {
+export interface LocalStorageBook extends Book {
   [additionalFields: string]: any
 }
-
 export class FocusedBookStore implements Writable<LocalStorageBook> {
   private readonly defaultBook
 
@@ -37,9 +36,10 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
     this.set({ ...this.defaultBook })
   }
 
-  public async fetch(isbn: string): Promise<LocalStorageBook> {
+  public async fetchBookByISBN(isbn: string): Promise<Book> {
     if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) return
     try {
+      console.log("in the inmate.ts")
       const foundBook = await BookService.findBook(isbn)
       if (!foundBook) throw new Error(`did not find book with ISBN ${isbn}`)
       const bookUpdate = {
@@ -57,7 +57,6 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
         isbn13: isbn.length === 13 ? isbn : null,
         existsInDatabase: false
       }
-      this.set(bookUpdate)
       return bookUpdate
     }
   }
@@ -113,9 +112,8 @@ const emptyBook: LocalStorageBook = {
   isbn13: null,
 
   title: null,
-  authors: [],
-
-  existsInDatabase: false
+  creators: [],
+  type: null
 }
 
 export const focusedBook = new FocusedBookStore(emptyBook)
