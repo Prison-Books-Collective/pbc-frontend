@@ -1,12 +1,3 @@
-<script lang="ts" context="module">
-  export function load({ params, url }) {
-    const { packageID } = params
-    const print = url.searchParams.get('print') || false
-    const date = url.searchParams.get('date') || false
-    return { props: { packageID, print, date } }
-  }
-</script>
-
 <script lang="ts">
   import { onMount } from 'svelte'
   import { focusedPackage } from '$stores/package'
@@ -15,25 +6,24 @@
   import information from '$assets/invoice/invoice-information.svg'
   import Zine from '$components/zine/zine.svelte'
   import Book from '$components/book.svelte'
+    import { bookHasISBN } from '$models/pbc/shipment'
 
-  export let packageID: number
-  export let print: boolean = false
-  export let date: string = null
+  export let data;
   let invoiceDate
 
   $: {
-    if (!date) {
+    if (!data.date) {
       invoiceDate = formatDateForInvoice(new Date($focusedPackage.date))
-    } else if (date.trim().toLowerCase() === 'today') {
+    } else if (data.date.trim().toLowerCase() === 'today') {
       invoiceDate = formatDateForInvoice()
     } else {
-      invoiceDate = formatDateForInvoice(new Date(date))
+      invoiceDate = formatDateForInvoice(new Date(data.date))
     }
   }
 
   onMount(() => {
-    focusedPackage.fetch(packageID).then(async () => {
-      if (print) {
+    focusedPackage.fetch(data.packageID).then(async () => {
+      if (data.print) {
         await delay(1000)
         window.focus()
         window.print()
@@ -86,23 +76,15 @@
 
   <div id="package-list-container">
     <ol id="package-list">
-      {#each $focusedPackage.books as book}
-        <li>
-          <em>{book.title}</em> &mdash; {book.authors.join(', ')}
-        </li>
-      {/each}
-      {#each $focusedPackage.zines as zine}
-        <li>
-          <Zine {zine} formatForInvoice={true} />
-        </li>
-      {/each}
-      {#each $focusedPackage.noISBNBooks as book}
-        <li>
-          <em>{book.title}</em>
-          {#if book.authors && book.authors.length > 0}
-            &mdash; {book.authors.join(', ')}
-          {/if}
-        </li>
+      {#each $focusedPackage.content as book}
+      <li>
+        {#if book.type === "book"}
+        <Book book={book} />
+        {/if}
+        {#if book.type === "zine"}
+        <Zine zine={book}/>
+        {/if}
+      </li>
       {/each}
     </ol>
   </div>

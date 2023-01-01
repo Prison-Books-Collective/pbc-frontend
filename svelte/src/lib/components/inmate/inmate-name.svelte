@@ -4,10 +4,11 @@
   import editIcon from '$assets/icons/edit.png'
   import Modal from '$components/modal.svelte'
   import EditInmate from '$components/inmate/edit-inmate.svelte'
+    import type { Recipient } from '$models/pbc/recipient'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Inmate
+  export let inmate: Recipient
   export let shouldDisplayModal = false
 
   const presentModal = () => (shouldDisplayModal = true)
@@ -30,7 +31,8 @@
 <div id="inmate-name">
   <h1 aria-label="Inmate's first and last name, and inmate ID if available">
     {inmate.firstName}
-    {inmate.middleInitial ? inmate.middleInitial + '. ' : ''}{inmate.lastName}
+    <!-- {inmate.middleInitial ? inmate.middleInitial + '. ' : ''} -->
+    {inmate.lastName}
     {#if isInmateNoID(inmate)}
       - <span>{inmate.location}</span>
     {:else}

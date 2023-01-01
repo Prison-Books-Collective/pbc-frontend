@@ -41,12 +41,11 @@ export class FacilityStore implements Writable<Facility[]> {
     }
   }
 
-  public async create({ facilityName, facilityType, state }): Promise<Facility> {
+  public async create({ facilityName, state }): Promise<Facility> {
     try {
       const createdFacility = await FacilityService.createFacility({
         id: null,
-        facility_name: facilityName,
-        facility_type: facilityType,
+        name: facilityName,
         state
       })
       this.fetch()
@@ -56,7 +55,7 @@ export class FacilityStore implements Writable<Facility[]> {
       console.error(
         `failed to create new facility for $facilities via remote using data: ${JSON.stringify({
           facilityName,
-          facilityType,
+          
           state
         })}`
       )

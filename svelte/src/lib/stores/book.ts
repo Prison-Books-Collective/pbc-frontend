@@ -11,6 +11,7 @@ import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 export interface LocalStorageBook extends Book {
   [additionalFields: string]: any
 }
+
 export class FocusedBookStore implements Writable<LocalStorageBook> {
   private readonly defaultBook
 
@@ -57,6 +58,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
         isbn13: isbn.length === 13 ? isbn : null,
         existsInDatabase: false
       }
+      this.set(bookUpdate)
       return bookUpdate
     }
   }
@@ -73,6 +75,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
             ? BookService.updateBook(book)
             : BookService.createBook(book)
         }
+        console.log(operation)
 
         operation
           .then((updatedBook) => {
@@ -113,7 +116,7 @@ const emptyBook: LocalStorageBook = {
 
   title: null,
   creators: [],
-  type: null
+  type: 'book'
 }
 
 export const focusedBook = new FocusedBookStore(emptyBook)

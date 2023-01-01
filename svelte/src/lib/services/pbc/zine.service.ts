@@ -1,10 +1,10 @@
 import { BASE_PBC_URI } from '.'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$util/web'
-import type { Zine } from '$models/pbc/zine'
+import type { Zine } from '$models/pbc/shipment'
 import type { NewZine } from '$models/pbc/newZine'
 
 export class ZineService {
-  public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getZines`
+  public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getAllZines`
   public static readonly URI_CREATE_ZINE = `${BASE_PBC_URI}/addContent`
   public static readonly URI_GET_ZINE_BY_CODE = (code : string)=>`${BASE_PBC_URI}/getZineByCode?code=${code}`
 
@@ -56,10 +56,13 @@ export class ZineService {
     }
 
     const zines = await response.json()
+    zines.forEach(z => {
+      z.type = 'zine'
+    });
     this.cachedZines = zines.sort(zineSortAlphabetical)
     return this.cachedZines
   }
 }
 
 const zineSortAlphabetical = (zineA: Zine, zineB: Zine) =>
-  zineA.threeLetterCode.localeCompare(zineB.threeLetterCode)
+  zineA.code.localeCompare(zineB.code)

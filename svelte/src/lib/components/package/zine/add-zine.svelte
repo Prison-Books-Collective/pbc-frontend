@@ -4,7 +4,7 @@
 
   import { focusedPackage } from '$stores/package'
   import { zines } from '$stores/zine'
-  import type { Zine } from '$models/pbc/zine'
+  import type { Zine } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
@@ -14,14 +14,14 @@
   let selectedZines: Zine[] = []
 
   allZines = $zines
-  availableZines = allZines.filter((z) => !$focusedPackage.zines.includes(z))
+  availableZines = allZines.filter((z) => !$focusedPackage.content.includes(z))
 
   $: availableZines = allZines.filter((z) => {
-    if ($focusedPackage.zines.includes(z)) return false
+    if ($focusedPackage.content.includes(z)) return false
     if (filter == '') return true
 
     filter = filter.toLowerCase()
-    const threeLetterCode = z.threeLetterCode.toLowerCase()
+    const threeLetterCode = z.code.toLowerCase()
     const title = z.title.toLowerCase()
 
     return threeLetterCode.includes(filter) || title.includes(filter)
@@ -75,9 +75,8 @@
               on:change={() => toggle(zine)}
             />
             <strong>
-              {zine.threeLetterCode}
-            </strong>
-            &mdash;
+              {zine.code}</strong>
+            &mdash; 
             {zine.title}
           {/key}
         </label>

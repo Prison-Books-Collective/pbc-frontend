@@ -5,5 +5,5 @@
 </script>
 
 {#if facility}
-  [{facility.state}] {facility.facility_name} &mdash; {facility.facility_type}
+  {facility.name} [{facility.state}]
 {/if}

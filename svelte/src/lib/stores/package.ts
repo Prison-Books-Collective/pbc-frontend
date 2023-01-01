@@ -5,17 +5,15 @@ import {
   type Updater,
   type Writable
 } from 'svelte/store'
-import type { Book } from '$models/pbc/shipment'
+import type { Book, Shipment, Zine } from '$models/pbc/shipment'
 import type { Facility } from '$models/pbc/facility'
-import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
-import type { Package } from '$models/pbc/package'
-import type { Zine } from '$models/pbc/zine'
-import { isNoISBNBook } from '$services/pbc/book.service'
 import { PackageService } from '$services/pbc/package.service'
 import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
 import { formatDate } from '$util/time'
+import { ShipmentService } from '$services/pbc/shipment.service'
+import type { Recipient } from '$models/pbc/recipient'
 
-interface LocalStoragePackage extends Package {
+interface LocalStorageShipment extends Shipment {
   existsInDatabase?: boolean
 }
 
@@ -42,7 +40,7 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     })
   }
 
-  public set: (this: void, value: LocalStoragePackage[]) => void
+  public set: (this: void, value: LocalStorageShipment[]) => void
   public update: (this: void, updater: Updater<LocalStoragePackage[]>) => void
   public subscribe: (
     this: void,
@@ -149,8 +147,8 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     return updatedPackages
   }
 
-  public localAddPackage(pbcPackage: LocalStoragePackage): LocalStoragePackage[] {
-    let updatedPackages: LocalStoragePackage[]
+  public localAddPackage(pbcPackage: LocalStorageShipment): LocalStorageShipment[] {
+    let updatedPackages: LocalStorageShipment[]
     this.update((packages) => {
       updatedPackages = [pbcPackage, ...packages]
       return updatedPackages
@@ -159,12 +157,12 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   }
 }
 
-export class FocusedPackageStore implements Writable<LocalStoragePackage> {
-  private readonly defaultPackage: LocalStoragePackage
+export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
+  private readonly defaultPackage: LocalStorageShipment
   private readonly packagesStore: FocusedPackagesStore
-  private currentValue: Promise<LocalStoragePackage> = new Promise(() => null)
+  private currentValue: Promise<LocalStorageShipment> = new Promise(() => null)
 
-  constructor(defaultPackage: LocalStoragePackage, packagesStore: FocusedPackagesStore) {
+  constructor(defaultPackage: LocalStorageShipment, packagesStore: FocusedPackagesStore) {
     const { set, update, subscribe } = writable(defaultPackage)
 
     this.set = set
@@ -177,20 +175,21 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
     this.subscribe((currentValue) => (this.currentValue = Promise.resolve(currentValue)))
   }
 
-  public set: (this: void, value: LocalStoragePackage) => void
-  public update: (this: void, updater: Updater<LocalStoragePackage>) => void
+  public set: (this: void, value: LocalStorageShipment) => void
+  public update: (this: void, updater: Updater<LocalStorageShipment>) => void
   public subscribe: (
     this: void,
-    run: Subscriber<LocalStoragePackage>,
-    invalidate?: (value?: LocalStoragePackage) => void
+    run: Subscriber<LocalStorageShipment>,
+    invalidate?: (value?: LocalStorageShipment) => void
   ) => Unsubscriber
-  public async get(): Promise<LocalStoragePackage> {
+  public async get(): Promise<LocalStorageShipment> {
     return await this.currentValue
   }
 
-  public async fetch(packageId: number): Promise<LocalStoragePackage> {
+  public async fetch(packageId: number): Promise<LocalStorageShipment> {
     try {
-      const pbcPackage = await PackageService.getPackage(packageId)
+      console.log(packageId)
+      const pbcPackage = await ShipmentService.getShipment(packageId)
       this.load(pbcPackage)
       return pbcPackage
     } catch (error) {
@@ -201,16 +200,14 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
     }
   }
 
-  public async sync(): Promise<LocalStoragePackage> {
+  public async sync(): Promise<LocalStorageShipment> {
     const pbcPackage = await this.get()
     const createdPackage = pbcPackage.id
       ? await PackageService.updatePackage(pbcPackage)
-      : await PackageService.createPackage(pbcPackage)
-
+      : await ShipmentService.createPackage(pbcPackage)
     pbcPackage.id
       ? this.packagesStore.localUpdatePackage(createdPackage)
       : this.packagesStore.localAddPackage(createdPackage)
-
     this.load(createdPackage)
     return createdPackage
   }
@@ -222,7 +219,7 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
     this.reset()
   }
 
-  public load(pbcPackage: Package) {
+  public load(pbcPackage: Shipment) {
     this.set({ ...pbcPackage, existsInDatabase: true })
   }
 
@@ -231,40 +228,22 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
   }
 
   public addBook(book: Book) {
-    if (isNoISBNBook(book)) {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        noISBNBooks: [...currentPackage.noISBNBooks, book]
-      }))
-    } else {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        books: [...currentPackage.books, book]
-      }))
-    }
+    this.update((currentPackage) => ({
+      ...currentPackage, content: [...currentPackage.content, book]
+    }))
   }
 
   public addZine(zine: Zine) {
     this.update((currentPackage) => ({
       ...currentPackage,
-      zines: [...currentPackage.zines, zine]
+      content: [...currentPackage.content, zine]
     }))
   }
 
-  public setInmate(inmate: Inmate) {
-    if (isInmateNoID(inmate)) {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        inmate: null,
-        inmateNoId: inmate as Inmate
-      }))
-    } else {
-      this.update((currentPackage) => ({
-        ...currentPackage,
-        inmateNoId: null,
-        inmate: inmate as Inmate
-      }))
-    }
+  public setRecipient(recipient: Recipient) {
+    this.update((currentPackage) => ({
+      ...currentPackage, recipient: recipient
+    }))
   }
 
   public createAlert(alertText = '') {
@@ -304,24 +283,20 @@ export class FocusedPackageStore implements Writable<LocalStoragePackage> {
   }
 }
 
-const emptyPackage: LocalStoragePackage = {
+const emptyPackage: LocalStorageShipment = {
   id: null,
   date: formatDate(new Date()),
 
-  inmate: null,
-  inmateNoId: null,
+  recipient: null,
   facility: null,
 
-  books: [],
-  zines: [],
-  noISBNBooks: [],
-
+  content: [],
   alert: null,
 
   existsInDatabase: false
 }
 
 export const focusedPackages = new FocusedPackagesStore(focusedInmate)
-export const focusedPackage = new FocusedPackageStore(emptyPackage, focusedPackages)
+export const focusedPackage = new FocusedShipmentStore(emptyPackage, focusedPackages)
 
 

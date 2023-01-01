@@ -5,7 +5,7 @@ import {
   type Updater,
   type Writable
 } from 'svelte/store'
-import type { Zine } from '$models/pbc/zine'
+import type { Zine } from '$models/pbc/shipment'
 import { ZineService } from '$services/pbc/zine.service'
 
 export class ZineStore implements Writable<Zine[]> {
@@ -26,13 +26,13 @@ export class ZineStore implements Writable<Zine[]> {
   ) => Unsubscriber
 
   public async fetch(): Promise<Zine[]> {
-    // try {
-    //   const zines = await ZineService.getZines()
-    //   this.set(zines)
-    //   return zines
-    // } catch (error) {
-    //   console.error(`failed to sync $zines via remote`, error)
-    // }
+    try {
+      const zines = await ZineService.getZines()
+      this.set(zines)
+      return zines
+    } catch (error) {
+      console.error(`failed to sync $zines via remote`, error)
+    }
     return null
   }
 
@@ -60,4 +60,4 @@ export class ZineStore implements Writable<Zine[]> {
 }
 
 export const zines = new ZineStore()
-// zines.fetch()
+ zines.fetch()

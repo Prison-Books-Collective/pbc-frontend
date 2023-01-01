@@ -9,6 +9,7 @@
   import { onMount, createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage} from '$stores/package'
+    import type { Author } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
@@ -41,16 +42,19 @@
   }
   $: loadISBN = () => {
     if (shouldDisableSearch()) return
-    console.log("herheehrhehr")
     focusedBook.fetchBookByISBN(inputISBN) // TODO need to separate the search book functionality from
-    //focusedBook.fetch(inputISBN)
     dispatch('search', inputISBN)
   }
   $: saveNoISBNBook = async () => {
     focusedBook.set({
       id: null,
+      type: 'book',
       title: inputTitle,
-      authors: inputAuthor?.split(',').map((a) => a.trim())
+      creators: [{
+        type: "author",
+        firstName: inputAuthor.split(' ')[0],
+        lastName: inputAuthor.split(' ')[1] 
+      } as Author] 
     })
     await focusedBook.sync()
     focusedPackage.addBook($focusedBook)

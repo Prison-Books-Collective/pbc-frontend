@@ -48,7 +48,7 @@ export class FacilityService {
     if (!facilityName || facilityName === '') return null
     const allFacilities = await this.getAllFacilities()
     return (
-      allFacilities.find((facility) => facility.facility_name === facilityName) || INVALID_FACILITY
+      allFacilities.find((facility) => facility.name === facilityName) || INVALID_FACILITY
     )
   }
 }

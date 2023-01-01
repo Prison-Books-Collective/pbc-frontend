@@ -6,7 +6,7 @@
 </script>
 
 {#if book}
-  <em>{book.title}</em>
+  <strong>{book.title}</strong>
   {#if book.creators && book.creators.length > 0}
     &mdash; {creators}
   {/if}
