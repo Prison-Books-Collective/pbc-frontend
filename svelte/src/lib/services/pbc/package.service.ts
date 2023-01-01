@@ -5,7 +5,7 @@ import type { Shipment } from '$models/pbc/shipment'
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>
-    `${BASE_PBC_URI}/getPackageById?id=${packageId}`
+    `${BASE_PBC_URI}/getShipment?id=${packageId}`
   public static readonly URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID = (id: string) =>
     `${BASE_PBC_URI}/getAllShipmentsByRecipient${uriQueryJoin({ id })}`
   public static readonly URI_GET_PACKAGES = (inmateId: string) =>
@@ -43,7 +43,7 @@ export class PackageService {
     return await response.json()
   }
 
-  public static async getPackage(packageId: number): Promise<Package> {
+  public static async getPackage(packageId: number): Promise<Shipment> {
     const response = await fetch(this.URI_GET_PACKAGE(packageId), { ...METHOD_GET })
 
     if (response.status !== 200) {
@@ -54,7 +54,7 @@ export class PackageService {
       )
     }
 
-    return (await response.json()) as Package
+    return (await response.json()) as Shipment
   }
 
   public static async createPackage(pbcPackage: Package): Promise<Package> {
@@ -90,7 +90,7 @@ export class PackageService {
     return true
   }
 
-  public static async updatePackage(pbcPackage: Package): Promise<Package> {
+  public static async updatePackage(pbcPackage: Shipment): Promise<Shipment> {
     const response = await fetch(this.URI_UPDATE_PACKAGE, {
       ...METHOD_PUT,
       headers: { ...CONTENT_TYPE_JSON },
@@ -105,7 +105,7 @@ export class PackageService {
       )
     }
 
-    return (await response.json()) as Package
+    return (await response.json()) as Shipment
   }
 
   public static async getPackagesForInmate(inmateId: string): Promise<Package[]> {
@@ -142,7 +142,7 @@ export class PackageService {
     return (await response.json()) as number
   }
 
-  public static async getPackagesForDate(date: string): Promise<Package[]> {
+  public static async getPackagesForDate(date: string): Promise<Shipment[]> {
     const response = await fetch(this.URI_GET_PACKAGES__BY_DATE(date), {
       ...METHOD_GET
     })
@@ -158,7 +158,7 @@ export class PackageService {
       )
     }
 
-    return ((await response.json()) as Package[]).sort(packageSortByDate)
+    return ((await response.json()) as Shipment[]).sort(packageSortByDate)
   }
 
   public static async getPackagesForDateRange(

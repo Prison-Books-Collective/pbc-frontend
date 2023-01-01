@@ -12,6 +12,7 @@
   import printIcon from '$assets/icons/print.png'
   import CreatePackageModal from './create-package-modal.svelte'
   import type { Shipment, Book as BookModel } from '$models/pbc/shipment'
+    import AddBook from './book/add-book.svelte'
 
   const dispatch = createEventDispatcher()
 
@@ -33,7 +34,7 @@
     dispatch('edit', pbcPackage)
     presentEditPackageModal(pbcPackage)
   }
-  const printPackageClicked = (pbcPackage: Package) => {
+  const printPackageClicked = (pbcPackage: Shipment) => {
     dispatch('print', pbcPackage)
     printPackage(pbcPackage)
   }
@@ -92,7 +93,7 @@
         <th>Print</th>
       </tr>
 
-      {#each packages as pbcPackage (pbcPackage.id)}
+      {#each packages.sort((a,b) => b.id - a.id) as pbcPackage (pbcPackage.id)}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
             <!-- {#if pbcPackage.alert}

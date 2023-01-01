@@ -44,8 +44,8 @@
     {:then}
       <option disabled selected={!!!selected} value={null}>Select Facility</option>
       {#each facilityList as f}
-        <option value={f} selected={selected === f.facility_name}
-          >{f.facility_name}{f.state ? ',' : ''} {f.state}</option
+        <option value={f} selected={selected === f.name}
+          >{f.name}{f.state ? ',' : ''} {f.state}</option
         >
       {/each}
     {/await}
@@ -56,14 +56,14 @@
       <option value={undefined}>Loading Facilities</option>
     {:then _}
       <option disabled selected={!!!selected} value={null}>Select Facility</option>
-      {#if selected === INVALID_FACILITY.facility_name}
-        <option disabled selected={selected === INVALID_FACILITY.facility_name} value={null}>
+      {#if selected === INVALID_FACILITY.name}
+        <option disabled selected={selected === INVALID_FACILITY.name} value={null}>
           Invalid Facility, select a new one
         </option>
       {/if}
       {#each facilityList as f}
-        <option value={f} selected={selected === f.facility_name}
-          >{f.facility_name}, {f.state}</option
+        <option value={f} selected={selected === f.name}
+          >{f.name}, {f.state}</option
         >
       {/each}
     {/await}

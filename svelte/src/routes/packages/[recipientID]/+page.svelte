@@ -11,7 +11,7 @@
   /** @type {import('./$types').PageData} */
   export let data;
   
-  export let recipientId: string = data.recipientID || undefined
+  export let recipientId: string = data.recipientId || undefined
   let packageTable: PackageTable
   let presentCreatePackage = () => {}
 

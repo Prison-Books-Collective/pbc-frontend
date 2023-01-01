@@ -17,6 +17,8 @@
   import { InmateService } from '$services/pbc/inmate.service'
   import FacilitySelect from '$components/facility/select-facility.svelte'
   import { isEmpty } from '$util/strings'
+    import { RecipientService } from '$services/pbc/recipient.service'
+    import { focusedPackages } from '$stores/package'
 
   export let id = null
   export let firstName = null
@@ -31,11 +33,13 @@
 
   const createInmate = async () => {
     const createdInmate = await (isInmateNoID
-      ? InmateService.createInmateNoID({ firstName, lastName, location })
-      : InmateService.createInmate({ firstName, lastName, inmateId: id }))
+      ? RecipientService.createRecipient({ firstName, lastName, assignedId: null })
+      : RecipientService.createRecipient({ firstName, lastName, assignedId: id }))
 
     if (!!createdInmate && !!createdInmate.id) {
+      console.log(createdInmate)
       focusedInmate.set(createdInmate)
+      focusedPackages.set([])
       gotoPackagesForInmate(createdInmate)
     }
   }

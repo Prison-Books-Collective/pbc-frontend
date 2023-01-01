@@ -10,7 +10,7 @@
   import { createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage } from '$stores/package'
-  import { bookHasISBN } from '$models/pbc/shipment'
+  import { bookHasISBN, type Author } from '$models/pbc/shipment'
   import { isEmpty } from '$util/strings'
     import Book from '$components/book.svelte'
 
@@ -49,8 +49,18 @@
     isEmpty(newTitle)
 
   const editAndAdd = async (isbn, newAuthor, newTitle) => {
-    $focusedBook.title = newTitle
-    $focusedBook.authors = newAuthor.split(',').map((author) => author.trim())
+    
+
+    focusedBook.set({
+      id: null,
+      type: 'book',
+      title: newTitle,
+      creators: [{
+        type: "author",
+        firstName: newAuthor.split(' ')[0],
+        lastName: newAuthor.split(' ')[1] 
+      } as Author] 
+    } )
     if (isbn.length === 10) {
       $focusedBook.isbn10 = isbn
     } else if (isbn.length === 13) {

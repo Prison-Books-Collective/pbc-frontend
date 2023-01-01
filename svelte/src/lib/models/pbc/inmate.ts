@@ -1,4 +1,5 @@
 import type { Package } from './package'
+import type { Recipient } from './recipient'
 
 export interface Inmate {
   id: string
@@ -12,6 +13,6 @@ export interface Inmate {
   location?: string
 }
 
-export const isInmateNoID = (inmate: Inmate) => {
+export const isInmateNoID = (inmate: Recipient) => {
   return !!inmate['location']
 }

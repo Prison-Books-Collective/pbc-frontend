@@ -7,12 +7,12 @@
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
-  import type { Inmate } from '$lib/models/pbc/inmate'
+  import type { Recipient } from '$lib/models/pbc/recipient'
   import { isValidFacility } from '$models/pbc/facility'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Inmate
+  export let inmate: Recipient
 
   let removeItems = []
   let facility = $focusedPackage.facility
@@ -33,9 +33,7 @@
   loadFacility(facility, inmate)
 
   $: isPackageEmpty = () =>
-    $focusedPackage.books.length === 0 &&
-    $focusedPackage.noISBNBooks.length === 0 &&
-    $focusedPackage.zines.length === 0
+    $focusedPackage.content.length === 0
 
   const shouldDisableComplete = (facility) => !isValidFacility(facility)
   const shouldDisableRemove = (removeItems) => !removeItems || removeItems.length === 0
@@ -45,8 +43,9 @@
 
   const completePackage = async (inmate) => {
     try {
-      focusedPackage.setInmate(inmate)
+      focusedPackage.setRecipient(inmate)
       const updatedPackage = await focusedPackage.sync()
+      
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
@@ -69,7 +68,7 @@
   {:else}
     {#key removeItems}
       <ol class="package-items-list">
-        {#each $focusedPackage.books as book}
+        {#each $focusedPackage.content as book}
           <li>
             <label for={book.id.toString()} class="checkbox">
               <input
@@ -78,11 +77,16 @@
                 bind:group={removeItems}
                 value={book.id}
               />
-              <Book {book} />
+              {#if book.type === "book"}
+              <Book book={book} />
+              {/if}
+              {#if book.type === "zine"}
+              <Zine zine={book}/>
+              {/if}
             </label>
           </li>
         {/each}
-        {#each $focusedPackage.noISBNBooks as book}
+        <!-- {#each $focusedPackage.noISBNBooks as book}
           <li>
             <label for={book.id.toString()} class="checkbox">
               <input
@@ -107,17 +111,17 @@
               <Zine {zine} />
             </label>
           </li>
-        {/each}
+        {/each} -->
       </ol>
     {/key}
   {/if}
 
-  {#if facility || $focusedPackage.books.length > 0 || $focusedPackage.noISBNBooks.length > 0 || $focusedPackage.zines.length > 0}
+  {#if facility || $focusedPackage.content.length > 0}
     <div class="package-destination">
       <span class="label">Destination: </span>
       <FacilitySelect
         bind:facility
-        selected={facility?.facility_name}
+        selected={facility?.name}
         on:update={({ detail }) => {
           focusedPackage.setDestination(detail)
         }}

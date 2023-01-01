@@ -1,6 +1,8 @@
 import { goto } from '$app/navigation'
 import type { Inmate } from '$models/pbc/inmate'
 import type { Package } from '$models/pbc/package'
+import type { Recipient } from '$models/pbc/recipient'
+import type { Shipment } from '$models/pbc/shipment'
 import { InmateService } from '$services/pbc/inmate.service'
 import { RecipientService } from '$services/pbc/recipient.service'
 import { focusedInmate } from '$stores/inmate'
@@ -36,7 +38,7 @@ export enum CreatePackageModalState {
 }
 
 export const ROUTE_HOME = (searchMode: HomepageSearch) => `/${uriQueryJoin({ search: searchMode })}`
-export const ROUTE_PACKAGES_FOR_INMATE = (inmateID) => `/packages/${inmateID}`
+export const ROUTE_PACKAGES_FOR_INMATE = (recipientId) => `/packages/${recipientId}`
 export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
   `/create/inmate${uriQueryJoin({ firstName, lastName })}`
 export const ROUTE_INMATE_CREATE_ID = (inmateID) =>
@@ -101,7 +103,7 @@ const gotoInmateSearchByName = async ({ firstName, lastName }) => {
   }
 }
 
-export const gotoPackagesForInmate = async (inmate: Inmate) =>
+export const gotoPackagesForInmate = async (inmate: Recipient) =>
   goto(ROUTE_PACKAGES_FOR_INMATE(inmate.id))
 
 export const gotoPackageSearch = async ({ date, startDate, endDate, isbn, author, title }) => {
@@ -134,9 +136,8 @@ export const gotoSearchByAuthorAndTitle = (author: string, title: string) =>
     })
   )
 
-export const printPackage = async (pbcPackage: Package) => {
+export const printPackage = async (pbcPackage: Shipment) => {
   const printWindow = window.open(ROUTE_PRINT_INVOICE(pbcPackage.id), 'title', 'attributes')
-
   printWindow.focus()
   await delay(3500)
   printWindow.document.close()

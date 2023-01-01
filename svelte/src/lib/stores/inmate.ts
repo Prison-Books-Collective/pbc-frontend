@@ -21,10 +21,10 @@ interface LocalStorageRecipient extends Recipient {
 
 }
 
-export class FocusedInmateStore implements Writable<LocalStorageInmate> {
+export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   private readonly defaultInmate
 
-  constructor(defaultInmate: LocalStorageInmate) {
+  constructor(defaultInmate: LocalStorageRecipient) {
     const { set, update, subscribe } = writable(defaultInmate)
 
     this.set = set
@@ -34,12 +34,12 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
     this.defaultInmate = Object.freeze(defaultInmate)
   }
 
-  public set: (this: void, value: LocalStorageInmate) => void
-  public update: (this: void, updater: Updater<LocalStorageInmate>) => void
+  public set: (this: void, value: LocalStorageRecipient) => void
+  public update: (this: void, updater: Updater<LocalStorageRecipient>) => void
   public subscribe: (
     this: void,
-    run: Subscriber<LocalStorageInmate>,
-    invalidate?: (value?: LocalStorageInmate) => void
+    run: Subscriber<LocalStorageRecipient>,
+    invalidate?: (value?: LocalStorageRecipient) => void
   ) => Unsubscriber
 
   public reset() {
@@ -84,15 +84,13 @@ export class FocusedInmateStore implements Writable<LocalStorageInmate> {
 }
 
 
-const emptyInmate: LocalStorageInmate = {
+const emptyInmate: LocalStorageRecipient = {
   id: null,
 
   firstName: null,
-  middleInitial: null,
   lastName: null,
 
-  packages: null,
-  location: null
+  shipments: null
 }
 
 export const focusedInmate = new FocusedInmateStore(emptyInmate)

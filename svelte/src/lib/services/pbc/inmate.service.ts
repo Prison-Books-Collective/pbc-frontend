@@ -13,7 +13,7 @@ export class InmateService {
   public static readonly URI_GET_INMATE__NO_ID__BY_NAME = ({ firstName, lastName }) =>
     `${BASE_PBC_URI}/getInmateNoID${uriQueryJoin({ firstName, lastName })}`
   public static readonly URI_CREATE_INMATE = ({ firstName, lastName, inmateId }) =>
-    `${BASE_PBC_URI}/addInmate${uriQueryJoin({ firstName, lastName, id: inmateId })}`
+    `${BASE_PBC_URI}/addRecipient${uriQueryJoin({ firstName, lastName, id: inmateId })}`
   public static readonly URI_CREATE_INMATE__NO_ID = ({ firstName, lastName, location }) =>
     `${BASE_PBC_URI}/addInmateNoID${uriQueryJoin({ firstName, lastName, location })}`
   public static readonly URI_UPDATE_INMATE = ({ initialId, firstName, lastName, inmateId }) =>

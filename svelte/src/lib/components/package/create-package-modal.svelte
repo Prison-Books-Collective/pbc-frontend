@@ -12,6 +12,7 @@
   import AddBook from '$components/package/book/add-book.svelte'
   import BookDetails from '$components/package/book/book-details.svelte'
   import RejectionLog from '$components/package/rejection-log.svelte'
+    import type { Shipment } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
@@ -28,7 +29,7 @@
     activeModalParams = { ...params }
     dispatch('switch', { modal, params })
   }
-  const presentAlertModal = (pbcPackage: Package) => {
+  const presentAlertModal = (pbcPackage: Shipment) => {
     focusedPackage.load(pbcPackage)
     presentModal(CreatePackageModalState.VIEW_ALERT, { packageId: pbcPackage.id })
   }
@@ -37,9 +38,7 @@
     activeModal !== CreatePackageModalState.EDIT_PACKAGE &&
     activeModal !== CreatePackageModalState.VIEW_ALERT &&
     activeModal !== CreatePackageModalState.PRINT_PACKAGE &&
-    ($focusedPackage.books.length > 0 ||
-      $focusedPackage.noISBNBooks.length > 0 ||
-      $focusedPackage.zines.length > 0)
+    ($focusedPackage.content.length>0)
 </script>
 
 <Modal

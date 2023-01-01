@@ -1,5 +1,4 @@
 import { isEmpty } from "$util/strings"
-import type { Package } from "./package"
 import type { Recipient } from "./recipient"
 
 export interface PackageContent{
@@ -46,15 +45,20 @@ export const getCreatorName = (creator: Creator): string => {
 
 
 
+
 export interface Zine extends PackageContent{
     type: 'zine'
     code: string
 }
 
+
 export interface Shipment {
     id: number
     content: PackageContent[]
     date: string
+    recipient: Recipient
+[additionalFields: string]: any
+
   }
 
   export const bookHasISBN = (book: Book) => {

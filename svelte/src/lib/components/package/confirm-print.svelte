@@ -15,19 +15,14 @@
     <h1>Package Contents:</h1>
 
     <ol class="package-items-list">
-      {#each $focusedPackage.books as book}
+      {#each $focusedPackage.content as book}
         <li>
-          <Book {book} />
-        </li>
-      {/each}
-      {#each $focusedPackage.noISBNBooks as book}
-        <li>
-          <Book {book} />
-        </li>
-      {/each}
-      {#each $focusedPackage.zines as zine}
-        <li>
-          <Zine {zine} />
+          {#if book.type === "book"}
+              <Book book={book} />
+              {/if}
+              {#if book.type === "zine"}
+              <Zine zine={book}/>
+              {/if}
         </li>
       {/each}
     </ol>

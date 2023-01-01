@@ -1,25 +1,24 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { facilities } from '$stores/facility'
-  import { FacilityType, State } from '$models/pbc/facility'
+  import { State } from '$models/pbc/facility'
   import { isEmpty } from '$util/strings'
 
   const dispatch = createEventDispatcher()
 
   export let facilityName = null
-  export let facilityType: FacilityType = null
   export let state: State = null
 
   const resetInput = () => {
-    ;[facilityName, facilityType, state] = [null, null, null]
+    ;[facilityName,  state] = [null, null]
   }
 
-  const shouldDisableCreate = (facilityName, facilityType, state) =>
-    isEmpty(facilityName) || isEmpty(facilityType) || isEmpty(state)
+  const shouldDisableCreate = (facilityName, state) =>
+    isEmpty(facilityName) ||isEmpty(state)
 
-  const createFacility = async (facilityName, facilityType, state) => {
+  const createFacility = async (facilityName,state) => {
     try {
-      const createdFacility = await facilities.create({ facilityName, facilityType, state })
+      const createdFacility = await facilities.create({ facilityName, state })
       resetInput()
       dispatch('update', createdFacility)
     } catch (error) {
@@ -32,7 +31,7 @@
   <h2>Add New Facility</h2>
   <form
     id="new-facility-form"
-    on:submit|preventDefault={() => createFacility(facilityName, facilityType, state)}
+    on:submit|preventDefault={() => createFacility(facilityName, state)}
   >
     <label for="facility-name">
       Facility Name:
@@ -52,14 +51,8 @@
       {/each}
     </select>
 
-    <select bind:value={facilityType}>
-      <option disabled selected value={null}>Facility Type</option>
-      {#each Object.values(FacilityType) as f}
-        <option value={f}>{f}</option>
-      {/each}
-    </select>
 
-    <button class="success" disabled={shouldDisableCreate(facilityName, facilityType, state)}>
+    <button class="success" disabled={shouldDisableCreate(facilityName,  state)}>
       Add Facility
     </button>
   </form>

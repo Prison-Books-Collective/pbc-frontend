@@ -6,10 +6,11 @@
   import { InmateService } from '$services/pbc/inmate.service'
   import { isEmpty } from '$util/strings'
   import FacilitySelect from '$components/facility/select-facility.svelte'
+    import type { Recipient } from '$models/pbc/recipient'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Inmate
+  export let inmate: Recipient
 
   let { firstName, lastName } = inmate
   let location: Facility
