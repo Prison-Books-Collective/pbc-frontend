@@ -9,6 +9,9 @@ export class RecipientService {
     public static readonly URI_GET_RECIPIENT_BY_ASSIGNED_ID = ( assignedId: string ) =>
         `${BASE_PBC_URI}/getRecipientByAssignedId${uriQueryJoin({ assignedId })}`
 
+        public static readonly URI_GET_RECIPIENT__BY_NAME = ({ firstName, lastName }) =>
+    `${BASE_PBC_URI}/getRecipients?firstName=${firstName}&lastName=${lastName}`
+
         public static readonly URI_CREATE_INMATE = () => `${BASE_PBC_URI}/addRecipient`
 
     public static async getRecipientByAssignedId( assignedId: string ): Promise<Recipient | null> {
@@ -43,4 +46,40 @@ export class RecipientService {
     
         return (await response.json()) as Recipient
       }
+
+
+      public static async getRecipientsByName({
+        firstName,
+        lastName
+      }: {
+        firstName: string
+        lastName: string
+      }): Promise<Recipient[]> {
+        if (firstName == null || firstName =="-"){
+          firstName = ""
+        } 
+
+        if (lastName == null || lastName=="-") {
+          lastName = ""
+        }
+        
+        const response = await fetch(this.URI_GET_RECIPIENT__BY_NAME({ firstName, lastName }), {
+          ...METHOD_GET
+        })
+    
+        if (response.status === 204) return []
+        if (response.status !== 200) {
+          throw new Error(
+            `unexpected response ${
+              response.status
+            } when searching for recipient with name "${firstName} ${lastName}" at "${this.URI_GET_RECIPIENT__BY_NAME(
+              { firstName, lastName }
+            )}"`
+          )
+        }
+    
+        return (await response.json()) as Recipient[]
+      }
+    
+    
 }

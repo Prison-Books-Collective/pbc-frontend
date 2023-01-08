@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { gotoHomeSearch, gotoInmateSearch } from '$util/routing'
+  import { gotoHomeSearch, gotoRecipientSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
   import { HomepageSearch } from '$util/routing'
   import DailyPackages from '$components/package/daily-packages.svelte'
@@ -8,7 +8,9 @@
   /** @type {import('./$types').LayoutData} */
   export let data;
 
-  export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID
+  // export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID
+  //let mode : HomepageSearch = data?.props?.mode || HomepageSearch.ID
+  let mode = HomepageSearch.ID
   let focusOnLoadElement
 
   let inmateID = null
@@ -20,9 +22,12 @@
   })
 
   const shouldDisableSearch = (firstName, lastName) => isEmpty(firstName) && isEmpty(lastName)
-  const toggleSearch = (mode) => {
-    gotoHomeSearch(mode === HomepageSearch.ID ? HomepageSearch.NAME : HomepageSearch.ID)
-    mode = ( mode === HomepageSearch.ID ) ? HomepageSearch.NAME : HomepageSearch.ID
+  const toggleSearch = () => {
+    if (mode == HomepageSearch.ID){
+      mode = HomepageSearch.NAME
+    } else {
+      mode = HomepageSearch.ID
+    }
   }
 
   $: searchText = mode === HomepageSearch.ID ? 'Search by Name?' : 'Search by Inmate ID?'
@@ -35,7 +40,7 @@
 <main class="page">
   <form
     autocomplete="off"
-    on:submit|preventDefault={() => gotoInmateSearch(mode, { id: inmateID, firstName, lastName })}
+    on:submit|preventDefault={() => gotoRecipientSearch(mode, { id: inmateID, firstName, lastName })}
   >
     {#if mode === HomepageSearch.ID}
       <input
@@ -68,12 +73,13 @@
       />
 
       <button type="submit" disabled={shouldDisableSearch(firstName, lastName)}>
-        Find Inmate(s)
+        Find Recipient(s)
       </button>
     {/if}
+
   </form>
 
-  <p class="link" on:click={() => toggleSearch(mode)}>
+  <p class="link" on:click={() => toggleSearch()}>
     {searchText}
   </p>
 

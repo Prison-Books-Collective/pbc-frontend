@@ -7,10 +7,8 @@ export const isNoISBNBook = (book: Book) => {
 }
 
 export class BookService {
-  public static readonly URI_GET_BOOK__ISBN10 = (isbn: string) =>
-    `${BASE_PBC_URI}/getBookByISBN10${uriQueryJoin({ isbn10: isbn })}`
-  public static readonly URI_GET_BOOK__ISBN13 = (isbn: string) =>
-    `${BASE_PBC_URI}/getBookByISBN13${uriQueryJoin({ isbn13: isbn })}`
+  public static readonly URI_GET_BOOK__ISBN = (isbn: string) =>
+    `${BASE_PBC_URI}/getBookByISBN${uriQueryJoin({ isbn: isbn })}`
   public static readonly URI_CREATE_BOOK = `${BASE_PBC_URI}/addContent`
   public static readonly URI_UPDATE_BOOK = `${BASE_PBC_URI}/updateBook`
 
@@ -19,15 +17,12 @@ export class BookService {
 
   public static async findBook(isbn: string): Promise<Book | null> {
     let uri: string
-    if (isbn.length === 10) {
-      uri = this.URI_GET_BOOK__ISBN10(isbn)
-    } else if (isbn.length === 13) {
-      uri = this.URI_GET_BOOK__ISBN13(isbn)
-      console.log(uri)
-    } else {
+    if (isbn.length != 10 && isbn.length != 13) {
       throw new Error(
         `Failed to find book with ISBN ${isbn}; this value is not a valid ISBN10 or ISBN13 value`
       )
+    } else {
+      uri = this.URI_GET_BOOK__ISBN(isbn)
     }
 
     const response = await fetch(uri, { ...METHOD_GET })

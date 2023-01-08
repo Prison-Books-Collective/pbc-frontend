@@ -86,7 +86,7 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
 
 const emptyInmate: LocalStorageRecipient = {
   id: null,
-
+  
   firstName: null,
   lastName: null,
 

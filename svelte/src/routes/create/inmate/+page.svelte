@@ -1,15 +1,3 @@
-<script lang="ts" context="module">
-  import { getQueryParam } from '$lib/util/web'
-
-  export function load({ url }) {
-    const id = url.searchParams.get('id') || null
-    let firstName = getQueryParam(url, 'first name')
-    let lastName = getQueryParam(url, 'last name')
-
-    return { props: { id, firstName, lastName, isInmateNoID: !id } }
-  }
-</script>
-
 <script lang="ts">
   import { gotoPackagesForInmate } from '$util/routing'
   import { focusedInmate } from '$stores/inmate'
@@ -20,10 +8,11 @@
     import { RecipientService } from '$services/pbc/recipient.service'
     import { focusedPackages } from '$stores/package'
 
-  export let id = null
+  export let data
+  export let id = data.id
   export let firstName = null
   export let lastName = null
-  export let isInmateNoID = true
+  export let isInmateNoID = false //SAMAH SET TO FALSE
   export let location: Facility = null
 
   const shouldDisableCreateInmate = ({ isInmateNoID, firstName, lastName, location, id }) =>
@@ -68,7 +57,7 @@
           name="inmateNumber"
           id="inmateNumber"
           placeholder="Inmate ID Number"
-          bind:value={id}
+          bind:value={data.id}
         />
       </label>
     {/if}

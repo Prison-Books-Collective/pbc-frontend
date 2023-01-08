@@ -7,6 +7,7 @@
   import PackageTable from '$components/package/package-table.svelte'
   import Loading from '$components/loading.svelte'
   import { onDestroy, onMount } from 'svelte'
+    import { RecipientService } from '$services/pbc/recipient.service'
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -26,7 +27,7 @@
     console.error(error)
   }
 
-  onMount(() => {
+  onMount(async () => {
     presentCreatePackage = () => {
       packageTable.presentCreatePackageModal($focusedInmate)
     }
