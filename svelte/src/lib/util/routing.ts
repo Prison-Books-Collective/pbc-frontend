@@ -39,26 +39,26 @@ export enum CreatePackageModalState {
 
 export const ROUTE_HOME = (searchMode: HomepageSearch) => `/${uriQueryJoin({ search: searchMode })}`
 export const ROUTE_PACKAGES_FOR_INMATE = (recipientId) => `/packages/${recipientId}`
-export const ROUTE_INMATE_CREATE_NAMED = ({ firstName, lastName }) =>
+export const ROUTE_RECIPIENT_CREATE_NAMED = ({ firstName, lastName }) =>
   `/create/inmate${uriQueryJoin({ firstName, lastName })}`
-export const ROUTE_INMATE_CREATE_ID = (inmateID) =>
+export const ROUTE_RECIPIENT_CREATE_ID = (inmateID) =>
   `/create/inmate${uriQueryJoin({ id: inmateID })}`
 export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
-  `/search/inmates${uriQueryJoin({ firstName, lastName })}`
+  `/search/inmates/${firstName}/${lastName}`
 export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
 export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
 export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) =>
   `/search/packages/${uriQueryJoin({ searchMode, ...params })}`
 
 export const gotoHomeSearch = async (searchMode: HomepageSearch) => goto(ROUTE_HOME(searchMode))
-export const gotoInmateSearch = async (searchBy: HomepageSearch, { id, firstName, lastName }) => {
+export const gotoRecipientSearch = async (searchBy: HomepageSearch, { id, firstName, lastName }) => {
   if (searchBy === HomepageSearch.ID) {
-    return gotoInmateSearchByID(id)
+    return gotoRecipientSearchByID(id)
   } else if (searchBy === HomepageSearch.NAME) {
-    return gotoInmateSearchByName({ firstName, lastName })
+    return gotoRecipientSearchByName({ firstName, lastName })
   }
 }
-const gotoInmateSearchByID = async (id) => {
+const gotoRecipientSearchByID = async (id) => {
   if (id === null) return
   
   try {
@@ -70,7 +70,7 @@ const gotoInmateSearchByID = async (id) => {
       const shouldCreateNewInmate = confirm(
         `Failed to find any inmates with ID#${id}. To create a new inmate, click OK`
       )
-      if (shouldCreateNewInmate) return goto(ROUTE_INMATE_CREATE_ID(id))
+      if (shouldCreateNewInmate) return goto(ROUTE_RECIPIENT_CREATE_ID(id))
     }
   } catch(error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
@@ -78,24 +78,30 @@ const gotoInmateSearchByID = async (id) => {
   }
 }
 
-const gotoInmateSearchByName = async ({ firstName, lastName }) => {
+const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
   if (isEmpty(firstName) && isEmpty(lastName)) return
-
   try {
-    const foundInmates = await InmateService.getAllInmatesByName({
+    const foundRecipients = await RecipientService.getRecipientsByName({
       firstName,
       lastName
     })
-    if (foundInmates && foundInmates.length > 0)
+    if (foundRecipients && foundRecipients.length > 0){
+      if (firstName == null){
+        firstName = "-"
+      }
+      if (lastName == null){
+        lastName = "-"
+      }
       return goto(ROUTE_INMATE_SEARCH({ firstName, lastName }))
+    }
 
-    const shouldCreateNewInmate = confirm(
-      `Failed to find any inmates matching name "${[firstName, lastName]
+    const shouldCreateNewRecipient = confirm(
+      `Failed to find any recipients matching name "${[firstName, lastName]
         .filter((x) => !isEmpty(x))
-        .join(' ')}". To create a new inmate, click OK`
+        .join(' ')}". To create a new recipient, click OK`
     )
-    if (shouldCreateNewInmate) {
-      return goto(ROUTE_INMATE_CREATE_NAMED({ firstName, lastName }))
+    if (shouldCreateNewRecipient) {
+      return goto(ROUTE_RECIPIENT_CREATE_NAMED({ firstName, lastName }))
     }
   } catch (error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
