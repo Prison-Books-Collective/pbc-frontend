@@ -31,9 +31,10 @@
 
   let newTitle
   let newAuthor
+  let searched = null
 
   $: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE
-
+  $: searched = $focusedBook.title ? true : false
   const addBookClicked = () => {
     focusedPackage.addBook($focusedBook)
     dispatch('add-book', $focusedBook)
@@ -236,9 +237,11 @@
   </form>
 {/if}
 
+{#if !searched}
+  Searching!
+{/if}
 
-
-{#if mode === VALID_MODE.CREATE && isbn && !$focusedBook.needsAuthorAssistance}
+{#if mode === VALID_MODE.CREATE && isbn && !$focusedBook.needsAuthorAssistance && searched}
   <form class="book-flow" on:submit|preventDefault={() => editAndAdd(isbn, newAuthor, newTitle)}>
     <p>
       We could not find the book with

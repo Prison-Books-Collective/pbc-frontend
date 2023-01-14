@@ -1,8 +1,8 @@
 import { BASE_PBC_URI } from '.'
-import type { BookContent, Group } from '$models/pbc/shipment'
+import type { Book, Group } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
 
-export const isNoISBNBook = (book: BookContent) => {
+export const isNoISBNBook = (book: Book) => {
   return !book.isbn10 && !book.isbn13
 }
 
@@ -15,7 +15,7 @@ export class BookService {
 
 
 
-  public static async findBook(isbn: string): Promise<BookContent | null> {
+  public static async findBook(isbn: string): Promise<Book | null> {
     let uri: string
     if (isbn.length != 10 && isbn.length != 13) {
       throw new Error(
@@ -29,10 +29,10 @@ export class BookService {
 
     if (response.status === 204) return null
     if (response.status === 417){
-      const body = await response.json() as BookContent
+      const body = await response.json() as Book
 
       const bookUpdate = {
-        ...body as BookContent,
+        ...body as Book,
         needsAuthorAssistance: true,
         unclearAuthors: body.creators as Group[]
       }
@@ -45,10 +45,10 @@ export class BookService {
     }
     
 
-    return (await response.json()) as BookContent
+    return (await response.json()) as Book
   }
 
-  public static async createBook(book: BookContent): Promise<BookContent> {
+  public static async createBook(book: Book): Promise<Book> {
     
     if (!book.isbn10 || book.isbn10.length === 0) {
       book.isbn10 = null
@@ -74,10 +74,10 @@ export class BookService {
       )
     }
 
-    return (await response.json()) as BookContent
+    return (await response.json()) as Book
   }
 
-  public static async createBookNoISBN(book: BookContent): Promise<BookContent> {
+  public static async createBookNoISBN(book: Book): Promise<Book> {
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
@@ -95,7 +95,7 @@ export class BookService {
       )
     }
 
-    return (await response.json()) as BookContent
+    return (await response.json()) as Book
   }
 
 //   public static async updateBook(book: Book): Promise<Book> {
