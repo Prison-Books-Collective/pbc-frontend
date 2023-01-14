@@ -26,7 +26,7 @@
       : RecipientService.createRecipient({ firstName, lastName, assignedId: id }))
 
     if (!!createdInmate && !!createdInmate.id) {
-      console.log(createdInmate)
+    //  console.log(createdInmate)
       focusedInmate.set(createdInmate)
       focusedPackages.set([])
       gotoPackagesForInmate(createdInmate)

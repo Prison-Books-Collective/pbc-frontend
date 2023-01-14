@@ -24,7 +24,8 @@
     packages = $focusedPackages
   }
 
-  $: console.log('here are the packages', { packages })
+  $: {
+    console.log('here are the packages', { packages })}
 
   const alertPackageClicked = (pbcPackage: Package) => {
     dispatch('alert', pbcPackage)
@@ -93,7 +94,13 @@
         <th>Print</th>
       </tr>
 
-      {#each packages.sort((a,b) => b.id - a.id) as pbcPackage (pbcPackage.id)}
+      {#each packages.sort((a,b) => {
+        if (a.date < b.date){
+          return 1
+        }if (a.date > b.date){
+          return -1
+        } 
+        return 0}) as pbcPackage}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
             <!-- {#if pbcPackage.alert}

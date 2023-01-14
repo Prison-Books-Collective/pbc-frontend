@@ -55,7 +55,7 @@ export interface Zine extends PackageContent{
 export interface Shipment {
     id: number
     content: PackageContent[]
-    date: string
+    date: any 
     recipient: Recipient
 [additionalFields: string]: any
 
