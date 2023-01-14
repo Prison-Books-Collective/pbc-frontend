@@ -9,6 +9,10 @@ export class RecipientService {
     public static readonly URI_GET_RECIPIENT_BY_ASSIGNED_ID = ( assignedId: string ) =>
         `${BASE_PBC_URI}/getRecipientByAssignedId${uriQueryJoin({ assignedId })}`
 
+        public static readonly URI_GET_RECIPIENT_BY_ID = ( id: string ) =>
+        `${BASE_PBC_URI}/getRecipient${uriQueryJoin({ id })}`
+
+
         public static readonly URI_GET_RECIPIENT__BY_NAME = ({ firstName, lastName }) =>
     `${BASE_PBC_URI}/getRecipients?firstName=${firstName}&lastName=${lastName}`
 
@@ -20,6 +24,11 @@ export class RecipientService {
         return await response.json() as Recipient
     }
 
+    public static async getRecipientByDatabaseId( id: string ): Promise<Recipient | null> {
+      const response = await fetch(this.URI_GET_RECIPIENT_BY_ID(id), { ...METHOD_GET })
+      if (response.status !== 200) return null
+      return await response.json() as Recipient
+  }
     public static async createRecipient({
         firstName,
         lastName,
@@ -46,6 +55,7 @@ export class RecipientService {
     
         return (await response.json()) as Recipient
       }
+
 
 
       public static async getRecipientsByName({

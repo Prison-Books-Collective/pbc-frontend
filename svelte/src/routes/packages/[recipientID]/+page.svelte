@@ -19,7 +19,7 @@
   const inmateIsLoaded =
     $focusedInmate.id === recipientId && $focusedPackages.length > 0
       ? Promise.resolve
-      : focusedInmate.TODO_fetchByAssignedId(recipientId)
+      : focusedInmate.TODO_fetchById(recipientId)
 
   const updateRecipient = async (recipient) => focusedInmate.set(recipient)
   const updateRecipientError = (error) => {

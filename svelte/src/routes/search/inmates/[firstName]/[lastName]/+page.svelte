@@ -13,9 +13,10 @@
 
   const getInmates = RecipientService.getRecipientsByName({ firstName, lastName })
 
-  const findRecipient = async (assignedId) => {
-    $focusedInmate = await RecipientService.getRecipientByAssignedId(assignedId)
-    goto(ROUTE_PACKAGES_FOR_INMATE(assignedId))
+  const findRecipient = async (id) => {
+    const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
+    $focusedInmate = foundRecipient
+    goto(ROUTE_PACKAGES_FOR_INMATE(foundRecipient.id))
   }
 </script>
 
@@ -35,10 +36,10 @@
   {:then inmates}
     <nav>
       {#each inmates as inmate}
-        <p on:click={() => {findRecipient(inmate.assignedId)}} style="color:blue; text-decoration:underline; cursor:pointer">
+        <p on:click={() => {findRecipient(inmate.id)}} style="color:blue; text-decoration:underline; cursor:pointer">
             {#if inmate.facility}
               <strong>{inmate.facility}</strong> &mdash;
-            {:else if inmate.id}
+            {:else if inmate.assignedId}
               <strong>ID #{inmate.assignedId}</strong> &mdash;
             {/if}
             {inmate.firstName}
