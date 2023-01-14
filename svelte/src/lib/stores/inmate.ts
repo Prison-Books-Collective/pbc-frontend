@@ -46,6 +46,7 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
     this.set({ ...this.defaultInmate })
   }
 
+
   public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageRecipient> {
     if(isEmpty(assignedId)) return
 
@@ -66,7 +67,27 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
     }
   }
 
- 
+  public async TODO_fetchById(id: string): Promise<LocalStorageRecipient> {
+    if(isEmpty(id)) return
+
+    try {
+      const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
+      
+      if(foundRecipient) {
+        this.set(foundRecipient as any) // todo: forcing typechecker to allow
+        return foundRecipient
+      } else {
+        return null
+      }
+    } catch (error) {
+      console.error(error)
+      console.error(`failed to set store $focusedInmate via remote using ID "${id}"`)
+      this.reset()
+      return null
+    }
+  }
+
+  
   public async fetch(id: string | number): Promise<Inmate> {
     if(isEmpty(id as string)) return
 

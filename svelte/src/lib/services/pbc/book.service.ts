@@ -1,8 +1,8 @@
 import { BASE_PBC_URI } from '.'
-import type { Book } from '$models/pbc/shipment'
+import type { BookContent, Group } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
 
-export const isNoISBNBook = (book: Book) => {
+export const isNoISBNBook = (book: BookContent) => {
   return !book.isbn10 && !book.isbn13
 }
 
@@ -15,7 +15,7 @@ export class BookService {
 
 
 
-  public static async findBook(isbn: string): Promise<Book | null> {
+  public static async findBook(isbn: string): Promise<BookContent | null> {
     let uri: string
     if (isbn.length != 10 && isbn.length != 13) {
       throw new Error(
@@ -28,16 +28,27 @@ export class BookService {
     const response = await fetch(uri, { ...METHOD_GET })
 
     if (response.status === 204) return null
+    if (response.status === 417){
+      const body = await response.json() as BookContent
+
+      const bookUpdate = {
+        ...body as BookContent,
+        needsAuthorAssistance: true,
+        unclearAuthors: body.creators as Group[]
+      }
+      return bookUpdate
+    }
     if (response.status !== 200) {
       throw new Error(
         `unexpected response ${response.status} when searching for book with valid ISBN "${isbn}" from "${uri}"`
       )
     }
+    
 
-    return (await response.json()) as Book
+    return (await response.json()) as BookContent
   }
 
-  public static async createBook(book: Book): Promise<Book> {
+  public static async createBook(book: BookContent): Promise<BookContent> {
     
     if (!book.isbn10 || book.isbn10.length === 0) {
       book.isbn10 = null
@@ -63,10 +74,10 @@ export class BookService {
       )
     }
 
-    return (await response.json()) as Book
+    return (await response.json()) as BookContent
   }
 
-  public static async createBookNoISBN(book: Book): Promise<Book> {
+  public static async createBookNoISBN(book: BookContent): Promise<BookContent> {
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
@@ -84,7 +95,7 @@ export class BookService {
       )
     }
 
-    return (await response.json()) as Book
+    return (await response.json()) as BookContent
   }
 
 //   public static async updateBook(book: Book): Promise<Book> {
