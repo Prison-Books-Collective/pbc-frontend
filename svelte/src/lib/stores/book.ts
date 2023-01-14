@@ -38,6 +38,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
   }
 
   public async fetchBookByISBN(isbn: string): Promise<Book> {
+    this.set(emptyBook)
     if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) return
     try {
       const foundBook = await BookService.findBook(isbn)
