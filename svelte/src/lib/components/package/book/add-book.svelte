@@ -40,7 +40,7 @@
   $: shouldDisableSearchNoISBN = () => {
     return !inputTitle || inputTitle.trim().length === 0
   }
-  $: loadISBN = () => {
+  $: loadISBN = async () => {
     if (shouldDisableSearch()) return
     focusedBook.fetchBookByISBN(inputISBN) // TODO need to separate the search book functionality from
     dispatch('search', inputISBN)
