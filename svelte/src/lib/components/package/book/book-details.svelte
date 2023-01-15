@@ -36,7 +36,8 @@
   $: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE
   $: searched = $focusedBook.title ? true : false
   const addBookClicked = () => {
-    focusedPackage.addBook($focusedBook)
+    console.log($focusedBook)
+    focusedPackage.addBook($focusedBook as Book)
     dispatch('add-book', $focusedBook)
   }
 
@@ -110,7 +111,7 @@
       $focusedBook.isbn13 = isbn
     }
     await focusedBook.sync()
-    focusedPackage.addBook($focusedBook)
+    focusedPackage.addBook($focusedBook as Book)
 
     dispatch('add-book', $focusedBook)
   }

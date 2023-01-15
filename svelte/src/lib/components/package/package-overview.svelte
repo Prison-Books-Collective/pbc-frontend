@@ -68,20 +68,20 @@
   {:else}
     {#key removeItems}
       <ol class="package-items-list">
-        {#each $focusedPackage.content as book}
+        {#each $focusedPackage.content as content}
           <li>
-            <label for={book.id.toString()} class="checkbox">
+            <label for={content.id.toString()} class="checkbox">
               <input
-                id={book.id.toString()}
+                id={content.id.toString()}
                 type="checkbox"
                 bind:group={removeItems}
-                value={book.id}
+                value={content.id}
               />
-              {#if book.type === "book"}
-              <Book book={book} />
+              {#if content.creators != null}
+              <Book book={content} />
               {/if}
-              {#if book.type === "zine"}
-              <Zine zine={book}/>
+              {#if content.code != null}
+              <Zine zine={content}/>
               {/if}
             </label>
           </li>
