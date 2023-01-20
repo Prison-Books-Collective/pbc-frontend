@@ -25,9 +25,9 @@
 </svelte:head>
 
 <main class="page">
-  <h1>Inmate Selection</h1>
+  <h1>Recipient Selection</h1>
   <p>
-    The following inmates with this name were found, please select which inmate you're creating a
+    The following recipients with this name were found, please select which recipient you're creating a
     package for:
   </p>
 
@@ -53,7 +53,7 @@
         class="text-normal link"
         href={ROUTE_RECIPIENT_CREATE_NAMED({ firstName, lastName })}
       >
-        <p id="create-new-inmate" class="link">Click here to create a new inmate record</p>
+        <p id="create-new-inmate" class="link">Click here to create a new recipient record</p>
       </a>
     </nav>
   {/await}

@@ -9,12 +9,20 @@
   import { onMount, createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage} from '$stores/package'
-    import type { Author } from '$models/pbc/shipment'
+    import type { Author, Book } from '$models/pbc/shipment'
+    import { BookService } from '$services/pbc/book.service'
 
   const dispatch = createEventDispatcher()
 
   export let display: DISPLAY_FORM = DISPLAY_FORM.WITH_ISBN
-
+  let creatorType = null
+  
+  let prefix = null
+  let firstName = null
+  let middleName = null
+  let lastName = null
+  let suffix = null  
+  let groupName = null
   let scanInput
   let inputISBN
   let inputTitle
@@ -46,19 +54,25 @@
     dispatch('search', inputISBN)
   }
   $: saveNoISBNBook = async () => {
-    focusedBook.set({
-      id: null,
-      type: 'book',
-      title: inputTitle,
-      creators: [{
-        type: "author",
-        firstName: inputAuthor.split(' ')[0],
-        lastName: inputAuthor.split(' ')[1] 
-      } as Author] 
-    })
-    await focusedBook.sync()
-    focusedPackage.addBook($focusedBook)
-    dispatch('update', $focusedBook)
+    
+    let author
+      if (creatorType == "author"){
+         author = {type: "author", prefix: prefix, firstName: firstName, middleName: middleName, lastName: lastName, suffix: suffix }
+       
+      } else {
+         author = {type: "group", name: groupName}
+        
+      }
+      let bookToSend = {isbn10: $focusedBook.isbn10,
+        isbn13: $focusedBook.isbn13,
+      title: $focusedBook.title,
+    
+      creators: [author],
+    id: null}
+      let book = await BookService.createBook(bookToSend as Book)
+      console.log("in here")
+      focusedPackage.addBook(book)
+      dispatch('update', book)
   }
 </script>
 
@@ -100,17 +114,34 @@
         bind:value={inputTitle}
       />
     </label>
-
-    <label for="book-author">
+    <p>
+      Is the creator an author, or a group?
+      </p>
+      <div>
+      <div style="display:inline-block;">
+    <label style="float: left; margin-right: 10px">
+      <input type=radio bind:group={creatorType} name="creatorType" value={"author"}>
       Author
-      <input
-        type="text"
-        name="book-author"
-        id="book-author"
-        placeholder="Author of Book"
-        bind:value={inputAuthor}
-      />
     </label>
+    </div>
+    <div style="display:inline-block;">
+    <label style="float: left; margin-right: 10px">
+      <input type=radio bind:group={creatorType} name="creatorType" value={"group"}>
+      Group
+    </label>
+    </div>
+    </div>
+      {#if creatorType == "author"}
+      Please fill out the following for the author then click "Add book to package".
+        <input type=text placeholder="Prefix" bind:value={prefix}>
+        <input type=text placeholder="First name" bind:value={firstName}>
+        <input type=text placeholder="Middle Name" bind:value={middleName}>
+        <input type=text placeholder="Last Name" bind:value={lastName}>
+        <input type=text placeholder="Suffix" bind:value={suffix}>
+      {/if}
+      {#if creatorType == "group"}
+        <input type=text placeholder="Group name" bind:value={groupName}>
+      {/if}
 
     <div class="form-options space">
       <button class="success" disabled={shouldDisableSearchNoISBN()}>

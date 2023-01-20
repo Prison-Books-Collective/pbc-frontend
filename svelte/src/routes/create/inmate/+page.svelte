@@ -39,24 +39,24 @@
 </svelte:head>
 
 <main class="page">
-  <h1>Add New Inmate</h1>
+  <h1>Add New Recipient</h1>
 
   <form autocomplete="off" on:submit|preventDefault={createInmate}>
     <label for="no-id" class="checkbox">
       <input type="checkbox" name="no-id" id="no-id" bind:checked={isInmateNoID} />
-      This Inmate does not have an ID
+      This Recipient does not have an ID
     </label>
 
     {#if isInmateNoID}
       <FacilitySelect bind:facility={location} selected={location?.facility_name} />
     {:else}
       <label for="inmateNumber">
-        Inmate ID
+        Recipient ID
         <input
           type="text"
           name="inmateNumber"
           id="inmateNumber"
-          placeholder="Inmate ID Number"
+          placeholder="Recipient ID Number"
           bind:value={data.id}
         />
       </label>

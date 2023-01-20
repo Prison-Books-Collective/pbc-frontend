@@ -30,7 +30,7 @@
     }
   }
 
-  $: searchText = mode === HomepageSearch.ID ? 'Search by Name?' : 'Search by Inmate ID?'
+  $: searchText = mode === HomepageSearch.ID ? 'Search by Name?' : 'Search by Recipient ID?'
 </script>
 
 <svelte:head>
@@ -46,7 +46,7 @@
       <input
         id="inmate-id"
         type="text"
-        placeholder="Enter Inmate ID #, press Enter"
+        placeholder="Enter Recipient ID #, press Enter"
         name="inmateNumber"
         class="big"
         bind:value={inmateID}
