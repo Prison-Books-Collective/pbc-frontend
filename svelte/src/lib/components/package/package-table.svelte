@@ -24,6 +24,7 @@
     packages = $focusedPackages
   }
 
+
   $: {
     console.log('here are the packages', { packages })}
 
@@ -31,7 +32,7 @@
     dispatch('alert', pbcPackage)
     presentAlertModal(pbcPackage)
   }
-  const editPackageClicked = (pbcPackage: Package) => {
+  const editPackageClicked = (pbcPackage: Shipment) => {
     dispatch('edit', pbcPackage)
     presentEditPackageModal(pbcPackage)
   }
@@ -56,11 +57,10 @@
   export function presentCreatePackageModal(inmate) {
     selectedInmate = inmate
     focusedPackage.reset()
-    console.log('daaayyyy oh')
     activeModal = CreatePackageModalState.VIEW_PACKAGE
   }
 
-  export function presentEditPackageModal(pbcPackage: Package) {
+  export function presentEditPackageModal(pbcPackage: Shipment) {
     selectInmate(pbcPackage)
     focusedPackage.load(pbcPackage)
     activeModal = CreatePackageModalState.EDIT_PACKAGE
@@ -116,7 +116,7 @@
           <td class="package-col">
             <h2>
               {#if pbcPackage.facility}
-                <em class:text-normal={!!inmate}>{pbcPackage.facility.facility_name}</em>,
+                <em class:text-normal={!!inmate}>{pbcPackage.facility.name}</em>,
               {/if}
               <date>
                 {pbcPackage.date}:

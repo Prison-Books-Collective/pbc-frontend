@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import type { Package } from '$models/pbc/package'
   import { focusedPackage } from '$stores/package'
-  import { printPackage, CreatePackageModalState } from '$util/routing'
+  import { printPackage, CreatePackageModalState, gotoHomeSearch, HomepageSearch } from '$util/routing'
 
   import Modal from '$components/modal.svelte'
   import PackageOverview from '$components/package/package-overview.svelte'
@@ -92,7 +92,8 @@
     />
   {:else if activeModal == CreatePackageModalState.PRINT_PACKAGE}
     <ConfirmPrint
-      on:done={closeModal}
+      on:done={() => {gotoHomeSearch(HomepageSearch.ID)
+      alert("Your package has been logged.")}}
       on:print={() => {
         printPackage($focusedPackage)
         closeModal()

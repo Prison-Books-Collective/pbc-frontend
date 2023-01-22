@@ -15,9 +15,9 @@ export class PackageService {
   public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addPackage`
   public static readonly URI_CREATE_PACKAGE__INMATE_NO_ID = (inmateDatabaseID) =>
     `${BASE_PBC_URI}/addPackageForInmateNoId?id=${inmateDatabaseID}`
-  public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updatePackage`
+  public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updateShipment`
   public static readonly URI_DELETE_PACKAGE = (packageId: number) =>
-    `${BASE_PBC_URI}/deletePackage?packageId=${packageId}`
+    `${BASE_PBC_URI}/deleteShipment?id=${packageId}`
   public static readonly URI_PACKAGE_COUNT = (date: string) =>
     `${BASE_PBC_URI}/getPackageCountFromDate?date=${date}` // date is a formatted string "yyyy-mm-dd"
   public static readonly URI_GET_PACKAGES__BY_DATE = (date: string) =>
@@ -58,6 +58,7 @@ export class PackageService {
   }
 
   public static async createPackage(pbcPackage: Package): Promise<Package> {
+    
     const response = await fetch(this.URI_CREATE_PACKAGE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },

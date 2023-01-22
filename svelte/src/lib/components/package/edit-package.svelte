@@ -4,13 +4,14 @@
   import { focusedPackage, focusedPackages } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
+    import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
   let selectedItems = []
 
   const shouldDisableDeleteItems = (selectedItems) => {
-    return !selectedItems || selectedItems.length === 0
+    return true//!selectedItems || selectedItems.length === 0
   }
 
   const deleteItems = () => {
@@ -43,48 +44,29 @@
 
 <section class="package-overview">
   <h1>
-    Edit Package for {$focusedPackage.inmate?.firstName || $focusedPackage.inmateNoId?.firstName}
-    {$focusedPackage.inmate?.lastName || $focusedPackage.inmateNoId?.lastName}
+    Edit Package for {$focusedInmate.firstName}
+    {$focusedInmate.lastName}
   </h1>
   <p>Select item(s) to edit or delete, or delete the whole package.</p>
   <p>Changes you make to the titles or authors of items will affect the entire database.</p>
   <hr width="100%" />
 
   <div class="package-contents">
-    {#each $focusedPackage.books as book}
-      <label for={book.id.toString()} class="checkbox">
+    {#each $focusedPackage.content as content}
+      <label for={content.id.toString()} class="checkbox">
         <input
           type="checkbox"
-          name={book.id.toString()}
-          id={book.id.toString()}
+          name={content.id.toString()}
+          id={content.id.toString()}
           bind:group={selectedItems}
-          value={book.id}
+          value={content.id}
         />
-        <Book {book} />
-      </label>
-    {/each}
-    {#each $focusedPackage.noISBNBooks as book}
-      <label for={book.id.toString()} class="checkbox">
-        <input
-          type="checkbox"
-          name={book.id.toString()}
-          id={book.id.toString()}
-          bind:group={selectedItems}
-          value={book.id}
-        />
-        <Book {book} />
-      </label>
-    {/each}
-    {#each $focusedPackage.zines as zine}
-      <label for={zine.id.toString()} class="checkbox">
-        <input
-          type="checkbox"
-          name={zine.id.toString()}
-          id={zine.id.toString()}
-          bind:group={selectedItems}
-          value={zine.id}
-        />
-        <Zine {zine} />
+        {#if content.creators != null}
+          <Book book={content} />
+        {/if}
+        {#if content.code != null}
+          <Zine zine={content}/>
+        {/if}
       </label>
     {/each}
   </div>

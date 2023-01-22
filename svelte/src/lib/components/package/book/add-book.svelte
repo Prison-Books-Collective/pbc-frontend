@@ -70,7 +70,6 @@
       creators: [author],
     id: null}
       let book = await BookService.createBook(bookToSend as Book)
-      console.log("in here")
       focusedPackage.addBook(book)
       dispatch('update', book)
   }

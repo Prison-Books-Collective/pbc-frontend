@@ -36,8 +36,8 @@
     focusedPackages.set([])
   })
 
- // focusedInmate.subscribe(d => console.log(d))
- // focusedPackages.subscribe(d => console.log({focusedPackages: d}))
+  focusedInmate.subscribe(d => console.log(d))
+  focusedPackages.subscribe(d => console.log({focusedPackages: d}))
 </script>
 
 <svelte:head>

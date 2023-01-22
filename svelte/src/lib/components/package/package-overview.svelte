@@ -9,6 +9,7 @@
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
   import type { Recipient } from '$lib/models/pbc/recipient'
   import { isValidFacility } from '$models/pbc/facility'
+    import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
@@ -43,9 +44,18 @@
 
   const completePackage = async (inmate) => {
     try {
-      focusedPackage.setRecipient(inmate)
-      const updatedPackage = await focusedPackage.sync()
       
+      inmate = {id: $focusedInmate.id}
+      focusedPackage.setRecipient(inmate)
+      let currPackage = await focusedPackage.get()
+      if (!currPackage["id"]){
+      delete currPackage["id"]
+    }
+    currPackage["facility"] = facility
+
+      focusedPackage.set(currPackage)
+      const updatedPackage = await focusedPackage.sync()
+      console.log(currPackage)
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
