@@ -63,9 +63,8 @@
          author = {type: "group", name: groupName}
         
       }
-      let bookToSend = {isbn10: $focusedBook.isbn10,
-        isbn13: $focusedBook.isbn13,
-      title: $focusedBook.title,
+      let bookToSend = {
+      title: inputTitle,
     
       creators: [author],
     id: null}

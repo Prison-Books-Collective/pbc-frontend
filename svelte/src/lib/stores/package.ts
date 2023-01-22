@@ -244,6 +244,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
       delete book["existsInDatabase"]
     }
     book["type"] = "book"
+    console.log(book)
     this.update((currentPackage) => ({
       ...currentPackage, content: [...currentPackage.content, book]
     }))
@@ -266,10 +267,10 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   public createAlert(alertText = '') {
     this.update((currentPackage) => ({
       ...currentPackage,
-      alert: {
+      notes: [{
         id: null,
-        information: alertText
-      }
+        content: alertText
+      }]
     }))
   }
 
