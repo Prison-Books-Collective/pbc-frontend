@@ -36,7 +36,6 @@
   $: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE
   $: searched = $focusedBook.title ? true : false
   const addBookClicked = () => {
-    console.log($focusedBook)
     focusedPackage.addBook($focusedBook as Book)
     dispatch('add-book', $focusedBook)
   }

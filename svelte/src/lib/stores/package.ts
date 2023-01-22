@@ -12,12 +12,13 @@ import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
 import { formatDate } from '$util/time'
 import { ShipmentService } from '$services/pbc/shipment.service'
 import type { Recipient } from '$models/pbc/recipient'
+import { RecipientService } from '$services/pbc/recipient.service'
 
 interface LocalStorageShipment extends Shipment {
   existsInDatabase?: boolean
 }
 
-export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
+export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
   private readonly focusedInmateStore: FocusedInmateStore
 
   constructor(focusedInmateStore: FocusedInmateStore) {
@@ -41,11 +42,11 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   }
 
   public set: (this: void, value: LocalStorageShipment[]) => void
-  public update: (this: void, updater: Updater<LocalStoragePackage[]>) => void
+  public update: (this: void, updater: Updater<LocalStorageShipment[]>) => void
   public subscribe: (
     this: void,
-    run: Subscriber<LocalStoragePackage[]>,
-    invalidate?: (value?: LocalStoragePackage[]) => void
+    run: Subscriber<LocalStorageShipment[]>,
+    invalidate?: (value?: LocalStorageShipment[]) => void
   ) => Unsubscriber
 
   public async fetchForInmate(inmateID: string): Promise<void> {
@@ -53,7 +54,7 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
     await this.focusedInmateStore.fetch(inmateID)
   }
 
-  public async fetchForDate(date: string): Promise<LocalStoragePackage[]> {
+  public async fetchForDate(date: string): Promise<Loc[]> {
     try {
       const packages = await PackageService.getPackagesForDate(date)
       this.set(packages)
@@ -129,8 +130,8 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
   }
 
   // packageUpdates MUST contain the package ID that's being updated
-  public localUpdatePackage(packageUpdates: Partial<LocalStoragePackage>): LocalStoragePackage[] {
-    let updatedPackages: LocalStoragePackage[]
+  public localUpdatePackage(packageUpdates: Partial<LocalStorageShipment>): LocalStorageShipment[] {
+    let updatedPackages: LocalStorageShipment[]
     this.update((packages) => {
       updatedPackages = packages
       const updateIndex = updatedPackages.findIndex((p) => p.id === packageUpdates.id)
@@ -149,20 +150,23 @@ export class FocusedPackagesStore implements Writable<LocalStoragePackage[]> {
 
   public localAddPackage(pbcPackage: LocalStorageShipment): LocalStorageShipment[] {
     let updatedPackages: LocalStorageShipment[]
+
     this.update((packages) => {
       updatedPackages = [pbcPackage, ...packages]
       return updatedPackages
     })
     return updatedPackages
   }
+
+
 }
 
 export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   private readonly defaultPackage: LocalStorageShipment
-  private readonly packagesStore: FocusedPackagesStore
+  private readonly packagesStore: FocusedShipmentsStore
   private currentValue: Promise<LocalStorageShipment> = new Promise(() => null)
 
-  constructor(defaultPackage: LocalStorageShipment, packagesStore: FocusedPackagesStore) {
+  constructor(defaultPackage: LocalStorageShipment, packagesStore: FocusedShipmentsStore) {
     const { set, update, subscribe } = writable(defaultPackage)
 
     this.set = set
@@ -188,7 +192,6 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
 
   public async fetch(packageId: number): Promise<LocalStorageShipment> {
     try {
-      console.log(packageId)
       const pbcPackage = await ShipmentService.getShipment(packageId)
       this.load(pbcPackage)
       return pbcPackage
@@ -202,13 +205,22 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
 
   public async sync(): Promise<LocalStorageShipment> {
     const pbcPackage = await this.get()
+    console.log(" here ")
+    console.log(pbcPackage)
     const createdPackage = pbcPackage.id
       ? await PackageService.updatePackage(pbcPackage)
       : await ShipmentService.createPackage(pbcPackage)
-    pbcPackage.id
-      ? this.packagesStore.localUpdatePackage(createdPackage)
-      : this.packagesStore.localAddPackage(createdPackage)
+    // pbcPackage.id
+    //   ? this.packagesStore.localUpdatePackage(createdPackage)
+    //   : this.packagesStore.localAddPackage(createdPackage)
+    
+    // let currRecipient = await focusedInmate.get()
+    // let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
+    // console.log(updatedRecipient)
+    // this.packagesStore.set(updatedRecipient.shipments)
+
     this.load(createdPackage)
+
     return createdPackage
   }
 
@@ -228,12 +240,17 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   }
 
   public addBook(book: Book) {
+    if (book["existsInDatabase"] != null){
+      delete book["existsInDatabase"]
+    }
+    book["type"] = "book"
     this.update((currentPackage) => ({
       ...currentPackage, content: [...currentPackage.content, book]
     }))
   }
 
   public addZine(zine: Zine) {
+    zine["type"] = "zine"
     this.update((currentPackage) => ({
       ...currentPackage,
       content: [...currentPackage.content, zine]
@@ -291,12 +308,10 @@ const emptyPackage: LocalStorageShipment = {
   facility: null,
 
   content: [],
-  alert: null,
-
-  existsInDatabase: false
+  alert: null
 }
 
-export const focusedPackages = new FocusedPackagesStore(focusedInmate)
+export const focusedPackages = new FocusedShipmentsStore(focusedInmate)
 export const focusedPackage = new FocusedShipmentStore(emptyPackage, focusedPackages)
 
 
