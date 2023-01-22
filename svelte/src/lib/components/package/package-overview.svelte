@@ -37,7 +37,7 @@
     $focusedPackage.content.length === 0
 
   const shouldDisableComplete = (facility) => !isValidFacility(facility)
-  const shouldDisableRemove = (removeItems) => !removeItems || removeItems.length === 0
+  const shouldDisableRemove = (removeItems) =>  true //!removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')
