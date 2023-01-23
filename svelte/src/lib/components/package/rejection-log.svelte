@@ -3,8 +3,11 @@
 
   import { focusedPackage, focusedPackages } from '$stores/package'
   import { PackageService } from '$services/pbc/package.service'
+    import { ShipmentService } from '$services/pbc/shipment.service'
+    import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
+  let rejectionContent 
 
   export let packageId = null
   let packageLoaded = !!packageId
@@ -12,13 +15,19 @@
     : Promise.resolve($focusedPackage)
 
   packageLoaded.then((pbcPackage) => {
-    if (!pbcPackage.alert) {
+    if (pbcPackage.notes.length == 0) {
       focusedPackage.createAlert('')
+    } else {
+      rejectionContent = pbcPackage.notes[0].content
     }
   })
 
   const saveAlert = async () => {
     try {
+      let note = await ShipmentService.saveNote(rejectionContent)
+      focusedPackage.setNote(note)
+      let inmate = {id: $focusedInmate.id}
+      focusedPackage.setRecipient(inmate)
       focusedPackage.sync()
       dispatch('update', $focusedPackage)
     } catch (error) {
@@ -31,8 +40,7 @@
     try {
       const packageUpdateData = {
         ...pbcPackage,
-        alert: null,
-        existsInDatabase: undefined
+        notes: []
       }
       const updatedPackage = await PackageService.updatePackage(packageUpdateData)
       focusedPackages.localUpdatePackage(packageUpdateData)
@@ -47,7 +55,7 @@
 {#await packageLoaded then}
   <section class="alert-container">
     <h1>Package Rejection Details</h1>
-    {#if $focusedPackage.alert && $focusedPackage.alert.id}
+    {#if $focusedPackage.notes.length >0}
       <p>This package was rejected. You can update the rejection notes below:</p>
     {:else}
       <p>Enter details about the rejection to log below:</p>
@@ -57,17 +65,16 @@
         name="package-rejection"
         placeholder="Reason the package was rejected"
         rows="10"
-        bind:value={$focusedPackage.alert.information}
+        bind:value={rejectionContent}
       />
 
       <div class="form-options">
         <button
           class="log-button"
-          disabled={!$focusedPackage.alert ||
-            !$focusedPackage.alert.information ||
-            $focusedPackage.alert.information === ''}>Log Rejection for Package</button
+          disabled={!rejectionContent ||
+            rejectionContent === ''}>Log Rejection for Package</button
         >
-        {#if $focusedPackage.alert && $focusedPackage.alert.id}
+        {#if $focusedPackage.notes.length>0}
           <button
             type="button"
             class="danger clear-button"

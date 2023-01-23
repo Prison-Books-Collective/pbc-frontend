@@ -28,7 +28,7 @@
   $: {
     console.log('here are the packages', { packages })}
 
-  const alertPackageClicked = (pbcPackage: Package) => {
+  const alertPackageClicked = (pbcPackage: Shipment) => {
     dispatch('alert', pbcPackage)
     presentAlertModal(pbcPackage)
   }
@@ -66,7 +66,7 @@
     activeModal = CreatePackageModalState.EDIT_PACKAGE
   }
 
-  export function presentAlertModal(pbcPackage: Package) {
+  export function presentAlertModal(pbcPackage: Shipment) {
     selectInmate(pbcPackage)
     focusedPackage.load(pbcPackage)
     activeModal = CreatePackageModalState.VIEW_ALERT
@@ -103,15 +103,15 @@
         return 0}) as pbcPackage}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
-            <!-- {#if pbcPackage.alert}
+            {#if pbcPackage.notes.length > 0}
               <div
                 class="alert"
-                data-tooltip={pbcPackage.alert.information}
+                data-tooltip={pbcPackage.notes[0].content}
                 on:click={() => alertPackageClicked(pbcPackage)}
               >
                 !
               </div>
-            {/if} -->
+            {/if}
           </td>
           <td class="package-col">
             <h2>

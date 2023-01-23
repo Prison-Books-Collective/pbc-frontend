@@ -1,11 +1,14 @@
 import { BASE_PBC_URI } from '.'
-import type { Book, Shipment } from '$models/pbc/shipment'
+import type { Book, Note, Shipment } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
 
 export class ShipmentService {
+
+   
     public static readonly URI_GET_SHIPMENT = (shipmentId: number) =>
     `${BASE_PBC_URI}/getShipment${uriQueryJoin({id: shipmentId})}`
     public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addShipment`
+    public static readonly URI_CREATE_NOTE = `${BASE_PBC_URI}/addNote`
 
     public static async getShipment(packageId: number): Promise<Shipment> {
       const response = await fetch(this.URI_GET_SHIPMENT(packageId), { ...METHOD_GET })
@@ -20,6 +23,23 @@ export class ShipmentService {
   
       return (await response.json()) as Shipment
     }
+
+    public static async saveNote(rejectionContent: string) {
+      let note = {content: rejectionContent}
+      console.log(note)
+      const response = await fetch(this.URI_CREATE_NOTE, {
+        ...METHOD_POST,
+        headers: {...CONTENT_TYPE_JSON},
+        body: JSON.stringify(note)
+      })
+      if (response.status !== 200){
+        throw new Error(
+          `unexpected response ${response.status} when creating note`
+        )
+      }
+  
+      return (await response.json()) as Note
+  }
 
     public static async createPackage(pbcPackage: Shipment): Promise<Shipment> {
       const response = await fetch(this.URI_CREATE_PACKAGE, {

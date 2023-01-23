@@ -51,12 +51,17 @@ export interface Zine extends PackageContent{
     code: string
 }
 
+export interface Note {
+    content: string
+}
+
 
 export interface Shipment {
     id: number
     content: PackageContent[]
     date: any 
     recipient: Recipient
+    notes: Note[]
 [additionalFields: string]: any
 
   }

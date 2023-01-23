@@ -2,6 +2,25 @@ import { BASE_PBC_URI } from '.'
 import type { Package } from '$models/pbc/package'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
 import type { Shipment } from '$models/pbc/shipment'
+import { focusedInmate } from '$stores/inmate'
+
+
+const removeExistsInDatabaseTag = (shipment: Shipment) => {
+  if (shipment["existsInDatabase"]!= null){
+    delete shipment["existsInDatabase"]
+  }
+  shipment.content.forEach((shipmentContent) => {
+    if (shipmentContent.type=="book"){
+      if (shipmentContent["existsInDatabase"] != null){
+        delete shipmentContent["existsInDatabase"]
+      }
+    }
+
+  })
+
+  return shipment
+}
+
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>
@@ -76,6 +95,7 @@ export class PackageService {
     return (await response.json()) as Package
   }
 
+  
   // returns true when successfully deleted; otherwise throws an error
   public static async deletePackage(packageId: number): Promise<boolean> {
     const response = await fetch(this.URI_DELETE_PACKAGE(packageId), { ...METHOD_DELETE })
@@ -92,17 +112,18 @@ export class PackageService {
   }
 
   public static async updatePackage(pbcPackage: Shipment): Promise<Shipment> {
+    let shipment = removeExistsInDatabaseTag(pbcPackage)
     const response = await fetch(this.URI_UPDATE_PACKAGE, {
       ...METHOD_PUT,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(pbcPackage)
+      body: JSON.stringify(shipment)
     })
 
     if (response.status !== 200) {
       throw new Error(
         `unexpected response ${response.status} when updating package at "${
           this.URI_UPDATE_PACKAGE
-        }" with details: ${JSON.stringify(pbcPackage)}`
+        }" with details: ${JSON.stringify(shipment)}`
       )
     }
 
@@ -233,3 +254,4 @@ const packageSortByDate = (packageA: Package, packageB: Package) => {
   if (dateA === dateB) return 0
   return dateA > dateB ? -1 : 1
 }
+
