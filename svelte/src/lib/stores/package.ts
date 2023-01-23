@@ -5,7 +5,7 @@ import {
   type Updater,
   type Writable
 } from 'svelte/store'
-import type { Book, Shipment, Zine } from '$models/pbc/shipment'
+import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
 import type { Facility } from '$models/pbc/facility'
 import { PackageService } from '$services/pbc/package.service'
 import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
@@ -240,11 +240,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   }
 
   public addBook(book: Book) {
-    if (book["existsInDatabase"] != null){
-      delete book["existsInDatabase"]
-    }
     book["type"] = "book"
-    console.log(book)
     this.update((currentPackage) => ({
       ...currentPackage, content: [...currentPackage.content, book]
     }))
@@ -261,6 +257,12 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   public setRecipient(recipient: Recipient) {
     this.update((currentPackage) => ({
       ...currentPackage, recipient: recipient
+    }))
+  }
+
+  public setNote(note: Note){
+    this.update((currentPackage) => ({
+      ...currentPackage, notes: [note]
     }))
   }
 
