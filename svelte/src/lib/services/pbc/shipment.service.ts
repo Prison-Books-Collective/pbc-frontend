@@ -2,6 +2,21 @@ import { BASE_PBC_URI } from '.'
 import type { Book, Note, Shipment } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
 
+const removeExistsInDatabaseTag = (shipment: Shipment) => {
+  if (shipment["existsInDatabase"]!= null){
+    delete shipment["existsInDatabase"]
+  }
+  shipment.content.forEach((shipmentContent) => {
+    if (shipmentContent.type=="book"){
+      if (shipmentContent["existsInDatabase"] != null){
+        delete shipmentContent["existsInDatabase"]
+      }
+    }
+
+  })
+
+  return shipment
+}
 export class ShipmentService {
 
    
@@ -9,6 +24,7 @@ export class ShipmentService {
     `${BASE_PBC_URI}/getShipment${uriQueryJoin({id: shipmentId})}`
     public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addShipment`
     public static readonly URI_CREATE_NOTE = `${BASE_PBC_URI}/addNote`
+    public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updateShipment`
 
     public static async getShipment(packageId: number): Promise<Shipment> {
       const response = await fetch(this.URI_GET_SHIPMENT(packageId), { ...METHOD_GET })
@@ -53,6 +69,25 @@ export class ShipmentService {
           `unexpected response ${response.status} when creating package: ${JSON.stringify(
             pbcPackage
           )}`
+        )
+      }
+  
+      return (await response.json()) as Shipment
+    }
+
+    public static async updatePackage(pbcPackage: Shipment): Promise<Shipment> {
+      let shipment = removeExistsInDatabaseTag(pbcPackage)
+      const response = await fetch(this.URI_UPDATE_PACKAGE, {
+        ...METHOD_PUT,
+        headers: { ...CONTENT_TYPE_JSON },
+        body: JSON.stringify(shipment)
+      })
+  
+      if (response.status !== 200) {
+        throw new Error(
+          `unexpected response ${response.status} when updating package at "${
+            this.URI_UPDATE_PACKAGE
+          }" with details: ${JSON.stringify(shipment)}`
         )
       }
   

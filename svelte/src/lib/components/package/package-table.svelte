@@ -103,7 +103,7 @@
         return 0}) as pbcPackage}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
-            {#if pbcPackage.notes.length > 0}
+            {#if pbcPackage.notes && pbcPackage.notes.length > 0}
               <div
                 class="alert"
                 data-tooltip={pbcPackage.notes[0].content}

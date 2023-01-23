@@ -42,7 +42,7 @@
         ...pbcPackage,
         notes: []
       }
-      const updatedPackage = await PackageService.updatePackage(packageUpdateData)
+      const updatedPackage = await ShipmentService.updatePackage(packageUpdateData)
       focusedPackages.localUpdatePackage(packageUpdateData)
       dispatch('update', updatedPackage)
     } catch (error) {

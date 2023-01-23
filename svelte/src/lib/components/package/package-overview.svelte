@@ -55,7 +55,6 @@
 
       focusedPackage.set(currPackage)
       const updatedPackage = await focusedPackage.sync()
-      console.log(currPackage)
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
