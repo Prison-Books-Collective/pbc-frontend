@@ -92,8 +92,7 @@
     />
   {:else if activeModal == CreatePackageModalState.PRINT_PACKAGE}
     <ConfirmPrint
-      on:done={() => {gotoHomeSearch(HomepageSearch.ID)
-      alert("Your package has been logged.")}}
+      on:done={closeModal}
       on:print={() => {
         printPackage($focusedPackage)
         closeModal()

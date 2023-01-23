@@ -205,14 +205,12 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
 
   public async sync(): Promise<LocalStorageShipment> {
     const pbcPackage = await this.get()
-    console.log(" here ")
-    console.log(pbcPackage)
     const createdPackage = pbcPackage.id
-      ? await PackageService.updatePackage(pbcPackage)
+      ? await ShipmentService.updatePackage(pbcPackage)
       : await ShipmentService.createPackage(pbcPackage)
-    // pbcPackage.id
-    //   ? this.packagesStore.localUpdatePackage(createdPackage)
-    //   : this.packagesStore.localAddPackage(createdPackage)
+    pbcPackage.id
+      ? this.packagesStore.localUpdatePackage(createdPackage)
+      : this.packagesStore.localAddPackage(createdPackage)
     
     // let currRecipient = await focusedInmate.get()
     // let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
