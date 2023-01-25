@@ -17,16 +17,11 @@
   const dispatch = createEventDispatcher()
 
   export let header = 'Shipment'
-  export let packages: Shipment[]
   export let inmate: Inmate = null
 
-  if (!packages || packages.length === 0) {
-    packages = $focusedPackages
-  }
 
 
-  $: {
-    console.log('here are the packages', { packages })}
+  $: {}
 
   const alertPackageClicked = (pbcPackage: Shipment) => {
     dispatch('alert', pbcPackage)
@@ -77,7 +72,7 @@
 <CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} />
 
 <section id="package-table-container">
-  {#if packages.length === 0}
+  {#if $focusedPackages.length === 0}
     <h2 class="no-packages-message">
       {#if inmate}
         No packages have been created for {inmate.firstName} {inmate.lastName} yet
@@ -94,10 +89,12 @@
         <th>Print</th>
       </tr>
 
-      {#each packages.sort((a,b) => {
-        if (a.date < b.date){
+      {#each $focusedPackages.sort((a,b) => {
+        let dateA = new Date(a.date)
+        let dateB = new Date(b.date)
+        if (dateA < dateB){
           return 1
-        }if (a.date > b.date){
+        }if (dateA > dateB){
           return -1
         } 
         return 0}) as pbcPackage}

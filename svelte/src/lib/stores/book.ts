@@ -74,7 +74,6 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
             ? BookService.updateBook(book)
             : BookService.createBook(book)
         }
-        console.log(operation)
 
         operation
           .then((updatedBook) => {

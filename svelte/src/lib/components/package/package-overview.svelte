@@ -50,12 +50,12 @@
       let currPackage = await focusedPackage.get()
       if (!currPackage["id"]){
       delete currPackage["id"]
-    }
-    currPackage["facility"] = facility
-
+      }
+      currPackage["facility"] = facility
       focusedPackage.set(currPackage)
       const updatedPackage = await focusedPackage.sync()
       dispatch('update', updatedPackage)
+
     } catch (error) {
       dispatch('error', error)
       console.error('failed to update Package in database', error)
