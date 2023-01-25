@@ -25,7 +25,9 @@ export class ShipmentService {
     public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addShipment`
     public static readonly URI_CREATE_NOTE = `${BASE_PBC_URI}/addNote`
     public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updateShipment`
-
+    public static readonly URI_DELETE_PACKAGE = (packageId: number) =>
+    `${BASE_PBC_URI}/deleteShipment?id=${packageId}`
+    
     public static async getShipment(packageId: number): Promise<Shipment> {
       const response = await fetch(this.URI_GET_SHIPMENT(packageId), { ...METHOD_GET })
   
@@ -42,7 +44,6 @@ export class ShipmentService {
 
     public static async saveNote(rejectionContent: string) {
       let note = {content: rejectionContent}
-      console.log(note)
       const response = await fetch(this.URI_CREATE_NOTE, {
         ...METHOD_POST,
         headers: {...CONTENT_TYPE_JSON},
@@ -93,7 +94,23 @@ export class ShipmentService {
   
       return (await response.json()) as Shipment
     }
+    // returns true when successfully deleted; otherwise throws an error
+  public static async deletePackage(packageId: number): Promise<boolean> {
+    const response = await fetch(this.URI_DELETE_PACKAGE(packageId), { ...METHOD_DELETE })
+
+    if (response.status !== 200) {
+      throw new Error(
+        `unexpected response ${
+          response.status
+        } when deleting package with ID ${packageId} from ${this.URI_DELETE_PACKAGE(packageId)}`
+      )
+    }
+
+    return true
+  }
 }
+
+
 
 const packageSortByDate = (packageA: Package, packageB: Package) => {
   const [dateA, dateB] = [new Date(packageA.date), new Date(packageB.date)]

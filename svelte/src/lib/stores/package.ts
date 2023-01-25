@@ -116,8 +116,8 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     }
   }
 
-  public localRemovePackage(packageID: number): LocalStoragePackage[] {
-    let updatedPackages: LocalStoragePackage[]
+  public localRemovePackage(packageID: number): LocalStorageShipment[] {
+    let updatedPackages: LocalStorageShipment[]
     this.update((packages) => {
       updatedPackages = packages
       const removeIndex = updatedPackages.findIndex((p) => p.id === packageID)
@@ -150,9 +150,8 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
 
   public localAddPackage(pbcPackage: LocalStorageShipment): LocalStorageShipment[] {
     let updatedPackages: LocalStorageShipment[]
-
     this.update((packages) => {
-      updatedPackages = [pbcPackage, ...packages]
+      updatedPackages = [...packages, pbcPackage]
       return updatedPackages
     })
     return updatedPackages
@@ -208,14 +207,14 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
     const createdPackage = pbcPackage.id
       ? await ShipmentService.updatePackage(pbcPackage)
       : await ShipmentService.createPackage(pbcPackage)
-    pbcPackage.id
+    const updatedPackages = pbcPackage.id
       ? this.packagesStore.localUpdatePackage(createdPackage)
       : this.packagesStore.localAddPackage(createdPackage)
     
-    // let currRecipient = await focusedInmate.get()
-    // let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
-    // console.log(updatedRecipient)
-    // this.packagesStore.set(updatedRecipient.shipments)
+    //   let currRecipient = await focusedInmate.get()
+    //  let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
+     
+    this.packagesStore.set(updatedPackages)
 
     this.load(createdPackage)
 
@@ -224,7 +223,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
 
   public async delete(): Promise<void> {
     const pbcPackage = await this.get()
-    await PackageService.deletePackage(pbcPackage.id)
+    await ShipmentService.deletePackage(pbcPackage.id)
     this.packagesStore.localRemovePackage(pbcPackage.id)
     this.reset()
   }

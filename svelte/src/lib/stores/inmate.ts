@@ -33,14 +33,13 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
 
     this.defaultInmate = Object.freeze(defaultInmate)
   }
-  private currentValue: Promise<LocalStorageRecipient> = new Promise(() => null)
+  currentValue: Promise<LocalStorageRecipient> = new Promise(() => null)
 
-  public async get(): Promise<LocalStorageRecipient> {
-    return await this.currentValue
+  
+  public set(value: LocalStorageRecipient){
+    this.currentValue = new Promise (() => value)
   }
-  public set(this: void, value: LocalStorageRecipient){
-    const currentValue = value
-  }
+
   
   public update: (this: void, updater: Updater<LocalStorageRecipient>) => void
   public subscribe: (
@@ -53,7 +52,6 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
     this.set({ ...this.defaultInmate })
   }
 
- 
   public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageRecipient> {
     if(isEmpty(assignedId)) return
 
