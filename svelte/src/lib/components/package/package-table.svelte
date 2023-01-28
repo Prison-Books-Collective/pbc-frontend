@@ -2,8 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import { fade, fly } from 'svelte/transition'
   import { focusedPackage, focusedPackages } from '$stores/package'
-  import { resolveInmate, type Package } from '$models/pbc/package'
-  import type { Inmate } from '$models/pbc/inmate'
+  import {  resolveInmate } from '$models/pbc/package'
   import { CreatePackageModalState, gotoPackagesForInmate, printPackage } from '$util/routing'
 
   import Book from '$components/book.svelte'
@@ -11,13 +10,17 @@
   import editIcon from '$assets/icons/edit.png'
   import printIcon from '$assets/icons/print.png'
   import CreatePackageModal from './create-package-modal.svelte'
-  import type { Shipment, Book as BookModel } from '$models/pbc/shipment'
-    import AddBook from './book/add-book.svelte'
+
+    import { RecipientService } from '$services/pbc/recipient.service'
+    import type { Shipment } from '$models/pbc/shipment'
+    import { focusedInmate } from '$stores/inmate'
+    import type { Recipient } from '$models/pbc/recipient'
 
   const dispatch = createEventDispatcher()
 
   export let header = 'Shipment'
-  export let inmate: Inmate = null
+  export let inmate: Recipient = null
+  export let packages: Shipment[] = null
 
 
 
@@ -45,7 +48,14 @@
   let activeModalParams = {}
   let selectedInmate = null
 
-  export function selectInmate(pbcPackage: Package) {
+
+  export async function getRecipientByShipment  (pbcPackage : Shipment) {
+    let recipient = await RecipientService.getRecipientByShipmentId(pbcPackage.id)
+    $focusedInmate = recipient
+    return recipient
+  }
+
+  export function selectInmate(pbcPackage: Shipment) {
     selectedInmate = resolveInmate(pbcPackage)
   }
 
@@ -72,7 +82,7 @@
 <CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} />
 
 <section id="package-table-container">
-  {#if $focusedPackages.length === 0}
+  {#if packages.length === 0}
     <h2 class="no-packages-message">
       {#if inmate}
         No packages have been created for {inmate.firstName} {inmate.lastName} yet
@@ -123,30 +133,38 @@
               <h2 class="text-normal">
                 <span
                   class="link"
-                  on:click={() => gotoPackagesForInmate(resolveInmate(pbcPackage))}
+                 
+                  on:click={async () => {
+                    gotoPackagesForInmate(await getRecipientByShipment(pbcPackage))}}
+                
                 >
-                  {resolveInmate(pbcPackage).firstName}
-                  {resolveInmate(pbcPackage).middleInitial
-                    ? resolveInmate(pbcPackage).middleInitial + ' '
-                    : ''}{resolveInmate(pbcPackage).lastName}
+                Click to go to recipient.
+               
+                  <!-- {currentRecipientToLink.firstName}
+                  {currentRecipientToLink.middleInitial
+                    ? currentRecipientToLink.middleInitial + ' '
+                    : ''}{currentRecipientToLink.lastName}
 
-                  {#if !resolveInmate(pbcPackage)['location']}
-                    #{pbcPackage.inmate.id}
+                  {#if currentRecipientToLink.id !== null}
+                    #{currentRecipientToLink.id}
                   {:else}
                     (No ID available)
-                  {/if}
+                  {/if} -->
                 </span>
+              
               </h2>
             {/if}
             <ul>
               {#each pbcPackage.content as content}
-                <li>
-                  {#if content.type === 'book'}
-                    <Book book={content} />
-                  {:else if content.type === 'zine'}
-                    <Zine zine={content} />
-                  {/if}
-                </li>
+              {#key content}
+              <li>
+                {#if content.type === 'book'}
+                <Book book={content} />
+                {:else if content.type === 'zine'}
+                <Zine zine={content} />
+                {/if}
+              </li>
+              {/key}
               {/each}
             </ul>
           </td>

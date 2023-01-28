@@ -1,6 +1,7 @@
 import { BASE_PBC_URI } from '.'
 import type { Book, Note, Shipment } from '$models/pbc/shipment'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
+import { start_hydrating } from 'svelte/internal'
 
 const removeExistsInDatabaseTag = (shipment: Shipment) => {
   if (shipment["existsInDatabase"]!= null){
@@ -25,6 +26,7 @@ export class ShipmentService {
     public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addShipment`
     public static readonly URI_CREATE_NOTE = `${BASE_PBC_URI}/addNote`
     public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updateShipment`
+    public static readonly URI_GET_PACKAGES__BY_DATE_RANGE = (start: string, end: string) => `${BASE_PBC_URI}/getShipmentsBetweenDates${uriQueryJoin({startDate: start, endDate: end})}`
     public static readonly URI_DELETE_PACKAGE = (packageId: number) =>
     `${BASE_PBC_URI}/deleteShipment?id=${packageId}`
     
@@ -40,6 +42,30 @@ export class ShipmentService {
       }
   
       return (await response.json()) as Shipment
+    }
+
+    public static async getPackagesForDateRange(
+      startDate: string,
+      endDate: string
+    ): Promise<Shipment[]> {
+      console.log("in fetch")
+      const response = await fetch(this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate), {
+        ...METHOD_GET
+      })
+  
+      if (response.status === 204) return []
+      if (response.status !== 200) {
+        throw new Error(
+          `unexpected response ${
+            response.status
+          } when retrieving packages by date range using input "${startDate}, ${endDate}" at "${this.URI_GET_PACKAGES__BY_DATE_RANGE(
+            startDate,
+            endDate
+          )}"`
+        )
+      }
+  
+      return ((await response.json()) as Shipment[]).sort(packageSortByDate)
     }
 
     public static async saveNote(rejectionContent: string) {

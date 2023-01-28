@@ -54,7 +54,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     await this.focusedInmateStore.fetch(inmateID)
   }
 
-  public async fetchForDate(date: string): Promise<Loc[]> {
+  public async fetchForDate(date: string): Promise<LocalStorageShipment[]> {
     try {
       const packages = await PackageService.getPackagesForDate(date)
       this.set(packages)
@@ -70,9 +70,10 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
   public async fetchForDateRange(
     startDate: string,
     endDate: string
-  ): Promise<LocalStoragePackage[]> {
+  ): Promise<LocalStorageShipment[]> {
     try {
-      const packages = await PackageService.getPackagesForDateRange(startDate, endDate)
+      console.log("in the store")
+      const packages = await ShipmentService.getPackagesForDateRange(startDate, endDate)
       this.set(packages)
       return packages
     } catch (error) {
@@ -207,14 +208,14 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
     const createdPackage = pbcPackage.id
       ? await ShipmentService.updatePackage(pbcPackage)
       : await ShipmentService.createPackage(pbcPackage)
-    const updatedPackages = pbcPackage.id
+    pbcPackage.id
       ? this.packagesStore.localUpdatePackage(createdPackage)
       : this.packagesStore.localAddPackage(createdPackage)
     
     //   let currRecipient = await focusedInmate.get()
     //  let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
      
-    this.packagesStore.set(updatedPackages)
+    // this.packagesStore.set(updatedPackages)
 
     this.load(createdPackage)
 

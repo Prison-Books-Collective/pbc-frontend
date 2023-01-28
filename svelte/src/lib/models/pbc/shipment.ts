@@ -1,3 +1,4 @@
+import { RecipientService } from "$services/pbc/recipient.service"
 import { isEmpty } from "$util/strings"
 import type { Recipient } from "./recipient"
 
@@ -42,8 +43,6 @@ export const getCreatorName = (creator: Creator): string => {
             .join(' ')
     }
 }
-
-
 
 
 export interface Zine extends PackageContent{

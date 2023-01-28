@@ -7,19 +7,29 @@
   import PackageTable from '$components/package/package-table.svelte'
   import Loading from '$components/loading.svelte'
   import { onDestroy, onMount } from 'svelte'
-    import { RecipientService } from '$services/pbc/recipient.service'
+  import { RecipientService } from '$services/pbc/recipient.service'
 
-  /** @type {import('./$types').PageData} */
   export let data;
+  let { recipientId, isAssignedId } = data
   
-  export let recipientId: string = data.recipientId || undefined
   let packageTable: PackageTable
   let presentCreatePackage = () => {}
+  let currentLocation = Promise.resolve(' ')
 
   const inmateIsLoaded =
-    $focusedInmate.id === recipientId && $focusedPackages.length > 0
+    $focusedInmate.id === recipientId
       ? Promise.resolve
-      : focusedInmate.TODO_fetchById(recipientId)
+      : isAssignedId
+        ? focusedInmate.TODO_fetchByAssignedId(recipientId) 
+        : focusedInmate.TODO_fetchById(recipientId)
+  
+  console.log({ recipientId })
+
+  inmateIsLoaded.then(() => {
+    if($focusedInmate.assignedId) {
+      currentLocation = RecipientService.getRecipientLocation($focusedInmate.assignedId)
+    }
+  })
 
   const updateRecipient = async (recipient) => focusedInmate.set(recipient)
   const updateRecipientError = (error) => {
@@ -31,12 +41,12 @@
     presentCreatePackage = () => {
       packageTable.presentCreatePackageModal($focusedInmate)
     }
+  
   })
   onDestroy(() => {
     focusedPackages.set([])
   })
 
-  focusedInmate.subscribe(d => console.log(d))
   focusedPackages.subscribe(d => console.log({focusedPackages: d}))
 </script>
 
@@ -53,7 +63,17 @@
       on:update={({ detail }) => updateRecipient(detail)}
       on:error={({ detail }) => updateRecipientError(detail)}
     />
-
+    <span style="margin-bottom:10px">
+    {#await currentLocation} 
+      Loading current location.
+    {:then location}
+      {#if location === ''}
+        Released
+      {:else}
+        {location}
+      {/if}
+    {/await}
+    </span>
     <button id="add-package-button" class="success" on:click={presentCreatePackage}>
       Add a <strong><u>new package</u></strong> (books or zines)
     </button>
