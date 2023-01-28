@@ -39,6 +39,7 @@ export enum CreatePackageModalState {
 
 export const ROUTE_HOME = (searchMode: HomepageSearch) => `/${uriQueryJoin({ search: searchMode })}`
 export const ROUTE_PACKAGES_FOR_INMATE = (recipientId) => `/packages/${recipientId}`
+export const ROUTE_PACKAGES_FOR_INMATE_ASSIGNED_ID = (recipientId) => `/packages/${recipientId}${uriQueryJoin({ isAssignedId: true })}`
 export const ROUTE_RECIPIENT_CREATE_NAMED = ({ firstName, lastName }) =>
   `/create/inmate${uriQueryJoin({ firstName, lastName })}`
 export const ROUTE_RECIPIENT_CREATE_ID = (inmateID) =>
@@ -65,7 +66,7 @@ const gotoRecipientSearchByID = async (id) => {
     const foundRecipient = await RecipientService.getRecipientByAssignedId(id)
     if (foundRecipient) {
       focusedInmate.set(foundRecipient)
-      return goto(ROUTE_PACKAGES_FOR_INMATE(id))
+      return gotoPackagesForInmate( foundRecipient )
     } else {
       const shouldCreateNewInmate = confirm(
         `Failed to find any inmates with ID#${id}. To create a new inmate, click OK`
@@ -109,13 +110,19 @@ const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
   }
 }
 
-export const gotoPackagesForInmate = async (inmate: Recipient) =>
-  goto(ROUTE_PACKAGES_FOR_INMATE(inmate.id))
+export const gotoPackagesForInmate = async (inmate: Recipient) =>{
+  const route = !!(inmate.assignedId)
+    ? ROUTE_PACKAGES_FOR_INMATE_ASSIGNED_ID( inmate.assignedId )
+    : ROUTE_PACKAGES_FOR_INMATE( inmate.id )
+  goto(route)
+}
 
 export const gotoPackageSearch = async ({ date, startDate, endDate, isbn, author, title }) => {
   if (date) {
+    console.log("single")
     gotoSearchByDate(date)
   } else if (startDate && endDate) {
+    console.log("start and end")
     gotoSearchByDateRange(startDate, endDate)
   } else if (isbn) {
     gotoSearchByISBN(isbn)

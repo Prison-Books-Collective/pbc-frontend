@@ -2,15 +2,23 @@ import { BASE_PBC_URI } from '.'
 // import type { Facility } from '$models/pbc/facility'
 import type { Recipient } from '$models/pbc/recipient'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
+import type { Facility } from '$models/pbc/facility';
 
 export class RecipientService {
   
     public static readonly URI_GET_RECIPIENT_BY_ASSIGNED_ID = ( assignedId: string ) =>
         `${BASE_PBC_URI}/getRecipientByAssignedId${uriQueryJoin({ assignedId })}`
 
+
         public static readonly URI_GET_RECIPIENT_BY_ID = ( id: string ) =>
         `${BASE_PBC_URI}/getRecipient${uriQueryJoin({ id })}`
 
+
+        public static readonly URI_GET_RECIPIENT_BY_SHIPMENT_ID = (shipmentId : number) =>
+        `${BASE_PBC_URI}/getRecipientByShipmentId${uriQueryJoin({shipmentId})}`      
+
+        public static readonly URI_GET_RECIPIENT_LOCATION = (id:string) =>
+        `${BASE_PBC_URI}/getRecipientLocation?id=${id}`
 
         public static readonly URI_GET_RECIPIENT__BY_NAME = ({ firstName, lastName }) =>
     `${BASE_PBC_URI}/getRecipients?firstName=${firstName}&lastName=${lastName}`
@@ -18,11 +26,16 @@ export class RecipientService {
         public static readonly URI_CREATE_INMATE = () => `${BASE_PBC_URI}/addRecipient`
 
     public static async getRecipientByAssignedId( assignedId: string ): Promise<Recipient | null> {
-      navigator.clipboard.writeText(assignedId)
      
         const response = await fetch(this.URI_GET_RECIPIENT_BY_ASSIGNED_ID(assignedId), { ...METHOD_GET })
         if (response.status !== 200) return null
         return await response.json() as Recipient
+    }
+
+    public static async getRecipientByShipmentId(shipmentId : number): Promise<Recipient | null> {
+      const response = await fetch(this.URI_GET_RECIPIENT_BY_SHIPMENT_ID(shipmentId), {...METHOD_GET})
+      if (response.status !== 200) return null
+      return await response.json() as Recipient
     }
 
     public static async getRecipientByDatabaseId( id: string ): Promise<Recipient | null> {
@@ -31,21 +44,30 @@ export class RecipientService {
       return await response.json() as Recipient
   }
 
+  public static async getRecipientLocation(id : string): Promise<String | null>{
+    const response = await fetch(this.URI_GET_RECIPIENT_LOCATION(id),{...METHOD_GET})
+    if (response.status !== 200) return "Not found in \"NC Inmate Search\""
+    return (await response.text()).trim() as String
+  }
+
     public static async createRecipient({
         firstName,
         lastName,
-        assignedId
+        assignedId,
+        facility
       }: {
         firstName: string
         lastName: string
         assignedId: string
+        facility?: Facility
       }): Promise<Recipient> {
         const response = await fetch(this.URI_CREATE_INMATE(), {
           ...METHOD_POST, headers: { ...CONTENT_TYPE_JSON },
           body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            assignedId: assignedId
+            firstName,
+            lastName,
+            assignedId,
+            facility: facility ?? undefined
           })
         })
     

@@ -1,45 +1,3 @@
-<script lang="ts" context="module">
-  import { PackageSearchMode } from '$util/routing'
-  import { formatDate } from '$util/time'
-  import { getQueryParam } from '$util/web'
-
-  export function load({ url }) {
-    const searchMode: PackageSearchMode = getQueryParam(
-      url,
-      'search mode',
-      'search',
-      'mode'
-    ) as PackageSearchMode
-
-    switch (searchMode) {
-      case PackageSearchMode.DATE:
-        return {
-          props: { searchMode, date: url.searchParams.get('date') || formatDate(new Date()) }
-        }
-      case PackageSearchMode.DATE_RANGE:
-        return {
-          props: {
-            searchMode,
-            startDate: getQueryParam(url, 'start date') || formatDate(new Date()),
-            endDate: getQueryParam(url, 'end date') || formatDate(new Date())
-          }
-        }
-      case PackageSearchMode.ISBN:
-        return { props: { searchMode, isbn: url.searchParams.get('isbn') } }
-      case PackageSearchMode.AUTHOR_AND_TITLE:
-        return {
-          props: {
-            searchMode,
-            author: url.searchParams.get('author'),
-            title: url.searchParams.get('title')
-          }
-        }
-      default:
-        return { props: { searchMode } }
-    }
-  }
-</script>
-
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { focusedPackages } from '$stores/package'
@@ -50,13 +8,17 @@
   import FilterPackages from '$components/package/search/filter/filter-packages.svelte'
   import Loading from '$components/loading.svelte'
   import BookTitleResolver from '$components/book-title-resolver.svelte'
+    import { formatDate } from '$util/time'
+    import { PackageSearchMode } from '$util/routing'
+export let data
 
-  export let searchMode = PackageSearchMode.DATE
+
   export let date: string = formatDate(new Date())
-  export let [startDate, endDate] = [formatDate(new Date()), formatDate(new Date())]
+  export let startDate = data.startDate || formatDate(new Date())
+  export let endDate= data.endDate || formatDate(new Date()) 
   export let isbn = ''
   export let [author, title] = ['', '']
-
+  export let searchMode
   let loading = true
   let showFilters = false
   let shouldFilter = false
@@ -85,13 +47,14 @@
     })
     if (previousQuery === currentQuery) return
     previousQuery = currentQuery
-
+    console.log("search mode: " + searchMode)
     switch (searchMode) {
       case PackageSearchMode.DATE:
         startLoading()
         focusedPackages.fetchForDate(date).then(doneLoading)
         break
       case PackageSearchMode.DATE_RANGE:
+        console.log("in date range switch case")
         startLoading()
         focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading)
         break
@@ -110,7 +73,8 @@
     }
   }
 
-  $: {
+  $: { searchMode = data.searchMode
+
     loadPackages(searchMode)
     ;[date, startDate, endDate, isbn, author, title]
   }
@@ -124,8 +88,9 @@
   <title>BellBooks - Search Packages</title>
 </svelte:head>
 
+{#await searchMode}
 <Loading visible={loading} />
-
+{/await}
 <main class="page">
   {#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}
     <header id="date-header">

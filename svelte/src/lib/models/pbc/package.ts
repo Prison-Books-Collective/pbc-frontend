@@ -1,8 +1,9 @@
 import type { Alert } from './alert'
-import type { Book } from './shipment'
+import type { Book, Shipment } from './shipment'
 import type { Facility } from './facility'
 import type { Inmate } from './inmate'
 import type { Zine } from './zine'
+import { RecipientService } from '$services/pbc/recipient.service'
 
 export interface Package {
   id: number
@@ -26,8 +27,9 @@ export const undefinedInmate = {
   location: undefined
 } as Inmate
 
-export const resolveInmate = (pbcPackage: Package) =>
-  pbcPackage.inmate || pbcPackage.inmateNoId || undefinedInmate
+export const resolveInmate = async (pbcPackage: Shipment) =>
+  await RecipientService.getRecipientByShipmentId(pbcPackage.id)
+
 
 export const stringify = (p: Package) => {
   const inmate = p.inmate || p.inmateNoId || null

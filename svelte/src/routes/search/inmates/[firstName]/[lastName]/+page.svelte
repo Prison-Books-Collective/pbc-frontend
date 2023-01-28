@@ -38,7 +38,7 @@
       {#each inmates as inmate}
         <p on:click={() => {findRecipient(inmate.id)}} style="color:blue; text-decoration:underline; cursor:pointer">
             {#if inmate.facility}
-              <strong>{inmate.facility}</strong> &mdash;
+              <strong>{inmate.facility.name}</strong> &mdash;
             {:else if inmate.assignedId}
               <strong>ID #{inmate.assignedId}</strong> &mdash;
             {/if}

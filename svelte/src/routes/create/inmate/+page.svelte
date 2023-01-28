@@ -5,28 +5,24 @@
   import { InmateService } from '$services/pbc/inmate.service'
   import FacilitySelect from '$components/facility/select-facility.svelte'
   import { isEmpty } from '$util/strings'
-    import { RecipientService } from '$services/pbc/recipient.service'
-    import { focusedPackages } from '$stores/package'
+  import { RecipientService } from '$services/pbc/recipient.service'
+  import { focusedPackages } from '$stores/package'
 
   export let data
-  export let id = data.id
-  export let firstName = null
-  export let lastName = null
-  export let isInmateNoID = false //SAMAH SET TO FALSE
+  export let { id, firstName, lastName, isInmateNoID } = data
   export let location: Facility = null
 
   const shouldDisableCreateInmate = ({ isInmateNoID, firstName, lastName, location, id }) =>
     isInmateNoID
-      ? isEmpty(firstName) || isEmpty(lastName) || !location
+      ? isEmpty(firstName) || isEmpty(lastName)
       : isEmpty(firstName) || isEmpty(lastName) || isEmpty(id)
 
   const createInmate = async () => {
     const createdInmate = await (isInmateNoID
-      ? RecipientService.createRecipient({ firstName, lastName, assignedId: null })
+      ? RecipientService.createRecipient({ firstName, lastName, assignedId: null, facility: location })
       : RecipientService.createRecipient({ firstName, lastName, assignedId: id }))
 
     if (!!createdInmate && !!createdInmate.id) {
-    //  console.log(createdInmate)
       focusedInmate.set(createdInmate)
       focusedPackages.set([])
       gotoPackagesForInmate(createdInmate)

@@ -14,5 +14,5 @@ export interface Inmate {
 }
 
 export const isInmateNoID = (inmate: Recipient) => {
-  return !!inmate['location']
+  return !!!(inmate.assignedId)
 }
