@@ -63,7 +63,7 @@
 
     {#if !isInmateNoID(inmate)}
       <label for="inmate-number">
-        Inmate ID:
+        Recipient ID:
         <input
           type="text"
           name="inmate-number"
