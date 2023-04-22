@@ -59,7 +59,7 @@
 
 {#if inmate}
   <form id="edit-inmate" on:submit|preventDefault={() => submit(inmate)}>
-    <h1>Edit Inmate Record</h1>
+    <h1>Edit Recipient Record</h1>
 
     {#if !isInmateNoID(inmate)}
       <label for="inmate-number">
@@ -93,7 +93,7 @@
     {/await}
 
     <button class="success" disabled={shouldDisableForm({ inmate, firstName, lastName, location })}>
-      Update Inmate Record
+      Update Recipient Record
     </button>
   </form>
 {/if}
