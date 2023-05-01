@@ -9,7 +9,7 @@
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Recipient
+  export let recipient: Recipient
   export let shouldDisplayModal = false
 
   const presentModal = () => (shouldDisplayModal = true)
@@ -35,23 +35,23 @@
 </script>
 
 <Modal bind:visible={shouldDisplayModal}>
-  <EditInmate {inmate} on:update={onUpdateInmate} on:error={onUpdateInmateError} />
+  <EditInmate {recipient} on:update={onUpdateInmate} on:error={onUpdateInmateError} />
 </Modal>
 
 
-<div id="inmate-name" class:notValid={didReceivePackageLastTwoMonths(inmate.shipments)}>
+<div id="inmate-name" class:notValid={didReceivePackageLastTwoMonths(recipient.shipments)}>
   <h1 style="margin:10px 10px" aria-label="Inmate's first and last name, and inmate ID if available">
-    {inmate.firstName}
+    {recipient.firstName}
     <!-- {inmate.middleInitial ? inmate.middleInitial + '. ' : ''} -->
-    {inmate.lastName}
-    {#if isInmateNoID(inmate)}
-      {#if inmate.facility}
-        - <span>{ inmate?.facility?.name }</span>
+    {recipient.lastName}
+    {#if isInmateNoID(recipient)}
+      {#if recipient.facility}
+        - <span>{ recipient?.facility?.name }</span>
       {:else}
         - <span>Unknown ID &amp; Facility</span>
       {/if}
     {:else}
-      &ensp;<span>ID#{inmate.assignedId}</span>
+      &ensp;<span>ID#{recipient.assignedId}</span>
     {/if}
 
     <img
@@ -64,9 +64,9 @@
   
 </div>
 
-{#if inmate.shipments?.length > 0}
-{#if didReceivePackageLastTwoMonths(inmate.shipments)}
-<p class="notValid" style="margin-bottom:5px">Recipient received a package <strong>{Math.floor(((new Date()).getTime()- ((new Date(inmate.shipments[0].date)).getTime()))/(1000*3600*24))} days ago</strong>, on <strong>{inmate.shipments[0].date}</strong></p>
+{#if recipient.shipments?.length > 0}
+{#if didReceivePackageLastTwoMonths(recipient.shipments)}
+<p class="notValid" style="margin-bottom:5px">Recipient received a package <strong>{Math.floor(((new Date()).getTime()- ((new Date(recipient.shipments[0].date)).getTime()))/(1000*3600*24))} days ago</strong>, on <strong>{recipient.shipments[0].date}</strong></p>
 {/if}
 {/if}
 
