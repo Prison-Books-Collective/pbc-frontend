@@ -59,7 +59,7 @@
 {:then}
   <main class="page">
     <InmateName
-      inmate={$focusedInmate}
+      recipient={$focusedInmate}
       on:update={({ detail }) => updateRecipient(detail)}
       on:error={({ detail }) => updateRecipientError(detail)}
     />
