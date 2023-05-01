@@ -25,6 +25,9 @@ export class RecipientService {
 
         public static readonly URI_CREATE_INMATE = () => `${BASE_PBC_URI}/addRecipient`
 
+        public static readonly URI_UPDATE_RECIPIENT = () => `${BASE_PBC_URI}/updateRecipient`
+
+
     public static async getRecipientByAssignedId( assignedId: string ): Promise<Recipient | null> {
      
         const response = await fetch(this.URI_GET_RECIPIENT_BY_ASSIGNED_ID(assignedId), { ...METHOD_GET })
@@ -81,6 +84,35 @@ export class RecipientService {
       }
 
 
+      public static async updateRecipient({
+        id,
+        firstName,
+        lastName,
+        assignedId
+      }: {
+        id: number,
+        firstName: string
+        lastName: string
+        assignedId: string
+      }): Promise<Recipient> {
+        const response = await fetch(this.URI_UPDATE_RECIPIENT(), {
+          ...METHOD_PUT, headers: { ...CONTENT_TYPE_JSON },
+          body: JSON.stringify({
+            id,
+            firstName,
+            lastName,
+            assignedId
+          })
+        })
+    
+        if (response.status !== 200) {
+          throw new Error(
+            `unexpected response ${response.status} when updating recipient at "${this.URI_UPDATE_RECIPIENT()}" with details: ${JSON.stringify({ firstName, lastName, assignedId })}`
+          )
+        }
+    
+        return (await response.json()) as Recipient
+      }
 
       public static async getRecipientsByName({
         firstName,

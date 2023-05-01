@@ -6,70 +6,64 @@
   import { InmateService } from '$services/pbc/inmate.service'
   import { isEmpty } from '$util/strings'
   import FacilitySelect from '$components/facility/select-facility.svelte'
+    import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
+    import { RecipientService } from '$services/pbc/recipient.service'
+    import { updated } from '$app/stores'
+    import { goto } from '$app/navigation'
+    import { HomepageSearch, ROUTE_HOME } from '$util/routing'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Inmate
+  export let recipient: Recipient
 
-  let { firstName, lastName } = inmate
+  let { firstName, lastName, assignedId } = recipient
   let location: Facility
   let didLoadFacility = new Promise(() => {})
 
-  const loadFacility = (inmate: Inmate) => {
+  const loadFacility = (recipient: Recipient) => {
     didLoadFacility = new Promise(() => {})
-    FacilityService.resolveFacilityByName(inmate.location).then((facility) => {
+    FacilityService.resolveFacilityByName(recipient.facility).then((facility) => {
       location = facility
       if (facility) didLoadFacility = Promise.resolve()
     })
   }
 
-  const shouldDisableForm = ({ inmate, firstName, lastName, location }) =>
-    isEmpty(firstName) || isEmpty(lastName) || (isInmateNoID(inmate) && !isValidFacility(location))
+  const shouldDisableForm = ({ recipient, assignedId, firstName, lastName, location }) =>
+    isEmpty(firstName) || isEmpty(lastName) || isEmpty(assignedId) || (isRecipientNoId(recipient) && !isValidFacility(location))
 
-  const submit = async (inmate: Inmate) => {
+  const submit = async (recipient: Recipient) => {
     try {
-      let createdInmate: Inmate
-      if (isInmateNoID(inmate)) {
-        createdInmate = await InmateService.updateInmateNoID({
-          initialId: inmate.id,
-          ...inmate,
+      let updatedRecipient: Recipient
+     
+        updatedRecipient = await RecipientService.updateRecipient({
+          id: recipient.id,
+          ...recipient,
           firstName,
           lastName,
-          inmateId: inmate.id,
-          location: location.facility_name
+          assignedId: assignedId
         })
-      } else {
-        createdInmate = await InmateService.updateInmate({
-          initialId: inmate.id,
-          ...inmate,
-          firstName,
-          lastName,
-          inmateId: inmate.id
-        })
-      }
 
-      dispatch('update', createdInmate)
+      dispatch('update', updatedRecipient)
     } catch (error) {
       dispatch('error', error)
     }
   }
 
-  $: loadFacility(inmate)
+  $: loadFacility(recipient)
 </script>
 
-{#if inmate}
-  <form id="edit-inmate" on:submit|preventDefault={() => submit(inmate)}>
+{#if recipient}
+  <form id="edit-inmate" on:submit|preventDefault={() => submit(recipient)}>
     <h1>Edit Recipient Record</h1>
 
-    {#if !isInmateNoID(inmate)}
-      <label for="inmate-number">
+    {#if !isRecipientNoId(recipient)}
+      <label for="recipient-number">
         Recipient ID:
         <input
           type="text"
-          name="inmate-number"
-          placeholder="Inmate ID"
-          disabled
-          bind:value={inmate.assignedId}
+          name="recipient-number"
+          placeholder="Recipient ID"
+          bind:value={assignedId}
         />
       </label>
     {/if}
@@ -92,7 +86,7 @@
       </label>
     {/await}
 
-    <button class="success" disabled={shouldDisableForm({ inmate, firstName, lastName, location })}>
+    <button class="success" disabled={shouldDisableForm({ recipient, assignedId, firstName, lastName, location })}>
       Update Recipient Record
     </button>
   </form>
