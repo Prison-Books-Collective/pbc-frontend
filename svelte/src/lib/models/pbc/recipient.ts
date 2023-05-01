@@ -14,3 +14,7 @@ export interface Recipient {
 
     specialRequests?: any // TODO
 }
+
+export const isRecipientNoId = (recipient: Recipient) => {
+    return !!!(recipient.assignedId)
+  }
