@@ -8,8 +8,9 @@
   import SearchByBook from '$components/package/search/search-by-book.svelte'
   import { gotoPackageSearch } from '$util/routing'
 
-  const alertZineCreated = ({ detail: zine }) =>
-    alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`)
+  const alertZineCreated = ({ detail: zine }) => {
+    alert(`Successfully added new Zine "${zine.code} - ${zine.title}"`)
+  }
   const alertFacilityCreated = ({ detail: facility }) =>
     alert(
       `Successfully added new Facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}"`

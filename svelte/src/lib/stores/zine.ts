@@ -40,8 +40,9 @@ export class ZineStore implements Writable<Zine[]> {
     try {
       const createdZine = await ZineService.createZine({
         id: null,
-        threeLetterCode,
+        code: threeLetterCode,
         title,
+        type: 'zine',
         inUse: true
       })
       this.fetch()
