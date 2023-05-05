@@ -6,20 +6,18 @@
   import InmateName from '$components/inmate/inmate-name.svelte'
   import PackageTable from '$components/package/package-table.svelte'
   import Loading from '$components/loading.svelte'
-  import Modal from '$components/modal.svelte'
   import { onDestroy, onMount } from 'svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
+  import SpecialRequestModal from './special-request-modal.svelte'
 
   export let data;
   let { recipientId, isAssignedId } = data
-  let specialRequestModalIsVisible = false
   
   let packageTable: PackageTable
   let presentCreatePackage = () => {}
-  let presentSpecialRequestModal = () => {
-    //presentCreatePackageModal($focusedInmate)
-    specialRequestModalIsVisible = true
-  } 
+  
+  let specialRequestModal: SpecialRequestModal
+  let presentSpecialRequestModal = () => {}
   
   let currentLocation = Promise.resolve(' ')
 
@@ -48,6 +46,10 @@
     presentCreatePackage = () => {
       packageTable.presentCreatePackageModal($focusedInmate)
     }
+
+    presentSpecialRequestModal = () => {
+      specialRequestModal.show($focusedInmate)
+    }
   
   })
   onDestroy(() => {
@@ -64,39 +66,7 @@
 {#await inmateIsLoaded}
   <Loading />
 {:then}
-  <Modal 
-    visible={specialRequestModalIsVisible} on:close={() => { specialRequestModalIsVisible = false }}  showConfirm={true}>
-    <h1>Hello!</h1>
-    <form>
-      <label for="special-request-q1">
-        <input
-        name="special-request-q1"
-        id="special-request-q1"
-        type="checkbox"
-        />
-        Is this a high priority for the letter writer?
-      </label>
-
-      <label for="special-request-q2">
-        <input
-        name="special-request-q2"
-        id="special-request-q2"
-        type="checkbox"
-        />
-        Can this request not be fulfilled with our stock?
-      </label>
-
-      <label for="special-request-q3">
-        <input
-        name="special-request-q3"
-        id="special-request-q3"
-        type="checkbox"
-        />
-        Online enterer only: Person has not received another special request in this quarter.
-      </label>
-
-    </form>
-  </Modal>
+  <SpecialRequestModal bind:this={specialRequestModal}></SpecialRequestModal>
 
   <main class="page">
     <InmateName
