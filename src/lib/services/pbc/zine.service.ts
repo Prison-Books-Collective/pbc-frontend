@@ -6,7 +6,8 @@ import type { NewZine } from '$models/pbc/newZine'
 export class ZineService {
   public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getAllZines`
   public static readonly URI_CREATE_ZINE = `${BASE_PBC_URI}/addContent`
-  public static readonly URI_GET_ZINE_BY_CODE = (code : string)=>`${BASE_PBC_URI}/getZineByCode?code=${code}`
+  public static readonly URI_GET_ZINE_BY_CODE = (code: string) =>
+    `${BASE_PBC_URI}/getZineByCode?code=${code}`
 
   private static cachedZines: Zine[] = []
 
@@ -33,7 +34,7 @@ export class ZineService {
     return createdZine
   }
 
-  public static async getZineByCode(code: string): Promise<NewZine>{
+  public static async getZineByCode(code: string): Promise<NewZine> {
     const response = await fetch(this.URI_GET_ZINE_BY_CODE(code), { ...METHOD_GET })
     if (response.status !== 200) {
       throw new Error(
@@ -42,7 +43,7 @@ export class ZineService {
     }
     return await response.json()
   }
-  
+
   public static async getZines(): Promise<Zine[]> {
     if (this.cachedZines.length > 0) {
       return this.cachedZines
@@ -56,13 +57,12 @@ export class ZineService {
     }
 
     const zines = await response.json()
-    zines.forEach(z => {
+    zines.forEach((z) => {
       z.type = 'zine'
-    });
+    })
     this.cachedZines = zines.sort(zineSortAlphabetical)
     return this.cachedZines
   }
 }
 
-const zineSortAlphabetical = (zineA: Zine, zineB: Zine) =>
-  zineA.code.localeCompare(zineB.code)
+const zineSortAlphabetical = (zineA: Zine, zineB: Zine) => zineA.code.localeCompare(zineB.code)

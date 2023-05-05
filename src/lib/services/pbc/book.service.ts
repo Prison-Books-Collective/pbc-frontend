@@ -12,9 +12,6 @@ export class BookService {
   public static readonly URI_CREATE_BOOK = `${BASE_PBC_URI}/addContent`
   public static readonly URI_UPDATE_BOOK = `${BASE_PBC_URI}/updateBook`
 
-
-
-
   public static async findBook(isbn: string): Promise<Book | null> {
     let uri: string
     if (isbn.length != 10 && isbn.length != 13) {
@@ -28,11 +25,11 @@ export class BookService {
     const response = await fetch(uri, { ...METHOD_GET })
 
     if (response.status === 204) return null
-    if (response.status === 417){
-      const body = await response.json() as Book
+    if (response.status === 417) {
+      const body = (await response.json()) as Book
 
       const bookUpdate = {
-        ...body as Book,
+        ...(body as Book),
         needsAuthorAssistance: true,
         unclearAuthors: body.creators as Group[]
       }
@@ -43,20 +40,24 @@ export class BookService {
         `unexpected response ${response.status} when searching for book with valid ISBN "${isbn}" from "${uri}"`
       )
     }
-    
 
     return (await response.json()) as Book
   }
 
   public static async createBook(book: Book): Promise<Book> {
-    
     if (!book.isbn10 || book.isbn10.length === 0) {
       book.isbn10 = null
     }
     if (!book.isbn13 || book.isbn13.length === 0) {
       book.isbn13 = null
     }
-    const bookToSubmit = {title: book.title, creators: book.creators, type:'book', isbn10: book.isbn10, isbn13: book.isbn13, }
+    const bookToSubmit = {
+      title: book.title,
+      creators: book.creators,
+      type: 'book',
+      isbn10: book.isbn10,
+      isbn13: book.isbn13
+    }
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
@@ -83,7 +84,7 @@ export class BookService {
       headers: { ...CONTENT_TYPE_JSON },
       body: JSON.stringify(book)
     })
-    
+
     if (response.status === 302) {
       throw new Error(`failed to create book; book already exists`)
     }
@@ -98,22 +99,22 @@ export class BookService {
     return (await response.json()) as Book
   }
 
-//   public static async updateBook(book: Book): Promise<Book> {
-//     const response = await fetch(this.URI_UPDATE_BOOK, {
-//       ...METHOD_PUT,
-//       headers: { ...CONTENT_TYPE_JSON },
-//       body: JSON.stringify(book)
-//     })
+  //   public static async updateBook(book: Book): Promise<Book> {
+  //     const response = await fetch(this.URI_UPDATE_BOOK, {
+  //       ...METHOD_PUT,
+  //       headers: { ...CONTENT_TYPE_JSON },
+  //       body: JSON.stringify(book)
+  //     })
 
-//     if (response.status !== 200) {
-//       throw new Error(
-//         `unexpected response ${response.status} when updating book via "${
-//           this.URI_UPDATE_BOOK
-//         }" with details: ${JSON.stringify(book)}`
-//       )
-//     }
+  //     if (response.status !== 200) {
+  //       throw new Error(
+  //         `unexpected response ${response.status} when updating book via "${
+  //           this.URI_UPDATE_BOOK
+  //         }" with details: ${JSON.stringify(book)}`
+  //       )
+  //     }
 
-//     return (await response.json()) as Book
-//   }
-// }
+  //     return (await response.json()) as Book
+  //   }
+  // }
 }

@@ -72,7 +72,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     endDate: string
   ): Promise<LocalStorageShipment[]> {
     try {
-      console.log("in the store")
+      console.log('in the store')
       const packages = await ShipmentService.getPackagesForDateRange(startDate, endDate)
       this.set(packages)
       return packages
@@ -157,8 +157,6 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     })
     return updatedPackages
   }
-
-
 }
 
 export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
@@ -211,10 +209,10 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
     pbcPackage.id
       ? this.packagesStore.localUpdatePackage(createdPackage)
       : this.packagesStore.localAddPackage(createdPackage)
-    
+
     //   let currRecipient = await focusedInmate.get()
     //  let updatedRecipient = await RecipientService.getRecipientByDatabaseId(currRecipient.id+"")
-     
+
     // this.packagesStore.set(updatedPackages)
 
     this.load(createdPackage)
@@ -238,14 +236,15 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   }
 
   public addBook(book: Book) {
-    book["type"] = "book"
+    book['type'] = 'book'
     this.update((currentPackage) => ({
-      ...currentPackage, content: [...currentPackage.content, book]
+      ...currentPackage,
+      content: [...currentPackage.content, book]
     }))
   }
 
   public addZine(zine: Zine) {
-    zine["type"] = "zine"
+    zine['type'] = 'zine'
     this.update((currentPackage) => ({
       ...currentPackage,
       content: [...currentPackage.content, zine]
@@ -254,23 +253,27 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
 
   public setRecipient(recipient: Recipient) {
     this.update((currentPackage) => ({
-      ...currentPackage, recipient: recipient
+      ...currentPackage,
+      recipient: recipient
     }))
   }
 
-  public setNote(note: Note){
+  public setNote(note: Note) {
     this.update((currentPackage) => ({
-      ...currentPackage, notes: [note]
+      ...currentPackage,
+      notes: [note]
     }))
   }
 
   public createAlert(alertText = '') {
     this.update((currentPackage) => ({
       ...currentPackage,
-      notes: [{
-        id: null,
-        content: alertText
-      }]
+      notes: [
+        {
+          id: null,
+          content: alertText
+        }
+      ]
     }))
   }
 
@@ -314,5 +317,3 @@ const emptyPackage: LocalStorageShipment = {
 
 export const focusedPackages = new FocusedShipmentsStore(focusedInmate)
 export const focusedPackage = new FocusedShipmentStore(emptyPackage, focusedPackages)
-
-

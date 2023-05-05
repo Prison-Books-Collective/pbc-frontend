@@ -55,7 +55,7 @@ export class FacilityStore implements Writable<Facility[]> {
       console.error(
         `failed to create new facility for $facilities via remote using data: ${JSON.stringify({
           facilityName,
-          
+
           state
         })}`
       )

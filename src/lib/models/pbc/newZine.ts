@@ -1,7 +1,6 @@
 export interface NewZine {
-    id: number
-    title: string
-    code: string
-    type: 'zine'
-  }
-  
+  id: number
+  title: string
+  code: string
+  type: 'zine'
+}

@@ -6,7 +6,7 @@
   import DailyPackages from '$components/package/daily-packages.svelte'
 
   /** @type {import('./$types').LayoutData} */
-  export let data;
+  export let data
 
   // export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID
   //let mode : HomepageSearch = data?.props?.mode || HomepageSearch.ID
@@ -23,7 +23,7 @@
 
   const shouldDisableSearch = (firstName, lastName) => isEmpty(firstName) && isEmpty(lastName)
   const toggleSearch = () => {
-    if (mode == HomepageSearch.ID){
+    if (mode == HomepageSearch.ID) {
       mode = HomepageSearch.NAME
     } else {
       mode = HomepageSearch.ID
@@ -40,7 +40,8 @@
 <main class="page">
   <form
     autocomplete="off"
-    on:submit|preventDefault={() => gotoRecipientSearch(mode, { id: inmateID, firstName, lastName })}
+    on:submit|preventDefault={() =>
+      gotoRecipientSearch(mode, { id: inmateID, firstName, lastName })}
   >
     {#if mode === HomepageSearch.ID}
       <input
@@ -76,7 +77,6 @@
         Find Recipient(s)
       </button>
     {/if}
-
   </form>
 
   <p class="link" on:click={() => toggleSearch()}>

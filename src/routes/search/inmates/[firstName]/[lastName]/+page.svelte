@@ -1,15 +1,15 @@
 <script lang="ts">
   import { ROUTE_PACKAGES_FOR_INMATE, ROUTE_RECIPIENT_CREATE_NAMED } from '$util/routing'
   import Loading from '$components/loading.svelte'
-    import { RecipientService } from '$services/pbc/recipient.service'
-    import { goto } from '$app/navigation'
-    import InmateName from '$components/inmate/inmate-name.svelte'
-    import RejectionLog from '$components/package/rejection-log.svelte'
-    import { focusedInmate } from '$stores/inmate'
+  import { RecipientService } from '$services/pbc/recipient.service'
+  import { goto } from '$app/navigation'
+  import InmateName from '$components/inmate/inmate-name.svelte'
+  import RejectionLog from '$components/package/rejection-log.svelte'
+  import { focusedInmate } from '$stores/inmate'
   export let data
 
-  export let firstName: string = data.firstName || ""
-  export let lastName: string = data.lastName || ""
+  export let firstName: string = data.firstName || ''
+  export let lastName: string = data.lastName || ''
 
   const getInmates = RecipientService.getRecipientsByName({ firstName, lastName })
 
@@ -27,8 +27,8 @@
 <main class="page">
   <h1>Recipient Selection</h1>
   <p>
-    The following recipients with this name were found, please select which recipient you're creating a
-    package for:
+    The following recipients with this name were found, please select which recipient you're
+    creating a package for:
   </p>
 
   {#await getInmates}
@@ -36,15 +36,19 @@
   {:then inmates}
     <nav>
       {#each inmates as inmate}
-        <p on:click={() => {findRecipient(inmate.id)}} style="color:blue; text-decoration:underline; cursor:pointer">
-            {#if inmate.facility}
-              <strong>{inmate.facility.name}</strong> &mdash;
-            {:else if inmate.assignedId}
-              <strong>ID #{inmate.assignedId}</strong> &mdash;
-            {/if}
-            {inmate.firstName}
-            {inmate.middleName ? inmate.middleName + '. ' : ''}{inmate.lastName}
-          
+        <p
+          on:click={() => {
+            findRecipient(inmate.id)
+          }}
+          style="color:blue; text-decoration:underline; cursor:pointer"
+        >
+          {#if inmate.facility}
+            <strong>{inmate.facility.name}</strong> &mdash;
+          {:else if inmate.assignedId}
+            <strong>ID #{inmate.assignedId}</strong> &mdash;
+          {/if}
+          {inmate.firstName}
+          {inmate.middleName ? inmate.middleName + '. ' : ''}{inmate.lastName}
         </p>
       {/each}
 

@@ -17,12 +17,12 @@
     <ol class="package-items-list">
       {#each $focusedPackage.content as book}
         <li>
-          {#if book.type === "book"}
-              <Book book={book} />
-              {/if}
-              {#if book.type === "zine"}
-              <Zine zine={book}/>
-              {/if}
+          {#if book.type === 'book'}
+            <Book {book} />
+          {/if}
+          {#if book.type === 'zine'}
+            <Zine zine={book} />
+          {/if}
         </li>
       {/each}
     </ol>

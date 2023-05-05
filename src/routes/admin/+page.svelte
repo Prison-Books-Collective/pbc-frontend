@@ -37,7 +37,9 @@
   </section>
 
   <section>
-    <button on:click={async ()=>console.log(await ZineService.getZineByCode("WOF11"))}>Get Zine by Code</button>
+    <button on:click={async () => console.log(await ZineService.getZineByCode('WOF11'))}
+      >Get Zine by Code</button
+    >
     <h1>Zines</h1>
     <CreateZine on:update={alertZineCreated} on:error={alertCreationError} />
     <div class="spacer" />

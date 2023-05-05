@@ -3,11 +3,11 @@
 
   import { focusedPackage, focusedPackages } from '$stores/package'
   import { PackageService } from '$services/pbc/package.service'
-    import { ShipmentService } from '$services/pbc/shipment.service'
-    import { focusedInmate } from '$stores/inmate'
+  import { ShipmentService } from '$services/pbc/shipment.service'
+  import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
-  let rejectionContent 
+  let rejectionContent
 
   export let packageId = null
   let packageLoaded = !!packageId
@@ -26,7 +26,7 @@
     try {
       let note = await ShipmentService.saveNote(rejectionContent)
       focusedPackage.setNote(note)
-      let inmate = {id: $focusedInmate.id}
+      let inmate = { id: $focusedInmate.id }
       focusedPackage.setRecipient(inmate)
       focusedPackage.sync()
       dispatch('update', $focusedPackage)
@@ -55,7 +55,7 @@
 {#await packageLoaded then}
   <section class="alert-container">
     <h1>Package Rejection Details</h1>
-    {#if $focusedPackage.notes.length >0}
+    {#if $focusedPackage.notes.length > 0}
       <p>This package was rejected. You can update the rejection notes below:</p>
     {:else}
       <p>Enter details about the rejection to log below:</p>
@@ -69,12 +69,10 @@
       />
 
       <div class="form-options">
-        <button
-          class="log-button"
-          disabled={!rejectionContent ||
-            rejectionContent === ''}>Log Rejection for Package</button
+        <button class="log-button" disabled={!rejectionContent || rejectionContent === ''}
+          >Log Rejection for Package</button
         >
-        {#if $focusedPackage.notes.length>0}
+        {#if $focusedPackage.notes.length > 0}
           <button
             type="button"
             class="danger clear-button"

@@ -62,9 +62,7 @@
         </option>
       {/if}
       {#each facilityList as f}
-        <option value={f} selected={selected === f.name}
-          >{f.name}, {f.state}</option
-        >
+        <option value={f} selected={selected === f.name}>{f.name}, {f.state}</option>
       {/each}
     {/await}
   </select>

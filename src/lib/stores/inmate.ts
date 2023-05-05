@@ -11,15 +11,11 @@ import { isEmpty } from '$util/strings'
 import type { Recipient } from '$models/pbc/recipient'
 import { RecipientService } from '$services/pbc/recipient.service'
 
-
 interface LocalStorageInmate extends Inmate {
   [additionalFields: string]: any
 }
 
-
-interface LocalStorageRecipient extends Recipient {
-
-}
+interface LocalStorageRecipient extends Recipient {}
 
 export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   private readonly defaultInmate
@@ -35,12 +31,10 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   }
   currentValue: Promise<LocalStorageRecipient> = new Promise(() => null)
 
-  
-  public set(value: LocalStorageRecipient){
-    this.currentValue = new Promise (() => value)
+  public set(value: LocalStorageRecipient) {
+    this.currentValue = new Promise(() => value)
   }
 
-  
   public update: (this: void, updater: Updater<LocalStorageRecipient>) => void
   public subscribe: (
     this: void,
@@ -53,12 +47,12 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   }
 
   public async TODO_fetchByAssignedId(assignedId: string): Promise<LocalStorageRecipient> {
-    if(isEmpty(assignedId)) return
+    if (isEmpty(assignedId)) return
 
     try {
       const foundRecipient = await RecipientService.getRecipientByAssignedId(assignedId)
-      
-      if(foundRecipient) {
+
+      if (foundRecipient) {
         this.set(foundRecipient as any) // todo: forcing typechecker to allow
         return foundRecipient
       } else {
@@ -73,12 +67,12 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   }
 
   public async TODO_fetchById(id: string): Promise<LocalStorageRecipient> {
-    if(isEmpty(id)) return
+    if (isEmpty(id)) return
 
     try {
       const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
-      
-      if(foundRecipient) {
+
+      if (foundRecipient) {
         this.set(foundRecipient as any) // todo: forcing typechecker to allow
         return foundRecipient
       } else {
@@ -92,9 +86,8 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
     }
   }
 
-  
   public async fetch(id: string | number): Promise<Inmate> {
-    if(isEmpty(id as string)) return
+    if (isEmpty(id as string)) return
 
     try {
       const foundInmate = await InmateService.getInmateUnknownIdStatus(id)
@@ -109,10 +102,9 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   }
 }
 
-
 const emptyInmate: LocalStorageRecipient = {
   id: null,
-  
+
   firstName: null,
   lastName: null,
 

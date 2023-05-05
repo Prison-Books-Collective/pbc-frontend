@@ -14,5 +14,3 @@ export interface NoISBNBook {
   title: string
   authors: string[]
 }
-
-

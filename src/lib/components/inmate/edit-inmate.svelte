@@ -6,11 +6,11 @@
   import { InmateService } from '$services/pbc/inmate.service'
   import { isEmpty } from '$util/strings'
   import FacilitySelect from '$components/facility/select-facility.svelte'
-    import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
-    import { RecipientService } from '$services/pbc/recipient.service'
-    import { updated } from '$app/stores'
-    import { goto } from '$app/navigation'
-    import { HomepageSearch, ROUTE_HOME } from '$util/routing'
+  import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
+  import { RecipientService } from '$services/pbc/recipient.service'
+  import { updated } from '$app/stores'
+  import { goto } from '$app/navigation'
+  import { HomepageSearch, ROUTE_HOME } from '$util/routing'
 
   const dispatch = createEventDispatcher()
 
@@ -29,19 +29,22 @@
   }
 
   const shouldDisableForm = ({ recipient, assignedId, firstName, lastName, location }) =>
-    isEmpty(firstName) || isEmpty(lastName) || isEmpty(assignedId) || (isRecipientNoId(recipient) && !isValidFacility(location))
+    isEmpty(firstName) ||
+    isEmpty(lastName) ||
+    isEmpty(assignedId) ||
+    (isRecipientNoId(recipient) && !isValidFacility(location))
 
   const submit = async (recipient: Recipient) => {
     try {
       let updatedRecipient: Recipient
-     
-        updatedRecipient = await RecipientService.updateRecipient({
-          id: recipient.id,
-          ...recipient,
-          firstName,
-          lastName,
-          assignedId: assignedId
-        })
+
+      updatedRecipient = await RecipientService.updateRecipient({
+        id: recipient.id,
+        ...recipient,
+        firstName,
+        lastName,
+        assignedId: assignedId
+      })
 
       dispatch('update', updatedRecipient)
     } catch (error) {
@@ -68,7 +71,6 @@
       </label>
     {/if}
 
-
     <label for="first-name">
       First Name:
       <input type="text" id="first-name" placeholder="First Name" bind:value={firstName} />
@@ -86,7 +88,10 @@
       </label>
     {/await}
 
-    <button class="success" disabled={shouldDisableForm({ recipient, assignedId, firstName, lastName, location })}>
+    <button
+      class="success"
+      disabled={shouldDisableForm({ recipient, assignedId, firstName, lastName, location })}
+    >
       Update Recipient Record
     </button>
   </form>
