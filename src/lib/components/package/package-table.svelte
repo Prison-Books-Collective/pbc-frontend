@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte'
   import { fade, fly } from 'svelte/transition'
   import { focusedPackage, focusedPackages } from '$stores/package'
-  import {  resolveInmate } from '$models/pbc/package'
+  import { resolveInmate } from '$models/pbc/package'
   import { CreatePackageModalState, gotoPackagesForInmate, printPackage } from '$util/routing'
 
   import Book from '$components/book.svelte'
@@ -11,10 +11,10 @@
   import printIcon from '$assets/icons/print.png'
   import CreatePackageModal from './create-package-modal.svelte'
 
-    import { RecipientService } from '$services/pbc/recipient.service'
-    import type { Shipment } from '$models/pbc/shipment'
-    import { focusedInmate } from '$stores/inmate'
-    import type { Recipient } from '$models/pbc/recipient'
+  import { RecipientService } from '$services/pbc/recipient.service'
+  import type { Shipment } from '$models/pbc/shipment'
+  import { focusedInmate } from '$stores/inmate'
+  import type { Recipient } from '$models/pbc/recipient'
 
   const dispatch = createEventDispatcher()
 
@@ -22,9 +22,8 @@
   export let inmate: Recipient = null
   export let packages: Shipment[] = null
 
-
-
-  $: {}
+  $: {
+  }
 
   const alertPackageClicked = (pbcPackage: Shipment) => {
     dispatch('alert', pbcPackage)
@@ -48,8 +47,7 @@
   let activeModalParams = {}
   let selectedInmate = null
 
-
-  export async function getRecipientByShipment  (pbcPackage : Shipment) {
+  export async function getRecipientByShipment(pbcPackage: Shipment) {
     let recipient = await RecipientService.getRecipientByShipmentId(pbcPackage.id)
     $focusedInmate = recipient
     return recipient
@@ -99,15 +97,17 @@
         <th>Print</th>
       </tr>
 
-      {#each $focusedPackages.sort((a,b) => {
+      {#each $focusedPackages.sort((a, b) => {
         let dateA = new Date(a.date)
         let dateB = new Date(b.date)
-        if (dateA < dateB){
+        if (dateA < dateB) {
           return 1
-        }if (dateA > dateB){
+        }
+        if (dateA > dateB) {
           return -1
-        } 
-        return 0}) as pbcPackage}
+        }
+        return 0
+      }) as pbcPackage}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
             {#if pbcPackage.notes && pbcPackage.notes.length > 0}
@@ -133,13 +133,12 @@
               <h2 class="text-normal">
                 <span
                   class="link"
-                 
                   on:click={async () => {
-                    gotoPackagesForInmate(await getRecipientByShipment(pbcPackage))}}
-                
+                    gotoPackagesForInmate(await getRecipientByShipment(pbcPackage))
+                  }}
                 >
-                Click to go to recipient.
-               
+                  Click to go to recipient.
+
                   <!-- {currentRecipientToLink.firstName}
                   {currentRecipientToLink.middleInitial
                     ? currentRecipientToLink.middleInitial + ' '
@@ -151,20 +150,19 @@
                     (No ID available)
                   {/if} -->
                 </span>
-              
               </h2>
             {/if}
             <ul>
               {#each pbcPackage.content as content}
-              {#key content}
-              <li>
-                {#if content.type === 'book'}
-                <Book book={content} />
-                {:else if content.type === 'zine'}
-                <Zine zine={content} />
-                {/if}
-              </li>
-              {/key}
+                {#key content}
+                  <li>
+                    {#if content.type === 'book'}
+                      <Book book={content} />
+                    {:else if content.type === 'zine'}
+                      <Zine zine={content} />
+                    {/if}
+                  </li>
+                {/key}
               {/each}
             </ul>
           </td>

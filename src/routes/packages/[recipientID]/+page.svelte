@@ -9,9 +9,9 @@
   import { onDestroy, onMount } from 'svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
 
-  export let data;
+  export let data
   let { recipientId, isAssignedId } = data
-  
+
   let packageTable: PackageTable
   let presentCreatePackage = () => {}
   let currentLocation = Promise.resolve(' ')
@@ -20,13 +20,13 @@
     $focusedInmate.id === recipientId
       ? Promise.resolve
       : isAssignedId
-        ? focusedInmate.TODO_fetchByAssignedId(recipientId) 
-        : focusedInmate.TODO_fetchById(recipientId)
-  
+      ? focusedInmate.TODO_fetchByAssignedId(recipientId)
+      : focusedInmate.TODO_fetchById(recipientId)
+
   console.log({ recipientId })
 
   inmateIsLoaded.then(() => {
-    if($focusedInmate.assignedId) {
+    if ($focusedInmate.assignedId) {
       currentLocation = RecipientService.getRecipientLocation($focusedInmate.assignedId)
     }
   })
@@ -41,13 +41,12 @@
     presentCreatePackage = () => {
       packageTable.presentCreatePackageModal($focusedInmate)
     }
-  
   })
   onDestroy(() => {
     focusedPackages.set([])
   })
 
-  focusedPackages.subscribe(d => console.log({focusedPackages: d}))
+  focusedPackages.subscribe((d) => console.log({ focusedPackages: d }))
 </script>
 
 <svelte:head>
@@ -64,15 +63,15 @@
       on:error={({ detail }) => updateRecipientError(detail)}
     />
     <span style="margin-bottom:10px">
-    {#await currentLocation} 
-      Loading current location.
-    {:then location}
-      {#if location === ''}
-        Released
-      {:else}
-        {location}
-      {/if}
-    {/await}
+      {#await currentLocation}
+        Loading current location.
+      {:then location}
+        {#if location === ''}
+          Released
+        {:else}
+          {location}
+        {/if}
+      {/await}
     </span>
     <button id="add-package-button" class="success" on:click={presentCreatePackage}>
       Add a <strong><u>new package</u></strong> (books or zines)

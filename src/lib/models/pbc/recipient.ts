@@ -1,20 +1,20 @@
-import type { Shipment } from "./shipment"
+import type { Shipment } from './shipment'
 
 export interface Recipient {
-    id: number // database ID
-    assignedId?: string // government-assigned ID
+  id: number // database ID
+  assignedId?: string // government-assigned ID
 
-    firstName: string
-    lastName: string
-    middleName?: string
+  firstName: string
+  lastName: string
+  middleName?: string
 
-    shipments: Shipment[]
+  shipments: Shipment[]
 
-    facility?: any // TODO
+  facility?: any // TODO
 
-    specialRequests?: any // TODO
+  specialRequests?: any // TODO
 }
 
 export const isRecipientNoId = (recipient: Recipient) => {
-    return !!!(recipient.assignedId)
-  }
+  return !!!recipient.assignedId
+}

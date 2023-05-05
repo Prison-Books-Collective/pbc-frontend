@@ -15,8 +15,8 @@
   const presentModal = () => (shouldDisplayModal = true)
   const closeModal = () => (shouldDisplayModal = false)
 
-  const didReceivePackageLastTwoMonths = ( shipments: Shipment[] ): boolean => {
-    if(!shipments || shipments.length === 0) return false
+  const didReceivePackageLastTwoMonths = (shipments: Shipment[]): boolean => {
+    if (!shipments || shipments.length === 0) return false
     const MS_TO_DAYS_FACTOR = 1000 * 3600 * 24
     const now = new Date().getTime()
     const mostRecentShipment = new Date(shipments[0].date).getTime()
@@ -38,15 +38,17 @@
   <EditInmate {recipient} on:update={onUpdateInmate} on:error={onUpdateInmateError} />
 </Modal>
 
-
 <div id="inmate-name" class:notValid={didReceivePackageLastTwoMonths(recipient.shipments)}>
-  <h1 style="margin:10px 10px" aria-label="Inmate's first and last name, and inmate ID if available">
+  <h1
+    style="margin:10px 10px"
+    aria-label="Inmate's first and last name, and inmate ID if available"
+  >
     {recipient.firstName}
     <!-- {inmate.middleInitial ? inmate.middleInitial + '. ' : ''} -->
     {recipient.lastName}
     {#if isInmateNoID(recipient)}
       {#if recipient.facility}
-        - <span>{ recipient?.facility?.name }</span>
+        - <span>{recipient?.facility?.name}</span>
       {:else}
         - <span>Unknown ID &amp; Facility</span>
       {/if}
@@ -61,13 +63,19 @@
       on:click={presentModal}
     />
   </h1>
-  
 </div>
 
 {#if recipient.shipments?.length > 0}
-{#if didReceivePackageLastTwoMonths(recipient.shipments)}
-<p class="notValid" style="margin-bottom:5px">Recipient received a package <strong>{Math.floor(((new Date()).getTime()- ((new Date(recipient.shipments[0].date)).getTime()))/(1000*3600*24))} days ago</strong>, on <strong>{recipient.shipments[0].date}</strong></p>
-{/if}
+  {#if didReceivePackageLastTwoMonths(recipient.shipments)}
+    <p class="notValid" style="margin-bottom:5px">
+      Recipient received a package <strong
+        >{Math.floor(
+          (new Date().getTime() - new Date(recipient.shipments[0].date).getTime()) /
+            (1000 * 3600 * 24)
+        )} days ago</strong
+      >, on <strong>{recipient.shipments[0].date}</strong>
+    </p>
+  {/if}
 {/if}
 
 <style lang="scss">
@@ -79,15 +87,14 @@
     justify-content: space-between;
     align-items: center;
   }
-.notValid{
-  background-color: lightpink;
-  border-radius: 20px;
-  padding: 10px;
-}
-    span {
-      color: darkslategray;
-      font-weight: 700;
-      font-size: 1.75rem;
-    }
-  
+  .notValid {
+    background-color: lightpink;
+    border-radius: 20px;
+    padding: 10px;
+  }
+  span {
+    color: darkslategray;
+    font-weight: 700;
+    font-size: 1.75rem;
+  }
 </style>

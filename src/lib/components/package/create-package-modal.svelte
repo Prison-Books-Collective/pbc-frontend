@@ -2,7 +2,12 @@
   import { createEventDispatcher } from 'svelte'
   import type { Package } from '$models/pbc/package'
   import { focusedPackage } from '$stores/package'
-  import { printPackage, CreatePackageModalState, gotoHomeSearch, HomepageSearch } from '$util/routing'
+  import {
+    printPackage,
+    CreatePackageModalState,
+    gotoHomeSearch,
+    HomepageSearch
+  } from '$util/routing'
 
   import Modal from '$components/modal.svelte'
   import PackageOverview from '$components/package/package-overview.svelte'
@@ -12,7 +17,7 @@
   import AddBook from '$components/package/book/add-book.svelte'
   import BookDetails from '$components/package/book/book-details.svelte'
   import RejectionLog from '$components/package/rejection-log.svelte'
-    import type { Shipment } from '$models/pbc/shipment'
+  import type { Shipment } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
@@ -38,7 +43,7 @@
     activeModal !== CreatePackageModalState.EDIT_PACKAGE &&
     activeModal !== CreatePackageModalState.VIEW_ALERT &&
     activeModal !== CreatePackageModalState.PRINT_PACKAGE &&
-    ($focusedPackage.content.length>0)
+    $focusedPackage.content.length > 0
 </script>
 
 <Modal

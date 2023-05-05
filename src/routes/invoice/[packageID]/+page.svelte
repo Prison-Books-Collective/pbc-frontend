@@ -6,9 +6,9 @@
   import information from '$assets/invoice/invoice-information.svg'
   import Zine from '$components/zine/zine.svelte'
   import Book from '$components/book.svelte'
-    import { bookHasISBN } from '$models/pbc/shipment'
+  import { bookHasISBN } from '$models/pbc/shipment'
 
-  export let data;
+  export let data
   let invoiceDate
 
   $: {
@@ -77,14 +77,14 @@
   <div id="package-list-container">
     <ol id="package-list">
       {#each $focusedPackage.content as book}
-      <li>
-        {#if book.type === "book"}
-        <Book book={book} />
-        {/if}
-        {#if book.type === "zine"}
-        <Zine zine={book}/>
-        {/if}
-      </li>
+        <li>
+          {#if book.type === 'book'}
+            <Book {book} />
+          {/if}
+          {#if book.type === 'zine'}
+            <Zine zine={book} />
+          {/if}
+        </li>
       {/each}
     </ol>
   </div>

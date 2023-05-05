@@ -19,7 +19,12 @@
 
   const createInmate = async () => {
     const createdInmate = await (isInmateNoID
-      ? RecipientService.createRecipient({ firstName, lastName, assignedId: null, facility: location })
+      ? RecipientService.createRecipient({
+          firstName,
+          lastName,
+          assignedId: null,
+          facility: location
+        })
       : RecipientService.createRecipient({ firstName, lastName, assignedId: id }))
 
     if (!!createdInmate && !!createdInmate.id) {

@@ -10,13 +10,12 @@
   export let state: State = null
 
   const resetInput = () => {
-    ;[facilityName,  state] = [null, null]
+    ;[facilityName, state] = [null, null]
   }
 
-  const shouldDisableCreate = (facilityName, state) =>
-    isEmpty(facilityName) ||isEmpty(state)
+  const shouldDisableCreate = (facilityName, state) => isEmpty(facilityName) || isEmpty(state)
 
-  const createFacility = async (facilityName,state) => {
+  const createFacility = async (facilityName, state) => {
     try {
       const createdFacility = await facilities.create({ facilityName, state })
       resetInput()
@@ -29,10 +28,7 @@
 
 <section>
   <h2>Add New Facility</h2>
-  <form
-    id="new-facility-form"
-    on:submit|preventDefault={() => createFacility(facilityName, state)}
-  >
+  <form id="new-facility-form" on:submit|preventDefault={() => createFacility(facilityName, state)}>
     <label for="facility-name">
       Facility Name:
       <input
@@ -51,8 +47,7 @@
       {/each}
     </select>
 
-
-    <button class="success" disabled={shouldDisableCreate(facilityName,  state)}>
+    <button class="success" disabled={shouldDisableCreate(facilityName, state)}>
       Add Facility
     </button>
   </form>

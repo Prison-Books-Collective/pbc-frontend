@@ -4,14 +4,14 @@
   import { focusedPackage, focusedPackages } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
-    import { focusedInmate } from '$stores/inmate'
+  import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
   let selectedItems = []
 
   const shouldDisableDeleteItems = (selectedItems) => {
-    return true//!selectedItems || selectedItems.length === 0
+    return true //!selectedItems || selectedItems.length === 0
   }
 
   const deleteItems = () => {
@@ -65,7 +65,7 @@
           <Book book={content} />
         {/if}
         {#if content.code != null}
-          <Zine zine={content}/>
+          <Zine zine={content} />
         {/if}
       </label>
     {/each}

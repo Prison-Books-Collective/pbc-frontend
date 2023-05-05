@@ -1,4 +1,4 @@
-*{
+* {
   font-family: roboto;
 }
 
@@ -6,85 +6,91 @@ table {
   border-collapse: collapse;
   margin-left: auto;
   margin-right: auto;
-  width: auto
+  width: auto;
 }
-
 
 @media print {
-  .pageBreakAfter {page-break-after: always;}
-
-
+  .pageBreakAfter {
+    page-break-after: always;
+  }
 }
 
-ul{
+ul {
   margin-top: 5px;
-  margin-bottom: 5px
+  margin-bottom: 5px;
 }
 
 @font-face {
   font-family: roboto;
-  src: url('roboto/Roboto-Regular.ttf') format("truetype");
+  src: url('roboto/Roboto-Regular.ttf') format('truetype');
   font-style: normal;
 }
 
-@font-face{
+@font-face {
   font-family: roboto;
-  src: url('roboto/Roboto-Bold.ttf') format("truetype");
+  src: url('roboto/Roboto-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: gentium;
-  src: url('Gentium_Basic/GentiumBasic-Regular.ttf') format("truetype");
+  src: url('Gentium_Basic/GentiumBasic-Regular.ttf') format('truetype');
   font-style: normal;
 }
 
-@font-face{
+@font-face {
   font-family: gentium;
-  src: url('Gentium_Basic/GentiumBasic-Bold.ttf') format("truetype");
+  src: url('Gentium_Basic/GentiumBasic-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }
 
-@font-face{
+@font-face {
   font-family: gentium;
-  src: url('Gentium_Basic/GentiumBasic-BoldItalic.ttf') format("truetype");
+  src: url('Gentium_Basic/GentiumBasic-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
 }
 
-@font-face{
+@font-face {
   font-family: gentium;
-  src: url('Gentium_Basic/GentiumBasic-Italic.ttf') format("truetype");
+  src: url('Gentium_Basic/GentiumBasic-Italic.ttf') format('truetype');
   font-weight: italic;
   font-style: normal;
 }
 body {
   background-color: #e8e7e2;
 }
-#editIcon, #searchIcon, #printIcon, #gearIcon{
-  opacity: .5;
+#editIcon,
+#searchIcon,
+#printIcon,
+#gearIcon {
+  opacity: 0.5;
 }
-#editIcon:hover , #searchIcon:hover, #printIcon:hover, #gearIcon:hover{
-  opacity: .9;
+#editIcon:hover,
+#searchIcon:hover,
+#printIcon:hover,
+#gearIcon:hover {
+  opacity: 0.9;
 }
-table, th, td {
-    border: 1px solid black;
+table,
+th,
+td {
+  border: 1px solid black;
 }
 
-tr{
+tr {
   background-color: #f0f0f0;
 }
 th {
   background-color: #c1e3de;
-height: 30px
+  height: 30px;
 }
 
 table {
   margin-top: 20px;
 }
-
 
 #inmate {
   position: fixed;
@@ -94,16 +100,15 @@ table {
   transform: translate(-50%, -50%);
 }
 
-input[type="text"]#find_inmate_id_field{
+input[type='text']#find_inmate_id_field {
   border: none;
   outline: 0;
   background-color: transparent;
   font-size: 25px;
   height: 50px;
   width: 400px;
-  
 }
-input[type="text"]#find_inmate_id_field:focus {
+input[type='text']#find_inmate_id_field:focus {
   border: none;
   background-color: transparent;
   outline: 0;
@@ -113,32 +118,31 @@ input[type="text"]#find_inmate_id_field:focus {
 button {
   font-family: roboto;
   margin: 20px 10px 0px;
-	box-shadow:inset 0px 1px 3px 0px #91b8b3;
-	background:linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-	background-color:#768d87;
-	border-radius:5px;
-	border:1px solid #566963;
-	display:inline-block;
-	cursor:pointer;
-  color:#ffffff;
-	font-size:15px;
-	padding:11px 23px;
-	text-decoration:none;
-	text-shadow:0px -1px 0px #2b665e;
+  box-shadow: inset 0px 1px 3px 0px #91b8b3;
+  background: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+  background-color: #768d87;
+  border-radius: 5px;
+  border: 1px solid #566963;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 15px;
+  padding: 11px 23px;
+  text-decoration: none;
+  text-shadow: 0px -1px 0px #2b665e;
 }
 .button:hover {
-	background:linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
-	background-color:#6c7c7c;
+  background: linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+  background-color: #6c7c7c;
 }
 .button:active {
-	position:relative;
-	top:1px;
+  position: relative;
+  top: 1px;
 }
-button:disabled{
+button:disabled {
   background-color: #838383;
   background: #838383;
 }
-
 
 .modal {
   display: none; /* Hidden by default */
@@ -149,8 +153,8 @@ button:disabled{
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
@@ -170,7 +174,6 @@ button:disabled{
   font-size: 28px;
   font-weight: bold;
 }
-
 
 .close:hover,
 .close:focus {

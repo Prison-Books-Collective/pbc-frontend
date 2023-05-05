@@ -9,7 +9,7 @@
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
   import type { Recipient } from '$lib/models/pbc/recipient'
   import { isValidFacility } from '$models/pbc/facility'
-    import { focusedInmate } from '$stores/inmate'
+  import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
@@ -33,29 +33,26 @@
   }
   loadFacility(facility, inmate)
 
-  $: isPackageEmpty = () =>
-    $focusedPackage.content.length === 0
+  $: isPackageEmpty = () => $focusedPackage.content.length === 0
 
   const shouldDisableComplete = (facility) => !isValidFacility(facility)
-  const shouldDisableRemove = (removeItems) =>  true //!removeItems || removeItems.length === 0
+  const shouldDisableRemove = (removeItems) => true //!removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')
 
   const completePackage = async (inmate) => {
     try {
-      
-      inmate = {id: $focusedInmate.id}
+      inmate = { id: $focusedInmate.id }
       focusedPackage.setRecipient(inmate)
       let currPackage = await focusedPackage.get()
-      if (!currPackage["id"]){
-      delete currPackage["id"]
+      if (!currPackage['id']) {
+        delete currPackage['id']
       }
-      currPackage["facility"] = facility
+      currPackage['facility'] = facility
       focusedPackage.set(currPackage)
       const updatedPackage = await focusedPackage.sync()
       dispatch('update', updatedPackage)
-
     } catch (error) {
       dispatch('error', error)
       console.error('failed to update Package in database', error)
@@ -87,10 +84,10 @@
                 value={content.id}
               />
               {#if content.creators != null}
-              <Book book={content} />
+                <Book book={content} />
               {/if}
               {#if content.code != null}
-              <Zine zine={content}/>
+                <Zine zine={content} />
               {/if}
             </label>
           </li>

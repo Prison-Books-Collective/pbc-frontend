@@ -60,4 +60,4 @@ export class ZineStore implements Writable<Zine[]> {
 }
 
 export const zines = new ZineStore()
- zines.fetch()
+zines.fetch()

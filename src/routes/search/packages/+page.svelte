@@ -8,14 +8,13 @@
   import FilterPackages from '$components/package/search/filter/filter-packages.svelte'
   import Loading from '$components/loading.svelte'
   import BookTitleResolver from '$components/book-title-resolver.svelte'
-    import { formatDate } from '$util/time'
-    import { PackageSearchMode } from '$util/routing'
-export let data
-
+  import { formatDate } from '$util/time'
+  import { PackageSearchMode } from '$util/routing'
+  export let data
 
   export let date: string = formatDate(new Date())
   export let startDate = data.startDate || formatDate(new Date())
-  export let endDate= data.endDate || formatDate(new Date()) 
+  export let endDate = data.endDate || formatDate(new Date())
   export let isbn = ''
   export let [author, title] = ['', '']
   export let searchMode
@@ -47,14 +46,14 @@ export let data
     })
     if (previousQuery === currentQuery) return
     previousQuery = currentQuery
-    console.log("search mode: " + searchMode)
+    console.log('search mode: ' + searchMode)
     switch (searchMode) {
       case PackageSearchMode.DATE:
         startLoading()
         focusedPackages.fetchForDate(date).then(doneLoading)
         break
       case PackageSearchMode.DATE_RANGE:
-        console.log("in date range switch case")
+        console.log('in date range switch case')
         startLoading()
         focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading)
         break
@@ -73,7 +72,8 @@ export let data
     }
   }
 
-  $: { searchMode = data.searchMode
+  $: {
+    searchMode = data.searchMode
 
     loadPackages(searchMode)
     ;[date, startDate, endDate, isbn, author, title]
@@ -89,7 +89,7 @@ export let data
 </svelte:head>
 
 {#await searchMode}
-<Loading visible={loading} />
+  <Loading visible={loading} />
 {/await}
 <main class="page">
   {#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}

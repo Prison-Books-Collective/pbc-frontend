@@ -1,26 +1,30 @@
 import { BASE_PBC_URI } from '.'
 import type { Package } from '$models/pbc/package'
-import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_DELETE, METHOD_PUT, uriQueryJoin } from '$util/web'
+import {
+  CONTENT_TYPE_JSON,
+  METHOD_GET,
+  METHOD_POST,
+  METHOD_DELETE,
+  METHOD_PUT,
+  uriQueryJoin
+} from '$util/web'
 import type { Shipment } from '$models/pbc/shipment'
 import { focusedInmate } from '$stores/inmate'
 
-
 const removeExistsInDatabaseTag = (shipment: Shipment) => {
-  if (shipment["existsInDatabase"]!= null){
-    delete shipment["existsInDatabase"]
+  if (shipment['existsInDatabase'] != null) {
+    delete shipment['existsInDatabase']
   }
   shipment.content.forEach((shipmentContent) => {
-    if (shipmentContent.type=="book"){
-      if (shipmentContent["existsInDatabase"] != null){
-        delete shipmentContent["existsInDatabase"]
+    if (shipmentContent.type == 'book') {
+      if (shipmentContent['existsInDatabase'] != null) {
+        delete shipmentContent['existsInDatabase']
       }
     }
-
   })
 
   return shipment
 }
-
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>
@@ -49,19 +53,22 @@ export class PackageService {
     `${BASE_PBC_URI}/getPackagesByAuthorAndTitle?author=${author}&title=${title}`
 
   public static async TODO_getPackagesForRecipient(assignedId: string): Promise<Shipment[]> {
-    const response = await fetch(this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId), { ...METHOD_GET })
+    const response = await fetch(this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId), {
+      ...METHOD_GET
+    })
 
-    if( response.status !== 200 ) {
+    if (response.status !== 200) {
       throw new Error(
         `unexpected response ${
           response.status
-        } when retrieving package for recipient with assigned ID "${assignedId}" at "${this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId)}"`
+        } when retrieving package for recipient with assigned ID "${assignedId}" at "${this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(
+          assignedId
+        )}"`
       )
     }
 
     return await response.json()
   }
-
 
   // date is a formatted string "yyyy-mm-dd"
   public static async getPackageCount(date: string): Promise<number> {
@@ -161,4 +168,3 @@ const packageSortByDate = (packageA: Package, packageB: Package) => {
   if (dateA === dateB) return 0
   return dateA > dateB ? -1 : 1
 }
-

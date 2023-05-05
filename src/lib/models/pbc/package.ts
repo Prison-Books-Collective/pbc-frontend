@@ -30,7 +30,6 @@ export const undefinedInmate = {
 export const resolveInmate = async (pbcPackage: Shipment) =>
   await RecipientService.getRecipientByShipmentId(pbcPackage.id)
 
-
 export const stringify = (p: Package) => {
   const inmate = p.inmate || p.inmateNoId || null
   return `
