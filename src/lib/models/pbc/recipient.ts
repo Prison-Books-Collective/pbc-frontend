@@ -16,5 +16,5 @@ export interface Recipient {
 }
 
 export const isRecipientNoId = (recipient: Recipient) => {
-  return !!!recipient.assignedId
+  return !recipient.assignedId
 }

@@ -85,6 +85,7 @@
   .page {
     justify-content: flex-start;
     text-align: center;
+    height: auto;
   }
 
   #add-package-button {

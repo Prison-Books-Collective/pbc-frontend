@@ -3,8 +3,6 @@
   import Loading from '$components/loading.svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
   import { goto } from '$app/navigation'
-  import InmateName from '$components/inmate/inmate-name.svelte'
-  import RejectionLog from '$components/package/rejection-log.svelte'
   import { focusedInmate } from '$stores/inmate'
   export let data
 

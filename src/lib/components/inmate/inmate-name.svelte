@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
+  import { isInmateNoID } from '$models/pbc/inmate'
   import editIcon from '$assets/icons/edit.png'
   import Modal from '$components/modal.svelte'
   import EditInmate from '$components/inmate/edit-inmate.svelte'
@@ -71,7 +71,7 @@
       Recipient received a package <strong
         >{Math.floor(
           (new Date().getTime() - new Date(recipient.shipments[0].date).getTime()) /
-            (1000 * 3600 * 24)
+            (1000 * 3600 * 24),
         )} days ago</strong
       >, on <strong>{recipient.shipments[0].date}</strong>
     </p>

@@ -8,7 +8,7 @@
   export let fn = defaultFn
 
   let mode: Mode = 'any'
-  let keywordInput: string = ''
+  let keywordInput = ''
   let keywords: string[] = []
 
   const addKeyword = (keyword: string) => {

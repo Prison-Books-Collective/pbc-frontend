@@ -6,7 +6,6 @@
   import information from '$assets/invoice/invoice-information.svg'
   import Zine from '$components/zine/zine.svelte'
   import Book from '$components/book.svelte'
-  import { bookHasISBN } from '$models/pbc/shipment'
 
   export let data
   let invoiceDate

@@ -1,5 +1,3 @@
-import { isEmpty } from '$util/strings'
-
 export interface Book {
   id: number
   isbn10?: string

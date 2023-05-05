@@ -1,11 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { gotoHomeSearch, gotoRecipientSearch } from '$util/routing'
+  import { gotoRecipientSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
   import { HomepageSearch } from '$util/routing'
-  import DailyPackages from '$components/package/daily-packages.svelte'
 
-  /** @type {import('./$types').LayoutData} */
   export let data
 
   // export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID

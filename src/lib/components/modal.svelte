@@ -59,7 +59,13 @@
 {#if visible}
   <section id="modal-container" transition:fade={{ duration: 100 }}>
     <div id="background" on:click|self={close} />
-    <div id="modal" style:width style:maxWidth style:height style:maxHeight>
+    <div
+      id="modal"
+      style:width
+      style:max-width={maxWidth}
+      style:height
+      style:max-height={maxHeight}
+    >
       {#if !!closeSide && closeSide != 'none'}
         {#if closeSide === 'left'}
           <div class="close-left">

@@ -1,42 +1,33 @@
-<script lang="ts" context="module">
-  enum VALID_MODE {
-    DISPLAY = 'display-book',
-    EDIT = 'edit-book',
-    CREATE = 'create-book'
-  }
-</script>
-
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage } from '$stores/package'
-  import {
-    bookHasISBN,
-    type Author,
-    type Book,
-    type Group,
-    type PackageContent
-  } from '$models/pbc/shipment'
+  import { bookHasISBN, type Author, type Book } from '$models/pbc/shipment'
   import { isEmpty } from '$util/strings'
   // import { Book } from '$components/book.svelte'
-  import { group_outros } from 'svelte/internal'
   import { BookService } from '$services/pbc/book.service'
 
   const dispatch = createEventDispatcher()
 
+  enum VALID_MODE {
+    DISPLAY = 'display-book',
+    EDIT = 'edit-book',
+    CREATE = 'create-book',
+  }
+
   export let mode = VALID_MODE.DISPLAY
-  export let isbn = null
-  let creatorType = null
+  export let isbn: string | null = null
+  let creatorType: 'author' | 'group' | null = null
 
-  let prefix = null
-  let firstName = null
-  let middleName = null
-  let lastName = null
-  let suffix = null
+  let prefix: string | null = null
+  let firstName: string | null = null
+  let middleName: string | null = null
+  let lastName: string | null = null
+  let suffix: string | null = null
 
-  let newTitle
-  let newAuthor
-  let searched = null
+  let newTitle: string | null = null
+  let newAuthor: string | null = null
+  let searched = false
 
   $: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE
   $: searched = $focusedBook.title ? true : false
@@ -64,7 +55,7 @@
     firstName,
     middleName,
     lastName,
-    suffix
+    suffix,
   ) =>
     isEmpty(creatorType) ||
     (creatorType == 'author' &&
@@ -89,7 +80,7 @@
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
-        suffix: suffix
+        suffix: suffix,
       }
     } else {
       author = { type: 'group', name: $focusedBook.unclearAuthors[0].name }
@@ -100,7 +91,7 @@
       title: $focusedBook.title,
 
       creators: [author],
-      id: null
+      id: null,
     }
     let book = await BookService.createBook(bookToSend as Book)
     focusedPackage.addBook(book)
@@ -115,9 +106,9 @@
         {
           type: 'author',
           firstName: newAuthor.split(' ')[0],
-          lastName: newAuthor.split(' ')[1]
-        } as Author
-      ]
+          lastName: newAuthor.split(' ')[1],
+        } as Author,
+      ],
     })
     if (isbn.length === 10) {
       $focusedBook.isbn10 = isbn
@@ -215,7 +206,7 @@
           firstName,
           middleName,
           lastName,
-          suffix
+          suffix,
         )}>Add book to package</button
       >
       <button on:click={searchClicked}>Nevermind, search for different book</button>
@@ -321,11 +312,6 @@
     justify-content: flex-start;
     align-items: stretch;
     text-align: center;
-  }
-
-  .book-title {
-    font-size: 2rem;
-    margin-bottom: 0.25rem;
   }
 
   button {

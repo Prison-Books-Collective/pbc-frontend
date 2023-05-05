@@ -1,13 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import type { Package } from '$models/pbc/package'
   import { focusedPackage } from '$stores/package'
-  import {
-    printPackage,
-    CreatePackageModalState,
-    gotoHomeSearch,
-    HomepageSearch
-  } from '$util/routing'
+  import { printPackage, CreatePackageModalState } from '$util/routing'
 
   import Modal from '$components/modal.svelte'
   import PackageOverview from '$components/package/package-overview.svelte'

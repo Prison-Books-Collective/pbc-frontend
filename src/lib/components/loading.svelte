@@ -10,6 +10,7 @@
   <div class="container" transition:fade>
     <h2>{text}</h2>
     <img class="image" src={loadingImage} alt="loading spinner, network request in progress" />
+
     {#each Object.keys($$slots) as _}
       <slot />
     {/each}

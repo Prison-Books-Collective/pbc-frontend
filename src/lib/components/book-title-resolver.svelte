@@ -4,9 +4,9 @@
   import { PackageSearchMode } from '$util/routing'
 
   export let pbcPackage: Package = null
-  export let isbn: string = ''
-  export let author: string = ''
-  export let title: string = ''
+  export let isbn = ''
+  export let author = ''
+  export let title = ''
   let book: Book = null
 
   const findBook = ({ pbcPackage, isbn, author, title }) => {
@@ -30,7 +30,7 @@
           b.authors
             .map((s) => s.toLowerCase())
             .join(',')
-            .includes(author.toLowerCase()) && b.title.toLowerCase().includes(title.toLowerCase())
+            .includes(author.toLowerCase()) && b.title.toLowerCase().includes(title.toLowerCase()),
       )
       if (matchingBook) {
         book = matchingBook
@@ -44,7 +44,7 @@
           b.authors
             .map((s) => s.toLowerCase())
             .join(',')
-            .includes(author.toLowerCase()) && b.title.toLowerCase().includes(title.toLowerCase())
+            .includes(author.toLowerCase()) && b.title.toLowerCase().includes(title.toLowerCase()),
       )
       if (matchingBook) {
         book = matchingBook

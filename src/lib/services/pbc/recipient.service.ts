@@ -26,7 +26,7 @@ export class RecipientService {
 
   public static async getRecipientByAssignedId(assignedId: string): Promise<Recipient | null> {
     const response = await fetch(this.URI_GET_RECIPIENT_BY_ASSIGNED_ID(assignedId), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
     if (response.status !== 200) return null
     return (await response.json()) as Recipient
@@ -34,7 +34,7 @@ export class RecipientService {
 
   public static async getRecipientByShipmentId(shipmentId: number): Promise<Recipient | null> {
     const response = await fetch(this.URI_GET_RECIPIENT_BY_SHIPMENT_ID(shipmentId), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
     if (response.status !== 200) return null
     return (await response.json()) as Recipient
@@ -46,17 +46,17 @@ export class RecipientService {
     return (await response.json()) as Recipient
   }
 
-  public static async getRecipientLocation(id: string): Promise<String | null> {
+  public static async getRecipientLocation(id: string): Promise<string | null> {
     const response = await fetch(this.URI_GET_RECIPIENT_LOCATION(id), { ...METHOD_GET })
     if (response.status !== 200) return 'Not found in "NC Inmate Search"'
-    return (await response.text()).trim() as String
+    return (await response.text()).trim() as string
   }
 
   public static async createRecipient({
     firstName,
     lastName,
     assignedId,
-    facility
+    facility,
   }: {
     firstName: string
     lastName: string
@@ -70,8 +70,8 @@ export class RecipientService {
         firstName,
         lastName,
         assignedId,
-        facility: facility ?? undefined
-      })
+        facility: facility ?? undefined,
+      }),
     })
 
     if (response.status !== 200) {
@@ -81,8 +81,8 @@ export class RecipientService {
         } when creating inmate at "${this.URI_CREATE_INMATE()}" with details: ${JSON.stringify({
           firstName,
           lastName,
-          assignedId
-        })}`
+          assignedId,
+        })}`,
       )
     }
 
@@ -93,7 +93,7 @@ export class RecipientService {
     id,
     firstName,
     lastName,
-    assignedId
+    assignedId,
   }: {
     id: number
     firstName: string
@@ -107,8 +107,8 @@ export class RecipientService {
         id,
         firstName,
         lastName,
-        assignedId
-      })
+        assignedId,
+      }),
     })
 
     if (response.status !== 200) {
@@ -116,8 +116,8 @@ export class RecipientService {
         `unexpected response ${
           response.status
         } when updating recipient at "${this.URI_UPDATE_RECIPIENT()}" with details: ${JSON.stringify(
-          { firstName, lastName, assignedId }
-        )}`
+          { firstName, lastName, assignedId },
+        )}`,
       )
     }
 
@@ -126,7 +126,7 @@ export class RecipientService {
 
   public static async getRecipientsByName({
     firstName,
-    lastName
+    lastName,
   }: {
     firstName: string
     lastName: string
@@ -140,7 +140,7 @@ export class RecipientService {
     }
 
     const response = await fetch(this.URI_GET_RECIPIENT__BY_NAME({ firstName, lastName }), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -149,8 +149,8 @@ export class RecipientService {
         `unexpected response ${
           response.status
         } when searching for recipient with name "${firstName} ${lastName}" at "${this.URI_GET_RECIPIENT__BY_NAME(
-          { firstName, lastName }
-        )}"`
+          { firstName, lastName },
+        )}"`,
       )
     }
 

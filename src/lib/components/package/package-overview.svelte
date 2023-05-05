@@ -8,19 +8,19 @@
   import Zine from '$components/zine/zine.svelte'
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
   import type { Recipient } from '$lib/models/pbc/recipient'
-  import { isValidFacility } from '$models/pbc/facility'
+  import { isValidFacility, type Facility } from '$models/pbc/facility'
   import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
   export let inmate: Recipient
 
-  let removeItems = []
+  let removeItems: string[] = []
   let facility = $focusedPackage.facility
 
-  const loadFacility = async (currentFacility, inmate) => {
-    if (!currentFacility && inmate.location) {
-      facility = await FacilityService.resolveFacilityByName(inmate.location)
+  const loadFacility = async (currentFacility: Facility, recipient: Recipient) => {
+    if (!currentFacility && recipient.location) {
+      facility = await FacilityService.resolveFacilityByName(recipient.location)
       focusedPackage.setDestination(facility)
     } else if (!facility) {
       if (!$focusedPackages || $focusedPackages.length === 0) {
@@ -35,8 +35,9 @@
 
   $: isPackageEmpty = () => $focusedPackage.content.length === 0
 
-  const shouldDisableComplete = (facility) => !isValidFacility(facility)
-  const shouldDisableRemove = (removeItems) => true //!removeItems || removeItems.length === 0
+  const shouldDisableComplete = (facility: Facility) => !isValidFacility(facility)
+  // const shouldDisableRemove = (removeItems: string[]) => true //!removeItems || removeItems.length === 0
+  const shouldDisableRemove = () => true
 
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')

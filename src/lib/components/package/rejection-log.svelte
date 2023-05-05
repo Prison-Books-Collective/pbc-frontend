@@ -2,7 +2,6 @@
   import { createEventDispatcher } from 'svelte'
 
   import { focusedPackage, focusedPackages } from '$stores/package'
-  import { PackageService } from '$services/pbc/package.service'
   import { ShipmentService } from '$services/pbc/shipment.service'
   import { focusedInmate } from '$stores/inmate'
 
@@ -10,9 +9,7 @@
   let rejectionContent
 
   export let packageId = null
-  let packageLoaded = !!packageId
-    ? focusedPackage.fetch(packageId)
-    : Promise.resolve($focusedPackage)
+  let packageLoaded = packageId ? focusedPackage.fetch(packageId) : Promise.resolve($focusedPackage)
 
   packageLoaded.then((pbcPackage) => {
     if (pbcPackage.notes.length == 0) {
@@ -40,7 +37,7 @@
     try {
       const packageUpdateData = {
         ...pbcPackage,
-        notes: []
+        notes: [],
       }
       const updatedPackage = await ShipmentService.updatePackage(packageUpdateData)
       focusedPackages.localUpdatePackage(packageUpdateData)

@@ -1,16 +1,14 @@
-<script lang="ts" context="module">
-  enum DISPLAY_FORM {
-    WITH_ISBN,
-    WITHOUT_ISBN
-  }
-</script>
-
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
   import { focusedPackage } from '$stores/package'
-  import type { Author, Book } from '$models/pbc/shipment'
+  import type { Book } from '$models/pbc/shipment'
   import { BookService } from '$services/pbc/book.service'
+
+  enum DISPLAY_FORM {
+    WITH_ISBN,
+    WITHOUT_ISBN,
+  }
 
   const dispatch = createEventDispatcher()
 
@@ -26,7 +24,6 @@
   let scanInput
   let inputISBN
   let inputTitle
-  let inputAuthor
 
   onMount(() => {
     scanInput.focus()
@@ -62,7 +59,7 @@
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
-        suffix: suffix
+        suffix: suffix,
       }
     } else {
       author = { type: 'group', name: groupName }
@@ -71,7 +68,7 @@
       title: inputTitle,
 
       creators: [author],
-      id: null
+      id: null,
     }
     let book = await BookService.createBook(bookToSend as Book)
     focusedPackage.addBook(book)

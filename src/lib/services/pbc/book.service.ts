@@ -1,6 +1,6 @@
 import { BASE_PBC_URI } from '.'
 import type { Book, Group } from '$models/pbc/shipment'
-import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
+import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, uriQueryJoin } from '$util/web'
 
 export const isNoISBNBook = (book: Book) => {
   return !book.isbn10 && !book.isbn13
@@ -16,7 +16,7 @@ export class BookService {
     let uri: string
     if (isbn.length != 10 && isbn.length != 13) {
       throw new Error(
-        `Failed to find book with ISBN ${isbn}; this value is not a valid ISBN10 or ISBN13 value`
+        `Failed to find book with ISBN ${isbn}; this value is not a valid ISBN10 or ISBN13 value`,
       )
     } else {
       uri = this.URI_GET_BOOK__ISBN(isbn)
@@ -31,13 +31,13 @@ export class BookService {
       const bookUpdate = {
         ...(body as Book),
         needsAuthorAssistance: true,
-        unclearAuthors: body.creators as Group[]
+        unclearAuthors: body.creators as Group[],
       }
       return bookUpdate
     }
     if (response.status !== 200) {
       throw new Error(
-        `unexpected response ${response.status} when searching for book with valid ISBN "${isbn}" from "${uri}"`
+        `unexpected response ${response.status} when searching for book with valid ISBN "${isbn}" from "${uri}"`,
       )
     }
 
@@ -56,12 +56,12 @@ export class BookService {
       creators: book.creators,
       type: 'book',
       isbn10: book.isbn10,
-      isbn13: book.isbn13
+      isbn13: book.isbn13,
     }
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(bookToSubmit)
+      body: JSON.stringify(bookToSubmit),
     })
 
     if (response.status === 302) {
@@ -71,7 +71,7 @@ export class BookService {
       throw new Error(
         `unexpected response ${response.status} when adding new book to "${
           this.URI_CREATE_BOOK
-        }" with details: ${JSON.stringify(bookToSubmit)}`
+        }" with details: ${JSON.stringify(bookToSubmit)}`,
       )
     }
 
@@ -82,7 +82,7 @@ export class BookService {
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(book)
+      body: JSON.stringify(book),
     })
 
     if (response.status === 302) {
@@ -92,7 +92,7 @@ export class BookService {
       throw new Error(
         `unexpected response ${response.status} when adding new book to "${
           this.URI_CREATE_BOOK
-        }" with details: ${JSON.stringify(book)}`
+        }" with details: ${JSON.stringify(book)}`,
       )
     }
 

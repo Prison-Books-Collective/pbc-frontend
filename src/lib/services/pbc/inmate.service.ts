@@ -21,21 +21,21 @@ export class InmateService {
       originalId: initialId,
       firstName,
       lastName,
-      id: inmateId
+      id: inmateId,
     })}`
   public static readonly URI_UPDATE_INMATE__NO_ID = ({
     initialId,
     firstName,
     lastName,
     location,
-    inmateId
+    inmateId,
   }) =>
     `${BASE_PBC_URI}/updateInmateNoID${uriQueryJoin({
       originalId: initialId,
       firstName,
       lastName,
       location,
-      id: inmateId
+      id: inmateId,
     })}`
 
   public static async getInmate(inmateId: string): Promise<Inmate | null> {
@@ -46,7 +46,7 @@ export class InmateService {
       throw new Error(
         `unexpected response ${
           response.status
-        } when searching for inmate with ID "${inmateId}" at "${this.URI_GET_INMATE(inmateId)}"`
+        } when searching for inmate with ID "${inmateId}" at "${this.URI_GET_INMATE(inmateId)}"`,
       )
     }
 
@@ -55,7 +55,7 @@ export class InmateService {
 
   public static async getInmateNoIdByDatabaseID(databaseId: string | number): Promise<Inmate> {
     const response = await fetch(this.URI_GET_INMATE__NO_ID__BY_DATABASE_ID(databaseId), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status !== 200) {
@@ -63,8 +63,8 @@ export class InmateService {
         `unexpected response ${
           response.status
         } when searching for no-ID inmate with database-ID "${databaseId}" at "${this.URI_GET_INMATE__NO_ID__BY_DATABASE_ID(
-          databaseId
-        )}"`
+          databaseId,
+        )}"`,
       )
     }
 
@@ -73,7 +73,7 @@ export class InmateService {
 
   public static async getAllInmatesByName({
     firstName,
-    lastName
+    lastName,
   }: {
     firstName: string
     lastName: string
@@ -86,13 +86,13 @@ export class InmateService {
 
   public static async getInmatesByName({
     firstName,
-    lastName
+    lastName,
   }: {
     firstName: string
     lastName: string
   }): Promise<Inmate[]> {
     const response = await fetch(this.URI_GET_INMATE__BY_NAME({ firstName, lastName }), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -101,8 +101,8 @@ export class InmateService {
         `unexpected response ${
           response.status
         } when searching for inmate with name "${firstName} ${lastName}" at "${this.URI_GET_INMATE__BY_NAME(
-          { firstName, lastName }
-        )}"`
+          { firstName, lastName },
+        )}"`,
       )
     }
 
@@ -111,13 +111,13 @@ export class InmateService {
 
   public static async getInmateNoIdByName({
     firstName,
-    lastName
+    lastName,
   }: {
     firstName: string
     lastName: string
   }): Promise<Inmate[]> {
     const response = await fetch(this.URI_GET_INMATE__NO_ID__BY_NAME({ firstName, lastName }), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -126,8 +126,8 @@ export class InmateService {
         `unexpected response ${
           response.status
         } when searching for no-ID inmate with name "${lastName}, ${firstName}" at "${this.URI_GET_INMATE__NO_ID__BY_NAME(
-          { firstName, lastName }
-        )}"`
+          { firstName, lastName },
+        )}"`,
       )
     }
 
@@ -145,14 +145,14 @@ export class InmateService {
   public static async createInmate({
     firstName,
     lastName,
-    inmateId
+    inmateId,
   }: {
     firstName: string
     lastName: string
     inmateId: string
   }): Promise<Inmate> {
     const response = await fetch(this.URI_CREATE_INMATE({ firstName, lastName, inmateId }), {
-      ...METHOD_POST
+      ...METHOD_POST,
     })
 
     if (response.status !== 200) {
@@ -160,8 +160,8 @@ export class InmateService {
         `unexpected response ${response.status} when creating inmate at "${this.URI_CREATE_INMATE({
           firstName,
           lastName,
-          inmateId
-        })}" with details: ${JSON.stringify({ firstName, lastName, inmateId })}`
+          inmateId,
+        })}" with details: ${JSON.stringify({ firstName, lastName, inmateId })}`,
       )
     }
 
@@ -171,7 +171,7 @@ export class InmateService {
   public static async createInmateNoID({
     firstName,
     lastName,
-    location
+    location,
   }: {
     firstName: string
     lastName: string
@@ -179,7 +179,7 @@ export class InmateService {
   }): Promise<Inmate> {
     const response = await fetch(
       this.URI_CREATE_INMATE__NO_ID({ firstName, lastName, location: location.facility_name }),
-      { ...METHOD_POST }
+      { ...METHOD_POST },
     )
 
     if (response.status !== 200) {
@@ -189,8 +189,8 @@ export class InmateService {
         } when creating no-ID inmate at "${this.URI_CREATE_INMATE__NO_ID({
           firstName,
           lastName,
-          location: location.facility_name
-        })}" with details: ${JSON.stringify({ firstName, lastName, location })}`
+          location: location.facility_name,
+        })}" with details: ${JSON.stringify({ firstName, lastName, location })}`,
       )
     }
 
@@ -201,7 +201,7 @@ export class InmateService {
     initialId,
     firstName,
     lastName,
-    inmateId
+    inmateId,
   }: {
     initialId: string
     firstName: string
@@ -210,7 +210,7 @@ export class InmateService {
   }): Promise<Inmate> {
     const response = await fetch(
       this.URI_UPDATE_INMATE({ initialId, firstName, lastName, inmateId }),
-      { ...METHOD_PUT }
+      { ...METHOD_PUT },
     )
 
     if (response.status !== 200) {
@@ -219,8 +219,8 @@ export class InmateService {
           initialId,
           firstName,
           lastName,
-          inmateId
-        })}" with details: ${JSON.stringify({ firstName, lastName, inmateId })}`
+          inmateId,
+        })}" with details: ${JSON.stringify({ firstName, lastName, inmateId })}`,
       )
     }
 
@@ -232,7 +232,7 @@ export class InmateService {
     firstName,
     lastName,
     location,
-    inmateId
+    inmateId,
   }: {
     initialId: string
     firstName: string
@@ -242,7 +242,7 @@ export class InmateService {
   }): Promise<Inmate> {
     const response = await fetch(
       this.URI_UPDATE_INMATE__NO_ID({ initialId, firstName, lastName, location, inmateId }),
-      { ...METHOD_PUT }
+      { ...METHOD_PUT },
     )
 
     if (response.status !== 200) {
@@ -254,8 +254,8 @@ export class InmateService {
           firstName,
           lastName,
           location,
-          inmateId
-        })}" with details: ${JSON.stringify({ firstName, lastName, location, inmateId })}`
+          inmateId,
+        })}" with details: ${JSON.stringify({ firstName, lastName, location, inmateId })}`,
       )
     }
 

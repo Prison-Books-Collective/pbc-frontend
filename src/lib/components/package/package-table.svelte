@@ -22,9 +22,6 @@
   export let inmate: Recipient = null
   export let packages: Shipment[] = null
 
-  $: {
-  }
-
   const alertPackageClicked = (pbcPackage: Shipment) => {
     dispatch('alert', pbcPackage)
     presentAlertModal(pbcPackage)
