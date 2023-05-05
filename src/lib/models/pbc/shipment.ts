@@ -1,4 +1,3 @@
-import { RecipientService } from '$services/pbc/recipient.service'
 import { isEmpty } from '$util/strings'
 import type { Recipient } from './recipient'
 
@@ -42,6 +41,7 @@ export const getCreatorName = (creator: Creator): string => {
       .filter((item) => !isEmpty(item))
       .join(' ')
   }
+  return ''
 }
 
 export interface Zine extends PackageContent {
@@ -65,6 +65,6 @@ export interface Shipment {
 export const bookHasISBN = (book: Book) => {
   return {
     isbn10: !isEmpty(book.isbn10),
-    isbn13: !isEmpty(book.isbn13)
+    isbn13: !isEmpty(book.isbn13),
   }
 }

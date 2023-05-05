@@ -3,7 +3,7 @@ import {
   type Subscriber,
   type Unsubscriber,
   type Updater,
-  type Writable
+  type Writable,
 } from 'svelte/store'
 import type { Zine } from '$models/pbc/shipment'
 import { ZineService } from '$services/pbc/zine.service'
@@ -22,7 +22,7 @@ export class ZineStore implements Writable<Zine[]> {
   public subscribe: (
     this: void,
     run: Subscriber<Zine[]>,
-    invalidate?: (value?: Zine[]) => void
+    invalidate?: (value?: Zine[]) => void,
   ) => Unsubscriber
 
   public async fetch(): Promise<Zine[]> {
@@ -42,7 +42,7 @@ export class ZineStore implements Writable<Zine[]> {
         id: null,
         threeLetterCode,
         title,
-        inUse: true
+        inUse: true,
       })
       this.fetch()
       return createdZine
@@ -50,9 +50,9 @@ export class ZineStore implements Writable<Zine[]> {
       console.error(
         `failed to create new zine for $zines via remote using data: ${JSON.stringify({
           threeLetterCode,
-          title
+          title,
         })}`,
-        error
+        error,
       )
       return null
     }

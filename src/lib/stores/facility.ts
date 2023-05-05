@@ -3,7 +3,7 @@ import {
   type Subscriber,
   type Unsubscriber,
   type Updater,
-  type Writable
+  type Writable,
 } from 'svelte/store'
 import type { Facility } from '$models/pbc/facility'
 import { FacilityService } from '$services/pbc/facility.service'
@@ -21,7 +21,7 @@ export class FacilityStore implements Writable<Facility[]> {
   public update: (updater: Updater<Facility[]>) => void
   public subscribe: (
     run: Subscriber<Facility[]>,
-    invalidate?: (value?: Facility[]) => void
+    invalidate?: (value?: Facility[]) => void,
   ) => Unsubscriber
 
   public reset() {
@@ -46,7 +46,7 @@ export class FacilityStore implements Writable<Facility[]> {
       const createdFacility = await FacilityService.createFacility({
         id: null,
         name: facilityName,
-        state
+        state,
       })
       this.fetch()
       return createdFacility
@@ -56,8 +56,8 @@ export class FacilityStore implements Writable<Facility[]> {
         `failed to create new facility for $facilities via remote using data: ${JSON.stringify({
           facilityName,
 
-          state
-        })}`
+          state,
+        })}`,
       )
     }
   }

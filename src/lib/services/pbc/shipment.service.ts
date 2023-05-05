@@ -1,14 +1,13 @@
 import { BASE_PBC_URI } from '.'
-import type { Book, Note, Shipment } from '$models/pbc/shipment'
+import type { Note, Shipment } from '$models/pbc/shipment'
 import {
   CONTENT_TYPE_JSON,
   METHOD_GET,
   METHOD_POST,
   METHOD_DELETE,
   METHOD_PUT,
-  uriQueryJoin
+  uriQueryJoin,
 } from '$util/web'
-import { start_hydrating } from 'svelte/internal'
 
 const removeExistsInDatabaseTag = (shipment: Shipment) => {
   if (shipment['existsInDatabase'] != null) {
@@ -42,7 +41,7 @@ export class ShipmentService {
       throw new Error(
         `unexpected response ${
           response.status
-        } when retrieving package with ID "${packageId}" at "${this.URI_GET_SHIPMENT(packageId)}"`
+        } when retrieving package with ID "${packageId}" at "${this.URI_GET_SHIPMENT(packageId)}"`,
       )
     }
 
@@ -51,11 +50,11 @@ export class ShipmentService {
 
   public static async getPackagesForDateRange(
     startDate: string,
-    endDate: string
+    endDate: string,
   ): Promise<Shipment[]> {
     console.log('in fetch')
     const response = await fetch(this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -65,8 +64,8 @@ export class ShipmentService {
           response.status
         } when retrieving packages by date range using input "${startDate}, ${endDate}" at "${this.URI_GET_PACKAGES__BY_DATE_RANGE(
           startDate,
-          endDate
-        )}"`
+          endDate,
+        )}"`,
       )
     }
 
@@ -74,11 +73,11 @@ export class ShipmentService {
   }
 
   public static async saveNote(rejectionContent: string) {
-    let note = { content: rejectionContent }
+    const note = { content: rejectionContent }
     const response = await fetch(this.URI_CREATE_NOTE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(note)
+      body: JSON.stringify(note),
     })
     if (response.status !== 200) {
       throw new Error(`unexpected response ${response.status} when creating note`)
@@ -91,14 +90,14 @@ export class ShipmentService {
     const response = await fetch(this.URI_CREATE_PACKAGE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(pbcPackage)
+      body: JSON.stringify(pbcPackage),
     })
 
     if (response.status !== 200) {
       throw new Error(
         `unexpected response ${response.status} when creating package: ${JSON.stringify(
-          pbcPackage
-        )}`
+          pbcPackage,
+        )}`,
       )
     }
 
@@ -106,18 +105,18 @@ export class ShipmentService {
   }
 
   public static async updatePackage(pbcPackage: Shipment): Promise<Shipment> {
-    let shipment = removeExistsInDatabaseTag(pbcPackage)
+    const shipment = removeExistsInDatabaseTag(pbcPackage)
     const response = await fetch(this.URI_UPDATE_PACKAGE, {
       ...METHOD_PUT,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(shipment)
+      body: JSON.stringify(shipment),
     })
 
     if (response.status !== 200) {
       throw new Error(
         `unexpected response ${response.status} when updating package at "${
           this.URI_UPDATE_PACKAGE
-        }" with details: ${JSON.stringify(shipment)}`
+        }" with details: ${JSON.stringify(shipment)}`,
       )
     }
 
@@ -131,7 +130,7 @@ export class ShipmentService {
       throw new Error(
         `unexpected response ${
           response.status
-        } when deleting package with ID ${packageId} from ${this.URI_DELETE_PACKAGE(packageId)}`
+        } when deleting package with ID ${packageId} from ${this.URI_DELETE_PACKAGE(packageId)}`,
       )
     }
 

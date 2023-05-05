@@ -10,7 +10,7 @@ export interface Facility {
 
 export enum State {
   NC = 'NC',
-  AL = 'AL'
+  AL = 'AL',
 }
 
 export const INVALID_FACILITY: Facility = Object.freeze({
@@ -21,7 +21,7 @@ export const INVALID_FACILITY: Facility = Object.freeze({
   additionalInfo: '' as any,
   street: '' as any,
   city: '' as any,
-  zip: '' as any
+  zip: '' as any,
 })
 
 export const NO_FACILITY_PROVIDED: Facility = Object.freeze({
@@ -32,7 +32,7 @@ export const NO_FACILITY_PROVIDED: Facility = Object.freeze({
   additionalInfo: '' as any,
   street: '' as any,
   city: '' as any,
-  zip: '' as any
+  zip: '' as any,
 })
 
 export const isValidFacility = (facility: Facility) => {

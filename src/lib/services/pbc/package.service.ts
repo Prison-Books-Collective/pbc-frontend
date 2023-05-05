@@ -1,30 +1,7 @@
 import { BASE_PBC_URI } from '.'
 import type { Package } from '$models/pbc/package'
-import {
-  CONTENT_TYPE_JSON,
-  METHOD_GET,
-  METHOD_POST,
-  METHOD_DELETE,
-  METHOD_PUT,
-  uriQueryJoin
-} from '$util/web'
+import { METHOD_GET, uriQueryJoin } from '$util/web'
 import type { Shipment } from '$models/pbc/shipment'
-import { focusedInmate } from '$stores/inmate'
-
-const removeExistsInDatabaseTag = (shipment: Shipment) => {
-  if (shipment['existsInDatabase'] != null) {
-    delete shipment['existsInDatabase']
-  }
-  shipment.content.forEach((shipmentContent) => {
-    if (shipmentContent.type == 'book') {
-      if (shipmentContent['existsInDatabase'] != null) {
-        delete shipmentContent['existsInDatabase']
-      }
-    }
-  })
-
-  return shipment
-}
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>
@@ -54,7 +31,7 @@ export class PackageService {
 
   public static async TODO_getPackagesForRecipient(assignedId: string): Promise<Shipment[]> {
     const response = await fetch(this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(assignedId), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status !== 200) {
@@ -62,8 +39,8 @@ export class PackageService {
         `unexpected response ${
           response.status
         } when retrieving package for recipient with assigned ID "${assignedId}" at "${this.URI_GET_PACKAGES_FOR_RECIPIENT_BY_DB_ID(
-          assignedId
-        )}"`
+          assignedId,
+        )}"`,
       )
     }
 
@@ -73,14 +50,14 @@ export class PackageService {
   // date is a formatted string "yyyy-mm-dd"
   public static async getPackageCount(date: string): Promise<number> {
     const response = await fetch(this.URI_PACKAGE_COUNT(date), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
     return (await response.json()) as number
   }
 
   public static async getPackagesForDate(date: string): Promise<Shipment[]> {
     const response = await fetch(this.URI_GET_PACKAGES__BY_DATE(date), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -89,8 +66,8 @@ export class PackageService {
         `unexpected response ${
           response.status
         } when retrieving packages by date using input "${date}" at "${this.URI_GET_PACKAGES__BY_DATE(
-          date
-        )}"`
+          date,
+        )}"`,
       )
     }
 
@@ -99,10 +76,10 @@ export class PackageService {
 
   public static async getPackagesForDateRange(
     startDate: string,
-    endDate: string
+    endDate: string,
   ): Promise<Package[]> {
     const response = await fetch(this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -112,8 +89,8 @@ export class PackageService {
           response.status
         } when retrieving packages by date range using input "${startDate}, ${endDate}" at "${this.URI_GET_PACKAGES__BY_DATE_RANGE(
           startDate,
-          endDate
-        )}"`
+          endDate,
+        )}"`,
       )
     }
 
@@ -122,7 +99,7 @@ export class PackageService {
 
   public static async getPackagesForISBN(isbn: string): Promise<Package[]> {
     const response = await fetch(this.URI_GET_PACKAGES__BY_ISBN(isbn), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -131,8 +108,8 @@ export class PackageService {
         `unexpected response ${
           response.status
         } when retrieving packages containing isbn using input "${isbn}" at "${this.URI_GET_PACKAGES__BY_ISBN(
-          isbn
-        )}"`
+          isbn,
+        )}"`,
       )
     }
 
@@ -141,10 +118,10 @@ export class PackageService {
 
   public static async getPackagesForAuthorAndTitle(
     author: string,
-    title: string
+    title: string,
   ): Promise<Package[]> {
     const response = await fetch(this.URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE(author, title), {
-      ...METHOD_GET
+      ...METHOD_GET,
     })
 
     if (response.status === 204) return []
@@ -154,8 +131,8 @@ export class PackageService {
           response.status
         } when retrieving packages containing "${title}" by author "${author}" at "${this.URI_GET_PACKAGES__BY_AUTHOR_AND_TITLE(
           author,
-          title
-        )}"`
+          title,
+        )}"`,
       )
     }
 

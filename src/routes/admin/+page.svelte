@@ -13,7 +13,7 @@
     alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`)
   const alertFacilityCreated = ({ detail: facility }) =>
     alert(
-      `Successfully added new Facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}"`
+      `Successfully added new Facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}"`,
     )
   const alertCreationError = ({ detail: error }) => {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)

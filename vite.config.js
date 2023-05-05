@@ -1,8 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
+import { defineConfig } from 'vite'
 
-/** @type {import('vite').UserConfig} */
-const config = {
+export default defineConfig({
   plugins: [sveltekit()],
   resolve: {
     alias: {
@@ -11,12 +11,10 @@ const config = {
       $models: resolve('./src/lib/models'),
       $services: resolve('./src/lib/services'),
       $stores: resolve('./src/lib/stores'),
-      $util: resolve('./src/lib/util')
-    }
+      $util: resolve('./src/lib/util'),
+    },
   },
   test: {
-    include: ['src/**/*.{test,spec}.{js,ts}']
-  }
-}
-
-export default config
+    include: ['src/**/*.{test,spec}.{js,ts}'],
+  },
+})

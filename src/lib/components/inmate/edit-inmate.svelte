@@ -1,16 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte/internal'
-  import { isInmateNoID, type Inmate } from '$models/pbc/inmate'
   import { isValidFacility, type Facility } from '$models/pbc/facility'
   import { FacilityService } from '$services/pbc/facility.service'
-  import { InmateService } from '$services/pbc/inmate.service'
   import { isEmpty } from '$util/strings'
   import FacilitySelect from '$components/facility/select-facility.svelte'
   import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
   import { RecipientService } from '$services/pbc/recipient.service'
-  import { updated } from '$app/stores'
-  import { goto } from '$app/navigation'
-  import { HomepageSearch, ROUTE_HOME } from '$util/routing'
 
   const dispatch = createEventDispatcher()
 
@@ -43,7 +38,7 @@
         ...recipient,
         firstName,
         lastName,
-        assignedId: assignedId
+        assignedId: assignedId,
       })
 
       dispatch('update', updatedRecipient)

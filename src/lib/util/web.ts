@@ -4,17 +4,17 @@ export const METHOD_PUT = { method: 'put' }
 export const METHOD_DELETE = { method: 'delete' }
 
 export const CONTENT_TYPE_JSON = {
-  'Content-Type': 'application/json;charset=utf-8'
+  'Content-Type': 'application/json;charset=utf-8',
 }
 
-export const uriQueryJoin = (queryMap: any) => {
+export const uriQueryJoin = (queryMap: { [param: string]: string }) => {
   const paramNames = Object.keys(queryMap).filter((paramName) => queryMap[paramName] !== null)
   if (paramNames.length === 0) return ''
 
   return (
     '?' +
     encodeURI(
-      paramNames.map((paramName) => `${paramName}=${queryMap[paramName].toString()}`).join('&')
+      paramNames.map((paramName) => `${paramName}=${queryMap[paramName].toString()}`).join('&'),
     )
   )
 }
@@ -40,7 +40,7 @@ export const getQueryParam = (url: URL, paramName: string, ...aliases: string[])
     param_SCREAMING_SNAKE,
     param_snake_case,
     paramCamelCase,
-    paramKebabCase
+    paramKebabCase,
   ]) {
     const value = url.searchParams.get(variant)
     if (value) return value

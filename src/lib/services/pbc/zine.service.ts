@@ -15,14 +15,14 @@ export class ZineService {
     const response = await fetch(this.URI_CREATE_ZINE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(zine)
+      body: JSON.stringify(zine),
     })
 
     if (response.status !== 200) {
       throw new Error(
         `unexpected response ${response.status} when creating zine at ${
           this.URI_CREATE_ZINE
-        } with details: ${JSON.stringify(zine)}`
+        } with details: ${JSON.stringify(zine)}`,
       )
     }
 
@@ -38,7 +38,7 @@ export class ZineService {
     const response = await fetch(this.URI_GET_ZINE_BY_CODE(code), { ...METHOD_GET })
     if (response.status !== 200) {
       throw new Error(
-        `unexpected response ${response.status} when retrieving all zines from ${this.URI_GET_ZINES}`
+        `unexpected response ${response.status} when retrieving all zines from ${this.URI_GET_ZINES}`,
       )
     }
     return await response.json()
@@ -52,7 +52,7 @@ export class ZineService {
     const response = await fetch(this.URI_GET_ZINES, { ...METHOD_GET })
     if (response.status !== 200) {
       throw new Error(
-        `unexpected response ${response.status} when retrieving all zines from ${this.URI_GET_ZINES}`
+        `unexpected response ${response.status} when retrieving all zines from ${this.URI_GET_ZINES}`,
       )
     }
 

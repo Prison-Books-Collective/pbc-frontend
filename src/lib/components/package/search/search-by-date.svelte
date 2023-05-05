@@ -4,7 +4,7 @@
 
   enum SearchType {
     DATE,
-    DATE_RANGE
+    DATE_RANGE,
   }
 
   const dispatch = createEventDispatcher()

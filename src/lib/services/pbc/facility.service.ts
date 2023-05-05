@@ -15,12 +15,12 @@ export class FacilityService {
 
     const response = await fetch(this.URI_GET_FACILITIES, {
       ...METHOD_GET,
-      headers: { ...CONTENT_TYPE_JSON }
+      headers: { ...CONTENT_TYPE_JSON },
     })
 
     if (response.status !== 200) {
       throw new Error(
-        `unexpected response ${response.status} when retrieving list of facilities from ${this.URI_GET_FACILITIES}`
+        `unexpected response ${response.status} when retrieving list of facilities from ${this.URI_GET_FACILITIES}`,
       )
     }
 
@@ -32,12 +32,12 @@ export class FacilityService {
     const response = await fetch(this.URI_CREATE_FACILITY, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(facility)
+      body: JSON.stringify(facility),
     })
 
     if (response.status !== 200) {
       throw new Error(
-        `unexpected response ${response.status} when creating facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}" at "${this.URI_CREATE_FACILITY}"`
+        `unexpected response ${response.status} when creating facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}" at "${this.URI_CREATE_FACILITY}"`,
       )
     }
     this.cachedFacilities = []

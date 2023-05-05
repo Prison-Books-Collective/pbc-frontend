@@ -3,7 +3,7 @@ import {
   type Subscriber,
   type Unsubscriber,
   type Updater,
-  type Writable
+  type Writable,
 } from 'svelte/store'
 import type { Book } from '$models/pbc/shipment'
 import { BookService, isNoISBNBook } from '$services/pbc/book.service'
@@ -30,7 +30,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
   public subscribe: (
     this: void,
     run: Subscriber<LocalStorageBook>,
-    invalidate?: (value?: LocalStorageBook) => void
+    invalidate?: (value?: LocalStorageBook) => void,
   ) => Unsubscriber
 
   public reset() {
@@ -44,7 +44,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
       if (!foundBook) throw new Error(`did not find book with ISBN ${isbn}`)
       const bookUpdate = {
         ...foundBook,
-        existsInDatabase: true
+        existsInDatabase: true,
       }
       this.set(bookUpdate)
       return bookUpdate
@@ -55,7 +55,7 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
         ...emptyBook,
         isbn10: isbn.length === 10 ? isbn : null,
         isbn13: isbn.length === 13 ? isbn : null,
-        existsInDatabase: false
+        existsInDatabase: false,
       }
       this.set(bookUpdate)
       return bookUpdate
@@ -79,25 +79,25 @@ export class FocusedBookStore implements Writable<LocalStorageBook> {
           .then((updatedBook) => {
             this.set({
               ...updatedBook,
-              existsInDatabase: true
+              existsInDatabase: true,
             })
             resolve({
               ...updatedBook,
-              existsInDatabase: true
+              existsInDatabase: true,
             })
           })
           .catch((error) => {
             console.error(error)
             console.error(
-              `failed to sync $focusedBook via remote using data ${JSON.stringify(book)}`
+              `failed to sync $focusedBook via remote using data ${JSON.stringify(book)}`,
             )
             this.set({
               existsInDatabase: false,
-              ...book
+              ...book,
             })
             reject({
               existsInDatabase: false,
-              ...book
+              ...book,
             })
           })
 
@@ -114,7 +114,7 @@ const emptyBook: LocalStorageBook = {
 
   title: null,
   creators: [],
-  type: 'book'
+  type: 'book',
 }
 
 export const focusedBook = new FocusedBookStore(emptyBook)

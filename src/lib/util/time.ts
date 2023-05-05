@@ -27,7 +27,7 @@ export const formatDateForInvoice = (date: Date = new Date()) => {
     month: 'long',
     day: '2-digit',
     year: 'numeric',
-    timeZone
+    timeZone,
   })
 }
 

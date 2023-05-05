@@ -8,7 +8,7 @@
 
   const dispatch = createEventDispatcher()
 
-  let filter: string = ''
+  let filter = ''
   let allZines: Zine[] = []
   let availableZines: Zine[] = []
   let selectedZines: Zine[] = []

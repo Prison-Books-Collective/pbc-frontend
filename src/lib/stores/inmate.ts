@@ -3,7 +3,7 @@ import {
   type Subscriber,
   type Unsubscriber,
   type Updater,
-  type Writable
+  type Writable,
 } from 'svelte/store'
 import type { Inmate } from '$models/pbc/inmate'
 import { InmateService } from '$services/pbc/inmate.service'
@@ -11,11 +11,7 @@ import { isEmpty } from '$util/strings'
 import type { Recipient } from '$models/pbc/recipient'
 import { RecipientService } from '$services/pbc/recipient.service'
 
-interface LocalStorageInmate extends Inmate {
-  [additionalFields: string]: any
-}
-
-interface LocalStorageRecipient extends Recipient {}
+type LocalStorageRecipient = Recipient
 
 export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   private readonly defaultInmate
@@ -39,7 +35,7 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
   public subscribe: (
     this: void,
     run: Subscriber<LocalStorageRecipient>,
-    invalidate?: (value?: LocalStorageRecipient) => void
+    invalidate?: (value?: LocalStorageRecipient) => void,
   ) => Unsubscriber
 
   public reset() {
@@ -53,7 +49,7 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
       const foundRecipient = await RecipientService.getRecipientByAssignedId(assignedId)
 
       if (foundRecipient) {
-        this.set(foundRecipient as any) // todo: forcing typechecker to allow
+        this.set(foundRecipient)
         return foundRecipient
       } else {
         return null
@@ -73,7 +69,7 @@ export class FocusedInmateStore implements Writable<LocalStorageRecipient> {
       const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
 
       if (foundRecipient) {
-        this.set(foundRecipient as any) // todo: forcing typechecker to allow
+        this.set(foundRecipient)
         return foundRecipient
       } else {
         return null
@@ -108,7 +104,7 @@ const emptyInmate: LocalStorageRecipient = {
   firstName: null,
   lastName: null,
 
-  shipments: null
+  shipments: null,
 }
 
 export const focusedInmate = new FocusedInmateStore(emptyInmate)

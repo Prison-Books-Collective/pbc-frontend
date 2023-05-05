@@ -1,0 +1,23 @@
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Only run Prettier on files that are staged for commit
+# This assumes that your Prettier configuration is already set up in your project
+
+PRETTIER_CMD="npm run format:githook --"
+
+# Get a list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+FILES_TO_FORMAT=''
+
+# Run Prettier on each staged file
+for FILE in $STAGED_FILES; do
+  if [[ "$FILE" =~ \.((js|ts|json|md|html|css|scss|svelte))$ ]]; then
+    FILES_TO_FORMAT="$FILE $FILES_TO_FORMAT"
+  fi
+done
+
+if ! [ -z "$FILES_TO_FORMAT" ]; then
+  $PRETTIER_CMD $FILES_TO_FORMAT
+  git add $FILES_TO_FORMAT
+fi
+exit 0

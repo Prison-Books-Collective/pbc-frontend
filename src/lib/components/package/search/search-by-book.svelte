@@ -4,15 +4,15 @@
 
   enum SearchType {
     ISBN,
-    AUTHOR_AND_TITLE
+    AUTHOR_AND_TITLE,
   }
 
   const dispatch = createEventDispatcher()
 
   export let searchType: SearchType = SearchType.AUTHOR_AND_TITLE
-  export let isbn: string = ''
-  export let author: string = '',
-    title: string = ''
+  export let isbn = ''
+  export let author = '',
+    title = ''
 
   $: submitText =
     searchType === SearchType.ISBN ? 'Search Packages by ISBN' : 'Search Packages by Author & Title'

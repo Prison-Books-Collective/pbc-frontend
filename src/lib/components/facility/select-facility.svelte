@@ -42,7 +42,7 @@
     {#await facilitiesLoaded}
       <option value={undefined}>Loading Facilities</option>
     {:then}
-      <option disabled selected={!!!selected} value={null}>Select Facility</option>
+      <option disabled selected={!selected} value={null}>Select Facility</option>
       {#each facilityList as f}
         <option value={f} selected={selected === f.name}
           >{f.name}{f.state ? ',' : ''} {f.state}</option
@@ -54,8 +54,8 @@
   <select name="facility" bind:value={facility} {disabled} on:change={() => emitUpdate(facility)}>
     {#await facilitiesLoaded}
       <option value={undefined}>Loading Facilities</option>
-    {:then _}
-      <option disabled selected={!!!selected} value={null}>Select Facility</option>
+    {:then}
+      <option disabled selected={!selected} value={null}>Select Facility</option>
       {#if selected === INVALID_FACILITY.name}
         <option disabled selected={selected === INVALID_FACILITY.name} value={null}>
           Invalid Facility, select a new one

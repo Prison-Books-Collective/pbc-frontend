@@ -24,7 +24,7 @@ export const undefinedInmate = {
   middleInitial: undefined,
   lastName: 'Unavailable',
   id: 'No-ID',
-  location: undefined
+  location: undefined,
 } as Inmate
 
 export const resolveInmate = async (pbcPackage: Shipment) =>

@@ -1,16 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { PackageService } from '$services/pbc/package.service'
-  import { focusedPackage, focusedPackages } from '$stores/package'
+  import { focusedPackage } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
   import { focusedInmate } from '$stores/inmate'
 
   const dispatch = createEventDispatcher()
 
-  let selectedItems = []
+  let selectedItems: string[] = []
 
-  const shouldDisableDeleteItems = (selectedItems) => {
+  const shouldDisableDeleteItems = () => {
     return true //!selectedItems || selectedItems.length === 0
   }
 

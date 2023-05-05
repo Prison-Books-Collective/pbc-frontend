@@ -3,7 +3,7 @@ import {
   type Subscriber,
   type Unsubscriber,
   type Updater,
-  type Writable
+  type Writable,
 } from 'svelte/store'
 import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
 import type { Facility } from '$models/pbc/facility'
@@ -12,7 +12,6 @@ import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
 import { formatDate } from '$util/time'
 import { ShipmentService } from '$services/pbc/shipment.service'
 import type { Recipient } from '$models/pbc/recipient'
-import { RecipientService } from '$services/pbc/recipient.service'
 
 interface LocalStorageShipment extends Shipment {
   existsInDatabase?: boolean
@@ -46,7 +45,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
   public subscribe: (
     this: void,
     run: Subscriber<LocalStorageShipment[]>,
-    invalidate?: (value?: LocalStorageShipment[]) => void
+    invalidate?: (value?: LocalStorageShipment[]) => void,
   ) => Unsubscriber
 
   public async fetchForInmate(inmateID: string): Promise<void> {
@@ -69,7 +68,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
 
   public async fetchForDateRange(
     startDate: string,
-    endDate: string
+    endDate: string,
   ): Promise<LocalStorageShipment[]> {
     try {
       console.log('in the store')
@@ -79,7 +78,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     } catch (error) {
       console.error(error)
       console.error(
-        `failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`
+        `failed to retrieve packages for date range "${startDate}, ${endDate}" via remote`,
       )
       this.set([])
       return []
@@ -101,7 +100,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
 
   public async fetchForAuthorAndTitle(
     author: string,
-    title: string
+    title: string,
   ): Promise<LocalStoragePackage[]> {
     try {
       const packages = await PackageService.getPackagesForAuthorAndTitle(author, title)
@@ -110,7 +109,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     } catch (error) {
       console.error(error)
       console.error(
-        `failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`
+        `failed to retrieve packages containing book with title "${title}" by author "${author}" via remote`,
       )
       this.set([])
       return []
@@ -140,7 +139,7 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
         const packageToUpdate = updatedPackages[updateIndex]
         updatedPackages[updateIndex] = {
           ...packageToUpdate,
-          ...packageUpdates
+          ...packageUpdates,
         }
       }
       return updatedPackages
@@ -182,7 +181,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
   public subscribe: (
     this: void,
     run: Subscriber<LocalStorageShipment>,
-    invalidate?: (value?: LocalStorageShipment) => void
+    invalidate?: (value?: LocalStorageShipment) => void,
   ) => Unsubscriber
   public async get(): Promise<LocalStorageShipment> {
     return await this.currentValue
@@ -239,7 +238,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
     book['type'] = 'book'
     this.update((currentPackage) => ({
       ...currentPackage,
-      content: [...currentPackage.content, book]
+      content: [...currentPackage.content, book],
     }))
   }
 
@@ -247,21 +246,21 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
     zine['type'] = 'zine'
     this.update((currentPackage) => ({
       ...currentPackage,
-      content: [...currentPackage.content, zine]
+      content: [...currentPackage.content, zine],
     }))
   }
 
   public setRecipient(recipient: Recipient) {
     this.update((currentPackage) => ({
       ...currentPackage,
-      recipient: recipient
+      recipient: recipient,
     }))
   }
 
   public setNote(note: Note) {
     this.update((currentPackage) => ({
       ...currentPackage,
-      notes: [note]
+      notes: [note],
     }))
   }
 
@@ -271,16 +270,16 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
       notes: [
         {
           id: null,
-          content: alertText
-        }
-      ]
+          content: alertText,
+        },
+      ],
     }))
   }
 
   public setDestination(facility: Facility) {
     this.update((currentPackage) => ({
       ...currentPackage,
-      facility
+      facility,
     }))
   }
 
@@ -298,7 +297,7 @@ export class FocusedShipmentStore implements Writable<LocalStorageShipment> {
         ...currentPackage,
         books,
         noISBNBooks,
-        zines
+        zines,
       }
     })
   }
@@ -312,7 +311,7 @@ const emptyPackage: LocalStorageShipment = {
   facility: null,
 
   content: [],
-  alert: null
+  alert: null,
 }
 
 export const focusedPackages = new FocusedShipmentsStore(focusedInmate)

@@ -2,7 +2,6 @@
   import { gotoPackagesForInmate } from '$util/routing'
   import { focusedInmate } from '$stores/inmate'
   import type { Facility } from '$models/pbc/facility'
-  import { InmateService } from '$services/pbc/inmate.service'
   import FacilitySelect from '$components/facility/select-facility.svelte'
   import { isEmpty } from '$util/strings'
   import { RecipientService } from '$services/pbc/recipient.service'
@@ -12,7 +11,7 @@
   export let { id, firstName, lastName, isInmateNoID } = data
   export let location: Facility = null
 
-  const shouldDisableCreateInmate = ({ isInmateNoID, firstName, lastName, location, id }) =>
+  const shouldDisableCreateInmate = ({ isInmateNoID, firstName, lastName, id }) =>
     isInmateNoID
       ? isEmpty(firstName) || isEmpty(lastName)
       : isEmpty(firstName) || isEmpty(lastName) || isEmpty(id)
@@ -23,7 +22,7 @@
           firstName,
           lastName,
           assignedId: null,
-          facility: location
+          facility: location,
         })
       : RecipientService.createRecipient({ firstName, lastName, assignedId: id }))
 

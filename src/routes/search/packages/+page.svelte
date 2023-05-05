@@ -10,7 +10,8 @@
   import BookTitleResolver from '$components/book-title-resolver.svelte'
   import { formatDate } from '$util/time'
   import { PackageSearchMode } from '$util/routing'
-  export let data
+  import type { PageData } from './$types'
+  export let data: PageData
 
   export let date: string = formatDate(new Date())
   export let startDate = data.startDate || formatDate(new Date())
@@ -42,7 +43,7 @@
       endDate,
       isbn,
       author,
-      title
+      title,
     })
     if (previousQuery === currentQuery) return
     previousQuery = currentQuery
