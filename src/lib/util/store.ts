@@ -5,6 +5,9 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
+import { ErrorStrategy } from './error'
+
+export const ERROR_STRATEGY: ErrorStrategy = import.meta.env.ERROR_STRATEGY
 
 export abstract class AppStore<DataType> implements Writable<DataType> {
   private name: string
@@ -40,8 +43,20 @@ export abstract class AppStore<DataType> implements Writable<DataType> {
   public abstract sync(): Promise<DataType>
   public abstract load(loadedData: DataType): DataType
 
-  protected getLatest() {
+  public getLatest() {
     return Object.freeze({ ...this.latest })
   }
-  protected logID = ({ method }: { method: string }) => `[ ${this.name} ]( ${method} ) `
+  protected logID = ({ method }: { method: string }) => `[ ${this.name} ]( ${method} )`
+
+  protected error(message: string) {
+    switch (ERROR_STRATEGY) {
+      case ErrorStrategy.SILENT:
+        break
+      case ErrorStrategy.LOG:
+        console.error(`${this.logID} ${message}`)
+        break
+      case ErrorStrategy.THROW:
+        throw new Error(`${this.logID} ${message}`)
+    }
+  }
 }

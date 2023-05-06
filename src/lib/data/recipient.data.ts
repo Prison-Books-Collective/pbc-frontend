@@ -32,6 +32,21 @@ export class RecipientStore extends AppStore<Recipient> {
     return recipient
   }
 
+  public async fetchByDatabaseId({ id }: { id: string }): Promise<Recipient> {
+    if (isEmpty(id)) return this.getLatest()
+
+    loading.start()
+    const recipient = await recipientClient.getRecipientByDatabaseId(id)
+    loading.end()
+
+    if (recipient === null) {
+      this.error(`Failed to fetch recipient by database id "${id}"`)
+      return this.getLatest()
+    }
+    this.set(recipient)
+    return recipient
+  }
+
   public async sync(): Promise<Recipient> {
     loading.start()
     const updatedRecipient = await recipientClient.updateRecipient(this.getLatest())
@@ -51,3 +66,5 @@ export class RecipientStore extends AppStore<Recipient> {
     return loadedData
   }
 }
+
+export const recipient = new RecipientStore()
