@@ -1,0 +1,160 @@
+/* thin */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-thin-webfont.woff2') format('woff2'),
+    url('worksans-thin-webfont.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+
+/* thin_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-thinitalic-webfont.woff2') format('woff2'),
+    url('worksans-thinitalic-webfont.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+}
+
+/* extralight */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-extralight-webfont.woff2') format('woff2'),
+    url('worksans-extralight-webfont.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* extralight_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-extralightitalic-webfont.woff2') format('woff2'),
+    url('worksans-extralightitalic-webfont.woff') format('woff');
+  font-weight: 200;
+  font-style: italic;
+}
+
+/* light */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-light-webfont.woff2') format('woff2'),
+    url('worksans-light-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* light_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-lightitalic-webfont.woff2') format('woff2'),
+    url('worksans-lightitalic-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* regular */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-regular-webfont.woff2') format('woff2'),
+    url('worksans-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* regular italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-italic-webfont.woff2') format('woff2'),
+    url('worksans-italic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+/* medium */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-medium-webfont.woff2') format('woff2'),
+    url('worksans-medium-webfont.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* medium_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-mediumitalic-webfont.woff2') format('woff2'),
+    url('worksans-mediumitalic-webfont.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* semibold */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-semibold-webfont.woff2') format('woff2'),
+    url('worksans-semibold-webfont.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* semibold_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-semibolditalic-webfont.woff2') format('woff2'),
+    url('worksans-semibolditalic-webfont.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* bold */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-bold-webfont.woff2') format('woff2'),
+    url('worksans-bold-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* bold_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-bolditalic-webfont.woff2') format('woff2'),
+    url('worksans-bolditalic-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* extrabold */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-extrabold-webfont.woff2') format('woff2'),
+    url('worksans-extrabold-webfont.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* extrabold_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-extrabolditalic-webfont.woff2') format('woff2'),
+    url('worksans-extrabolditalic-webfont.woff') format('woff');
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* black */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-black-webfont.woff2') format('woff2'),
+    url('worksans-black-webfont.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* black_italic */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('worksans-blackitalic-webfont.woff2') format('woff2'),
+    url('worksans-blackitalic-webfont.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+}

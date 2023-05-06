@@ -1,0 +1,35 @@
+/* regular */
+@font-face {
+  font-family: 'Gentium';
+  src: url('gentiumbasic-regular-webfont.woff2') format('woff2'),
+    url('gentiumbasic-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* regular italic */
+@font-face {
+  font-family: 'Gentium';
+  src: url('gentiumbasic-italic-webfont.woff2') format('woff2'),
+    url('gentiumbasic-italic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* bold */
+@font-face {
+  font-family: 'Gentium';
+  src: url('gentiumbasic-bold-webfont.woff2') format('woff2'),
+    url('gentiumbasic-bold-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* bolditalic */
+@font-face {
+  font-family: 'Gentium';
+  src: url('gentiumbasic-bolditalic-webfont.woff2') format('woff2'),
+    url('gentiumbasic-bolditalic-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+}

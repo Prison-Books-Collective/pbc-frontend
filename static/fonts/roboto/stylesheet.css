@@ -1,0 +1,143 @@
+/* regular */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-regular-webfont.woff2') format('woff2'),
+    url('roboto-regular-webfont.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* regular italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-italic-webfont.woff2') format('woff2'),
+    url('roboto-italic-webfont.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* thin */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-thin-webfont.woff2') format('woff2'),
+    url('roboto-thin-webfont.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+}
+
+/* thin_italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-thinitalic-webfont.woff2') format('woff2'),
+    url('roboto-thinitalic-webfont.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+}
+
+/* light */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-light-webfont.woff2') format('woff2'),
+    url('roboto-light-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* light_italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-lightitalic-webfont.woff2') format('woff2'),
+    url('roboto-lightitalic-webfont.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* medium */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-medium-webfont.woff2') format('woff2'),
+    url('roboto-medium-webfont.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* medium_italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-mediumitalic-webfont.woff2') format('woff2'),
+    url('roboto-mediumitalic-webfont.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* bold */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-bold-webfont.woff2') format('woff2'),
+    url('roboto-bold-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* bold_italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-bolditalic-webfont.woff2') format('woff2'),
+    url('roboto-bolditalic-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* black */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-black-webfont.woff2') format('woff2'),
+    url('roboto-black-webfont.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* black_italic */
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto-blackitalic-webfont.woff2') format('woff2'),
+    url('roboto-blackitalic-webfont.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* condensed */
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('roboto-condensed-webfont.woff2') format('woff2'),
+    url('roboto-condensed-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* condensed_italic */
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('roboto-condenseditalic-webfont.woff2') format('woff2'),
+    url('roboto-condenseditalic-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* bold_condensed */
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('roboto-boldcondensed-webfont.woff2') format('woff2'),
+    url('roboto-boldcondensed-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* bold_condensed_italic */
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('roboto-boldcondenseditalic-webfont.woff2') format('woff2'),
+    url('roboto-boldcondenseditalic-webfont.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+}
