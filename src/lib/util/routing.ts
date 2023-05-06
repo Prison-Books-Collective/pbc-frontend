@@ -3,6 +3,7 @@ import type { Recipient } from '$models/pbc/recipient'
 import type { Shipment } from '$models/pbc/shipment'
 import { RecipientService } from '$services/pbc/recipient.service'
 import { focusedInmate } from '$stores/inmate'
+import { loading } from '$stores/loading'
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error'
 import { isEmpty } from '$util/strings'
 import { delay } from '$util/time'
@@ -63,8 +64,10 @@ export const gotoRecipientSearch = async (
 const gotoRecipientSearchByID = async (id) => {
   if (id === null) return
 
+  loading.start()
   try {
     const foundRecipient = await RecipientService.getRecipientByAssignedId(id)
+    loading.end()
     if (foundRecipient) {
       focusedInmate.set(foundRecipient)
       return gotoPackagesForInmate(foundRecipient)
@@ -77,16 +80,19 @@ const gotoRecipientSearchByID = async (id) => {
   } catch (error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
+    loading.end()
   }
 }
 
 const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
   if (isEmpty(firstName) && isEmpty(lastName)) return
+  loading.start()
   try {
     const foundRecipients = await RecipientService.getRecipientsByName({
       firstName,
       lastName,
     })
+    loading.end()
     if (foundRecipients && foundRecipients.length > 0) {
       if (firstName == null) {
         firstName = '-'
@@ -108,6 +114,7 @@ const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
   } catch (error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
+    loading.end()
   }
 }
 

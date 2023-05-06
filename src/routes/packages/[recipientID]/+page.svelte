@@ -9,6 +9,8 @@
   import { onDestroy, onMount } from 'svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
 
+  import { loading } from '$stores/loading'
+
   export let data
   let { recipientId, isAssignedId } = data
 
@@ -25,7 +27,9 @@
 
   console.log({ recipientId })
 
+  loading.start()
   inmateIsLoaded.then(() => {
+    loading.end()
     if ($focusedInmate.assignedId) {
       currentLocation = RecipientService.getRecipientLocation($focusedInmate.assignedId)
     }
@@ -53,9 +57,7 @@
   <title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
 </svelte:head>
 
-{#await inmateIsLoaded}
-  <Loading />
-{:then}
+{#await inmateIsLoaded then}
   <main class="page">
     <InmateName
       recipient={$focusedInmate}
