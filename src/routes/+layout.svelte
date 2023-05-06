@@ -3,7 +3,13 @@
   import logoText from '$assets/pbc-text.svg'
   import home from '$assets/icons/home.png'
   import settings from '$assets/icons/gear.png'
+  import Loading from '$components/loading.svelte'
+  import { loading } from '$stores/loading'
 </script>
+
+{#if $loading}
+  <Loading />
+{/if}
 
 <nav id="nav-primary">
   <div id="navigation-buttons">
