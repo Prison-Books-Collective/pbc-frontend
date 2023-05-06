@@ -53,7 +53,7 @@
 </script>
 
 <section id="filters" class:hidden={!visible}>
-  <label for="facility-switch" class="checkbox">
+  <label for="facility-switch">
     <input
       id="facility-switch"
       name="facility-switch"
@@ -66,7 +66,7 @@
     <FilterByFacility {packages} bind:fn={fnFilterByFacility} />
   {/if}
 
-  <label for="zine-switch" class="checkbox">
+  <label for="zine-switch">
     <input id="zine-switch" name="zine-switch" type="checkbox" bind:checked={shouldFilterByZine} />
     Filter by Zine(s)
   </label>
@@ -74,7 +74,7 @@
     <FilterByZine {packages} bind:fn={fnFilterByZine} />
   {/if}
 
-  <label for="keyword-switch" class="checkbox">
+  <label for="keyword-switch">
     <input
       id="keyword-switch"
       name="keyword-switch"
@@ -87,7 +87,7 @@
     <FilterByKeyword bind:fn={fnFilterByKeyword} />
   {/if}
 
-  <label for="rejection-switch" class="checkbox">
+  <label for="rejection-switch">
     <input
       id="rejection-switch"
       name="rejection-switch"

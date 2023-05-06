@@ -61,11 +61,7 @@
         bind:value={filter}
       />
       {#each availableZines as zine}
-        <label
-          for={zine.id.toString()}
-          transition:fly|local={{ duration: 300, x: -50 }}
-          class="checkbox"
-        >
+        <label for={zine.id.toString()} transition:fly|local={{ duration: 300, x: -50 }}>
           {#key availableZines}
             <input
               type="checkbox"

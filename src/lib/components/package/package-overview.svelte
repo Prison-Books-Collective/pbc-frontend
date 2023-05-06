@@ -77,7 +77,7 @@
       <ol class="package-items-list">
         {#each $focusedPackage.content as content}
           <li>
-            <label for={content.id.toString()} class="checkbox">
+            <label for={content.id.toString()}>
               <input
                 id={content.id.toString()}
                 type="checkbox"
@@ -95,7 +95,7 @@
         {/each}
         <!-- {#each $focusedPackage.noISBNBooks as book}
           <li>
-            <label for={book.id.toString()} class="checkbox">
+            <label for={book.id.toString()}>
               <input
                 id={book.id.toString()}
                 type="checkbox"
@@ -108,7 +108,7 @@
         {/each}
         {#each $focusedPackage.zines as zine}
           <li>
-            <label for={zine.id.toString()} class="checkbox">
+            <label for={zine.id.toString()}>
               <input
                 id={zine.id.toString()}
                 type="checkbox"
@@ -209,7 +209,7 @@
     justify-content: space-between;
 
     .label {
-      font-family: Roboto;
+      font-family: 'Roboto';
       font-weight: 600;
       margin-right: 1em;
     }

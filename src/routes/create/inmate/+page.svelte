@@ -42,7 +42,7 @@
   <h1>Add New Recipient</h1>
 
   <form autocomplete="off" on:submit|preventDefault={createInmate}>
-    <label for="no-id" class="checkbox">
+    <label for="no-id">
       <input type="checkbox" name="no-id" id="no-id" bind:checked={isInmateNoID} />
       This Recipient does not have an ID
     </label>
