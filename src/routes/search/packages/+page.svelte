@@ -11,6 +11,7 @@
   import { formatDate } from '$util/time'
   import { PackageSearchMode } from '$util/routing'
   import type { PageData } from './$types'
+  import { loading } from '$stores/loading'
   export let data: PageData
 
   export let date: string = formatDate(new Date())
@@ -19,14 +20,11 @@
   export let isbn = ''
   export let [author, title] = ['', '']
   export let searchMode
-  let loading = true
   let showFilters = false
   let shouldFilter = false
   let filteredPackages = []
 
   const toggleShowFilters = () => (showFilters = !showFilters)
-  const startLoading = () => (loading = true)
-  const doneLoading = () => (loading = false)
 
   let previousQuery
   const createQuery = ({ searchMode, date, startDate, endDate, isbn, author, title }) => {
@@ -50,24 +48,24 @@
     console.log('search mode: ' + searchMode)
     switch (searchMode) {
       case PackageSearchMode.DATE:
-        startLoading()
-        focusedPackages.fetchForDate(date).then(doneLoading)
+        loading.start()
+        focusedPackages.fetchForDate(date).then(() => loading.end())
         break
       case PackageSearchMode.DATE_RANGE:
         console.log('in date range switch case')
-        startLoading()
-        focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading)
+        loading.start()
+        focusedPackages.fetchForDateRange(startDate, endDate).then(() => loading.end())
         break
       case PackageSearchMode.ISBN:
         if (!isEmpty(isbn)) {
-          startLoading()
-          focusedPackages.fetchForISBN(isbn).then(doneLoading)
+          loading.start()
+          focusedPackages.fetchForISBN(isbn).then(() => loading.end())
         }
         break
       case PackageSearchMode.AUTHOR_AND_TITLE:
-        startLoading()
+        loading.start()
         if (!isEmpty(author) && !isEmpty(title)) {
-          focusedPackages.fetchForAuthorAndTitle(author, title).then(doneLoading)
+          focusedPackages.fetchForAuthorAndTitle(author, title).then(() => loading.end())
         }
         break
     }
@@ -89,9 +87,6 @@
   <title>BellBooks - Search Packages</title>
 </svelte:head>
 
-{#await searchMode}
-  <Loading visible={loading} />
-{/await}
 <main class="page">
   {#if searchMode === PackageSearchMode.DATE || searchMode === PackageSearchMode.DATE_RANGE}
     <header id="date-header">

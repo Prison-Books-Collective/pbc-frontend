@@ -4,12 +4,15 @@
   import { RecipientService } from '$services/pbc/recipient.service'
   import { goto } from '$app/navigation'
   import { focusedInmate } from '$stores/inmate'
+  import { loading } from '$stores/loading.js'
   export let data
 
   export let firstName: string = data.firstName || ''
   export let lastName: string = data.lastName || ''
 
+  loading.start()
   const getInmates = RecipientService.getRecipientsByName({ firstName, lastName })
+  getInmates.then(() => loading.end())
 
   const findRecipient = async (id) => {
     const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
@@ -29,9 +32,7 @@
     creating a package for:
   </p>
 
-  {#await getInmates}
-    <Loading />
-  {:then inmates}
+  {#await getInmates then inmates}
     <nav>
       {#each inmates as inmate}
         <p
