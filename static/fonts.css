@@ -1,39 +1,5 @@
-@font-face {
-  font-family: roboto;
-  src: url('./fonts/roboto/Roboto-Regular.ttf') format('truetype');
-  font-style: normal;
-}
-
-@font-face {
-  font-family: roboto;
-  src: url('./fonts/roboto/Roboto-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: gentium;
-  src: url('./fonts/gentium/GentiumBasic-Regular.ttf') format('truetype');
-  font-style: normal;
-}
-
-@font-face {
-  font-family: gentium;
-  src: url('./fonts/gentium/GentiumBasic-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: gentium;
-  src: url('./fonts/gentium/GentiumBasic-BoldItalic.ttf') format('truetype');
-  font-weight: bold;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: gentium;
-  src: url('./fonts/gentium/GentiumBasic-Italic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
+@import url('./fonts/alfa-slab/stylesheet.css');
+@import url('./fonts/work-sans/stylesheet.css');
+@import url('./fonts/zilla-slab/stylesheet.css');
+@import url('./fonts/roboto/stylesheet.css');
+@import url('./fonts/gentium/stylesheet.css');
