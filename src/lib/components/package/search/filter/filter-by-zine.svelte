@@ -81,15 +81,15 @@
 
 {#if availableZines && availableZines.length > 0}
   <section class="form-options stretch one-line snug">
-    <label for="any-zines" class="checkbox outline text-normal">
+    <label for="any-zines" class="outline text-normal">
       <input id="any-zines" name="any-zines" type="radio" value="any" bind:group={mode} />
       Contains <span class="any">Any</span> of the Zines
     </label>
-    <label for="all-zines" class="checkbox outline text-normal">
+    <label for="all-zines" class="outline text-normal">
       <input id="all-zines" name="all-zines" type="radio" value="all" bind:group={mode} />
       Contains <span class="all">All</span> of the Zines
     </label>
-    <label for="no-zines" class="checkbox outline text-normal">
+    <label for="no-zines" class="outline text-normal">
       <input id="no-zines" name="no-zines" type="radio" value="none" bind:group={mode} />
       <strong>Does not</strong> contain Zines
     </label>
@@ -97,7 +97,7 @@
 
   <section class="inner-window">
     {#each availableZines as zine}
-      <label for={zine.id.toString()} class="checkbox item">
+      <label for={zine.id.toString()} class="item">
         {#key packages}
           <input
             type="checkbox"

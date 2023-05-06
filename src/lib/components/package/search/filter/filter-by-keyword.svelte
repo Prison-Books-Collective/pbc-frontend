@@ -60,15 +60,15 @@
 </script>
 
 <section class="form-options stretch one-line snug">
-  <label for="any-keywords" class="checkbox outline text-normal">
+  <label for="any-keywords" class="outline text-normal">
     <input id="any-keywords" name="any-keywords" type="radio" value="any" bind:group={mode} />
     Contains <span class="any">Any</span> of the Keywords
   </label>
-  <label for="all-keywords" class="checkbox outline text-normal">
+  <label for="all-keywords" class="outline text-normal">
     <input id="all-keywords" name="all-keywords" type="radio" value="all" bind:group={mode} />
     Contains <span class="all">All</span> of the Keywords
   </label>
-  <label for="remove-keywords" class="checkbox outline text-normal">
+  <label for="remove-keywords" class="outline text-normal">
     <input
       id="remove-keywords"
       name="remove-keywords"

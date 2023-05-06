@@ -52,7 +52,7 @@
 
   <div class="package-contents">
     {#each $focusedPackage.content as content}
-      <label for={content.id.toString()} class="checkbox">
+      <label for={content.id.toString()}>
         <input
           type="checkbox"
           name={content.id.toString()}

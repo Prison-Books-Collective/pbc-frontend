@@ -51,7 +51,7 @@ button {
   border-radius: 5px;
   box-shadow: inset 0px 1px 3px 0px #91b8b3;
 
-  font-family: roboto;
+  font-family: 'Roboto';
   color: #ffffff;
   font-size: 15px;
   text-decoration: none;
@@ -88,10 +88,10 @@ label {
   width: 100%;
   margin-bottom: 1.5em;
   text-align: left;
-  font-weight: 200;
+  font-weight: 600;
 }
 
-label:not(.checkbox) {
+label:not(:has(input[type='checkbox'], input[type='radio'])) {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;

@@ -106,11 +106,11 @@
   }
 
   * {
-    font-family: gentium;
+    font-family: Gentium;
   }
 
   #page-1 {
-    font-family: gentium;
+    font-family: Gentium;
   }
 
   #header-text-container {
