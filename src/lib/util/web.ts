@@ -1,13 +1,20 @@
+export const CONTENT_TYPE_JSON = {
+  'Content-Type': 'application/json;charset=utf-8',
+}
+
 export const METHOD_GET = { method: 'get' }
 export const METHOD_POST = { method: 'post' }
 export const METHOD_PUT = { method: 'put' }
 export const METHOD_DELETE = { method: 'delete' }
 
-export const CONTENT_TYPE_JSON = {
-  'Content-Type': 'application/json;charset=utf-8',
-}
+export const HTTP_GET = 'GET'
+export const HTTP_POST = 'POST'
+export const HTTP_PUT = 'PUT'
+export const HTTP_DELETE = 'DELETE'
 
-export const uriQueryJoin = (queryMap: { [param: string]: string }) => {
+export type QueryParamMap = { [queryParam: string | number]: string }
+
+export const uriQueryJoin = (queryMap: QueryParamMap) => {
   const paramNames = Object.keys(queryMap).filter((paramName) => queryMap[paramName] !== null)
   if (paramNames.length === 0) return ''
 
@@ -48,3 +55,14 @@ export const getQueryParam = (url: URL, paramName: string, ...aliases: string[])
 
   return null
 }
+
+export type {
+  HTTPMethod,
+  HTTPStatus,
+  HTTPError,
+  HTTPResponse,
+  HTTPFetchOptions,
+  Endpoint,
+  EndpointMap,
+} from './web-client'
+export { WebClient } from './web-client'
