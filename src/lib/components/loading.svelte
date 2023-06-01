@@ -28,7 +28,7 @@
     justify-content: center;
     align-items: center;
 
-    position: absolute;
+    position: fixed;
     inset: 0px;
     background-color: rgba(0, 0, 0, 0.3);
     color: #eaeaea;

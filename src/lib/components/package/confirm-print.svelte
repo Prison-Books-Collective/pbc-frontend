@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { focusedPackage } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
+  import { createShipment } from '$lib/data/shipment.data'
 
   const dispatch = createEventDispatcher()
 
@@ -10,12 +10,12 @@
   const printClicked = () => dispatch('print')
 </script>
 
-{#if $focusedPackage.id}
+{#if $createShipment.id}
   <section id="package-success">
     <h1>Package Contents:</h1>
 
     <ol class="package-items-list">
-      {#each $focusedPackage.content as book}
+      {#each $createShipment.content as book}
         <li>
           {#if book.type === 'book'}
             <Book {book} />

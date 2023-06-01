@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { ROUTE_PACKAGES_FOR_INMATE, ROUTE_RECIPIENT_CREATE_NAMED } from '$util/routing'
+  import { ROUTE_RECIPIENT_CREATE_NAMED, ROUTE_PACKAGES_FOR_RECIPIENT } from '$util/routing'
   import Loading from '$components/loading.svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
   import { goto } from '$app/navigation'
   import { focusedInmate } from '$stores/inmate'
   import { loading } from '$stores/loading.js'
+    import { recipient } from '$lib/data/recipient.data.js'
   export let data
 
   export let firstName: string = data.firstName || ''
@@ -16,8 +17,10 @@
 
   const findRecipient = async (id) => {
     const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
-    $focusedInmate = foundRecipient
-    goto(ROUTE_PACKAGES_FOR_INMATE(foundRecipient.id))
+    if( foundRecipient ) {
+      recipient.set( foundRecipient )
+      goto(ROUTE_PACKAGES_FOR_RECIPIENT(foundRecipient.id))
+    }
   }
 </script>
 
@@ -34,7 +37,7 @@
 
   {#await getInmates then inmates}
     <nav>
-      {#each inmates as inmate}
+    {#each inmates as inmate}
         <p
           on:click={() => {
             findRecipient(inmate.id)

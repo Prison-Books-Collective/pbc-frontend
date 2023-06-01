@@ -7,7 +7,7 @@ import {
 } from 'svelte/store'
 import { ErrorStrategy } from './error'
 
-export const ERROR_STRATEGY: ErrorStrategy = import.meta.env.ERROR_STRATEGY
+export const ERROR_STRATEGY: ErrorStrategy = import.meta.env.VITE_ERROR_STRATEGY
 
 export abstract class AppStore<DataType> implements Writable<DataType> {
   private name: string
@@ -39,7 +39,7 @@ export abstract class AppStore<DataType> implements Writable<DataType> {
     this.set({ ...this.defaultState })
   }
 
-  public abstract fetch(identifiers: unknown): Promise<DataType>
+  public abstract fetch(identifiers: unknown): Promise<DataType | null>
   public abstract sync(): Promise<DataType>
   public abstract load(loadedData: DataType): DataType
 
@@ -48,15 +48,15 @@ export abstract class AppStore<DataType> implements Writable<DataType> {
   }
   protected logID = ({ method }: { method: string }) => `[ ${this.name} ]( ${method} )`
 
-  protected error(message: string) {
+  protected error(method: string, message: string) {
     switch (ERROR_STRATEGY) {
       case ErrorStrategy.SILENT:
         break
       case ErrorStrategy.LOG:
-        console.error(`${this.logID} ${message}`)
+        console.error(`${this.logID({ method })} ${message}`)
         break
       case ErrorStrategy.THROW:
-        throw new Error(`${this.logID} ${message}`)
+        throw new Error(`${this.logID({ method })} ${message}`)
     }
   }
 }

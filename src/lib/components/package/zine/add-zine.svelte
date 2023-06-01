@@ -2,9 +2,9 @@
   import { createEventDispatcher } from 'svelte'
   import { fly } from 'svelte/transition'
 
-  import { focusedPackage } from '$stores/package'
   import { zines } from '$stores/zine'
   import type { Zine } from '$models/pbc/shipment'
+  import { createShipment } from '$lib/data/shipment.data'
 
   const dispatch = createEventDispatcher()
 
@@ -14,10 +14,10 @@
   let selectedZines: Zine[] = []
 
   allZines = $zines
-  availableZines = allZines.filter((z) => !$focusedPackage.content.includes(z))
+  availableZines = allZines.filter((z) => !$createShipment.content.includes(z))
 
   $: availableZines = allZines.filter((z) => {
-    if ($focusedPackage.content.includes(z)) return false
+    if ($createShipment.content.includes(z)) return false
     if (filter == '') return true
 
     filter = filter.toLowerCase()
@@ -41,7 +41,7 @@
   const shouldDisableAdd = (zines: Zine[]) => !zines || zines.length === 0
   const cancel = () => dispatch('cancel')
   const addZines = (zines: Zine[]) => {
-    zines.forEach((z) => focusedPackage.addZine(z))
+    zines.forEach((z) => createShipment.addContent('zine', z))
     dispatch('add-zines', zines)
     selectedZines = []
   }

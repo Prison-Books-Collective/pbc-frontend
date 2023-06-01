@@ -8,6 +8,7 @@
   import SearchByBook from '$components/package/search/search-by-book.svelte'
   import { gotoPackageSearch } from '$util/routing'
   import { ZineService } from '$services/pbc/zine.service'
+  import { CONTENT_TYPE_JSON } from '$util/web'
 
   const alertZineCreated = ({ detail: zine }) =>
     alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`)
@@ -37,9 +38,6 @@
   </section>
 
   <section>
-    <button on:click={async () => console.log(await ZineService.getZineByCode('WOF11'))}
-      >Get Zine by Code</button
-    >
     <h1>Zines</h1>
     <CreateZine on:update={alertZineCreated} on:error={alertCreationError} />
     <div class="spacer" />

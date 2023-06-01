@@ -17,7 +17,7 @@ export class RecipientStore extends AppStore<Recipient> {
     super('RecipientStore', defaultRecipient)
   }
 
-  public async fetch({ id }: { id: string }): Promise<Recipient> {
+  public async fetch({ id }: { id: string }): Promise<Recipient | null> {
     if (isEmpty(id)) return this.getLatest()
 
     loading.start()
@@ -25,8 +25,8 @@ export class RecipientStore extends AppStore<Recipient> {
     loading.end()
 
     if (recipient === null) {
-      this.error(`Failed to fetch recipient by id "${id}"`)
-      return this.getLatest()
+      this.error('fetch', `Failed to fetch recipient by id "${id}"`)
+      return null
     }
     this.set(recipient)
     return recipient
@@ -40,7 +40,7 @@ export class RecipientStore extends AppStore<Recipient> {
     loading.end()
 
     if (recipient === null) {
-      this.error(`Failed to fetch recipient by database id "${id}"`)
+      this.error('fetchByDatabaseId', `Failed to fetch recipient by database id "${id}"`)
       return this.getLatest()
     }
     this.set(recipient)
@@ -53,7 +53,7 @@ export class RecipientStore extends AppStore<Recipient> {
     loading.end()
 
     if (updatedRecipient === null) {
-      this.error('Failed to sync recipient updates to server')
+      this.error('sync', 'Failed to sync recipient updates to server')
       return this.getLatest()
     }
 

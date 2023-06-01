@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
-  import { focusedPackage } from '$stores/package'
   import type { Book } from '$models/pbc/shipment'
   import { BookService } from '$services/pbc/book.service'
+  import { createShipment } from '$lib/data/shipment.data'
 
   enum DISPLAY_FORM {
     WITH_ISBN,
@@ -71,7 +71,7 @@
       id: null,
     }
     let book = await BookService.createBook(bookToSend as Book)
-    focusedPackage.addBook(book)
+    createShipment.addContent('book', book)
     dispatch('update', book)
   }
 </script>

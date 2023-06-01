@@ -19,7 +19,7 @@ export const ShipmentClientEndpoints = Object.freeze({
   },
   DELETE_PACKAGE: {
     method: HTTP_DELETE,
-    uri: ({ packageId }) => createURI('deleteShipment', { packageId }),
+    uri: ({ id }) => createURI('deleteShipment', { id }),
   },
 
   CREATE_NOTE: {
@@ -59,9 +59,9 @@ export class ShipmentClient extends WebClient<typeof ShipmentClientEndpoints> {
     })
   }
 
-  public async deleteShipment(packageId: string): Promise<boolean> {
+  public async deleteShipment(id: string): Promise<boolean> {
     const deletion = await this.fetch<never, unknown>(this.endpoints.DELETE_PACKAGE, {
-      params: { packageId },
+      params: { id },
     })
     return !!deletion
   }

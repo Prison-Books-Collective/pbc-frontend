@@ -84,7 +84,7 @@
   <label for="keyword-input">
     Keyword
     <span class="text-light">
-      (<em>All or part of: Author, Title, ISBN, Inmate Name, etc.</em>)
+      (<em>All or part of: Author, Title, ISBN, Recipient Name, etc.</em>)
     </span>
   </label>
   <div class="input-group">

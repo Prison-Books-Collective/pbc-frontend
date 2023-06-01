@@ -1,4 +1,5 @@
 import { isEmpty } from '$util/strings'
+import type { Facility } from './facility'
 import type { Recipient } from './recipient'
 
 export interface PackageContent {
@@ -59,6 +60,7 @@ export interface Shipment {
   date: any
   recipient: Recipient
   notes: Note[]
+  facility: Facility
   [additionalFields: string]: any
 }
 

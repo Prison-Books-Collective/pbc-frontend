@@ -1,41 +1,40 @@
 <script lang="ts">
-  import { focusedInmate } from '$stores/inmate'
-  import { focusedPackages } from '$stores/package'
   import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error'
 
-  import InmateName from '$components/inmate/inmate-name.svelte'
+  import RecipientName from '$components/recipient/recipient-name.svelte'
   import PackageTable from '$components/package/package-table.svelte'
-  import Loading from '$components/loading.svelte'
   import { onDestroy, onMount } from 'svelte'
-  import { RecipientService } from '$services/pbc/recipient.service'
 
-  import { loading } from '$stores/loading'
+  import { recipient } from '$lib/data/recipient.data'
+  import { shipments } from '$lib/data/shipment.data'
+  import { recipientClient } from '$services/bellbooks-backend/recipient.client'
 
-  export let data
+  import type { Recipient } from '$models/pbc/recipient'
+  export let data: PageData
+
   let { recipientId, isAssignedId } = data
 
   let packageTable: PackageTable
   let presentCreatePackage = () => {}
-  let currentLocation = Promise.resolve(' ')
+  let currentLocation = new Promise(() => {})
 
-  const inmateIsLoaded =
-    $focusedInmate.id === recipientId
-      ? Promise.resolve
+  const isLoaded =
+    $recipient && $recipient.id?.toString() === recipientId
+      ? Promise.resolve()
       : isAssignedId
-      ? focusedInmate.TODO_fetchByAssignedId(recipientId)
-      : focusedInmate.TODO_fetchById(recipientId)
+      ? recipient.fetch({ id: recipientId })
+      : recipient.fetchByDatabaseId({ id: recipientId })
 
-  console.log({ recipientId })
-
-  loading.start()
-  inmateIsLoaded.then(() => {
-    loading.end()
-    if ($focusedInmate.assignedId) {
-      currentLocation = RecipientService.getRecipientLocation($focusedInmate.assignedId)
-    }
+  isLoaded.then(() => {
+    currentLocation = $recipient.assignedId
+      ? recipientClient.getRecipientLocation($recipient.assignedId)
+      : ''
   })
 
-  const updateRecipient = async (recipient) => focusedInmate.set(recipient)
+  const updateRecipient = async (r: Recipient) => {
+    recipient.load(r)
+    recipient.sync()
+  }
   const updateRecipientError = (error) => {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
     console.error(error)
@@ -43,43 +42,51 @@
 
   onMount(async () => {
     presentCreatePackage = () => {
-      packageTable.presentCreatePackageModal($focusedInmate)
+      packageTable.presentCreatePackageModal($recipient)
     }
   })
   onDestroy(() => {
-    focusedPackages.set([])
+    shipments.reset()
   })
-
-  focusedPackages.subscribe((d) => console.log({ focusedPackages: d }))
 </script>
 
 <svelte:head>
-  <title>BellBooks - Packages for {$focusedInmate.firstName} {$focusedInmate.lastName}</title>
+  <title>BellBooks - Packages for {$recipient.firstName} {$recipient.lastName}</title>
 </svelte:head>
 
-{#await inmateIsLoaded then}
+{#await isLoaded then}
   <main class="page">
-    <InmateName
-      recipient={$focusedInmate}
+    <RecipientName
+      recipient={$recipient}
+      shipments={$shipments}
       on:update={({ detail }) => updateRecipient(detail)}
       on:error={({ detail }) => updateRecipientError(detail)}
     />
-    <span style="margin-bottom:10px">
-      {#await currentLocation}
-        Loading current location.
-      {:then location}
-        {#if location === ''}
-          Released
-        {:else}
-          {location}
-        {/if}
-      {/await}
-    </span>
+    {#if $recipient.assignedId}
+      <span style="margin-bottom:10px">
+        <a
+          href={`https://webapps.doc.state.nc.us/opi/viewoffender.do?method=view&offenderID=${$recipient.assignedId}`}
+          target="_blank"
+        >
+          {#await currentLocation}
+            Loading current location.
+          {:then location}
+            {#if location === ''}
+              Released
+            {:else if location}
+              {location}
+            {:else}
+              Unable to load Current Location from NC DAC Site
+            {/if}
+          {/await}
+        </a>
+      </span>
+    {/if}
     <button id="add-package-button" class="success" on:click={presentCreatePackage}>
       Add a <strong><u>new package</u></strong> (books or zines)
     </button>
 
-    <PackageTable bind:this={packageTable} packages={$focusedPackages} inmate={$focusedInmate} />
+    <PackageTable bind:this={packageTable} />
   </main>
 {/await}
 

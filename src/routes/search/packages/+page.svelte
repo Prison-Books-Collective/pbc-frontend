@@ -6,7 +6,6 @@
   import filterIcon from '$assets/icons/filter.png'
   import PackageTable from '$components/package/package-table.svelte'
   import FilterPackages from '$components/package/search/filter/filter-packages.svelte'
-  import Loading from '$components/loading.svelte'
   import BookTitleResolver from '$components/book-title-resolver.svelte'
   import { formatDate } from '$util/time'
   import { PackageSearchMode } from '$util/routing'

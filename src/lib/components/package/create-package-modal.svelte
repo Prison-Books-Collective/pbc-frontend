@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { focusedPackage } from '$stores/package'
   import { printPackage, CreatePackageModalState } from '$util/routing'
 
   import Modal from '$components/modal.svelte'
@@ -12,10 +11,11 @@
   import BookDetails from '$components/package/book/book-details.svelte'
   import RejectionLog from '$components/package/rejection-log.svelte'
   import type { Shipment } from '$models/pbc/shipment'
+  import { recipient } from '$lib/data/recipient.data'
+  import { createShipment } from '$lib/data/shipment.data'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate = null
   export let activeModal: CreatePackageModalState = CreatePackageModalState.NONE
   export let activeModalParams = {}
 
@@ -29,7 +29,7 @@
     dispatch('switch', { modal, params })
   }
   const presentAlertModal = (pbcPackage: Shipment) => {
-    focusedPackage.load(pbcPackage)
+    createShipment.load(pbcPackage)
     presentModal(CreatePackageModalState.VIEW_ALERT, { packageId: pbcPackage.id })
   }
 
@@ -37,7 +37,7 @@
     activeModal !== CreatePackageModalState.EDIT_PACKAGE &&
     activeModal !== CreatePackageModalState.VIEW_ALERT &&
     activeModal !== CreatePackageModalState.PRINT_PACKAGE &&
-    $focusedPackage.content.length > 0
+    $createShipment.content.length > 0
 </script>
 
 <Modal
@@ -49,7 +49,7 @@
 >
   {#if activeModal == CreatePackageModalState.VIEW_PACKAGE}
     <PackageOverview
-      {inmate}
+      targetRecipient={$recipient}
       on:add-zines={() => presentModal(CreatePackageModalState.ADD_ZINE)}
       on:add-books={() => presentModal(CreatePackageModalState.ADD_BOOK)}
       on:update={() => presentModal(CreatePackageModalState.PRINT_PACKAGE)}
@@ -61,7 +61,7 @@
       on:error={(e) => console.error(e.detail)}
       on:add-items={() => presentModal(CreatePackageModalState.VIEW_PACKAGE)}
       on:delete={() => closeModal()}
-      on:reject={() => presentAlertModal($focusedPackage)}
+      on:reject={() => presentAlertModal($createShipment)}
     />
   {:else if activeModal == CreatePackageModalState.ADD_ZINE}
     <AddZine
@@ -93,7 +93,7 @@
     <ConfirmPrint
       on:done={closeModal}
       on:print={() => {
-        printPackage($focusedPackage)
+        printPackage($createShipment)
         closeModal()
       }}
     />

@@ -1,21 +1,21 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { isInmateNoID } from '$models/pbc/inmate'
   import editIcon from '$assets/icons/edit.png'
   import Modal from '$components/modal.svelte'
-  import EditInmate from '$components/inmate/edit-inmate.svelte'
-  import type { Recipient } from '$models/pbc/recipient'
+  import EditRecipient from '$components/recipient/edit-recipient.svelte'
+  import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
   import type { Shipment } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
   export let recipient: Recipient
+  export let shipments: Shipment[]
   export let shouldDisplayModal = false
 
   const presentModal = () => (shouldDisplayModal = true)
   const closeModal = () => (shouldDisplayModal = false)
 
-  const didReceivePackageLastTwoMonths = (shipments: Shipment[]): boolean => {
+  $: didReceivePackageLastTwoMonths = (): boolean => {
     if (!shipments || shipments.length === 0) return false
     const MS_TO_DAYS_FACTOR = 1000 * 3600 * 24
     const now = new Date().getTime()
@@ -24,29 +24,28 @@
     return (now - mostRecentShipment) / MS_TO_DAYS_FACTOR < 60
   }
 
-  const onUpdateInmate = (event) => {
+  const onUpdateRecipient = (event: { detail: any }) => {
     closeModal()
     dispatch('update', event.detail)
   }
-  const onUpdateInmateError = (event) => {
+  const onUpdateRecipientError = (event: { detail: any }) => {
     closeModal()
     dispatch('error', event.detail)
   }
 </script>
 
 <Modal bind:visible={shouldDisplayModal}>
-  <EditInmate {recipient} on:update={onUpdateInmate} on:error={onUpdateInmateError} />
+  <EditRecipient on:update={onUpdateRecipient} on:error={onUpdateRecipientError} />
 </Modal>
 
-<div id="inmate-name" class:notValid={didReceivePackageLastTwoMonths(recipient.shipments)}>
+<div id="recipient-name" class:notValid={shipments?.length > 0 && didReceivePackageLastTwoMonths()}>
   <h1
     style="margin:10px 10px"
-    aria-label="Inmate's first and last name, and inmate ID if available"
+    aria-label="Recipient's first and last name, and OPUS ID if available"
   >
     {recipient.firstName}
-    <!-- {inmate.middleInitial ? inmate.middleInitial + '. ' : ''} -->
     {recipient.lastName}
-    {#if isInmateNoID(recipient)}
+    {#if isRecipientNoId(recipient)}
       {#if recipient.facility}
         - <span>{recipient?.facility?.name}</span>
       {:else}
@@ -59,27 +58,24 @@
     <img
       src={editIcon}
       class="icon"
-      alt="edit icon; click to edit inmate information"
+      alt="edit icon; click to edit recipient information"
       on:click={presentModal}
     />
   </h1>
 </div>
 
-{#if recipient.shipments?.length > 0}
-  {#if didReceivePackageLastTwoMonths(recipient.shipments)}
-    <p class="notValid" style="margin-bottom:5px">
-      Recipient received a package <strong
-        >{Math.floor(
-          (new Date().getTime() - new Date(recipient.shipments[0].date).getTime()) /
-            (1000 * 3600 * 24),
-        )} days ago</strong
-      >, on <strong>{recipient.shipments[0].date}</strong>
-    </p>
-  {/if}
+{#if shipments?.length > 0 && didReceivePackageLastTwoMonths()}
+  <p class="notValid" style="margin-bottom:5px">
+    Recipient received a package <strong
+      >{Math.floor(
+        (new Date().getTime() - new Date(shipments[0].date).getTime()) / (1000 * 3600 * 24),
+      )} days ago</strong
+    >, on <strong>{shipments[0].date}</strong>
+  </p>
 {/if}
 
 <style lang="scss">
-  #inmate-name {
+  #recipient-name {
     display: flex;
     flex-flow: row wrap;
     align-self: center;
@@ -89,7 +85,7 @@
   }
   .notValid {
     background-color: lightpink;
-    border-radius: 20px;
+    border-radius: 3px;
     padding: 10px;
   }
   span {
