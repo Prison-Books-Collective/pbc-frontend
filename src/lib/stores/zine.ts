@@ -39,8 +39,7 @@ export class ZineStore implements Writable<Zine[]> {
   public async create({ threeLetterCode, title }: Partial<Zine>): Promise<Zine> {
     try {
       const createdZine = await ZineService.createZine({
-        id: null,
-        threeLetterCode,
+        code: threeLetterCode,
         title,
         inUse: true,
       })

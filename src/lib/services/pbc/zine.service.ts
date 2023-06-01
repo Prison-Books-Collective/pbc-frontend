@@ -15,7 +15,7 @@ export class ZineService {
     const response = await fetch(this.URI_CREATE_ZINE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(zine),
+      body: JSON.stringify({ ...zine, type: 'zine' }),
     })
 
     if (response.status !== 200) {
