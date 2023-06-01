@@ -11,7 +11,7 @@
   import { CONTENT_TYPE_JSON } from '$util/web'
 
   const alertZineCreated = ({ detail: zine }) =>
-    alert(`Successfully added new Zine "${zine.threeLetterCode} - ${zine.title}"`)
+    alert(`Successfully added new Zine "${zine.code} - ${zine.title}"`)
   const alertFacilityCreated = ({ detail: facility }) =>
     alert(
       `Successfully added new Facility "[${facility.state}] ${facility.facility_name} - ${facility.facility_type}"`,

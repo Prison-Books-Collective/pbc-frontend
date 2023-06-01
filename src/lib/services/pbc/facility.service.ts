@@ -32,7 +32,7 @@ export class FacilityService {
     const response = await fetch(this.URI_CREATE_FACILITY, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },
-      body: JSON.stringify(facility),
+      body: JSON.stringify({ ...facility, type: 'facility' }),
     })
 
     if (response.status !== 200) {
