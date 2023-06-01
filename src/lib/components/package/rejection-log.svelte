@@ -1,19 +1,22 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
 
-  import { focusedPackage, focusedPackages } from '$stores/package'
   import { ShipmentService } from '$services/pbc/shipment.service'
-  import { focusedInmate } from '$stores/inmate'
+  import { createShipment, shipments } from '$lib/data/shipment.data'
+  import { recipient } from '$lib/data/recipient.data'
+  import { shipmentClient } from '$services/bellbooks-backend/shipment.client'
 
   const dispatch = createEventDispatcher()
-  let rejectionContent
+  let rejectionContent: string
 
-  export let packageId = null
-  let packageLoaded = packageId ? focusedPackage.fetch(packageId) : Promise.resolve($focusedPackage)
+  export let shipmentId = null
+  let shipmentLoaded = shipmentId
+    ? createShipment.fetch(shipmentId)
+    : Promise.resolve($createShipment)
 
-  packageLoaded.then((pbcPackage) => {
+  shipmentLoaded.then((pbcPackage) => {
     if (pbcPackage.notes.length == 0) {
-      focusedPackage.createAlert('')
+      createShipment.setAlert('')
     } else {
       rejectionContent = pbcPackage.notes[0].content
     }
@@ -22,11 +25,10 @@
   const saveAlert = async () => {
     try {
       let note = await ShipmentService.saveNote(rejectionContent)
-      focusedPackage.setNote(note)
-      let inmate = { id: $focusedInmate.id }
-      focusedPackage.setRecipient(inmate)
-      focusedPackage.sync()
-      dispatch('update', $focusedPackage)
+      createShipment.setNote(note)
+      createShipment.setRecipient($recipient)
+      createShipment.sync()
+      dispatch('update', $createShipment)
     } catch (error) {
       dispatch('error', error)
       console.error('failed to save rejection log for package', error)
@@ -35,13 +37,13 @@
 
   const removeAlert = async (pbcPackage) => {
     try {
-      const packageUpdateData = {
+      const shipmentUpdateData = {
         ...pbcPackage,
         notes: [],
       }
-      const updatedPackage = await ShipmentService.updatePackage(packageUpdateData)
-      focusedPackages.localUpdatePackage(packageUpdateData)
-      dispatch('update', updatedPackage)
+      const updatedShipment = await shipmentClient.updateShipment(shipmentUpdateData)
+      shipments.localUpdateShipment(shipmentUpdateData)
+      dispatch('update', updatedShipment)
     } catch (error) {
       dispatch('error', error)
       console.error('failed to save rejection log for package', error)
@@ -49,10 +51,10 @@
   }
 </script>
 
-{#await packageLoaded then}
+{#await shipmentLoaded then}
   <section class="alert-container">
     <h1>Package Rejection Details</h1>
-    {#if $focusedPackage.notes.length > 0}
+    {#if $createShipment.notes.length > 0}
       <p>This package was rejected. You can update the rejection notes below:</p>
     {:else}
       <p>Enter details about the rejection to log below:</p>
@@ -69,11 +71,11 @@
         <button class="log-button" disabled={!rejectionContent || rejectionContent === ''}
           >Log Rejection for Package</button
         >
-        {#if $focusedPackage.notes.length > 0}
+        {#if $createShipment.notes.length > 0}
           <button
             type="button"
             class="danger clear-button"
-            on:click={() => removeAlert($focusedPackage)}>Clear</button
+            on:click={() => removeAlert($createShipment)}>Clear</button
           >
         {/if}
       </div>

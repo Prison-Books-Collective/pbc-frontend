@@ -1,4 +1,3 @@
-import type { Facility } from '$models/pbc/facility'
 import type { Recipient } from '$models/pbc/recipient'
 import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
 import { shipmentClient } from '$services/bellbooks-backend/shipment.client'
@@ -7,8 +6,7 @@ import { AppStore } from '$util/store'
 import { recipient } from './recipient.data'
 
 const defaultShipmentList: Shipment[] = []
-const defaultShipment: Shipment = {
-  id: -1,
+const defaultShipment: Partial<Shipment> = {
   content: [],
   date: new Date(),
   recipient: recipient.getLatest(),
@@ -98,7 +96,7 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
 
 export class SingleShipmentStore extends AppStore<Shipment> {
   constructor() {
-    super('CreateShipmentStore', defaultShipment)
+    super('CreateShipmentStore', defaultShipment as any)
   }
 
   public async fetch({ id }: { id: string }): Promise<Shipment> {

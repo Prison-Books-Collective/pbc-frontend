@@ -1,23 +1,23 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { focusedPackage } from '$stores/package'
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
-  import { focusedInmate } from '$stores/inmate'
+  import { recipient } from '$lib/data/recipient.data'
+  import { createShipment } from '$lib/data/shipment.data'
 
   const dispatch = createEventDispatcher()
 
   let selectedItems: string[] = []
 
-  const shouldDisableDeleteItems = () => {
-    return true //!selectedItems || selectedItems.length === 0
+  const shouldDisableDeleteItems = (selectedItems: string[]) => {
+    return !selectedItems || selectedItems.length === 0
   }
 
   const deleteItems = () => {
     try {
-      focusedPackage.removeItemsById(...selectedItems)
-      focusedPackage.sync()
-      dispatch('update', $focusedPackage)
+      createShipment.removeItemsById(...selectedItems)
+      createShipment.sync()
+      dispatch('update', $createShipment)
       selectedItems = []
     } catch (error) {
       console.error(`failed to delete items: [${selectedItems.join(', ')}]`, error)
@@ -29,10 +29,10 @@
     const shouldDelete = confirm('Are you sure you want to delete this entire package?')
     if (shouldDelete) {
       try {
-        focusedPackage.delete()
+        createShipment.delete()
         dispatch('delete', {})
       } catch (error) {
-        console.error(`failed to delete package with ID "${$focusedPackage.id}"`, error)
+        console.error(`failed to delete package with ID "${$createShipment.id}"`, error)
         dispatch('error', error)
       }
     }
@@ -43,15 +43,15 @@
 
 <section class="package-overview">
   <h1>
-    Edit Package for {$focusedInmate.firstName}
-    {$focusedInmate.lastName}
+    Edit Package for {$recipient.firstName}
+    {$recipient.lastName}
   </h1>
   <p>Select item(s) to edit or delete, or delete the whole package.</p>
   <p>Changes you make to the titles or authors of items will affect the entire database.</p>
   <hr width="100%" />
 
   <div class="package-contents">
-    {#each $focusedPackage.content as content}
+    {#each $createShipment.content as content}
       <label for={content.id.toString()}>
         <input
           type="checkbox"
@@ -72,10 +72,10 @@
 
   <p>
     <em>
-      Completed on <strong><date>{$focusedPackage.date}</date></strong>
-      {#if $focusedPackage.facility}
+      Completed on <strong><date>{$createShipment.date}</date></strong>
+      {#if $createShipment.facility}
         and destined for
-        <strong>{$focusedPackage.facility.facility_name}, {$focusedPackage.facility.state}</strong>
+        <strong>{$createShipment.facility.facility_name}, {$createShipment.facility.state}</strong>
       {/if}
     </em>
   </p>
@@ -91,7 +91,7 @@
   </nav>
 
   <p class="package-rejected" on:click={logRejectionClicked}>
-    {#if $focusedPackage.alert && $focusedPackage.alert.id}
+    {#if $createShipment.alert && $createShipment.alert.id}
       <span class="text-red">
         This package was rejected. Click here to view the attached notes
       </span>

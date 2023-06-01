@@ -1,9 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { fade, fly } from 'svelte/transition'
-  import { focusedPackage, focusedPackages } from '$stores/package'
-  import { resolveInmate } from '$models/pbc/package'
-  import { CreatePackageModalState, gotoPackagesForInmate, printPackage } from '$util/routing'
+  import { CreatePackageModalState, printPackage } from '$util/routing'
 
   import Book from '$components/book.svelte'
   import Zine from '$components/zine/zine.svelte'
@@ -13,14 +11,19 @@
 
   import { RecipientService } from '$services/pbc/recipient.service'
   import type { Shipment } from '$models/pbc/shipment'
-  import { focusedInmate } from '$stores/inmate'
   import type { Recipient } from '$models/pbc/recipient'
+  import { createShipment, shipments } from '$lib/data/shipment.data'
+  import { recipient } from '$lib/data/recipient.data'
 
   const dispatch = createEventDispatcher()
 
+  enum TableMode {
+    RECIPIENT = 'recipient', // view the shipments for a specific recipient
+    COMPOSITE = 'composite', // view all shipments that meet a given criteria
+  }
+
   export let header = 'Shipment'
-  export let inmate: Recipient = null
-  export let packages: Shipment[] = null
+  export let mode: TableMode = TableMode.RECIPIENT
 
   const alertPackageClicked = (pbcPackage: Shipment) => {
     dispatch('alert', pbcPackage)
@@ -35,52 +38,44 @@
     printPackage(pbcPackage)
   }
 
-  let transitionIn = $focusedPackages.length < 300 ? fade : () => {}
-  let transitionOut = $focusedPackages.length < 300 ? fly : () => {}
+  let transitionIn = $shipments.length < 300 ? fade : () => {}
+  let transitionOut = $shipments.length < 300 ? fly : () => {}
 
   // -------------------- Modal Logic --------------------
 
   let activeModal: CreatePackageModalState
   let activeModalParams = {}
-  let selectedInmate = null
 
   export async function getRecipientByShipment(pbcPackage: Shipment) {
-    let recipient = await RecipientService.getRecipientByShipmentId(pbcPackage.id)
-    $focusedInmate = recipient
+    let r = await RecipientService.getRecipientByShipmentId(pbcPackage.id)
+    $recipient = r ?? $recipient
     return recipient
   }
 
-  export function selectInmate(pbcPackage: Shipment) {
-    selectedInmate = resolveInmate(pbcPackage)
-  }
-
-  export function presentCreatePackageModal(inmate) {
-    selectedInmate = inmate
-    focusedPackage.reset()
+  export function presentCreatePackageModal() {
+    createShipment.reset()
     activeModal = CreatePackageModalState.VIEW_PACKAGE
   }
 
   export function presentEditPackageModal(pbcPackage: Shipment) {
-    selectInmate(pbcPackage)
-    focusedPackage.load(pbcPackage)
+    createShipment.load(pbcPackage)
     activeModal = CreatePackageModalState.EDIT_PACKAGE
   }
 
   export function presentAlertModal(pbcPackage: Shipment) {
-    selectInmate(pbcPackage)
-    focusedPackage.load(pbcPackage)
+    createShipment.load(pbcPackage)
     activeModal = CreatePackageModalState.VIEW_ALERT
     activeModalParams = { packageId: pbcPackage.id }
   }
 </script>
 
-<CreatePackageModal bind:activeModal bind:activeModalParams inmate={selectedInmate} />
+<CreatePackageModal bind:activeModal bind:activeModalParams />
 
 <section id="package-table-container">
-  {#if packages.length === 0}
+  {#if $shipments.length === 0}
     <h2 class="no-packages-message">
-      {#if inmate}
-        No packages have been created for {inmate.firstName} {inmate.lastName} yet
+      {#if mode === TableMode.RECIPIENT}
+        No packages have been created for {$recipient.firstName} {$recipient.lastName} yet
       {:else}
         No packages found
       {/if}
@@ -94,7 +89,7 @@
         <th>Print</th>
       </tr>
 
-      {#each $focusedPackages.sort((a, b) => {
+      {#each $shipments.sort((a, b) => {
         let dateA = new Date(a.date)
         let dateB = new Date(b.date)
         if (dateA < dateB) {
@@ -104,14 +99,14 @@
           return -1
         }
         return 0
-      }) as pbcPackage}
+      }) as shipment}
         <tr in:transitionIn out:transitionOut|local={{ x: 200 }}>
           <td class="spacer-col">
-            {#if pbcPackage.notes && pbcPackage.notes.length > 0}
+            {#if shipment.notes && shipment.notes.length > 0}
               <div
                 class="alert"
-                data-tooltip={pbcPackage.notes[0].content}
-                on:click={() => alertPackageClicked(pbcPackage)}
+                data-tooltip={shipment.notes[0].content}
+                on:click={() => alertPackageClicked(shipment)}
               >
                 !
               </div>
@@ -119,24 +114,26 @@
           </td>
           <td class="package-col">
             <h2>
-              {#if pbcPackage.facility}
-                <em class:text-normal={!!inmate}>{pbcPackage.facility.name}</em>,
-              {/if}
+              <!-- {#if shipment.facility}
+                <em class:text-normal={!!$recipient}>{shipment.facility.name}</em>,
+              {/if} -->
               <date>
-                {pbcPackage.date}:
+                {shipment.date}:
               </date>
             </h2>
-            {#if !inmate}
+
+            <!-- TODO: This does not work with the way that shipments have been rearchitected. Will need to rethink how we do this -->
+            <!-- {#if !inmate}
               <h2 class="text-normal">
                 <span
                   class="link"
                   on:click={async () => {
-                    gotoPackagesForInmate(await getRecipientByShipment(pbcPackage))
+                    gotoPackagesForInmate(await getRecipientByShipment(shipment))
                   }}
                 >
-                  Click to go to recipient.
+                  Click to go to recipient. -->
 
-                  <!-- {currentRecipientToLink.firstName}
+            <!-- {currentRecipientToLink.firstName}
                   {currentRecipientToLink.middleInitial
                     ? currentRecipientToLink.middleInitial + ' '
                     : ''}{currentRecipientToLink.lastName}
@@ -146,11 +143,12 @@
                   {:else}
                     (No ID available)
                   {/if} -->
-                </span>
+            <!-- </span>
               </h2>
-            {/if}
+            {/if} -->
+
             <ul>
-              {#each pbcPackage.content as content}
+              {#each shipment.content as content}
                 {#key content}
                   <li>
                     {#if content.type === 'book'}
@@ -170,7 +168,7 @@
               class="edit-icon"
               width="20"
               height="20"
-              on:click={() => editPackageClicked(pbcPackage)}
+              on:click={() => editPackageClicked(shipment)}
             />
           </td>
           <td class="print-col">
@@ -180,7 +178,7 @@
               class="print-icon"
               width="20"
               height="20"
-              on:click={() => printPackageClicked(pbcPackage)}
+              on:click={() => printPackageClicked(shipment)}
             />
           </td>
         </tr>

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { focusedBook } from '$stores/book'
-  import { focusedPackage } from '$stores/package'
   import { bookHasISBN, type Author, type Book } from '$models/pbc/shipment'
   import { isEmpty } from '$util/strings'
   // import { Book } from '$components/book.svelte'
   import { BookService } from '$services/pbc/book.service'
+  import { createShipment } from '$lib/data/shipment.data'
 
   const dispatch = createEventDispatcher()
 
@@ -32,7 +32,7 @@
   $: mode = $focusedBook.existsInDatabase ? VALID_MODE.DISPLAY : VALID_MODE.CREATE
   $: searched = $focusedBook.title ? true : false
   const addBookClicked = () => {
-    focusedPackage.addBook($focusedBook as Book)
+    createShipment.addContent('book', $focusedBook as Book)
     dispatch('add-book', $focusedBook)
   }
 
@@ -94,7 +94,7 @@
       id: null,
     }
     let book = await BookService.createBook(bookToSend as Book)
-    focusedPackage.addBook(book)
+    createShipment.addContent('book', book)
     dispatch('add-book', book)
   }
   const editAndAdd = async (isbn, newAuthor, newTitle) => {
@@ -116,7 +116,7 @@
       $focusedBook.isbn13 = isbn
     }
     await focusedBook.sync()
-    focusedPackage.addBook($focusedBook as Book)
+    createShipment.addContent('book', $focusedBook as Book)
 
     dispatch('add-book', $focusedBook)
   }

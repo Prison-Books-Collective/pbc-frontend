@@ -8,9 +8,9 @@
 
   export let visible = false
   export let width = 'auto'
-  export let maxWidth = '90vw'
+  export let maxWidth = '100vw'
   export let height = 'fit-content'
-  export let maxHeight = '100vh'
+  export let maxHeight = '90vh'
 
   export let closeSide: 'right' | 'left' | 'none' | false | null = false
   export let showConfirm = false

@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { focusedPackages } from '$stores/package'
   import { formatDate } from '$util/time'
   import { onDestroy } from 'svelte'
   import PackageTable from './package-table.svelte'
+  import { shipments } from '$lib/data/shipment.data'
 
   const today = formatDate(new Date())
-  focusedPackages.fetchForDate(today)
+  shipments.fetchForDate(today)
 
   let isExpanded = true
 
   onDestroy(() => {
-    focusedPackages.set([])
+    shipments.reset()
   })
 </script>
 
-{#if $focusedPackages}
-  <p class:link={$focusedPackages.length > 0} on:click={() => (isExpanded = !isExpanded)}>
-    {#if $focusedPackages.length > 0}
+{#if $shipments}
+  <p class:link={$shipments.length > 0} on:click={() => (isExpanded = !isExpanded)}>
+    {#if $shipments.length > 0}
       <span class="small">
         {#if isExpanded}
           &#9660;
@@ -26,16 +26,16 @@
       </span>
     {/if}
     <span>
-      {#if !isExpanded && $focusedPackages.length > 0}
+      {#if !isExpanded && $shipments.length > 0}
         <span class="expand-table">&lt;Click to Expand&gt;</span>
       {/if}
-      You have completed <span id="package-count">{$focusedPackages.length}</span> packages on
+      You have completed <span id="package-count">{$shipments.length}</span> packages on
       <date>{today}</date>
     </span>
   </p>
 
-  {#if isExpanded && $focusedPackages.length > 0}
-    <PackageTable header="Today's Packages" packages={$focusedPackages.reverse()} />
+  {#if isExpanded && $shipments.length > 0}
+    <PackageTable header="Today's Packages" packages={$shipments.reverse()} />
   {/if}
 {/if}
 

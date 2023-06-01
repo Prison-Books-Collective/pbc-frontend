@@ -9,17 +9,18 @@
   // export let mode: HomepageSearch = data?.props?.mode || HomepageSearch.ID
   //let mode : HomepageSearch = data?.props?.mode || HomepageSearch.ID
   let mode = HomepageSearch.ID
-  let focusOnLoadElement
+  let focusOnLoadElement: HTMLInputElement
 
-  let inmateID = null
-  let firstName = null
-  let lastName = null
+  let inmateID = ''
+  let firstName = ''
+  let lastName = ''
 
   onMount(() => {
     focusOnLoadElement.focus()
   })
 
-  const shouldDisableSearch = (firstName, lastName) => isEmpty(firstName) && isEmpty(lastName)
+  const shouldDisableSearch = (firstName: string, lastName: string) =>
+    isEmpty(firstName) && isEmpty(lastName)
   const toggleSearch = () => {
     if (mode == HomepageSearch.ID) {
       mode = HomepageSearch.NAME

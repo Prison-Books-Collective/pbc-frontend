@@ -1,13 +1,15 @@
 import { goto } from '$app/navigation'
-import type { Recipient } from '$models/pbc/recipient'
-import type { Shipment } from '$models/pbc/shipment'
+
 import { RecipientService } from '$services/pbc/recipient.service'
-import { focusedInmate } from '$stores/inmate'
 import { loading } from '$stores/loading'
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error'
 import { isEmpty } from '$util/strings'
 import { delay } from '$util/time'
 import { uriQueryJoin } from '$util/web'
+import { recipient } from '$lib/data/recipient.data'
+
+import type { Recipient } from '$models/pbc/recipient'
+import type { Shipment } from '$models/pbc/shipment'
 
 export enum HomepageSearch {
   ID = 'id',
@@ -36,15 +38,15 @@ export enum CreatePackageModalState {
 }
 
 export const ROUTE_HOME = (searchMode: HomepageSearch) => `/${uriQueryJoin({ search: searchMode })}`
-export const ROUTE_PACKAGES_FOR_INMATE = (recipientId) => `/packages/${recipientId}`
-export const ROUTE_PACKAGES_FOR_INMATE_ASSIGNED_ID = (recipientId) =>
+export const ROUTE_PACKAGES_FOR_RECIPIENT = (recipientId) => `/packages/${recipientId}`
+export const ROUTE_PACKAGES_FOR_RECIPIENT_ASSIGNED_ID = (recipientId) =>
   `/packages/${recipientId}${uriQueryJoin({ isAssignedId: true })}`
 export const ROUTE_RECIPIENT_CREATE_NAMED = ({ firstName, lastName }) =>
-  `/create/inmate${uriQueryJoin({ firstName, lastName })}`
-export const ROUTE_RECIPIENT_CREATE_ID = (inmateID) =>
-  `/create/inmate${uriQueryJoin({ id: inmateID })}`
-export const ROUTE_INMATE_SEARCH = ({ firstName, lastName }) =>
-  `/search/inmates/${firstName}/${lastName}`
+  `/create/recipient${uriQueryJoin({ firstName, lastName })}`
+export const ROUTE_RECIPIENT_CREATE_ID = (recipientID) =>
+  `/create/recipient${uriQueryJoin({ id: recipientID })}`
+export const ROUTE_RECIPIENT_SEARCH = ({ firstName, lastName }) =>
+  `/search/recipients/${firstName}/${lastName}`
 export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
 export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
 export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) =>
@@ -61,21 +63,18 @@ export const gotoRecipientSearch = async (
     return gotoRecipientSearchByName({ firstName, lastName })
   }
 }
-const gotoRecipientSearchByID = async (id) => {
-  if (id === null) return
+const gotoRecipientSearchByID = async (id: string) => {
+  if (isEmpty(id)) return
 
-  loading.start()
   try {
-    const foundRecipient = await RecipientService.getRecipientByAssignedId(id)
-    loading.end()
+    const foundRecipient = await recipient.fetch({ id })
     if (foundRecipient) {
-      focusedInmate.set(foundRecipient)
-      return gotoPackagesForInmate(foundRecipient)
+      return gotoPackagesForRecipient(foundRecipient)
     } else {
-      const shouldCreateNewInmate = confirm(
-        `Failed to find any inmates with ID#${id}. To create a new inmate, click OK`,
+      const shouldCreateNewRecipient = confirm(
+        `Failed to find any recipients with ID#${id}. To create a new recipient, click OK`,
       )
-      if (shouldCreateNewInmate) return goto(ROUTE_RECIPIENT_CREATE_ID(id))
+      if (shouldCreateNewRecipient) return goto(ROUTE_RECIPIENT_CREATE_ID(id))
     }
   } catch (error) {
     alert(ERROR_MESSAGE_SERVER_COMMUNICATION)
@@ -100,7 +99,7 @@ const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
       if (lastName == null) {
         lastName = '-'
       }
-      return goto(ROUTE_INMATE_SEARCH({ firstName, lastName }))
+      return goto(ROUTE_RECIPIENT_SEARCH({ firstName, lastName }))
     }
 
     const shouldCreateNewRecipient = confirm(
@@ -118,10 +117,10 @@ const gotoRecipientSearchByName = async ({ firstName, lastName }) => {
   }
 }
 
-export const gotoPackagesForInmate = async (inmate: Recipient) => {
-  const route = inmate.assignedId
-    ? ROUTE_PACKAGES_FOR_INMATE_ASSIGNED_ID(inmate.assignedId)
-    : ROUTE_PACKAGES_FOR_INMATE(inmate.id)
+export const gotoPackagesForRecipient = async (recipient: Recipient) => {
+  const route = recipient.assignedId
+    ? ROUTE_PACKAGES_FOR_RECIPIENT_ASSIGNED_ID(recipient.assignedId)
+    : ROUTE_PACKAGES_FOR_RECIPIENT(recipient.id)
   goto(route)
 }
 

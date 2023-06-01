@@ -8,7 +8,7 @@ export function load({ url }) {
   ]
   return {
     id,
-    isInmateNoID: !id,
+    isRecipientNoId: !id,
     firstName,
     lastName,
   }

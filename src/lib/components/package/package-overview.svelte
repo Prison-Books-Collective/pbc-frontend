@@ -1,7 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-
-  import { focusedPackage, focusedPackages } from '$stores/package'
   import { FacilityService } from '$services/pbc/facility.service'
 
   import Book from '$components/book.svelte'
@@ -9,31 +7,33 @@
   import FacilitySelect from '$lib/components/facility/select-facility.svelte'
   import type { Recipient } from '$lib/models/pbc/recipient'
   import { isValidFacility, type Facility } from '$models/pbc/facility'
-  import { focusedInmate } from '$stores/inmate'
+  import { createShipment, shipments } from '$lib/data/shipment.data'
+  import { recipient } from '$lib/data/recipient.data'
+  import type { Shipment } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
-  export let inmate: Recipient
+  export let targetRecipient: Recipient
 
   let removeItems: string[] = []
-  let facility = $focusedPackage.facility
+  let facility = $createShipment.facility ?? $recipient.facility
 
   const loadFacility = async (currentFacility: Facility, recipient: Recipient) => {
-    if (!currentFacility && recipient.location) {
-      facility = await FacilityService.resolveFacilityByName(recipient.location)
-      focusedPackage.setDestination(facility)
+    if (!currentFacility && recipient.facility) {
+      facility = await FacilityService.resolveFacilityByName(recipient.facility)
+      createShipment.setDestination(facility)
     } else if (!facility) {
-      if (!$focusedPackages || $focusedPackages.length === 0) {
+      if (!$shipments || $shipments.length === 0) {
         facility = null
         return
       }
-      facility = $focusedPackages[0].facility
-      focusedPackage.setDestination(facility)
+      facility = $shipments[0].facility
+      createShipment.setDestination(facility)
     }
   }
-  loadFacility(facility, inmate)
+  loadFacility(facility, targetRecipient)
 
-  $: isPackageEmpty = () => $focusedPackage.content.length === 0
+  $: isPackageEmpty = () => $createShipment.content.length === 0
 
   const shouldDisableComplete = (facility: Facility) => !isValidFacility(facility)
   // const shouldDisableRemove = (removeItems: string[]) => true //!removeItems || removeItems.length === 0
@@ -42,17 +42,13 @@
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')
 
-  const completePackage = async (inmate) => {
+  const completePackage = async () => {
     try {
-      inmate = { id: $focusedInmate.id }
-      focusedPackage.setRecipient(inmate)
-      let currPackage = await focusedPackage.get()
-      if (!currPackage['id']) {
-        delete currPackage['id']
-      }
-      currPackage['facility'] = facility
-      focusedPackage.set(currPackage)
-      const updatedPackage = await focusedPackage.sync()
+      createShipment.setRecipient($recipient)
+      let currentShipment: Partial<Shipment> = { ...$createShipment }
+      currentShipment.facility = facility
+      createShipment.set(currentShipment as Shipment)
+      const updatedPackage = await createShipment.sync()
       dispatch('update', updatedPackage)
     } catch (error) {
       dispatch('error', error)
@@ -61,7 +57,7 @@
   }
 
   $: removeSelected = () => {
-    focusedPackage.removeItemsById(...removeItems)
+    createShipment.removeItemsById(...removeItems)
     removeItems = []
   }
 </script>
@@ -75,7 +71,7 @@
   {:else}
     {#key removeItems}
       <ol class="package-items-list">
-        {#each $focusedPackage.content as content}
+        {#each $createShipment.content as content}
           <li>
             <label for={content.id.toString()}>
               <input
@@ -93,7 +89,7 @@
             </label>
           </li>
         {/each}
-        <!-- {#each $focusedPackage.noISBNBooks as book}
+        <!-- {#each $createShipment.noISBNBooks as book}
           <li>
             <label for={book.id.toString()}>
               <input
@@ -106,7 +102,7 @@
             </label>
           </li>
         {/each}
-        {#each $focusedPackage.zines as zine}
+        {#each $createShipment.zines as zine}
           <li>
             <label for={zine.id.toString()}>
               <input
@@ -123,14 +119,14 @@
     {/key}
   {/if}
 
-  {#if facility || $focusedPackage.content.length > 0}
+  {#if facility || $createShipment.content.length > 0}
     <div class="package-destination">
       <span class="label">Destination: </span>
       <FacilitySelect
         bind:facility
         selected={facility?.name}
         on:update={({ detail }) => {
-          focusedPackage.setDestination(detail)
+          createShipment.setDestination(detail)
         }}
       />
     </div>
@@ -139,8 +135,8 @@
 
   {#if isPackageEmpty()}
     <p>
-      Add one or more books or zines to start a package for {inmate.firstName}
-      {inmate.lastName}
+      Add one or more books or zines to start a package for {targetRecipient.firstName}
+      {targetRecipient.lastName}
     </p>
   {:else}
     <p>
@@ -168,7 +164,7 @@
       <button
         class="success"
         disabled={shouldDisableComplete(facility)}
-        on:click={() => completePackage(inmate)}
+        on:click={() => completePackage(targetRecipient)}
       >
         Complete Package
       </button>
