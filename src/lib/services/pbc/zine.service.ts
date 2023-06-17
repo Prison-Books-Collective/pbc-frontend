@@ -1,15 +1,69 @@
 import { BASE_PBC_URI } from '.'
-import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST } from '$util/web'
+import {
+  CONTENT_TYPE_JSON,
+  METHOD_DELETE,
+  METHOD_GET,
+  METHOD_POST,
+  METHOD_PUT,
+  uriQueryJoin,
+} from '$util/web'
 import type { Zine } from '$models/pbc/shipment'
 import type { NewZine } from '$models/pbc/newZine'
 
 export class ZineService {
   public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getAllZines`
   public static readonly URI_CREATE_ZINE = `${BASE_PBC_URI}/addContent`
+  public static readonly URI_UPDATE_ZINE = `${BASE_PBC_URI}/updateContent`
+  public static readonly URI_DELETE_ZINE = (id: number) =>
+    `${BASE_PBC_URI}/deleteContent${uriQueryJoin({ id })}`
   public static readonly URI_GET_ZINE_BY_CODE = (code: string) =>
     `${BASE_PBC_URI}/getZineByCode?code=${code}`
 
   private static cachedZines: Zine[] = []
+
+  public static async deleteZine(zine: Zine): Promise<void> {
+    const response = await fetch(this.URI_DELETE_ZINE(zine.id), {
+      ...METHOD_DELETE,
+    })
+
+    if (response.status !== 200) {
+      throw new Error(
+        `unexpected response ${response.status} when deleting zine with ID "${
+          zine.id ?? 'no id provided'
+        }" at ${this.URI_DELETE_ZINE(zine.id)}`,
+      )
+    }
+
+    this.cachedZines = this.cachedZines.filter((z) => z.id != zine.id)
+  }
+
+  public static async updateZine(zine: Zine): Promise<Zine> {
+    const response = await fetch(this.URI_UPDATE_ZINE, {
+      ...METHOD_PUT,
+      headers: { ...CONTENT_TYPE_JSON },
+      body: JSON.stringify({ ...zine, type: 'zine' }),
+    })
+
+    if (response.status !== 200) {
+      throw new Error(
+        `unexpected response ${response.status} when updating zine with ID "${
+          zine.id ?? 'no id provided'
+        }" at ${this.URI_UPDATE_ZINE} with details: ${JSON.stringify(zine)}`,
+      )
+    }
+
+    const updatedZine: Zine = await response.json()
+    if (this.cachedZines.length > 0) {
+      this.cachedZines = this.cachedZines
+        .map((zine) => {
+          if (zine.id !== updatedZine.id) return zine
+          return { ...updatedZine }
+        })
+        .sort(zineSortAlphabetical)
+    }
+
+    return updatedZine
+  }
 
   public static async createZine(zine: Zine): Promise<Zine> {
     const response = await fetch(this.URI_CREATE_ZINE, {
