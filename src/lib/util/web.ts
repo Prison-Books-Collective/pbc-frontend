@@ -15,7 +15,9 @@ export const HTTP_DELETE = 'DELETE'
 export type QueryParamMap = { [queryParam: string | number]: string }
 
 export const uriQueryJoin = (queryMap: QueryParamMap) => {
-  const paramNames = Object.keys(queryMap).filter((paramName) => queryMap[paramName] !== null)
+  const paramNames = Object.keys(queryMap).filter(
+    (paramName) => queryMap[paramName] !== null && queryMap[paramName] !== undefined,
+  )
   if (paramNames.length === 0) return ''
 
   return (

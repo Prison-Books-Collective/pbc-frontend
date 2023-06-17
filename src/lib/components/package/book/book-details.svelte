@@ -137,18 +137,7 @@
       {/if}
     </p>
     <strong>{$focusedBook.title}</strong>
-    {#if $focusedBook.creators && $focusedBook.creators.length > 0}
-      {#if $focusedBook.creators[0].type == 'author'}
-        {$focusedBook.creators[0].prefix || ''}
-        {$focusedBook.creators[0].firstName || ''}
-        {$focusedBook.creators[0].middleName || ''}
-        {$focusedBook.creators[0].lastName || ''}
-        {$focusedBook.creators[0].suffix || ''}
-      {/if}
-      {#if $focusedBook.creators[0].type == 'group'}
-        {$focusedBook.creators[0].name}
-      {/if}
-    {/if}
+    {$focusedBook.authors}
 
     <p>Add it to the package by clicking the button below, or search for another book instead.</p>
 
