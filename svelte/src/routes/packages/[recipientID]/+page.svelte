@@ -69,6 +69,8 @@
     {:then location}
       {#if location === ''}
         Released
+      {:else if location ==='Id.length != 7'}
+        Location information is not available for this recipient.
       {:else}
         {location}
       {/if}
