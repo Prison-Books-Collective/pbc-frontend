@@ -9,9 +9,11 @@
   <div>
     <ul>
       {#each $zines as zine}
-        <li>
-          <Zine {zine} />
-        </li>
+        {#key zine.id}
+          <li>
+            <Zine {zine} />
+          </li>
+        {/key}
       {/each}
     </ul>
   </div>
