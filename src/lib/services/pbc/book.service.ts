@@ -11,6 +11,10 @@ export class BookService {
     `${BASE_PBC_URI}/getBookByISBN${uriQueryJoin({ isbn: isbn })}`
   public static readonly URI_CREATE_BOOK = `${BASE_PBC_URI}/addContent`
   public static readonly URI_UPDATE_BOOK = `${BASE_PBC_URI}/updateBook`
+  public static readonly URI_SEARCH_BOOK_DB = (title: string, author = '') =>
+    `${BASE_PBC_URI}/content${uriQueryJoin({ title, author })}`
+  public static readonly URI_QUERY_GOOGLE = (title: string, author = '') =>
+    `${BASE_PBC_URI}/queryGoogle${uriQueryJoin({ title, author })}`
 
   public static async findBook(isbn: string): Promise<Book | null> {
     let uri: string
@@ -53,10 +57,11 @@ export class BookService {
     }
     const bookToSubmit = {
       title: book.title,
-      creators: book.creators,
+      authors: book.authors,
       type: 'book',
       isbn10: book.isbn10,
       isbn13: book.isbn13,
+      id: book.id ?? undefined,
     }
     const response = await fetch(this.URI_CREATE_BOOK, {
       ...METHOD_POST,
@@ -97,6 +102,41 @@ export class BookService {
     }
 
     return (await response.json()) as Book
+  }
+
+  public static async searchBookByTitleAndAuthor(
+    title: string,
+    author: string,
+  ): Promise<List<Book>> {
+    try {
+      const response = await fetch(this.URI_SEARCH_BOOK_DB(title, author))
+      const books = await response.json()
+
+      if (!!books && books.length > 0) return books
+    } catch (error) {
+      console.error(
+        `Failed to search DB for books by title "${title}" and author "${author}" at URI "${this.URI_SEARCH_BOOK_DB(
+          title,
+          author,
+        )}". Received error: `,
+        error,
+      )
+    }
+
+    try {
+      const googleResponse = await fetch(this.URI_QUERY_GOOGLE(title, author))
+      return await googleResponse.json()
+    } catch (error) {
+      console.error(
+        `Failed to query Google for books by title "${title}" and author "${author}" at URI "${this.URI_QUERY_GOOGLE(
+          title,
+          author,
+        )}". Received error: `,
+        error,
+      )
+    }
+
+    return []
   }
 
   //   public static async updateBook(book: Book): Promise<Book> {

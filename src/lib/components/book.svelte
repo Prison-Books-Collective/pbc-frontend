@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { getCreatorName, type Book } from '$models/pbc/shipment'
+  import type { Book } from '$models/pbc/shipment'
   export let book: Book = null
-
-  let creators = book.creators.map(getCreatorName).join(', ')
 </script>
 
 {#if book}
   <strong>{book.title}</strong>
-  {#if book.creators && book.creators.length > 0}
-    &mdash; {creators}
-  {/if}
+  &mdash; {book.authors}
 {/if}

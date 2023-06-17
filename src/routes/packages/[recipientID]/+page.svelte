@@ -73,10 +73,10 @@
           {:then location}
             {#if location === ''}
               Released
-            {:else if location}
-              {location}
+            {:else if location == 'Id.length != 7'}
+              Location information is not available for this recipient.
             {:else}
-              Unable to load Current Location from NC DAC Site
+              {location}
             {/if}
           {/await}
         </a>

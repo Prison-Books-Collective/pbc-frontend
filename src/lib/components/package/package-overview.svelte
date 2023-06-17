@@ -80,11 +80,12 @@
                 bind:group={removeItems}
                 value={content.id}
               />
-              {#if content.creators != null}
-                <Book book={content} />
-              {/if}
-              {#if content.code != null}
+              {#if content?.type == 'zine'}
                 <Zine zine={content} />
+              {/if}
+
+              {#if content?.type == 'book'}
+                <Book book={content} />
               {/if}
             </label>
           </li>
