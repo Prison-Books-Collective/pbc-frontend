@@ -1,3 +1,4 @@
+import type { Facility } from '$models/pbc/facility'
 import type { Recipient } from '$models/pbc/recipient'
 import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
 import { shipmentClient } from '$services/bellbooks-backend/shipment.client'
