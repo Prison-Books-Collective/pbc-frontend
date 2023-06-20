@@ -5,19 +5,19 @@
 
   const dispatch = createEventDispatcher()
 
-  export let threeLetterCode = null
-  export let title = null
+  export let threeLetterCode: string
+  export let title: string
 
   const resetInput = () => {
-    ;[threeLetterCode, title] = [null, null]
+    ;[threeLetterCode, title] = ['', '']
   }
 
-  const shouldDisableCreate = (threeLetterCode, title) =>
-    isEmpty(threeLetterCode) || isEmpty(title) || threeLetterCode.length > 5
+  const shouldDisableCreate = (code: string, title: string) =>
+    isEmpty(code) || isEmpty(title) || code.length > 5
 
-  const createZine = async (threeLetterCode, title) => {
+  const createZine = async (code: string, title: string) => {
     try {
-      const createdZine = await zines.create({ threeLetterCode, title })
+      const createdZine = await zines.create({ code, title })
       resetInput()
       dispatch('update', createdZine)
     } catch (error) {

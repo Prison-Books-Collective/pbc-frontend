@@ -1,7 +1,7 @@
-- fix CI search
-- fix no isbn book display (undefined author)
-- remove edit from zine functionality
+[x] fix CI search
+[x] fix no isbn book display (undefined author)
+[x] remove edit from zine functionality
 
-- add no isbn book
-  - google books when db books do not contain desired result
-  - if search and none of the books match, add book manually
+[ ] add no isbn book
+  [ ] google books when db books do not contain desired result
+  [ ] if search and none of the books match, add book manually

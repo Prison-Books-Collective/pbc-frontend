@@ -6,6 +6,7 @@
   import { isEmpty } from '$util/strings'
 
   export let zine: Zine = null
+  export let allowEdit = false
   export let formatForInvoice = false
 
   let isModalVisible = false
@@ -68,7 +69,7 @@
     </article>
   </Modal>
 
-  <span class="link" on:click={showModal}>
+  <span class:link={allowEdit} on:click={() => (allowEdit ? showModal() : null)}>
     <strong>
       {#if formatForInvoice}
         ZINE
