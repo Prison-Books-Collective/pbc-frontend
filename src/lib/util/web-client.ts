@@ -178,8 +178,22 @@ export abstract class WebClient<T extends EndpointMap> {
       const response = await fetch(uri, { ...METHOD_GET })
 
       if (WebClient.isHTTPStatusMatch(acceptedStatuses, response.status)) {
-        const data: ResponseType = await response.json()
-        return { httpStatus: response.status, data }
+        try {
+          const data: ResponseType = await response.clone().json()
+          return { httpStatus: response.status, data }
+        } catch (_) {
+          // is not a JSON response
+        }
+
+        try {
+          const data = await response.clone().text()
+          return { httpStatus: response.status, data: data as ResponseType }
+        } catch (_) {
+          // is not a text response
+        }
+
+        const data = await response.blob()
+        return { httpStatus: response.status, data: data as ResponseType }
       }
 
       if (additionalStatusHandlers && additionalStatusHandlers.length > 0) {

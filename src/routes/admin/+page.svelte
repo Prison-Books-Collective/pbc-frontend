@@ -9,8 +9,9 @@
   import { gotoPackageSearch } from '$util/routing'
   import { ZineService } from '$services/pbc/zine.service'
   import { CONTENT_TYPE_JSON } from '$util/web'
+  import type { Zine } from '$models/pbc/zine'
 
-  const alertZineCreated = ({ detail: zine }) =>
+  const alertZineCreated = ({ detail: zine }: { detail: Zine }) =>
     alert(`Successfully added new Zine "${zine.code} - ${zine.title}"`)
   const alertFacilityCreated = ({ detail: facility }) =>
     alert(

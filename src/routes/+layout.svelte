@@ -62,6 +62,7 @@
   }
 
   nav {
+    box-sizing: border-box; // todo: border-box setting should be a global reset
     position: fixed;
     display: flex;
     flex-flow: row nowrap;
@@ -70,8 +71,7 @@
     background-color: #e8e7e2;
     z-index: 100;
 
-    height: 3rem;
-    width: calc(100vw - 2rem);
+    width: calc(100vw);
 
     padding: 1rem;
 

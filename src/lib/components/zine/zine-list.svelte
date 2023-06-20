@@ -11,7 +11,7 @@
       {#each $zines as zine}
         {#key zine.id}
           <li>
-            <Zine {zine} />
+            <Zine {zine} allowEdit={true} />
           </li>
         {/key}
       {/each}

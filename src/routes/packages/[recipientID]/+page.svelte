@@ -73,7 +73,7 @@
           {:then location}
             {#if location === ''}
               Released
-            {:else if location == 'Id.length != 7'}
+            {:else if location == 'Id.length != 7' || location == 'ERROR'}
               Location information is not available for this recipient.
             {:else}
               {location}

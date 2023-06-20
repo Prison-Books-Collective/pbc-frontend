@@ -65,7 +65,7 @@ export class ZineService {
     return updatedZine
   }
 
-  public static async createZine(zine: Zine): Promise<Zine> {
+  public static async createZine(zine: Omit<Omit<Zine, 'id'>, 'type'>): Promise<Zine> {
     const response = await fetch(this.URI_CREATE_ZINE, {
       ...METHOD_POST,
       headers: { ...CONTENT_TYPE_JSON },

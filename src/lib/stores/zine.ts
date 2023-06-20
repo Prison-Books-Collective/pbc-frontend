@@ -36,19 +36,18 @@ export class ZineStore implements Writable<Zine[]> {
     return null
   }
 
-  public async create({ threeLetterCode, title }: Partial<Zine>): Promise<Zine> {
+  public async create({ code, title }: Partial<Zine>): Promise<Zine> {
     try {
       const createdZine = await ZineService.createZine({
-        code: threeLetterCode,
-        title,
-        inUse: true,
+        code: code as string,
+        title: title as string,
       })
       this.fetch()
       return createdZine
     } catch (error) {
       console.error(
         `failed to create new zine for $zines via remote using data: ${JSON.stringify({
-          threeLetterCode,
+          code,
           title,
         })}`,
         error,
