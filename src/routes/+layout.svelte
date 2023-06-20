@@ -11,85 +11,62 @@
   <Loading />
 {/if}
 
-<nav id="nav-primary">
-  <div id="navigation-buttons">
+<nav data-layout="navigation">
+  <section class="fixed">
     <a href="/">
-      <img src={home} alt="Home Icon" class="icon home" />
+      <img src={home} alt="Navigation button for home page" class="icon home" />
     </a>
+
     <a href="/admin">
-      <img src={settings} alt="Gear Settings Icon" class="icon" />
+      <img src={settings} alt="Navigation button for admin page" class="icon" />
     </a>
-  </div>
 
-  <img id="logo-text" src={logoText} alt="Logo text for Prison Books Collective" />
-  <img id="logo" src={logo} alt="Logo for Prison Books Collective" />
+    <img src={logoText} alt="Text-only logo for Prison Books Collective" class="focus-on-hover" />
+
+    <span>
+      <!-- Nothing here, this element placed to center the logoText image -->
+    </span>
+
+    <img src={logo} alt="Logo for Prison Books Collective" class="focus-on-hover" />
+  </section>
+
+  <section class="spacer" />
 </nav>
-
-<div id="nav-spacer" />
 
 <slot />
 
 <style lang="scss">
-  * {
-    --color-inactive: #eaeaea;
-    --color-active: #333;
-  }
+  [data-layout='navigation'] {
+    .fixed {
+      box-sizing: border-box; // todo: border-box setting should be a global reset
 
-  #logo {
-    opacity: 0.5;
-    transition-duration: 0.3s;
+      position: fixed;
+      top: 0;
+      width: 100vw;
+      padding: 1rem;
 
-    &:hover {
-      opacity: 1;
+      display: grid;
+      justify-items: center;
+      align-items: center;
+      gap: 0.25em;
+      grid-template-areas: 'home-icon admin-icon text-logo . image-logo';
+      grid-template-columns: auto auto 1fr auto auto;
+
+      background-color: var(--color-bg);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+
+      z-index: 101;
+
+      & > img {
+        max-height: 3rem;
+      }
+    }
+
+    .spacer {
+      height: 5rem;
     }
   }
 
-  #logo-text {
-    opacity: 0.5;
-    transition-duration: 0.3s;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  #navigation-buttons {
-    width: 4rem;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  nav {
-    box-sizing: border-box; // todo: border-box setting should be a global reset
-    position: fixed;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #e8e7e2;
-    z-index: 100;
-
-    width: calc(100vw);
-
-    padding: 1rem;
-
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-
-    img {
-      max-height: 3rem;
-    }
-  }
-
-  #nav-spacer {
-    height: 3rem;
-    padding: 1rem;
-  }
-
-  .icon {
-    max-height: 1.5rem;
-  }
   .home {
     max-height: 2.15rem;
   }

@@ -218,7 +218,7 @@ export abstract class WebClient<T extends EndpointMap> {
 
   protected async fetch<RequestType, ResponseType>(
     endpoint: Endpoint,
-    options: HTTPFetchOptions<RequestType, ResponseType>,
+    options: HTTPFetchOptions<RequestType, ResponseType> = {},
   ): Promise<ResponseType | null> {
     if (!options.acceptedStatuses) {
       options.acceptedStatuses = ['200s']
@@ -261,7 +261,7 @@ export abstract class WebClient<T extends EndpointMap> {
   protected async alwaysFetch<RequestType, ResponseType>(
     endpoint: Endpoint,
     defaultData: ResponseType,
-    options: HTTPFetchOptions<RequestType, ResponseType>,
+    options: HTTPFetchOptions<RequestType, ResponseType> = {},
   ): Promise<ResponseType> {
     const data = await this.fetch(endpoint, { ...options, defaultData })
     if (data) return data

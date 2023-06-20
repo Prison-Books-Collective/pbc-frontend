@@ -89,7 +89,7 @@
     padding: 10px;
   }
   span {
-    color: darkslategray;
+    color: var(--color-text-subtitle);
     font-weight: 700;
     font-size: 1.75rem;
   }

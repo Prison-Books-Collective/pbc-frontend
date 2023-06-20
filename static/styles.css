@@ -1,5 +1,16 @@
 @import url('./fonts.css');
 
+:root {
+  --color-bg: #e8e7e2;
+
+  --color-text-subtitle: darkslategray;
+  --color-text-link: blue;
+
+  --color-table-header: #c1e3de;
+  --color-table-bg: #f0f0f0;
+  --color-table-bg-alt: gainsboro;
+}
+
 @media not print {
   * {
     font-family: 'Roboto';
@@ -7,13 +18,12 @@
 
   body {
     margin: 0px !important;
-    background-color: #e8e7e2;
+    background-color: var(--color-bg);
   }
 }
 
 @media print {
-  #nav-primary,
-  #nav-spacer {
+  [data-layout='navigation'] {
     display: none;
   }
 
@@ -30,7 +40,7 @@ h1 {
 h2 {
   font-weight: 600;
   font-size: 1.25rem;
-  color: darkslategray;
+  color: var(--color-text-subtitle);
   text-align: center;
 }
 
@@ -52,15 +62,15 @@ th,
 td {
   border: 1px solid black;
 }
+th {
+  background-color: var(--color-table-header);
+  height: 30px;
+}
 tr {
-  background-color: #f0f0f0;
+  background-color: var(--color-table-bg);
 }
 tr:nth-child(2n) {
-  background-color: gainsboro;
-}
-th {
-  background-color: #c1e3de;
-  height: 30px;
+  background-color: var(--color-table-bg-alt);
 }
 
 .hidden {
@@ -87,6 +97,15 @@ th {
   max-width: 100vw;
   min-height: calc(100vh - 7rem);
   word-wrap: break-word;
+}
+
+img.focus-on-hover {
+  opacity: 0.5;
+  transition-duration: 0.3s;
+}
+
+img.focus-on-hover:hover {
+  opacity: 1;
 }
 
 .icon {
@@ -122,7 +141,7 @@ th {
 }
 
 .link {
-  color: blue;
+  color: var(--color-text-link);
   font-size: 1rem;
   position: relative;
   cursor: pointer;
@@ -136,7 +155,7 @@ th {
   bottom: -2px;
   left: 0px;
   right: 0px;
-  background-color: blue;
+  background-color: var(--color-text-link);
 
   transition: transform 250ms ease-in-out;
   transform: scale(0);
