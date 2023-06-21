@@ -18,7 +18,7 @@
       ? isEmpty(firstName) || isEmpty(lastName) || !location
       : isEmpty(firstName) || isEmpty(lastName) || isEmpty(id)
 
-  const createRecipient = async () => {
+  $: createRecipient = async () => {
     loading.start()
     const createdRecipient = await (isRecipientNoId
       ? recipientClient.createRecipient({
@@ -91,6 +91,8 @@
       />
     </label>
 
-    <button type="submit" class="success" disabled={shouldDisableCreateForm()}> Add Inmate </button>
+    <button type="submit" class="success" disabled={shouldDisableCreateForm()}>
+      Add Recipient
+    </button>
   </form>
 </main>

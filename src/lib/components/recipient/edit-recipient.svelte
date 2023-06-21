@@ -81,10 +81,3 @@
     </button>
   </form>
 {/if}
-
-<style>
-  #edit-recipient {
-    width: 400px;
-    max-width: 80vw;
-  }
-</style>

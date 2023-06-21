@@ -192,8 +192,14 @@ export abstract class WebClient<T extends EndpointMap> {
           // is not a text response
         }
 
-        const data = await response.blob()
-        return { httpStatus: response.status, data: data as ResponseType }
+        try {
+          const data = await response.blob()
+          return { httpStatus: response.status, data: data as ResponseType }
+        } catch (_) {
+          // there is no response to return
+        }
+
+        return { httpStatus: response.status }
       }
 
       if (additionalStatusHandlers && additionalStatusHandlers.length > 0) {

@@ -13,7 +13,13 @@
     return !selectedItems || selectedItems.length === 0
   }
 
+  const isEverythingSelected = (selectedItems: string[]) => {
+    return !!selectedItems && selectedItems.length === $createShipment.content.length
+  }
+
   const deleteItems = () => {
+    if (isEverythingSelected(selectedItems)) return deletePackage()
+
     try {
       createShipment.removeItemsById(...selectedItems)
       createShipment.sync()

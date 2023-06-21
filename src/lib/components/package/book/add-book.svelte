@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte'
-  import { focusedBook } from '$stores/book'
   import type { Book } from '$models/pbc/shipment'
-  import { BookService } from '$services/pbc/book.service'
   import { createShipment } from '$lib/data/shipment.data'
-  import { loading } from '$stores/loading'
+  import { books, createBook } from '$lib/data/book.data'
 
   enum DISPLAY_FORM {
     WITH_ISBN,
     WITHOUT_ISBN,
+    WITHOUT_ISBN_SEARCH_RESULTS,
+    WITHOUT_ISBN_MANUAL_ENTRY,
   }
 
   const dispatch = createEventDispatcher()
@@ -19,19 +19,18 @@
   let creatorType = null
 
   let noISBNSearchResults: Book[] | null = null
+  let shouldDisplayManualInput = false
 
-  let prefix = null
-  let firstName = null
-  let middleName = null
-  let lastName = null
-  let suffix = null
-  let groupName = null
-  let scanInput
-  let inputISBN
   let inputTitle: string
 
+  let isbnInput: string
+  let isbnInputElement: HTMLInputElement
+
+  books.reset()
+  createBook.reset()
+
   onMount(() => {
-    scanInput.focus()
+    isbnInputElement.focus()
   })
 
   const cancelClicked = () => dispatch('cancel')
@@ -45,27 +44,35 @@
   }
 
   $: shouldDisableSearch = () => {
-    return !inputISBN || (inputISBN.length !== 10 && inputISBN.length !== 13)
+    return !isbnInput || (isbnInput.length !== 10 && isbnInput.length !== 13)
   }
   $: shouldDisableSearchNoISBN = () => {
-    return !inputTitle || inputTitle.trim().length === 0
+    return !$createBook.title || $createBook.title.trim().length === 0
   }
   $: loadISBN = async () => {
     if (shouldDisableSearch()) return
-    focusedBook.fetchBookByISBN(inputISBN) // TODO need to separate the search book functionality from
-    dispatch('search', inputISBN)
+    createBook.fetch({ isbn: isbnInput })
+    dispatch('search', isbnInput)
   }
-  $: saveNoISBNBook = async (book: Book) => {
-    console.log({ book })
-    const createdBook = await BookService.createBook(book)
+  $: saveNoISBNBook = async (book?: Book) => {
+    if (!!book) createBook.load(book)
+    const createdBook = await createBook.sync()
     createShipment.addContent('book', createdBook)
-    dispatch('update', book)
+    dispatch('update', createdBook)
   }
 
   $: searchNoISBNBook = async () => {
-    loading.start()
-    noISBNSearchResults = await BookService.searchBookByTitleAndAuthor(inputTitle, inputAuthor)
-    loading.end()
+    const { title, authors: author } = $createBook
+    await books.fetch({ title, author })
+    display =
+      $books.length === 0
+        ? DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY
+        : DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS
+  }
+
+  const presentManualEntry = () => {
+    books.reset()
+    display = DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY
   }
 </script>
 
@@ -78,24 +85,25 @@
         name="isbn-input"
         id="isbn-input"
         placeholder="Click here, then scan"
-        bind:value={inputISBN}
-        bind:this={scanInput}
+        bind:value={isbnInput}
+        bind:this={isbnInputElement}
       />
     </label>
 
     <div class="form-options">
+      <button type="button" on:click={cancelClicked}>Cancel</button>
+      <button type="button" class="danger" on:click={noISBNClicked}>No ISBN?</button>
       <button class="success" disabled={shouldDisableSearch()} type="submit">
         Search for Book
       </button>
-      <button type="button" class="danger" on:click={noISBNClicked}>No ISBN?</button>
-      <button type="button" on:click={cancelClicked}>Cancel</button>
     </div>
   </form>
 {/if}
 
-{#if display === DISPLAY_FORM.WITHOUT_ISBN}
+{#if display === DISPLAY_FORM.WITHOUT_ISBN || (display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length > 0)}
   <form on:submit|preventDefault={searchNoISBNBook}>
-    <p>Fill out the information below and save book (or resource)</p>
+    <h1>Search</h1>
+    <p>Fill out the information below to search for the book or resource</p>
 
     <label for="book-title">
       Title
@@ -104,7 +112,7 @@
         name="book-title"
         id="book-title"
         placeholder="Title of Book"
-        bind:value={inputTitle}
+        bind:value={$createBook.title}
       />
     </label>
 
@@ -115,40 +123,97 @@
         name="book-author"
         id="book-author"
         placeholder="Author of Book"
-        bind:value={inputAuthor}
+        bind:value={$createBook.authors}
       />
     </label>
 
-    {#if noISBNSearchResults === null}
-      <div class="form-options space">
-        <button class="success" disabled={shouldDisableSearchNoISBN()}>Search for Book </button>
-        <button type="button" class="danger" on:click={isbnClicked}>Search by ISBN?</button>
-        <button type="button" on:click={cancelClicked}>Cancel</button>
-      </div>
-    {:else if noISBNSearchResults.length === 0}{:else}
-      <div class="form-options space">
-        <button class="success" disabled={shouldDisableSearchNoISBN()}>New Search for Book </button>
-        <button type="button" class="danger" on:click={isbnClicked}>Search by ISBN?</button>
-        <button type="button" on:click={cancelClicked}>Cancel</button>
-      </div>
+    <div class="form-options space">
+      <button type="button" on:click={cancelClicked}>Cancel</button>
+      <button type="button" class="danger" on:click={isbnClicked}>Search by ISBN?</button>
+      <button class="success" disabled={shouldDisableSearchNoISBN()}>
+        {$books.length > 0 ? 'New ' : ''}
+        Search for Book
+      </button>
+    </div>
 
+    {#if display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length > 0}
       <ul>
-        {#each noISBNSearchResults as book}
-          <li class="search-result" on:click={() => saveNoISBNBook(book)}>
-            <strong>{book.title}</strong>
-            <span>{book.authors}</span>
-            <div>
+        {#each $books as book}
+          <li
+            class="search-result"
+            class:green-border={book.id}
+            on:click={() => saveNoISBNBook(book)}
+          >
+            <span>
+              <strong>{book.title}</strong>
+              {#if book.authors}
+                by <span>{book.authors}</span>
+              {/if}
+            </span>
+            {#if book.isbn10 || book.isbn13}
+              <span class="small-text">
+                {#if book.isbn10}
+                  <strong>ISBN10-</strong>{book.isbn10}
+                {/if}
+                {#if book.isbn10 && book.isbn13}
+                  &nbsp;&nbsp;
+                {/if}
+                {#if book.isbn13}
+                  <strong>ISBN13-</strong>{book.isbn13}
+                {/if}
+              </span>
+            {/if}
+            <!-- <div>
               <strong>ISBN10: </strong>
               {book.isbn10}
             </div>
             <div>
               <strong>ISBN13: </strong>
               {book.isbn13}
-            </div>
+            </div> -->
           </li>
         {/each}
       </ul>
+
+      <div class="form-options space" on:click={() => presentManualEntry()}>
+        <button> I don't see what I'm looking for</button>
+      </div>
     {/if}
+  </form>
+{/if}
+
+{#if display === DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY || (display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length === 0)}
+  <form on:submit|preventDefault={() => saveNoISBNBook()}>
+    <h1>Save & Add to Package</h1>
+
+    <label for="book-title">
+      Title
+      <input
+        type="text"
+        name="book-title"
+        id="book-title"
+        placeholder="Title of Book"
+        bind:value={$createBook.title}
+      />
+    </label>
+
+    <label for="book-author">
+      Author
+      <input
+        type="text"
+        name="book-author"
+        id="book-author"
+        placeholder="Author of Book"
+        bind:value={$createBook.authors}
+      />
+    </label>
+
+    <div class="form-options space">
+      <button class="success" disabled={shouldDisableSearchNoISBN()}>
+        Save and Add to Package
+      </button>
+      <button type="button" on:click={cancelClicked}>Cancel</button>
+    </div>
   </form>
 {/if}
 
@@ -161,11 +226,13 @@
     list-style-type: none;
 
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column nowrap;
 
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
+    text-align: left;
 
+    padding: 0;
     margin-top: 1rem;
     gap: 1rem;
   }
@@ -174,21 +241,24 @@
     display: flex;
     flex-flow: column nowrap;
 
-    flex: 200px;
-
     padding: 1rem;
     cursor: pointer;
 
     box-shadow: 0px 0px 10px rgba(0 0 0 / 0.3);
-    transition-duration: 0.3s;
-
-    * {
-      margin-bottom: 0.25rem;
-    }
+    transition: background-color 0.3s, color 0.3s;
   }
 
   .search-result:hover {
     background-color: rgba(61 130 61 / 1);
     color: white;
+  }
+
+  .small-text {
+    font-size: 0.85rem;
+    opacity: 0.6;
+  }
+
+  .green-border {
+    border: 3px solid rgba(61 130 61 / 1);
   }
 </style>
