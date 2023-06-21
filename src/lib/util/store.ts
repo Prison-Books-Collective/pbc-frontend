@@ -36,7 +36,11 @@ export abstract class AppStore<DataType> implements Writable<DataType> {
     invalidate?: (value?: DataType) => void,
   ) => Unsubscriber
   public reset() {
-    this.set({ ...this.defaultState })
+    if (Array.isArray(this.defaultState)) {
+      this.set([...this.defaultState])
+    } else {
+      this.set({ ...this.defaultState })
+    }
   }
 
   public abstract fetch(identifiers: unknown): Promise<DataType | null>

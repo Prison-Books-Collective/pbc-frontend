@@ -19,7 +19,9 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
     super('ShipmentListStore', defaultShipmentList)
     recipient.subscribe((recipient) => {
       if (!recipient || !recipient.id) return
-      this.set(recipient.shipments)
+      this.set(
+        recipient?.shipments?.map((shipment) => ({ ...shipment, recipient: { id: recipient.id } })),
+      )
     })
   }
 
@@ -123,7 +125,7 @@ export class SingleShipmentStore extends AppStore<Shipment> {
     loading.end()
 
     if (newShipment) {
-      this.set(newShipment)
+      this.set({ ...newShipment, recipient: { id: shipmentUpdate?.recipient?.id } })
       isUpdate
         ? shipments.localUpdateShipment(newShipment)
         : shipments.localAddShipment(newShipment)

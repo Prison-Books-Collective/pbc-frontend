@@ -5,7 +5,7 @@
   import { goto } from '$app/navigation'
   import { focusedInmate } from '$stores/inmate'
   import { loading } from '$stores/loading.js'
-    import { recipient } from '$lib/data/recipient.data.js'
+  import { recipient } from '$lib/data/recipient.data.js'
   export let data
 
   export let firstName: string = data.firstName || ''
@@ -17,8 +17,8 @@
 
   const findRecipient = async (id) => {
     const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
-    if( foundRecipient ) {
-      recipient.set( foundRecipient )
+    if (foundRecipient) {
+      recipient.set(foundRecipient)
       goto(ROUTE_PACKAGES_FOR_RECIPIENT(foundRecipient.id))
     }
   }
@@ -37,7 +37,7 @@
 
   {#await getInmates then inmates}
     <nav>
-    {#each inmates as inmate}
+      {#each inmates as inmate}
         <p
           on:click={() => {
             findRecipient(inmate.id)

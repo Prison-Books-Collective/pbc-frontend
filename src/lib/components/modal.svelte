@@ -7,7 +7,7 @@
   const KEY_ESCAPE = 'Escape'
 
   export let visible = false
-  export let width = 'auto'
+  export let width = '600px'
   export let maxWidth = '100vw'
   export let height = 'fit-content'
   export let maxHeight = '90vh'
@@ -174,8 +174,8 @@
       grid-area: content;
       display: flex;
       flex-flow: column nowrap;
-      justify-content: center;
-      align-items: center;
+      justify-content: stretch;
+      align-items: stretch;
       padding: 1.5em;
       padding-top: 0.5em;
     }

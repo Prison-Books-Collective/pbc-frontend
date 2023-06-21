@@ -1,3 +1,5 @@
+import { isEmpty } from './strings'
+
 export const CONTENT_TYPE_JSON = {
   'Content-Type': 'application/json;charset=utf-8',
 }
@@ -16,7 +18,7 @@ export type QueryParamMap = { [queryParam: string | number]: string }
 
 export const uriQueryJoin = (queryMap: QueryParamMap) => {
   const paramNames = Object.keys(queryMap).filter(
-    (paramName) => queryMap[paramName] !== null && queryMap[paramName] !== undefined,
+    (paramName) => !isEmpty(queryMap[paramName]?.toString()),
   )
   if (paramNames.length === 0) return ''
 

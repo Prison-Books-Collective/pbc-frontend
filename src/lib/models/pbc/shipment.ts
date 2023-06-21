@@ -3,20 +3,20 @@ import type { Facility } from './facility'
 import type { Recipient } from './recipient'
 
 export interface PackageContent {
-  id: number
+  id?: number
   title: string
-  type: string
+  type?: string
 }
 
 export interface Book extends PackageContent {
-  type: 'book'
+  type?: 'book'
   authors: string
   isbn10?: string
   isbn13?: string
 }
 
 export interface Zine extends PackageContent {
-  type: 'zine'
+  type?: 'zine'
   code: string
 }
 
@@ -28,7 +28,7 @@ export interface Shipment {
   id: number
   content: PackageContent[]
   date: any
-  recipient: Recipient
+  recipient: Partial<Recipient>
   notes: Note[]
   facility: Facility
   [additionalFields: string]: any

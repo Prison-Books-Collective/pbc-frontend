@@ -46,7 +46,7 @@ export const ROUTE_RECIPIENT_CREATE_NAMED = ({ firstName, lastName }) =>
 export const ROUTE_RECIPIENT_CREATE_ID = (recipientID) =>
   `/create/recipient${uriQueryJoin({ id: recipientID })}`
 export const ROUTE_RECIPIENT_SEARCH = ({ firstName, lastName }) =>
-  `/search/recipients/${firstName}/${lastName}`
+  `/search/recipients${uriQueryJoin({ firstName, lastName })}`
 export const ROUTE_INVOICE = (packageID) => `/invoice/${packageID}`
 export const ROUTE_PRINT_INVOICE = (packageID) => `/invoice/${packageID}?print=true`
 export const ROUTE_PACKAGE_SEARCH = ({ searchMode, params }) =>

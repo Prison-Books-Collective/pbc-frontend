@@ -59,11 +59,10 @@ export class ShipmentClient extends WebClient<typeof ShipmentClientEndpoints> {
     })
   }
 
-  public async deleteShipment(id: string): Promise<boolean> {
-    const deletion = await this.fetch<never, unknown>(this.endpoints.DELETE_PACKAGE, {
+  public async deleteShipment(id: string): Promise<void> {
+    this.fetch<never, never>(this.endpoints.DELETE_PACKAGE, {
       params: { id },
     })
-    return !!deletion
   }
 
   public async createNote(content: string): Promise<Note | null> {

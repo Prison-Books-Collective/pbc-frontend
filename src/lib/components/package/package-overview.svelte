@@ -36,8 +36,7 @@
   $: isPackageEmpty = () => $createShipment.content.length === 0
 
   const shouldDisableComplete = (facility: Facility) => !isValidFacility(facility)
-  // const shouldDisableRemove = (removeItems: string[]) => true //!removeItems || removeItems.length === 0
-  const shouldDisableRemove = () => true
+  const shouldDisableRemove = (removeItems: string[]) => !removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
   const addBooksClicked = () => dispatch('add-books')
@@ -174,11 +173,6 @@
 </section>
 
 <style lang="scss">
-  h1 {
-    text-decoration: underline;
-    font-weight: normal;
-  }
-
   p {
     max-width: 600px;
   }

@@ -1,70 +1,77 @@
-// import { recipientClient } from '$services/bellbooks-backend/recipient.client'
-// import { loading } from '../stores/loading'
-// import { isEmpty } from '$util/strings'
-// import { AppStore } from '$util/store'
+import { shipmentContentClient } from '$services/bellbooks-backend/shipment-content.client'
+import { loading } from '../stores/loading'
+import { isEmpty } from '$util/strings'
+import { AppStore } from '$util/store'
 
-// import type { Book } from '$models/pbc/book'
+import type { Book } from '$models/pbc/shipment'
 
-// const defaultRecipient: Recipient = {
-//   id: -1,
-//   firstName: 'default',
-//   lastName: 'default',
-//   shipments: [],
-// }
+const defaultBookList: Book[] = []
+const defaultBook: Partial<Book> = {}
 
-// export class RecipientStore extends AppStore<Recipient> {
-//   constructor() {
-//     super('RecipientStore', defaultRecipient)
-//   }
+export class BookListStore extends AppStore<Book[]> {
+  constructor() {
+    super('BookListStore', defaultBookList)
+  }
 
-//   public async fetch({ id }: { id: string }): Promise<Recipient | null> {
-//     if (isEmpty(id)) return this.getLatest()
+  public async fetch({ title, author }: { title: string; author: string }): Promise<Book[] | null> {
+    loading.start()
+    const books = await shipmentContentClient.searchBooks(title, author)
+    loading.end()
 
-//     loading.start()
-//     const recipient = await recipientClient.getRecipientByAssignedId(id)
-//     loading.end()
+    this.set(books)
+    return books
+  }
 
-//     if (recipient === null) {
-//       this.error('fetch', `Failed to fetch recipient by id "${id}"`)
-//       return null
-//     }
-//     this.set(recipient)
-//     return recipient
-//   }
+  public async sync(): Promise<Book[]> {
+    return [...this.getLatest()]
+  }
 
-//   public async fetchByDatabaseId({ id }: { id: string }): Promise<Recipient> {
-//     if (isEmpty(id)) return this.getLatest()
+  public load(loadedData: Book[]): Book[] {
+    this.set(loadedData)
+    return loadedData
+  }
+}
 
-//     loading.start()
-//     const recipient = await recipientClient.getRecipientByDatabaseId(id)
-//     loading.end()
+export class SingleBookStore extends AppStore<Book> {
+  constructor() {
+    super('SingleBookStore', defaultBook as any)
+  }
 
-//     if (recipient === null) {
-//       this.error('fetchByDatabaseId', `Failed to fetch recipient by database id "${id}"`)
-//       return this.getLatest()
-//     }
-//     this.set(recipient)
-//     return recipient
-//   }
+  public async fetch({ isbn }: { isbn: string }): Promise<Book | null> {
+    loading.start()
+    const book = await shipmentContentClient.getBook(isbn)
+    loading.end()
 
-//   public async sync(): Promise<Recipient> {
-//     loading.start()
-//     const updatedRecipient = await recipientClient.updateRecipient(this.getLatest())
-//     loading.end()
+    this.set(book ?? this.getLatest())
+    return book ?? this.getLatest()
+  }
 
-//     if (updatedRecipient === null) {
-//       this.error('sync', 'Failed to sync recipient updates to server')
-//       return this.getLatest()
-//     }
+  public async sync(): Promise<Book> {
+    const book = this.getLatest()
+    const shouldUpdate = !!book.id
 
-//     this.set(updatedRecipient)
-//     return updatedRecipient
-//   }
+    if (shouldUpdate) {
+      loading.start()
+      const updatedBook = (await shipmentContentClient.updateBook(book)) ?? this.getLatest()
+      loading.end()
 
-//   public load(loadedData: Recipient): Recipient {
-//     this.set(loadedData)
-//     return loadedData
-//   }
-// }
+      this.set(updatedBook)
+      return updatedBook
+    }
 
-// export const recipient = new RecipientStore()
+    loading.start()
+    const createdBook = (await shipmentContentClient.createBook(book)) ?? this.getLatest()
+    loading.end()
+
+    this.set(createdBook)
+    return createdBook
+  }
+
+  public load(loadedData: Book): Book {
+    this.set(loadedData)
+    return loadedData
+  }
+}
+
+export const books = new BookListStore()
+export const createBook = new SingleBookStore()
