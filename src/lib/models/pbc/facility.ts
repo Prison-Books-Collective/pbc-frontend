@@ -25,7 +25,7 @@ export const INVALID_FACILITY: Facility = Object.freeze({
 })
 
 export const NO_FACILITY_PROVIDED: Facility = Object.freeze({
-  id: undefined,
+  id: -2,
   name: ' No Facility Provided ',
   state: '' as any,
   facility_type: '' as any,
@@ -35,6 +35,6 @@ export const NO_FACILITY_PROVIDED: Facility = Object.freeze({
   zip: '' as any,
 })
 
-export const isValidFacility = (facility: Facility) => {
+export const isValidFacility = (facility?: Facility) => {
   return !!facility && facility != INVALID_FACILITY && facility != NO_FACILITY_PROVIDED
 }

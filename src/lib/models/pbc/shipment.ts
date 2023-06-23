@@ -3,7 +3,7 @@ import type { Facility } from './facility'
 import type { Recipient } from './recipient'
 
 export interface PackageContent {
-  id?: number
+  id?: number | string
   title: string
   type?: string
 }

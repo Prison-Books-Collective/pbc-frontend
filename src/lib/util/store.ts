@@ -5,9 +5,7 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import { ErrorStrategy } from './error'
-
-export const ERROR_STRATEGY: ErrorStrategy = import.meta.env.VITE_ERROR_STRATEGY
+import { ERROR_STRATEGY, ErrorStrategy } from './app-config'
 
 export abstract class AppStore<DataType> implements Writable<DataType> {
   private name: string

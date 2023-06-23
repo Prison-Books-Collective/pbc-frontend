@@ -57,7 +57,7 @@
         class="filter-input"
         type="text"
         name="filter"
-        placeholder="Type in Zine Name"
+        placeholder="Filter Zines by Name"
         bind:value={filter}
       />
       {#each availableZines as zine}

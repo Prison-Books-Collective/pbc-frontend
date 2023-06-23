@@ -20,7 +20,10 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
     recipient.subscribe((recipient) => {
       if (!recipient || !recipient.id) return
       this.set(
-        recipient?.shipments?.map((shipment) => ({ ...shipment, recipient: { id: recipient.id } })),
+        recipient?.shipments?.map((shipment: Shipment) => ({
+          ...shipment,
+          recipient: { id: recipient.id },
+        })),
       )
     })
   }
@@ -62,9 +65,10 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
   public localAddShipment(shipment: Shipment): Shipment[] {
     let update: Shipment[]
     this.update((shipments) => {
-      update = [...shipments, shipment]
+      update = [shipment, ...shipments]
       return update
     })
+    recipient.load({ ...recipient.getLatest(), shipments: update! })
     return update!
   }
 
@@ -76,6 +80,7 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
       if (removeIndex > -1) update.splice(removeIndex, 1)
       return update
     })
+    recipient.load({ ...recipient.getLatest(), shipments: update! })
     return update!
   }
 
@@ -93,6 +98,7 @@ export class ShipmentListStore extends AppStore<Shipment[]> {
       }
       return update
     })
+    recipient.load({ ...recipient.getLatest(), shipments: update! })
     return update!
   }
 }
@@ -119,13 +125,14 @@ export class SingleShipmentStore extends AppStore<Shipment> {
     const isUpdate = !!shipmentUpdate.id
 
     loading.start()
+    console.log({ shipmentUpdate })
     const newShipment = isUpdate
       ? await shipmentClient.updateShipment(shipmentUpdate)
       : await shipmentClient.createShipment(shipmentUpdate)
     loading.end()
 
     if (newShipment) {
-      this.set({ ...newShipment, recipient: { id: shipmentUpdate?.recipient?.id } })
+      this.set({ ...newShipment })
       isUpdate
         ? shipments.localUpdateShipment(newShipment)
         : shipments.localAddShipment(newShipment)

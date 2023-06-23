@@ -5,11 +5,11 @@
 
   const dispatch = createEventDispatcher()
 
-  export let threeLetterCode: string
+  export let code: string
   export let title: string
 
   const resetInput = () => {
-    ;[threeLetterCode, title] = ['', '']
+    ;[code, title] = ['', '']
   }
 
   const shouldDisableCreate = (code: string, title: string) =>
@@ -26,37 +26,35 @@
   }
 </script>
 
-<section>
-  <h2>Add New Zine</h2>
-  <form id="newZineForm" on:submit|preventDefault={() => createZine(threeLetterCode, title)}>
-    <label for="three-letter-code">
-      Three Letter Code:
-      <input
-        type="text"
-        name="three-letter-code"
-        id="three-letter-code"
-        placeholder="Zine Code"
-        bind:value={threeLetterCode}
-      />
-    </label>
+<h2>Add New Zine</h2>
+<form id="create-zine" on:submit|preventDefault={() => createZine(code, title)}>
+  <label for="zine-code">
+    Zine Code:
+    <input
+      type="text"
+      name="zine-code"
+      id="zine-code"
+      placeholder="3-Letter Zine Code"
+      bind:value={code}
+    />
+  </label>
 
-    <label for="title">
-      Title:
-      <input type="text" name="title" id="title" placeholder="Zine Title" bind:value={title} />
-    </label>
+  <label for="title">
+    Title:
+    <input type="text" name="title" id="title" placeholder="Zine Title" bind:value={title} />
+  </label>
 
-    <button disabled={shouldDisableCreate(threeLetterCode, title)} class="success">Add Zine</button>
-  </form>
-</section>
+  <button type="submit" class="success" disabled={shouldDisableCreate(code, title)}>
+    Add Zine
+  </button>
+</form>
 
 <style>
-  section {
-    max-width: 400px;
-    width: 100%;
+  form {
+    display: contents;
   }
 
   button {
     width: 100%;
-    margin: 0px;
   }
 </style>

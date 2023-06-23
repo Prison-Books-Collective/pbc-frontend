@@ -3,25 +3,17 @@
   import type { Book } from '$models/pbc/shipment'
   import { createShipment } from '$lib/data/shipment.data'
   import { books, createBook } from '$lib/data/book.data'
+  import { isEmpty } from 'lodash'
 
   enum DISPLAY_FORM {
     WITH_ISBN,
     WITHOUT_ISBN,
-    WITHOUT_ISBN_SEARCH_RESULTS,
     WITHOUT_ISBN_MANUAL_ENTRY,
   }
 
   const dispatch = createEventDispatcher()
 
   export let display: DISPLAY_FORM = DISPLAY_FORM.WITH_ISBN
-
-  let inputAuthor: string
-  let creatorType = null
-
-  let noISBNSearchResults: Book[] | null = null
-  let shouldDisplayManualInput = false
-
-  let inputTitle: string
 
   let isbnInput: string
   let isbnInputElement: HTMLInputElement
@@ -43,19 +35,19 @@
     dispatch('no-isbn')
   }
 
-  $: shouldDisableSearch = () => {
-    return !isbnInput || (isbnInput.length !== 10 && isbnInput.length !== 13)
-  }
-  $: shouldDisableSearchNoISBN = () => {
-    return !$createBook.title || $createBook.title.trim().length === 0
-  }
+  $: shouldDisableSearch = () =>
+    display === DISPLAY_FORM.WITH_ISBN
+      ? !isbnInput || (isbnInput.length !== 10 && isbnInput.length !== 13)
+      : isEmpty($createBook.title)
+
   $: loadISBN = async () => {
     if (shouldDisableSearch()) return
     createBook.fetch({ isbn: isbnInput })
     dispatch('search', isbnInput)
   }
+
   $: saveNoISBNBook = async (book?: Book) => {
-    if (!!book) createBook.load(book)
+    if (book) createBook.load(book)
     const createdBook = await createBook.sync()
     createShipment.addContent('book', createdBook)
     dispatch('update', createdBook)
@@ -63,11 +55,9 @@
 
   $: searchNoISBNBook = async () => {
     const { title, authors: author } = $createBook
-    await books.fetch({ title, author })
+    const foundBooks = await books.fetch({ title, author })
     display =
-      $books.length === 0
-        ? DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY
-        : DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS
+      foundBooks?.length === 0 ? DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY : DISPLAY_FORM.WITHOUT_ISBN
   }
 
   const presentManualEntry = () => {
@@ -77,6 +67,7 @@
 </script>
 
 {#if display === DISPLAY_FORM.WITH_ISBN}
+  <h1>Search</h1>
   <form on:submit|preventDefault={loadISBN}>
     <label for="isbn-input">
       Scan book ISBN
@@ -92,7 +83,7 @@
 
     <div class="form-options">
       <button type="button" on:click={cancelClicked}>Cancel</button>
-      <button type="button" class="danger" on:click={noISBNClicked}>No ISBN?</button>
+      <button type="button" class="info" on:click={noISBNClicked}>No ISBN?</button>
       <button class="success" disabled={shouldDisableSearch()} type="submit">
         Search for Book
       </button>
@@ -100,7 +91,7 @@
   </form>
 {/if}
 
-{#if display === DISPLAY_FORM.WITHOUT_ISBN || (display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length > 0)}
+{#if display === DISPLAY_FORM.WITHOUT_ISBN}
   <form on:submit|preventDefault={searchNoISBNBook}>
     <h1>Search</h1>
     <p>Fill out the information below to search for the book or resource</p>
@@ -129,14 +120,14 @@
 
     <div class="form-options space">
       <button type="button" on:click={cancelClicked}>Cancel</button>
-      <button type="button" class="danger" on:click={isbnClicked}>Search by ISBN?</button>
-      <button class="success" disabled={shouldDisableSearchNoISBN()}>
+      <button type="button" class="info" on:click={isbnClicked}>Search by ISBN?</button>
+      <button class="success" disabled={shouldDisableSearch()}>
         {$books.length > 0 ? 'New ' : ''}
         Search for Book
       </button>
     </div>
 
-    {#if display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length > 0}
+    {#if $books.length > 0}
       <ul>
         {#each $books as book}
           <li
@@ -163,14 +154,6 @@
                 {/if}
               </span>
             {/if}
-            <!-- <div>
-              <strong>ISBN10: </strong>
-              {book.isbn10}
-            </div>
-            <div>
-              <strong>ISBN13: </strong>
-              {book.isbn13}
-            </div> -->
           </li>
         {/each}
       </ul>
@@ -182,7 +165,7 @@
   </form>
 {/if}
 
-{#if display === DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY || (display === DISPLAY_FORM.WITHOUT_ISBN_SEARCH_RESULTS && $books.length === 0)}
+{#if display === DISPLAY_FORM.WITHOUT_ISBN_MANUAL_ENTRY}
   <form on:submit|preventDefault={() => saveNoISBNBook()}>
     <h1>Save & Add to Package</h1>
 
@@ -209,10 +192,10 @@
     </label>
 
     <div class="form-options space">
-      <button class="success" disabled={shouldDisableSearchNoISBN()}>
+      <button type="submit" class="success" disabled={shouldDisableSearch()}>
         Save and Add to Package
       </button>
-      <button type="button" on:click={cancelClicked}>Cancel</button>
+      <button on:click={cancelClicked}>Cancel</button>
     </div>
   </form>
 {/if}
@@ -249,8 +232,7 @@
   }
 
   .search-result:hover {
-    background-color: rgba(61 130 61 / 1);
-    color: white;
+    background-color: var(--color-success);
   }
 
   .small-text {
@@ -259,6 +241,6 @@
   }
 
   .green-border {
-    border: 3px solid rgba(61 130 61 / 1);
+    border: 3px solid var(--color-success-darker);
   }
 </style>

@@ -1,6 +1,5 @@
 import { shipmentContentClient } from '$services/bellbooks-backend/shipment-content.client'
 import { loading } from '../stores/loading'
-import { isEmpty } from '$util/strings'
 import { AppStore } from '$util/store'
 
 import type { Book } from '$models/pbc/shipment'

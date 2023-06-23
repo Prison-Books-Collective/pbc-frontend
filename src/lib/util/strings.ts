@@ -1,3 +1,3 @@
-export const isEmpty = (input: string | null) => {
-  return !input || input.trim() === ''
+export const isEmpty = (input: string | null | undefined) => {
+  return !input || input.toString().trim() === ''
 }

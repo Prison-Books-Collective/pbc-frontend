@@ -1,9 +1,7 @@
 <script lang="ts">
   import { ROUTE_RECIPIENT_CREATE_NAMED, ROUTE_PACKAGES_FOR_RECIPIENT } from '$util/routing'
-  import Loading from '$components/loading.svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
   import { goto } from '$app/navigation'
-  import { focusedInmate } from '$stores/inmate'
   import { loading } from '$stores/loading.js'
   import { recipient } from '$lib/data/recipient.data.js'
   export let data
@@ -15,7 +13,7 @@
   const getInmates = RecipientService.getRecipientsByName({ firstName, lastName })
   getInmates.then(() => loading.end())
 
-  const findRecipient = async (id) => {
+  const findRecipient = async (id: any) => {
     const foundRecipient = await RecipientService.getRecipientByDatabaseId(id)
     if (foundRecipient) {
       recipient.set(foundRecipient)

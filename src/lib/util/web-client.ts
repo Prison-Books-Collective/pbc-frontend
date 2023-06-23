@@ -1,8 +1,6 @@
 import { CONTENT_TYPE_JSON, METHOD_GET, HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_DELETE } from './web'
 import type { QueryParamMap } from './web'
-import { ErrorStrategy } from '$util/error'
-
-export const ERROR_STRATEGY: ErrorStrategy = import.meta.env.VITE_ERROR_STRATEGY
+import { ERROR_STRATEGY, ErrorStrategy } from './app-config'
 
 export type HTTPMethod = typeof HTTP_GET | typeof HTTP_POST | typeof HTTP_PUT | typeof HTTP_DELETE
 export type HTTPStatus = number | string // ex: 200, 201, 200s, 400s
