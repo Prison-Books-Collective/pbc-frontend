@@ -7,13 +7,14 @@
   import Zine from '$components/zine/zine.svelte'
   import editIcon from '$assets/icons/edit.png'
   import printIcon from '$assets/icons/print.png'
+  import AlertIcon from '$components/warning-comment.svelte'
   import CreatePackageModal from './create-package-modal.svelte'
 
   import { RecipientService } from '$services/pbc/recipient.service'
   import type { Shipment } from '$models/pbc/shipment'
-  import type { Recipient } from '$models/pbc/recipient'
   import { createShipment, shipments } from '$lib/data/shipment.data'
   import { recipient } from '$lib/data/recipient.data'
+  import { flip } from 'svelte/animate'
 
   const dispatch = createEventDispatcher()
 
@@ -22,7 +23,6 @@
     COMPOSITE = 'composite', // view all shipments that meet a given criteria
   }
 
-  export let header = 'Shipment'
   export let mode: TableMode = TableMode.RECIPIENT
 
   const alertPackageClicked = (pbcPackage: Shipment) => {
@@ -37,9 +37,6 @@
     dispatch('print', pbcPackage)
     printPackage(pbcPackage)
   }
-
-  let transitionIn = $shipments.length < 300 ? fade : () => {}
-  let transitionOut = $shipments.length < 300 ? fly : () => {}
 
   // -------------------- Modal Logic --------------------
 
@@ -71,17 +68,85 @@
 
 <CreatePackageModal bind:activeModal bind:activeModalParams />
 
-<section id="package-table-container">
-  {#if $shipments.length === 0}
-    <h2 class="no-packages-message">
-      {#if mode === TableMode.RECIPIENT}
-        No packages have been created for {$recipient.firstName} {$recipient.lastName} yet
-      {:else}
-        No packages found
-      {/if}
-    </h2>
-  {:else}
-    <table id="packageTable">
+{#if $shipments.length === 0}
+  <h2 class="no-shipments-message">
+    {#if mode === TableMode.RECIPIENT}
+      No shipments have been created for {$recipient.firstName} {$recipient.lastName} yet
+    {:else}
+      No shipments found
+    {/if}
+  </h2>
+{:else}
+  <section data-layout="table">
+    <header>
+      <span class="header shipment">Shipment</span>
+      <span class="header edit">Edit</span>
+      <span class="header print">Print</span>
+    </header>
+
+    {#each $shipments as shipment (shipment.id)}
+      <article
+        animate:flip={{ duration: 300 }}
+        out:fly|local={{ x: -400, duration: 300 }}
+        in:fade={{ duration: 300 }}
+      >
+        <div class="content shipment">
+          <h2>
+            {#if shipment.notes && shipment.notes.length > 0}
+              <span
+                class="content notes"
+                data-tooltip={shipment.notes[0].content}
+                on:click={() => alertPackageClicked(shipment)}
+              >
+                <AlertIcon width="1.25rem" />
+              </span>
+            {/if}
+            {#if shipment.facility}
+              <em class:text-normal={!!$recipient}>{shipment.facility.name},</em>
+            {/if}
+            <date>
+              {shipment.date}:
+            </date>
+          </h2>
+
+          {#each shipment.content as content}
+            <li>
+              {#if content.type === 'book'}
+                <Book book={content} />
+              {:else if content.type === 'zine'}
+                <Zine zine={content} />
+              {/if}
+            </li>
+          {/each}
+        </div>
+
+        <div class="content edit">
+          <img
+            src={editIcon}
+            alt="edit icon; click to edit this package"
+            class="icon"
+            width="20"
+            height="20"
+            on:click={() => editPackageClicked(shipment)}
+          />
+        </div>
+
+        <div class="content print">
+          <img
+            src={printIcon}
+            alt="print icon; click to print this package"
+            class="icon"
+            width="20"
+            height="20"
+            on:click={() => printPackageClicked(shipment)}
+          />
+        </div>
+      </article>
+    {/each}
+  </section>
+{/if}
+
+<!-- <table id="packageTable">
       <tr>
         <th style="width: 3ch;">!</th>
         <th>{header}</th>
@@ -114,16 +179,16 @@
           </td>
           <td class="package-col">
             <h2>
-              <!-- {#if shipment.facility}
+              {#if shipment.facility}
                 <em class:text-normal={!!$recipient}>{shipment.facility.name}</em>,
-              {/if} -->
+              {/if}
               <date>
                 {shipment.date}:
               </date>
-            </h2>
+            </h2> -->
 
-            <!-- TODO: This does not work with the way that shipments have been rearchitected. Will need to rethink how we do this -->
-            <!-- {#if !inmate}
+<!-- TODO: This does not work with the way that shipments have been rearchitected. Will need to rethink how we do this -->
+<!-- {#if !inmate}
               <h2 class="text-normal">
                 <span
                   class="link"
@@ -133,7 +198,7 @@
                 >
                   Click to go to recipient. -->
 
-            <!-- {currentRecipientToLink.firstName}
+<!-- {currentRecipientToLink.firstName}
                   {currentRecipientToLink.middleInitial
                     ? currentRecipientToLink.middleInitial + ' '
                     : ''}{currentRecipientToLink.lastName}
@@ -143,11 +208,11 @@
                   {:else}
                     (No ID available)
                   {/if} -->
-            <!-- </span>
+<!-- </span>
               </h2>
             {/if} -->
 
-            <ul>
+<!-- <ul>
               {#each shipment.content as content}
                 {#key content}
                   <li>
@@ -185,65 +250,138 @@
       {/each}
     </table>
   {/if}
-</section>
+</section> -->
 
 <style lang="scss">
-  #package-table-container {
+  [data-layout='table'] {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: stretch;
-  }
+    width: 1200px;
+    max-width: 100vw;
 
-  h2 {
-    color: inherit;
-    text-align: left;
-    font-size: 1rem;
-    margin-bottom: 0;
-    margin-top: 0;
-  }
+    article,
+    header {
+      display: grid;
+      grid-template-areas: 'shipment edit print';
+      grid-template-columns: 1fr 3rem 3rem;
+      padding: 1rem;
+    }
 
-  .alert {
-    cursor: pointer;
-    text-decoration: underline;
-    color: blue;
-    width: 10px;
-    text-align: center;
-  }
+    header {
+      position: sticky;
+      top: 0;
+      background-color: var(--brand-color-secondary-tan);
 
-  .no-packages-message {
-    margin-top: 3em;
-    text-align: center;
-  }
-  .spacer-col {
-    padding: 10px 13px;
-  }
-  .package-col {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-right: 15px;
-    padding-left: 20px;
-    text-align: left;
-  }
-  .edit-col {
-    text-align: center;
-    width: 40px;
-  }
-  .print-col {
-    text-align: center;
-    width: 40px;
-  }
+      text-align: center;
+      font-weight: 600;
+      z-index: 1;
+    }
 
-  .edit-icon,
-  .print-icon {
-    transition-duration: 0.3s;
-    opacity: 0.5;
-    cursor: pointer;
+    article {
+      background-color: var(--color-table-bg);
+    }
 
-    &:hover {
-      opacity: 0.9;
+    article:nth-child(2n) {
+      background-color: var(--color-table-bg-alt);
     }
   }
+
+  .notes {
+    grid-area: notes;
+  }
+  .shipment {
+    grid-area: shipment;
+  }
+  .edit {
+    grid-area: edit;
+  }
+  .print {
+    grid-area: print;
+  }
+
+  .content {
+    align-self: center;
+    text-align: center;
+  }
+
+  .content.shipment {
+    text-align: left;
+    h2 {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1rem;
+
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 0.25rem;
+    }
+  }
+
+  .content.notes {
+    color: var(--color-danger);
+    cursor: pointer;
+  }
+
+  // #package-table-container {
+  //   display: flex;
+  //   flex-flow: column nowrap;
+  //   justify-content: flex-start;
+  //   align-items: stretch;
+  // }
+
+  // h2 {
+  //   color: inherit;
+  //   text-align: left;
+  //   font-size: 1rem;
+  //   margin-bottom: 0;
+  //   margin-top: 0;
+  // }
+
+  // .alert {
+  //   cursor: pointer;
+  //   text-decoration: underline;
+  //   color: blue;
+  //   width: 10px;
+  //   text-align: center;
+  // }
+
+  // .no-shipments-message {
+  //   margin-top: 3em;
+  //   text-align: center;
+  // }
+  // .spacer-col {
+  //   padding: 10px 13px;
+  // }
+  // .package-col {
+  //   padding-top: 10px;
+  //   padding-bottom: 10px;
+  //   padding-right: 15px;
+  //   padding-left: 20px;
+  //   text-align: left;
+  // }
+  // .edit-col {
+  //   text-align: center;
+  //   width: 40px;
+  // }
+  // .print-col {
+  //   text-align: center;
+  //   width: 40px;
+  // }
+
+  // .edit-icon,
+  // .print-icon {
+  //   transition-duration: 0.3s;
+  //   opacity: 0.5;
+  //   cursor: pointer;
+
+  //   &:hover {
+  //     opacity: 0.9;
+  //   }
+  // }
 
   [data-tooltip] {
     position: relative;
@@ -278,11 +416,11 @@
     color: black;
   }
 
-  .link {
-    color: inherit;
-  }
+  // .link {
+  //   color: inherit;
+  // }
 
-  .link::before {
-    background-color: currentColor;
-  }
+  // .link::before {
+  //   background-color: currentColor;
+  // }
 </style>

@@ -49,7 +49,7 @@ export class ShipmentClient extends WebClient<typeof ShipmentClientEndpoints> {
 
   public async createShipment(newShipment: Omit<Shipment, 'id'>): Promise<Shipment | null> {
     return this.fetch<Omit<Shipment, 'id'>, Shipment>(this.endpoints.CREATE_SHIPMENT, {
-      body: newShipment,
+      body: { ...newShipment },
     })
   }
 

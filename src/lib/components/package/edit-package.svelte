@@ -81,7 +81,7 @@
       Completed on <strong><date>{$createShipment.date}</date></strong>
       {#if $createShipment.facility}
         and destined for
-        <strong>{$createShipment.facility.facility_name}, {$createShipment.facility.state}</strong>
+        <strong>{$createShipment.facility.name}, {$createShipment.facility.state}</strong>
       {/if}
     </em>
   </p>

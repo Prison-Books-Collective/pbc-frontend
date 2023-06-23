@@ -63,108 +63,129 @@
   }
 </script>
 
-<h1>Manage Zines</h1>
+<main data-layout="page">
+  <h1>Manage Zines</h1>
 
-<section class="list">
-  <article class="list-item list-header expandable" class:expanded={expandIndex === -1}>
-    <h2 on:click={() => toggleExpand(-1)}>Add New Zine</h2>
+  <section class="list">
+    <article class="list-item list-header expandable" class:expanded={expandIndex === -1}>
+      <h2 on:click={() => toggleExpand(-1)}>Add New Zine</h2>
 
-    {#if -1 === expandIndex}
-      <form
-        class="create-form"
-        out:fly
-        on:submit|preventDefault={() => createZine(inputCode, inputTitle)}
-      >
-        <label for="create-zine-code">
-          Zine Code
-          <input
-            id="create-zine-code"
-            name="create-zine-code"
-            type="text"
-            placeholder="Code"
-            bind:value={inputCode}
-          />
-        </label>
-
-        <label for="create-zine-title">
-          Zine Title
-          <input
-            id="create-zine-title"
-            name="create-zine-title"
-            type="text"
-            placeholder="Zine Title"
-            bind:value={inputTitle}
-          />
-        </label>
-        <section class="form-controls">
-          <button type="button" on:click={() => toggleExpand(-1)}>Cancel</button>
-          <button
-            type="submit"
-            class="success"
-            disabled={shouldDisableSubmit({ code: inputCode, title: inputTitle })}
-          >
-            Create Zine
-          </button>
-        </section>
-      </form>
-    {/if}
-  </article>
-
-  {#each $zines as zine, index}
-    <article class="list-item expandable" class:expanded={expandIndex === index}>
-      <p on:click={() => toggleExpand(index)}>
-        <span class="zine-code">{zine.code}</span>
-        <span class="zine-title">{zine.title}</span>
-      </p>
-
-      {#if index === expandIndex}
+      {#if -1 === expandIndex}
         <form
-          class="update-form"
+          class="create-form"
           out:fly
-          on:submit|preventDefault={() => updateZine(zine.id, inputCode, inputTitle)}
+          on:submit|preventDefault={() => createZine(inputCode, inputTitle)}
         >
-          <label for="update-zine-code">
-            New Code
+          <label for="create-zine-code">
+            Zine Code
             <input
-              id="update-zine-code"
-              name="update-zine-code"
+              id="create-zine-code"
+              name="create-zine-code"
               type="text"
-              placeholder="New Code"
+              placeholder="Code"
               bind:value={inputCode}
             />
           </label>
 
-          <label for="update-zine-title">
-            New Title
+          <label for="create-zine-title">
+            Zine Title
             <input
-              id="update-zine-title"
-              name="update-zine-title"
+              id="create-zine-title"
+              name="create-zine-title"
               type="text"
-              placeholder="New Title"
+              placeholder="Zine Title"
               bind:value={inputTitle}
             />
           </label>
-
           <section class="form-controls">
-            <button type="button" on:click={() => toggleExpand(index)}>Cancel</button>
-            <button type="button" class="danger" on:click={() => confirmDeleteZine(zine)}>
-              <img class="icon" alt="Delete Zine, Trash Icon" src={trashIcon} />
-            </button>
+            <button type="button" on:click={() => toggleExpand(-1)}>Cancel</button>
             <button
               type="submit"
               class="success"
               disabled={shouldDisableSubmit({ code: inputCode, title: inputTitle })}
             >
-              Update
+              Create Zine
             </button>
           </section>
         </form>
       {/if}
     </article>
-  {/each}
-</section>
+
+    {#each $zines as zine, index}
+      <article class="list-item expandable" class:expanded={expandIndex === index}>
+        <p on:click={() => toggleExpand(index)}>
+          <span class="zine-code">{zine.code}</span>
+          <span class="zine-title">{zine.title}</span>
+        </p>
+
+        {#if index === expandIndex}
+          <form
+            class="update-form"
+            out:fly
+            on:submit|preventDefault={() => updateZine(zine.id, inputCode, inputTitle)}
+          >
+            <label for="update-zine-code">
+              New Code
+              <input
+                id="update-zine-code"
+                name="update-zine-code"
+                type="text"
+                placeholder="New Code"
+                bind:value={inputCode}
+              />
+            </label>
+
+            <label for="update-zine-title">
+              New Title
+              <input
+                id="update-zine-title"
+                name="update-zine-title"
+                type="text"
+                placeholder="New Title"
+                bind:value={inputTitle}
+              />
+            </label>
+
+            <section class="form-controls">
+              <button type="button" on:click={() => toggleExpand(index)}>Cancel</button>
+              <button type="button" class="danger" on:click={() => confirmDeleteZine(zine)}>
+                <img class="icon" alt="Delete Zine, Trash Icon" src={trashIcon} />
+              </button>
+              <button
+                type="submit"
+                class="success"
+                disabled={shouldDisableSubmit({ code: inputCode, title: inputTitle })}
+              >
+                Update
+              </button>
+            </section>
+          </form>
+        {/if}
+      </article>
+    {/each}
+  </section>
+</main>
 
 <style lang="scss">
+  [data-layout='page'] {
+    display: grid;
+    grid-template-areas:
+      'header'
+      'content'
+      'footer';
+    grid-template-rows:
+      7rem
+      1fr
+      7rem;
+    margin: auto;
+    max-width: 1200px;
+  }
+
+  h1 {
+    line-height: 3rem;
+    margin-block: 2rem;
+  }
+
   .list {
     display: flex;
     flex-flow: column nowrap;

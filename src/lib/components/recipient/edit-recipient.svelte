@@ -3,10 +3,9 @@
   import { isValidFacility } from '$models/pbc/facility'
   import { isEmpty } from '$util/strings'
   import FacilitySelect from '$components/facility/select-facility.svelte'
-  import { isRecipientNoId, type Recipient } from '$models/pbc/recipient'
+  import type { Recipient } from '$models/pbc/recipient'
   import { recipient } from '$lib/data/recipient.data'
   import { facilities } from '$stores/facility'
-  import { FacilityService } from '$services/pbc/facility.service'
   import { onDestroy } from 'svelte'
 
   const dispatch = createEventDispatcher()

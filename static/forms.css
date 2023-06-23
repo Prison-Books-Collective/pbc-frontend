@@ -1,12 +1,17 @@
+@import url('./colors.scss');
 @import url('./fonts.css');
+
+:is(label, button, input, textarea, table, th, tr, td) {
+  font-family: 'Roboto';
+  font-size: 1rem;
+  text-decoration: none;
+}
 
 form {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;
   align-items: stretch;
-
-  max-width: 600px;
 }
 
 .form-options {
@@ -42,46 +47,54 @@ form {
 }
 
 button {
+  --button-text-color: var(--color-text-light);
+  --button-background-color: var(--color-default-button);
+  --button-contrast-color: var(--color-default-button-darker);
+  --button-highlight-color: var(--color-default-button-lighter);
+
   display: inline-block;
-  padding: 11px 23px;
+  padding: 0.7rem 1.4rem;
 
-  background-color: #888;
-  background-image: linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
-  border: 1px solid #566963;
+  color: var(--button-text-color);
+  background-color: var(--button-background-color);
+  border: 1px solid var(--button-contrast-color);
+  text-shadow: 0px -1px 0px var(--button-contrast-color);
+  box-shadow: inset 0px 1px 3px 0px var(--button-highlight-color);
+
   border-radius: 5px;
-  box-shadow: inset 0px 1px 3px 0px #91b8b3;
-
-  font-family: 'Roboto';
-  color: #ffffff;
-  font-size: 15px;
-  text-decoration: none;
-  text-shadow: 0px -1px 0px #2b665e;
-
-  transition-duration: 0.3s;
   cursor: pointer;
+  transition-duration: 0.3s;
 }
 
 :is(button, [type='button'], [type='submit']):disabled {
-  background-color: #838383;
-  background-image: none;
-  border: #444 solid 1px;
-  text-shadow: 0px -1px 0px #444;
-  box-shadow: inset 0px 1px 3px 0px #ccc;
+  --button-text-color: rgb(255 255 255 / 0.7);
+  --button-background-color: var(--color-disabled-button);
+  --button-contrast-color: var(--color-disabled-button-darker);
+  --button-highlight-color: var(--color-disabled-button-lighter);
 }
 
 :is(button, [type='button'], [type='submit']).danger:not(:disabled) {
-  background-color: lightcoral;
-  background-image: none;
-  border: rgb(171, 68, 68) solid 1px;
-  text-shadow: 0px -1px 0px rgb(171, 68, 68);
-  box-shadow: inset 0px 1px 3px 0px rgb(244, 186, 186);
+  --button-background-color: var(--color-danger);
+  --button-contrast-color: var(--color-danger-darker);
+  --button-highlight-color: var(--color-danger-lighter);
 }
 
 :is(button, [type='button'], [type='submit']).success:not(:disabled) {
-  background: darkseagreen;
-  border: rgb(61, 130, 61) solid 1px;
-  text-shadow: 0px -1px 0px rgb(61, 130, 61);
-  box-shadow: inset 0px 1px 3px 0px rgb(207, 233, 207);
+  --button-background-color: var(--color-success);
+  --button-contrast-color: var(--color-success-darker);
+  --button-highlight-color: var(--color-success-lighter);
+}
+
+:is(button, [type='button'], [type='submit']).info:not(:disabled) {
+  --button-background-color: var(--color-info);
+  --button-contrast-color: var(--color-info-darker);
+  --button-highlight-color: var(--color-info-lighter);
+}
+
+:is(button, [type='button'], [type='submit']).warn:not(:disabled) {
+  --button-background-color: var(--color-warn);
+  --button-contrast-color: var(--color-warn-darker);
+  --button-highlight-color: var(--color-warn-lighter);
 }
 
 label {
@@ -95,6 +108,7 @@ label:not(:has(input[type='checkbox'], input[type='radio'])) {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;
+  line-height: 2rem;
 }
 
 input[type='text'],

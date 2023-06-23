@@ -3,6 +3,7 @@ import { createURI } from '.'
 import { HTTP_GET, HTTP_POST, HTTP_PUT, WebClient } from '$util/web'
 import type { EndpointMap } from '$util/web'
 import type { Recipient } from '$models/pbc/recipient'
+import type { Shipment } from '$models/pbc/shipment'
 
 export const RecipientClientEndpoints = Object.freeze({
   GET_RECIPIENT_BY_ASSIGNED_ID: {
@@ -47,13 +48,22 @@ export class RecipientClient extends WebClient<typeof RecipientClientEndpoints> 
   }
 
   public async getRecipientByAssignedId(assignedId: string): Promise<Recipient | null> {
-    return this.fetch<never, Recipient>(this.endpoints.GET_RECIPIENT_BY_ASSIGNED_ID, {
-      params: { assignedId },
-    })
+    const recipient = await this.fetch<never, Recipient>(
+      this.endpoints.GET_RECIPIENT_BY_ASSIGNED_ID,
+      {
+        params: { assignedId },
+      },
+    )
+    if (recipient?.shipments) recipient.shipments = recipient.shipments.sort(lazyShipmentSort)
+    return recipient
   }
 
   public async getRecipientByDatabaseId(id: string): Promise<Recipient | null> {
-    return this.fetch<never, Recipient>(this.endpoints.GET_RECIPIENT_BY_ID, { params: { id } })
+    const recipient = await this.fetch<never, Recipient>(this.endpoints.GET_RECIPIENT_BY_ID, {
+      params: { id },
+    })
+    if (recipient?.shipments) recipient.shipments = recipient.shipments.sort(lazyShipmentSort)
+    return recipient
   }
 
   public async getRecipientByShipmentId(shipmentId: string): Promise<Recipient | null> {
@@ -86,3 +96,7 @@ export class RecipientClient extends WebClient<typeof RecipientClientEndpoints> 
 }
 
 export const recipientClient = new RecipientClient()
+
+const lazyShipmentSort = (shipmentA: Shipment, shipmentB: Shipment) => {
+  return new Date(shipmentA.date) < new Date(shipmentB.date) ? 1 : -1
+}

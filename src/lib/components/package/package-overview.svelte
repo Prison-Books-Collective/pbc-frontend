@@ -9,14 +9,13 @@
   import { isValidFacility, type Facility } from '$models/pbc/facility'
   import { createShipment, shipments } from '$lib/data/shipment.data'
   import { recipient } from '$lib/data/recipient.data'
-  import type { Shipment } from '$models/pbc/shipment'
 
   const dispatch = createEventDispatcher()
 
   export let targetRecipient: Recipient
 
   let removeItems: string[] = []
-  let facility = $createShipment.facility ?? $recipient.facility
+  let facility: Facility | undefined = $createShipment.facility ?? $recipient.facility
 
   const loadFacility = async (currentFacility: Facility, recipient: Recipient) => {
     if (!currentFacility && recipient.facility) {
@@ -24,7 +23,7 @@
       createShipment.setDestination(facility)
     } else if (!facility) {
       if (!$shipments || $shipments.length === 0) {
-        facility = null
+        facility = undefined
         return
       }
       facility = $shipments[0].facility
@@ -35,7 +34,7 @@
 
   $: isPackageEmpty = () => $createShipment.content.length === 0
 
-  const shouldDisableComplete = (facility: Facility) => !isValidFacility(facility)
+  const shouldDisableComplete = (facility?: Facility) => !isValidFacility(facility)
   const shouldDisableRemove = (removeItems: string[]) => !removeItems || removeItems.length === 0
 
   const addZinesClicked = () => dispatch('add-zines')
@@ -44,9 +43,7 @@
   const completePackage = async () => {
     try {
       createShipment.setRecipient($recipient)
-      let currentShipment: Partial<Shipment> = { ...$createShipment }
-      currentShipment.facility = facility
-      createShipment.set(currentShipment as Shipment)
+      createShipment.setDestination(facility!)
       const updatedPackage = await createShipment.sync()
       dispatch('update', updatedPackage)
     } catch (error) {
@@ -72,9 +69,9 @@
       <ol class="package-items-list">
         {#each $createShipment.content as content}
           <li>
-            <label for={content.id.toString()}>
+            <label for={content.id?.toString() ?? content.title}>
               <input
-                id={content.id.toString()}
+                id={content.id?.toString() ?? content.title}
                 type="checkbox"
                 bind:group={removeItems}
                 value={content.id}
@@ -164,7 +161,7 @@
       <button
         class="success"
         disabled={shouldDisableComplete(facility)}
-        on:click={() => completePackage(targetRecipient)}
+        on:click={() => completePackage()}
       >
         Complete Package
       </button>

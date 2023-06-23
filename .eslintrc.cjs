@@ -33,6 +33,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'svelte/valid-compile': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@svelte/a11y-click-events-have-key-events': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn', // or "error"
       {

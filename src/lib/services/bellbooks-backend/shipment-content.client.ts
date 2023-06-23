@@ -11,6 +11,10 @@ export const ShipmentContentClientEndpoints = Object.freeze({
     method: HTTP_GET,
     uri: ({ id }) => createURI('getContent', { id }),
   },
+  SEARCH_CONTENT: {
+    method: HTTP_GET,
+    uri: ({ title = '', author = '' }) => createURI('content', { title, author }),
+  },
   CREATE_CONTENT: {
     method: HTTP_POST,
     uri: () => createURI('addContent'),
@@ -30,7 +34,7 @@ export const ShipmentContentClientEndpoints = Object.freeze({
   },
   SEARCH_BOOKS: {
     method: HTTP_GET,
-    uri: ({ title = '', author = '' }) => createURI('content', { title, author }),
+    uri: ({ title = '', author = '' }) => createURI('searchBooks', { title, author }),
   },
   GOOGLE_SEARCH_BOOKS: {
     method: HTTP_GET,
@@ -64,17 +68,22 @@ export class ShipmentContentClient extends WebClient<typeof ShipmentContentClien
   }
 
   public async searchBooks(title: string, author: string): Promise<Book[]> {
-    const [databaseBooks, googleBooks] = await Promise.all([
-      this.alwaysFetch<never, Book[]>(this.endpoints.SEARCH_BOOKS, [], {
-        params: { title, author },
-      }),
-      this.alwaysFetch<never, Book[]>(this.endpoints.GOOGLE_SEARCH_BOOKS, [], {
-        params: { title, author },
-      }),
-    ])
+    // approach using individual endpoints, `uniqBy` later called with concatenated array of these two results
+    // const [databaseBooks, googleBooks] = await Promise.all([
+    //   this.alwaysFetch<never, Book[]>(this.endpoints.SEARCH_BOOKS, [], {
+    //     params: { title, author },
+    //   }),
+    //   this.alwaysFetch<never, Book[]>(this.endpoints.GOOGLE_SEARCH_BOOKS, [], {
+    //     params: { title, author },
+    //   }),
+    // ])
+
+    const searchResults = await this.alwaysFetch<never, Book[]>(this.endpoints.SEARCH_BOOKS, [], {
+      params: { title, author },
+    })
 
     return uniqBy(
-      uniqBy([...databaseBooks, ...googleBooks], (book) => book.isbn10),
+      uniqBy(searchResults, (book) => book.isbn10),
       (book) => book.isbn13,
     )
   }
