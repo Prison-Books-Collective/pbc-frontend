@@ -272,7 +272,7 @@
     header {
       position: sticky;
       top: 0;
-      background-color: var(--brand-color-secondary-tan);
+      background-color: #f6efe9;
 
       text-align: center;
       font-weight: 600;
@@ -280,11 +280,11 @@
     }
 
     article {
-      background-color: var(--color-table-bg);
+      background-color: #e7d5c5;
     }
 
     article:nth-child(2n) {
-      background-color: var(--color-table-bg-alt);
+      background-color: #efe2d7;
     }
   }
 
@@ -322,7 +322,7 @@
   }
 
   .content.notes {
-    color: var(--color-danger);
+    color: #ec5f5f;
     cursor: pointer;
   }
 

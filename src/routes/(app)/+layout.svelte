@@ -78,7 +78,7 @@
       grid-template-areas: 'home-icon admin-icon text-logo . image-logo';
       grid-template-columns: auto auto 1fr auto auto;
 
-      background-color: var(--color-bg);
+      background-color: #f6efe9;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 
       z-index: 101;

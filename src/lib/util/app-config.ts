@@ -1,6 +1,7 @@
-import { snakeCase } from 'lodash'
+import pkg from 'lodash'
 import { isEmpty } from './strings'
 
+const {snakeCase} = pkg;
 export enum ErrorStrategy {
   SILENT = 'SILENT',
   LOG = 'LOG',

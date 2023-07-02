@@ -144,7 +144,7 @@
   }
 
   #modal {
-    background-color: var(--color-bg);
+    background-color: #f6efe9;
     z-index: 100;
     box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
     overflow: auto;

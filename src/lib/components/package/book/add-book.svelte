@@ -232,7 +232,7 @@
   }
 
   .search-result:hover {
-    background-color: var(--color-success);
+    background-color: #8fbc8f;
   }
 
   .small-text {
@@ -241,6 +241,6 @@
   }
 
   .green-border {
-    border: 3px solid var(--color-success-darker);
+    border: 3px solid #568f56;
   }
 </style>

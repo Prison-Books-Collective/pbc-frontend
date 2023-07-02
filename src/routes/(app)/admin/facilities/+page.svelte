@@ -304,7 +304,7 @@
         color: rgb(0 0 0 / 0.3);
       }
       .list-item.expanded {
-        color: var(--color-text);
+        color: #232020;
       }
     }
   }
@@ -318,7 +318,7 @@
     transition-duration: 0.3s;
 
     padding: 1rem;
-    background-color: var(--color-bg);
+    background-color: #f6efe9;
     box-shadow: 0px 0px 10px rgb(0 0 0 / 0.3);
 
     &.expanded {

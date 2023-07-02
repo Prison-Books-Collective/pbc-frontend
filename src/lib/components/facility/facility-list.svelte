@@ -26,7 +26,7 @@
   summary {
     font-weight: 600;
     font-size: 1.25rem;
-    color: var(--color-text-subtitle);
+    color: #6c6863;
     text-align: center;
   }
 

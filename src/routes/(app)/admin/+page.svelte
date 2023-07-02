@@ -88,7 +88,7 @@
 
   .list-item {
     padding-block: 1rem;
-    background: var(--color-bg);
+    background: #f6efe9;
     box-shadow: 0px 0px 10px rgb(0 0 0 / 0.3);
   }
 </style>

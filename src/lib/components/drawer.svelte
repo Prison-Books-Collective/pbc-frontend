@@ -97,7 +97,7 @@
     bottom: 0;
     left: 0;
 
-    background-color: var(--color-bg);
+    background-color: #f6efe9;
     box-shadow: 0px 0px 10px rgb(0 0 0 / 0.3);
 
     z-index: 1;

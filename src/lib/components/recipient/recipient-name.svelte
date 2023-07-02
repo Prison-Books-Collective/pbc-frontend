@@ -192,7 +192,7 @@
   }
 
   .cannot-receive-packages {
-    background-color: var(--color-danger-lighter);
+    background-color: #f7bbbb;
     border-radius: 3px;
     padding: 0.7rem;
   }

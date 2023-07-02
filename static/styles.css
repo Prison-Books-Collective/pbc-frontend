@@ -10,7 +10,7 @@
 
   body {
     margin: 0px !important;
-    background-color: var(--color-bg);
+    background-color: #f6efe9;
     font-family: 'Roboto';
   }
 }
@@ -26,12 +26,12 @@
 }
 
 /* :where(h1, h2, h3, h4, h5, h6, p, label, span, table, th, td, td, details) {
-  color: var(--color-bg-contrast);
+  color: #232020;
 } */
 
 h1 {
   text-align: center;
-  color: var(--color-bg-contrast);
+  color: #232020;
 
   font-weight: 600;
   font-size: 1.5rem;
@@ -41,7 +41,7 @@ h1 {
 
 h2 {
   text-align: center;
-  color: var(--color-text-subtitle);
+  color: #6c6863;
 
   font-weight: 600;
   font-size: 1.25rem;
@@ -76,14 +76,14 @@ td {
 }
 
 th {
-  background-color: var(--color-table-header);
+  background-color: #f6efe9;
   height: 2rem;
 }
 tr {
-  background-color: var(--color-table-bg);
+  background-color: #e7d5c5;
 }
 tr:nth-child(2n) {
-  background-color: var(--color-table-bg-alt);
+  background-color: #efe2d7;
 }
 
 .hidden {
