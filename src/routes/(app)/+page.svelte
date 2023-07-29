@@ -3,6 +3,7 @@
   import { gotoRecipientSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
   import { HomepageSearch } from '$util/routing'
+    import { ShipmentService } from '$services/pbc/shipment.service'
 
   export let data
 
@@ -14,9 +15,13 @@
   let inmateID = ''
   let firstName = ''
   let lastName = ''
+  let numberOfShipments
 
-  onMount(() => {
+  onMount( async () => {
     focusOnLoadElement.focus()
+    //numberOfShipments = length of list of shipments from Backend
+    let shipments = await ShipmentService.getShipmentsByDate(new Date().toISOString().split("T")[0])
+    numberOfShipments = shipments.length
   })
 
   const shouldDisableSearch = (firstName: string, lastName: string) =>
@@ -83,6 +88,9 @@
   </p>
 
   <!-- <DailyPackages /> -->
+  <p>
+    Number of shipments made today: {numberOfShipments}
+  </p>
 </main>
 
 <style>

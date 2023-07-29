@@ -29,6 +29,7 @@ export class ShipmentService {
   public static readonly URI_CREATE_PACKAGE = `${BASE_PBC_URI}/addShipment`
   public static readonly URI_CREATE_NOTE = `${BASE_PBC_URI}/addNote`
   public static readonly URI_UPDATE_PACKAGE = `${BASE_PBC_URI}/updateShipment`
+  public static readonly URI_GET_PACKAGES_BY_DATE = (date: string) => `${BASE_PBC_URI}/getShipmentsByDate${uriQueryJoin({date: date})}`
   public static readonly URI_GET_PACKAGES__BY_DATE_RANGE = (start: string, end: string) =>
     `${BASE_PBC_URI}/getShipmentsBetweenDates${uriQueryJoin({ startDate: start, endDate: end })}`
   public static readonly URI_DELETE_PACKAGE = (packageId: number) =>
@@ -46,6 +47,17 @@ export class ShipmentService {
     }
 
     return (await response.json()) as Shipment
+  }
+
+  public static async getShipmentsByDate(date: string): Promise<Shipment[]> {
+    const response = await fetch(this.URI_GET_PACKAGES_BY_DATE(date), {
+      ...METHOD_GET,
+    })
+    if (response.status == 200) {
+      return await response.json()
+    } else {
+      return []
+    }
   }
 
   public static async getPackagesForDateRange(
