@@ -3,7 +3,7 @@
   import { gotoRecipientSearch } from '$util/routing'
   import { isEmpty } from '$util/strings'
   import { HomepageSearch } from '$util/routing'
-    import { ShipmentService } from '$services/pbc/shipment.service'
+  import { ShipmentService } from '$services/pbc/shipment.service'
 
   export let data
 
@@ -15,13 +15,14 @@
   let inmateID = ''
   let firstName = ''
   let lastName = ''
-  let numberOfShipments
 
-  onMount( async () => {
+  /* todo (cocowmn):  we should create a new endpoint in the backend to get just the count of packages for a given date so that we are not overfetching data on a limited cellular plan */
+  let todaysShipmentsPromise = ShipmentService.getShipmentsByDate(
+    new Date().toISOString().split('T')[0],
+  )
+
+  onMount(async () => {
     focusOnLoadElement.focus()
-    //numberOfShipments = length of list of shipments from Backend
-    let shipments = await ShipmentService.getShipmentsByDate(new Date().toISOString().split("T")[0])
-    numberOfShipments = shipments.length
   })
 
   const shouldDisableSearch = (firstName: string, lastName: string) =>
@@ -88,9 +89,11 @@
   </p>
 
   <!-- <DailyPackages /> -->
-  <p>
-    Number of shipments made today: {numberOfShipments}
-  </p>
+  {#await todaysShipmentsPromise then todaysShipments}
+    <p>
+      Number of shipments made today: {todaysShipments.length}
+    </p>
+  {/await}
 </main>
 
 <style>
