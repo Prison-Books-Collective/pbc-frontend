@@ -3,6 +3,7 @@
   import logoText from '$assets/pbc-text.svg'
   import home from '$assets/icons/home.png'
   import settings from '$assets/icons/gear.png'
+  import history from '$assets/icons/history.png'
 
   import { loading } from '$stores/loading'
 
@@ -29,6 +30,14 @@
       class="icon"
       on:click={() => admin.toggle()}
     />
+
+    <a href="/history">
+    <img
+    src={history}
+    alt="Navigation button for history page"
+    class="icon"
+    />
+    </a>
 
     <img
       src={logoText}
@@ -75,8 +84,8 @@
       justify-items: center;
       align-items: center;
       gap: 0.25em;
-      grid-template-areas: 'home-icon admin-icon text-logo . image-logo';
-      grid-template-columns: auto auto 1fr auto auto;
+      grid-template-areas: 'home-icon admin-icon history-icon text-logo . image-logo';
+      grid-template-columns: auto auto auto 1fr auto auto;
 
       background-color: var(--color-bg);
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
