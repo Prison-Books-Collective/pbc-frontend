@@ -27,6 +27,8 @@ export class RecipientService {
 
         public static readonly URI_UPDATE_RECIPIENT = () => `${BASE_PBC_URI}/updateRecipient`
 
+        public static readonly URI_CREATE_SPECIAL_REQUEST = () => `${BASE_PBC_URI}/addSpecialRequest`
+
 
     public static async getRecipientByAssignedId( assignedId: string ): Promise<Recipient | null> {
      
@@ -147,5 +149,37 @@ export class RecipientService {
         return (await response.json()) as Recipient[]
       }
     
+      // public static async submitSpecialRequest(
+      //   volunteerName,
+      //   request,
+      //   letterMailedDate, 
+      //   specialRequestFiledDate,
+      //   category,
+      //   status,
+      //   recipientId
+      // ): Promise<SpecialRequest> {
+      //   const response = await fetch(this.URI_CREATE_SPECIAL_REQUEST(), {
+      //     ...METHOD_POST, headers: { ...CONTENT_TYPE_JSON },
+      //     body: JSON.stringify({
+      //     "volunteerName": volunteerName,
+      //     "request": request,
+      //     "letterMailedDate": letterMailedDate,
+      //     "specialRequestDate": specialRequestFiledDate,
+      //     "category": category,
+      //     "status": status,
+      //     "recipient": { 
+      //       "assignedId": recipientId
+      //     }
+      //   })
+      // }
+      //   )
     
+      //   if (response.status !== 200) {
+      //     throw new Error(
+      //       `unexpected response ${response.status} when creating Special Request at "${this.URI_CREATE_SPECIAL_REQUEST()}".`
+      //     )
+      //   }
+    
+      //   return (await response.json()) as SpecialRequest
+      // }
 }

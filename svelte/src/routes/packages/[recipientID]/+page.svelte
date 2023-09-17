@@ -9,6 +9,7 @@
   import { onDestroy, onMount } from 'svelte'
   import { RecipientService } from '$services/pbc/recipient.service'
   import SpecialRequestModal from './special-request-modal.svelte'
+    // import SpecialRequestTable from '$components/special-request/special-request-table.svelte'
 
   export let data;
   let { recipientId, isAssignedId } = data
@@ -27,8 +28,6 @@
       : isAssignedId
         ? focusedInmate.TODO_fetchByAssignedId(recipientId) 
         : focusedInmate.TODO_fetchById(recipientId)
-  
-  console.log({ recipientId })
 
   inmateIsLoaded.then(() => {
     if($focusedInmate.assignedId) {
@@ -56,7 +55,7 @@
     focusedPackages.set([])
   })
 
-  focusedPackages.subscribe(d => console.log({focusedPackages: d}))
+  focusedPackages.subscribe(d => {focusedPackages: d})
 </script>
 
 <svelte:head>
@@ -93,6 +92,8 @@
     <button id="add-special-request-button" class="info" on:click={presentSpecialRequestModal}>
       Add a <strong><u>new special request</u></strong>
     </button>
+
+    <!-- <SpecialRequestTable specialRequests={$focusedInmate.specialRequests} /> -->
 
     <PackageTable bind:this={packageTable} packages={$focusedPackages} inmate={$focusedInmate} />
   </main>

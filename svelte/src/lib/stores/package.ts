@@ -72,7 +72,6 @@ export class FocusedShipmentsStore implements Writable<LocalStorageShipment[]> {
     endDate: string
   ): Promise<LocalStorageShipment[]> {
     try {
-      console.log("in the store")
       const packages = await ShipmentService.getPackagesForDateRange(startDate, endDate)
       this.set(packages)
       return packages

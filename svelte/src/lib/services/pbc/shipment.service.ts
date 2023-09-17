@@ -48,7 +48,6 @@ export class ShipmentService {
       startDate: string,
       endDate: string
     ): Promise<Shipment[]> {
-      console.log("in fetch")
       const response = await fetch(this.URI_GET_PACKAGES__BY_DATE_RANGE(startDate, endDate), {
         ...METHOD_GET
       })

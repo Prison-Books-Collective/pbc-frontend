@@ -47,14 +47,12 @@ export let data
     })
     if (previousQuery === currentQuery) return
     previousQuery = currentQuery
-    console.log("search mode: " + searchMode)
     switch (searchMode) {
       case PackageSearchMode.DATE:
         startLoading()
         focusedPackages.fetchForDate(date).then(doneLoading)
         break
       case PackageSearchMode.DATE_RANGE:
-        console.log("in date range switch case")
         startLoading()
         focusedPackages.fetchForDateRange(startDate, endDate).then(doneLoading)
         break

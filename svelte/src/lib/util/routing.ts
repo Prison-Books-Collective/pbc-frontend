@@ -119,10 +119,8 @@ export const gotoPackagesForInmate = async (inmate: Recipient) =>{
 
 export const gotoPackageSearch = async ({ date, startDate, endDate, isbn, author, title }) => {
   if (date) {
-    console.log("single")
     gotoSearchByDate(date)
   } else if (startDate && endDate) {
-    console.log("start and end")
     gotoSearchByDateRange(startDate, endDate)
   } else if (isbn) {
     gotoSearchByISBN(isbn)
