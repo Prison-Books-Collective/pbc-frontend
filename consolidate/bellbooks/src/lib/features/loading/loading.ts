@@ -1,7 +1,6 @@
 import { Store } from '$util/store'
 
 export class LoadingController extends Store<boolean> {
-
   constructor() {
     super('LoadingController', false)
   }
