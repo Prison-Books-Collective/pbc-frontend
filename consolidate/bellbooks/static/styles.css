@@ -13,3 +13,31 @@
     font-family: 'Roboto';
   }
 }
+
+body {
+  font-size: 1.2rem;
+}
+
+[data-layout='fullscreen'] {
+  position: fixed;
+  inset: 0px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-role='overlay'] {
+  z-index: 1000;
+
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #eaeaea;
+}
+
+[data-role='backdrop'] {
+  z-index: -1;
+
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #eaeaea;
+}

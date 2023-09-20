@@ -7,7 +7,7 @@
 </script>
 
 {#if $loadingController}
-  <aside data-layout="fullscreen" data-role="overlay" transition:fade>
+  <aside data-layout="fullscreen" data-role="backdrop" transition:fade>
     <h2>{text}</h2>
     <img
       src={loadingImage}
@@ -22,23 +22,6 @@
 {/if}
 
 <style>
-  [data-layout='fullscreen'] {
-    position: fixed;
-    inset: 0px;
-
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-  }
-
-  [data-role='overlay'] {
-    z-index: 1000;
-
-    background-color: rgba(0, 0, 0, 0.3);
-    color: #eaeaea;
-  }
-
   [data-role='loading-image'] {
     max-height: 2rem;
     display: inline;
