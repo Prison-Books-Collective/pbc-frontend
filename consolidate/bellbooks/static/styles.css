@@ -1,0 +1,15 @@
+@import url('./fonts.css');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media not print {
+  body {
+    margin: 0px !important;
+    background-color: var(--color-bg);
+    font-family: 'Roboto';
+  }
+}
