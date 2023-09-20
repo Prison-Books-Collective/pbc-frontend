@@ -31,21 +31,44 @@
       case 'left':
         return { x: -300 }
       case 'right':
+        return { x: '300' }
       case 'top':
+        return { y: -300 }
       case 'bottom':
+        return { y: '300' }
     }
   }
 
   const getStyleProperties = (direction: Direction) => {
     switch (direction) {
       case 'left':
-        return `top: 5rem, bottom: 0, left: 0`
+        return `top: 0rem; bottom: 0px; left: 0px`
       case 'right':
-        return `top: 5rem, bottom: 0, right: 0`
+        return `top: 0px; bottom: 0px; right: 0px;`
       case 'top':
-        return `top: 5rem, left: 0, right: 0`
+        return `top: 0rem; left: 0px; right: 0px`
       case 'bottom':
-        return `bottom: 0, left: 0, right: 0`
+        return `bottom: 0px; left: 0px; right: 0px`
+    }
+  }
+
+  const isVertical = (direction: Direction) => {
+    switch (direction) {
+      case 'left':
+      case 'right':
+        return false
+      default:
+        return true
+    }
+  }
+
+  const isHorizontal = (direction: Direction) => {
+    switch (direction) {
+      case 'top':
+      case 'bottom':
+        return false
+      default:
+        return true
     }
   }
 
@@ -66,6 +89,8 @@
 
     <section
       class="content"
+      class:vertical={isVertical(direction)}
+      class:horizontal={isHorizontal(direction)}
       transition:fly={{ duration: 300, opacity: 1, ...getTransitionProperties(direction) }}
       style={getStyleProperties(direction)}
     >
@@ -90,10 +115,21 @@
   }
 
   .content {
-    max-width: min(300px, 100vw);
-    height: 100vh;
+    position: absolute;
     background: white;
     box-shadow: 2px 2px 10px rgb(0 0 0 / 0.3);
     pointer-events: all;
+  }
+
+  .content.horizontal {
+    width: 100%;
+    max-width: min(300px, 100vw);
+    height: 100svh;
+  }
+
+  .content.vertical {
+    height: 100%;
+    max-height: min(300px, 100svh);
+    width: 100svw;
   }
 </style>
