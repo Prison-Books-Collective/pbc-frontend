@@ -27,9 +27,9 @@
     on:click={() => drawer.open()}
     on:keypress={() => drawer.open()}
   />
-  <a href="/" style="display: contents;">
+  <!-- <a href="/" style="display: contents;">
     <img class="logo" src={logo} alt="" />
-  </a>
+  </a> -->
   <nav>
     {#if $navbarController?.title}
       <span class="title">{$navbarController.title}</span>
@@ -59,7 +59,7 @@
     }
 
     display: grid;
-    grid-template-columns: 2rem 2rem 1fr 2rem;
+    grid-template-columns: 2rem 1fr 2rem;
     place-items: center;
     gap: 1rem;
 
