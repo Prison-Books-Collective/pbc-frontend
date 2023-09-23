@@ -1,0 +1,462 @@
+{
+  "types": {
+    "primitives": {
+      "number": {
+        "type": "primitive",
+        "null": -1
+      },
+      "string": {
+        "type": "primitive",
+        "null": "''"
+      },
+      "Date": {
+        "type": "primitive",
+        "null": "01-01-1970"
+      }
+    },
+
+    "State": {
+      "type": "enum",
+      "values": ["NC", "AL", "TN", "WV", "KY", "MD", "VA", "DE"],
+      "null": "NC"
+    },
+    "SpecialRequestStatus": {
+      "type": "enum",
+      "values": ["OPEN", "COMPLETED", "CANCELLED"],
+      "null": "OPEN"
+    },
+    "SpecialRequestCategory": {
+      "type": "enum",
+      "values": [
+        "VOCATIONAL",
+        "EDUCATIONAL",
+        "CAREER_GROWTH",
+        "FOREIGN_LANGUAGE",
+        "LEGAL",
+        "SPIRITUAL_RELIGIOUS",
+        "OTHER"
+      ],
+      "null": "OTHER"
+    },
+
+    "Facility": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "name": "string",
+        "additionalInfo": "string",
+        "street": "string",
+        "city": "string",
+        "state": "State",
+        "zip": "string"
+      },
+      "null": {
+        "id": -1,
+        "name": "Network Error",
+        "additionalInfo": "",
+        "street": "",
+        "city": "",
+        "state": "NC",
+        "zip": ""
+      }
+    },
+    "Recipient": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "firstName": "string",
+        "middleName": "string",
+        "lastName": "string",
+        "assignedId": "string",
+        "facility": "Facility",
+        "shipments": "Shipment[]",
+        "specialRequests": "SpecialRequest[]"
+      },
+      "null": {
+        "id": -1,
+        "firstName": "Network Error",
+        "middleName": "",
+        "lastName": "",
+        "assignedId": "000000",
+        "facility": {},
+        "shipments": [],
+        "specialRequests": []
+      }
+    },
+    "PackageContent": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "title": "string"
+      },
+      "null": {
+        "id": -1,
+        "title": "Network Error"
+      }
+    },
+    "Book": {
+      "type": "interface",
+      "extends": "PackageContent",
+      "schema": {
+        "ISBN10": "string",
+        "ISBN13": "string",
+        "authors": "string"
+      },
+      "null": {
+        "ISBN10": "0000000000",
+        "ISBN13": "0000000000000",
+        "authors": "Network Error"
+      }
+    },
+    "Zine": {
+      "type": "interface",
+      "extends": "PackageContent",
+      "schema": {
+        "code": "string"
+      },
+      "null": {
+        "code": "-1"
+      }
+    },
+    "Note": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "content": "string",
+        "date": "Date"
+      },
+      "null": {
+        "id": -1,
+        "content": "Network Error",
+        "date": "01-01-1970"
+      }
+    },
+    "Shipment": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "date": "Date",
+        "facility": "Facility",
+        "recipient": "Recipient",
+        "notes": "Note[]",
+        "content": "PackageContent[]"
+      },
+      "null": {
+        "id": -1,
+        "date": "01-01-1970",
+        "facility": {},
+        "recipient": {},
+        "notes": [],
+        "content": []
+      }
+    },
+    "SpecialRequest": {
+      "type": "interface",
+      "schema": {
+        "id": "number",
+        "volunteerName": "string",
+        "request": "string",
+        "specialRequestDate": "Date",
+        "letterMailedDate": "Date",
+        "category": "SpecialRequestCategory",
+        "status": "SpecialRequestStatus",
+        "recipient": "Recipient"
+      },
+      "null": {
+        "id": -1,
+        "volunteerName": "",
+        "request": "Network Error",
+        "specialRequestDate": "01-01-1970",
+        "letterMailedDate": "01-01-1970",
+        "category": "OTHER",
+        "status": "OPEN",
+        "recipient": {}
+      }
+    }
+  },
+
+  "endpoints": {
+    "Facility": [
+      {
+        "method": "POST",
+        "path": "addFacility",
+        "request": "Facility",
+        "response": "Facility"
+      },
+      {
+        "method": "GET",
+        "path": "getAllFacilities",
+        "response": "Facility[]"
+      },
+      {
+        "method": "GET",
+        "path": "getFacility",
+        "query": {
+          "id": "number"
+        },
+        "response": "Facility"
+      },
+      {
+        "method": "GET",
+        "path": "getFacilityByName",
+        "query": {
+          "name": "string",
+          "state": "State"
+        },
+        "response": "Facility[]"
+      },
+      {
+        "method": "DELETE",
+        "path": "deleteFacility",
+        "query": {
+          "id": "number"
+        },
+        "response": "void"
+      },
+      {
+        "method": "PUT",
+        "path": "updateFacility",
+        "request": "Facility",
+        "response": "Facility"
+      }
+    ],
+
+    "Note": [
+      {
+        "method": "POST",
+        "path": "addNote",
+        "request": "Note",
+        "response": "Note"
+      }
+    ],
+
+    "PackageContent": [
+      {
+        "method": "GET",
+        "path": "getContent",
+        "query": {
+          "id": "number"
+        },
+        "response": "PackageContent"
+      },
+      {
+        "method": "GET",
+        "path": "getBookByISBN",
+        "query": {
+          "isbn": "string"
+        },
+        "response": "PackageContent"
+      },
+      {
+        "method": "GET",
+        "path": "getContentByTitle",
+        "query": {
+          "title": "string"
+        },
+        "response": "PackageContent[]"
+      },
+      {
+        "name": "searchBooks",
+        "method": "GET",
+        "path": "searchBooks",
+        "query": {
+          "title": "string",
+          "author": "Optional string"
+        },
+        "response": "Book[]"
+      },
+      {
+        "method": "GET",
+        "path": "content",
+        "query": {
+          "title": "string",
+          "author": "Optional string"
+        },
+        "response": "PackageContent[]"
+      },
+      {
+        "method": "GET",
+        "path": "queryGoogle",
+        "query": {
+          "title": "string",
+          "author": "Optional string"
+        },
+        "response": "Book[]"
+      },
+      {
+        "method": "GET",
+        "path": "getZineByCode",
+        "query": {
+          "code": "string"
+        },
+        "signature": "getZineByCode",
+        "response": "Zine"
+      },
+      {
+        "method": "GET",
+        "path": "getAllZines",
+        "response": "Zine[]"
+      },
+      {
+        "name": "getNoIsbnBooks",
+        "method": "GET",
+        "path": "getNoIsbnBooks",
+        "response": "Book[]"
+      },
+      {
+        "method": "GET",
+        "path": "getAllContent",
+        "response": "PackageContent[]"
+      },
+      {
+        "method": "PUT",
+        "path": "updateContent",
+        "request": "PackageContent",
+        "response": "PackageContent"
+      },
+      {
+        "method": "DELETE",
+        "path": "deleteContent",
+        "query": {
+          "id": "number"
+        },
+        "response": "void"
+      },
+      {
+        "method": "POST",
+        "path": "addContent",
+        "request": "PackageContent",
+        "response": "PackageContent"
+      }
+    ],
+
+    "Recipient": [
+      {
+        "method": "POST",
+        "path": "addRecipient",
+        "request": "Recipient",
+        "response": "Recipient"
+      },
+      {
+        "method": "PUT",
+        "path": "updateRecipient",
+        "request": "Recipient",
+        "response": "Recipient"
+      },
+      {
+        "method": "GET",
+        "path": "getRecipient",
+        "query": {
+          "id": "number"
+        },
+        "response": "Recipient"
+      },
+      {
+        "method": "GET",
+        "path": "getAllRecipients",
+        "response": "Recipient[]"
+      },
+      {
+        "method": "GET",
+        "path": "getRecipientByAssignedId",
+        "query": {
+          "assignedId": "string"
+        },
+        "response": "Recipient"
+      },
+      {
+        "name": "getRecipientLocationName",
+        "method": "GET",
+        "path": "getRecipientLocation",
+        "query": {
+          "id": "string"
+        },
+        "response": "string"
+      },
+      {
+        "method": "DELETE",
+        "path": "deleteRecipient",
+        "query": {
+          "id": "number"
+        },
+        "response": "void"
+      }
+    ],
+
+    "Shipment": [
+      {
+        "method": "POST",
+        "path": "addShipment",
+        "request": "Shipment",
+        "response": "Shipment"
+      },
+      {
+        "method": "PUT",
+        "path": "updateShipment",
+        "request": "Shipment",
+        "response": "Shipment"
+      },
+      {
+        "method": "GET",
+        "path": "getShipment",
+        "query": {
+          "id": "number"
+        },
+        "response": "Shipment"
+      },
+      {
+        "name": "getShipmentsByRecipientId",
+        "method": "GET",
+        "path": "getAllShipmentsByRecipient",
+        "query": {
+          "id": "number"
+        },
+        "response": "Shipment[]"
+      },
+      {
+        "method": "DELETE",
+        "path": "deleteShipment",
+        "query": {
+          "id": "number"
+        },
+        "response": "void"
+      },
+      {
+        "name": "deleteAllShipmentsByRecipientId",
+        "method": "DELETE",
+        "path": "deleteAllShipmentsByRecipientId",
+        "query": {
+          "id": "number"
+        },
+        "response": "void"
+      },
+      {
+        "method": "GET",
+        "path": "getShipmentsByDate",
+        "query": {
+          "date": "string"
+        },
+        "response": "Shipment[]"
+      },
+      {
+        "name": "getShipmentCountBetweenDates",
+        "method": "GET",
+        "path": "getShipmentCountBetweenDates",
+        "query": {
+          "date1": "string",
+          "date2": "string"
+        },
+        "response": "number"
+      }
+    ],
+
+    "SpecialRequest": [
+      {
+        "method": "POST",
+        "path": "addSpecialRequest",
+        "request": "SpecialRequest",
+        "response": "SpecialRequest"
+      }
+    ]
+  }
+}

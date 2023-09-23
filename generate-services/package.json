@@ -1,0 +1,20 @@
+{
+  "name": "generate-services",
+  "module": "src/app.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun src/app.ts",
+    "generate": "DRY_RUN=false ENABLE_LOGGING=false bun src/app.ts",
+    "test": "DRY_RUN=true ENABLE_LOGGING=true bun src/app.ts"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.198",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
