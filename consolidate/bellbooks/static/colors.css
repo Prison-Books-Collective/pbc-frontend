@@ -1,0 +1,59 @@
+:root {
+  /* Brand Colors pulled from Branding Guidelines document */
+  --brand-color-primary-black: #232020;
+  --brand-color-primary-white: #fffcfa;
+  --brand-color-secondary-gray: #6c6863;
+  --brand-color-secondary-tan: #ba9b78;
+  --brand-color-secondary-cream: #f6efe9;
+  --brand-color-accent-yellow: #eaaa00;
+  --brand-color-accent-red: #ef3e3c;
+
+  --color-secondary-cream-darker: #efe2d7;
+  --color-secondary-cream-darker-2: #e7d5c5;
+
+  --color-bg: var(--brand-color-primary-white);
+  --color-bg-contrast: var(--brand-color-primary-black);
+
+  --color-text: var(--color-bg-contrast);
+  --color-text-light: var(--brand-color-primary-white);
+
+  --color-text-subtitle: var(--brand-color-secondary-gray);
+  --color-text-link: #5139db;
+
+  /* --color-table-header: #c1e3de; */
+  --color-table-header: var(--brand-color-secondary-tan);
+  --color-table-bg: var(--color-secondary-cream-darker-2);
+  --color-table-bg-alt: var(--color-secondary-cream-darker);
+
+  /* Intent Colors */
+
+  --color-success: #8fbc8f;
+  --color-success-darker: #568f56;
+  --color-success-lighter: #cfe2cf;
+
+  --color-info: #80cbc4;
+  --color-info-darker: #43a399;
+  --color-info-lighter: #c9e9e6;
+
+  --color-warn: #ffd24d;
+  --color-warn-darker: #e6ac00;
+  --color-warn-lighter: #ffecb3;
+
+  --color-danger: #ec5f5f;
+  --color-danger-darker: #cd1818;
+  --color-danger-lighter: #f7bbbb;
+
+  --color-default-button: #829791;
+  --color-default-button-darker: #51615d;
+  --color-default-button-lighter: #bac5c2;
+
+  --color-disabled-button: #666;
+  --color-disabled-button-darker: #333;
+  --color-disabled-button-lighter: #999;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* define color overrides here */
+  }
+}

@@ -21,7 +21,7 @@
   <nav>
     <ul>
       <li>
-        <a href="/" class:active={currentPage === '/'}>Recipient Lookup</a>
+        <a href="/" class:active={currentPage === '/'}>Home</a>
       </li>
 
       <li>
@@ -52,7 +52,8 @@
     height: 5rem;
     max-height: 5rem;
     padding: 1rem;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 0.3);
+    // box-shadow: 0px 2px 10px rgb(0 0 0 / 0.3);
+    // background: var(--brand-color-secondary-cream);
 
     display: flex;
     flex-flow: row nowrap;
@@ -78,16 +79,16 @@
     ul {
       display: contents;
       list-style: none;
-
       font-family: 'Zilla Slab';
     }
 
     a {
       position: relative;
       color: inherit;
+      color: var(--brand-color-secondary-gray);
       font-weight: 500;
       text-decoration: none;
-      opacity: 0.5;
+      opacity: 0.75;
       transition-duration: 0.3s;
 
       &.active {
@@ -106,7 +107,7 @@
         position: absolute;
         width: 2px;
         height: 1.5rem;
-        background: black;
+        background: currentColor;
         left: -10px;
         transition-duration: 0.3s;
         opacity: 0;

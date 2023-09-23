@@ -21,16 +21,15 @@ export class NavbarController extends Store<Navbar> {
     return newValue
   }
 
-  public title(title: string) {
+  public title(title: string, subtitle?: string) {
     this.set({
-      ...this.getLatest(),
       title,
+      subtitle,
     })
   }
 
   public subtitle(subtitle: string) {
     this.set({
-      ...this.getLatest(),
       subtitle,
     })
   }

@@ -37,6 +37,8 @@
 
 <style lang="scss">
   header {
+    position: sticky;
+    top: 0;
     display: grid;
     grid-template-columns: 2rem 1fr 2rem;
     place-items: center;
@@ -45,9 +47,10 @@
     height: 5rem;
     max-height: 5rem;
 
-    overflow-y: hidden;
+    // background: var(--brand-color-secondary-cream);
     padding: 1rem;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 0.3);
+    // box-shadow: 0px 2px 10px rgb(0 0 0 / 0.3);
+    overflow-y: hidden;
 
     .icon {
       max-height: 1.75rem;
@@ -65,10 +68,12 @@
 
   nav {
     text-align: center;
+
     .title,
     .subtitle {
       --size: min(1rem, 5vw);
       font-size: min(var(--size));
+      color: var(--color-text);
       line-height: 0px;
       text-align: center;
     }
@@ -77,6 +82,7 @@
       --size: min(1.5rem, 7vw);
       text-transform: capitalize;
       font-weight: 600;
+      opacity: 1;
       font-family: 'Zilla Slab';
     }
 

@@ -1,4 +1,5 @@
-@import url('./fonts.css');
+@import './fonts.css';
+@import './colors.css';
 
 *,
 *::before,
@@ -20,6 +21,11 @@ body {
   height: 100svh;
 }
 
+.grainy {
+  background-image: url('./noise.png');
+  background-blend-mode: multiply;
+}
+
 [data-layout='fullscreen'] {
   position: fixed;
   inset: 0px;
@@ -33,13 +39,13 @@ body {
 [data-role='overlay'] {
   z-index: 1000;
 
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #eaeaea;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--color-text-light);
 }
 
 [data-role='backdrop'] {
   z-index: -1;
 
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #eaeaea;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--color-text-light);
 }

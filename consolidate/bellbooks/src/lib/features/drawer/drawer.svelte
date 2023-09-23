@@ -88,7 +88,7 @@
     />
 
     <section
-      class="content"
+      class="content grainy"
       class:vertical={isVertical(direction)}
       class:horizontal={isHorizontal(direction)}
       transition:fly={{ duration: 300, opacity: 1, ...getTransitionProperties(direction) }}
@@ -116,9 +116,11 @@
 
   .content {
     position: absolute;
-    background: white;
+    background: var(--color-bg-contrast);
     box-shadow: 2px 2px 10px rgb(0 0 0 / 0.3);
     pointer-events: all;
+    background-image: url('../../assets/noise.png');
+    background-blend-mode: multiply;
   }
 
   .content.horizontal {
