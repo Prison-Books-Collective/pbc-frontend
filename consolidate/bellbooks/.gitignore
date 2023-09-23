@@ -44,3 +44,4 @@ build
 build/*
 pbc-frontend
 pbc-frontend/*
+src/db

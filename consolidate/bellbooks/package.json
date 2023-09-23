@@ -2,8 +2,8 @@
   "name": "bellbooks",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "dev": "bunx drizzle-kit introspect:mysql && vite dev",
+    "build": "bunx drizzle-kit introspect:mysql && vite build",
     "preview": "vite preview",
     "test": "npm run test:integration && npm run test:unit",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
