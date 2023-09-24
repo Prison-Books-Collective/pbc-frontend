@@ -14,7 +14,8 @@
     "paths": {
       "$assets/*": ["./src/lib/assets/*"],
       "$components/*": ["./src/lib/components/*"],
-      "$db/*": ["./src/lib/db/*"],
+      "$data": ["./src/lib/data"],
+      "$db/*": ["./src/db/*"],
       "$features/*": ["./src/lib/features/*"],
       "$models/*": ["./src/lib/models/*"],
       "$services/*": ["./src/lib/services/*"],

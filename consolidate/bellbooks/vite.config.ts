@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       $assets: resolve('./src/lib/assets'),
       $components: resolve('./src/lib/components'),
+      $data: resolve('./src/lib/data'),
       $db: resolve('./src/db'),
       $features: resolve('./src/lib/features'),
       $models: resolve('./src/lib/models'),
