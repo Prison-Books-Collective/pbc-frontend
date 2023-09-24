@@ -2,8 +2,8 @@
   "name": "bellbooks",
   "version": "0.0.1",
   "scripts": {
-    "dev": "bunx drizzle-kit introspect:mysql && vite dev",
-    "build": "bunx drizzle-kit introspect:mysql && vite build",
+    "dev": "bun run db:introspect && bun run db:add-types && vite dev",
+    "build": "bun run db:introspect && bun run db:add-types && vite build",
     "preview": "vite preview",
     "test": "npm run test:integration && npm run test:unit",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -11,7 +11,9 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
     "test:integration": "playwright test",
-    "test:unit": "vitest"
+    "test:unit": "vitest",
+    "db:introspect": "bunx drizzle-kit introspect:mysql",
+    "db:add-types": "bun ./src/lib/data/generate-types.ts"
   },
   "devDependencies": {
     "@fontsource/fira-mono": "^4.5.10",

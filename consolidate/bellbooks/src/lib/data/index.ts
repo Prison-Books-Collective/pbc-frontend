@@ -12,4 +12,5 @@ const connection = await mysql.createConnection({
 })
 
 export * from '$db/schema'
+
 export const db = drizzle(connection)
