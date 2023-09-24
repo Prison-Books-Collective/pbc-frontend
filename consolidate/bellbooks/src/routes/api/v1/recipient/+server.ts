@@ -1,6 +1,7 @@
 import { error, json } from '@sveltejs/kit'
-import { getRecipient } from '.'
-import { getNumberParam } from '$util/db'
+import { createRecipient, deleteRecipient, getRecipient, updateRecipient } from '.'
+import { getNumberParam } from '$util/api'
+import { isRecipientValid, getRecipientValidationErrors, type Recipient } from '$data/types'
 
 export async function GET({ url }) {
   const id = getNumberParam(url, 'id')
@@ -11,49 +12,40 @@ export async function GET({ url }) {
   throw error(404, `recipient with ID ${id} does not exist`)
 }
 
-import type { Recipient } from '$data/types'
-import { db, hibernateSequence, recipient } from '$data'
-import type { MySqlTable, MySqlTableWithColumns } from 'drizzle-orm/mysql-core'
-
 export async function POST({ request }) {
-  const result = await db.select().from(hibernateSequence)
-  console.log({ result })
-  const insertRecipient = await request.json()
-  if (!isValidRecipient(insertRecipient, true)) {
-    const errors = getValidationErrors(insertRecipient, true)
+  const details: Omit<Recipient, 'id'> = await request.json()
+  if (!isRecipientValid(details)) {
+    const errors = getRecipientValidationErrors(details)
     throw error(400, `Cannot create recipient with invalid data. Errors: ${errors.join(', ')}`)
   }
 
-  const insertedRecipient = await createWithAutoID(recipient, insertRecipient)
-  return json(insertedRecipient)
+  const newRecipient = await createRecipient(details)
+
+  if (newRecipient) return json(newRecipient)
+  throw error(500, 'failed to save recipient details to database')
 }
 
-async function createWithAutoID<Typez>(table: MySqlTable, insertRow: Typez) {
-  return db.transaction(async (tx) => {
-    const sequence = await tx.select().from(hibernateSequence)
-    const nextID = sequence[0].nextVal
-    const insertRowWithID = { ...insertRow, id: nextID }
-    await db.insert(table).values(insertRowWithID)
-    await tx.update(hibernateSequence).set({ nextVal: nextID + 1 })
-    return insertRowWithID
-  })
+export async function PUT({ request }) {
+  const details: Partial<Recipient> = await request.json()
+  if (!details.id || details.id < 0)
+    throw error(400, 'request body must contain a valid recipient `id` field')
+
+  const existingRecipient = await getRecipient(details.id)
+  if (!existingRecipient) throw error(404, `recipient with ID ${id} does not exist`)
+
+  const updatedRecipient = await updateRecipient(details.id, existingRecipient, details)
+  if (updatedRecipient) return json(updatedRecipient)
+
+  throw error(500, `failed to save recipient update to database`)
 }
 
-function getValidationErrors(recipient: Partial<Recipient>, isCreate = false) {
-  const validationErrors: string[] = []
+export async function DELETE({ url }) {
+  const id = getNumberParam(url, 'id')
+  if (!id) throw error(400, 'must specify a recipient `id` query parameter')
 
-  if (!isCreate && !recipient.id) validationErrors.push('missing: id')
-  if (!recipient.firstName) validationErrors.push('missing: firstName')
-  if (!recipient.lastName) validationErrors.push('missing: lastName')
+  const existingRecipient = await getRecipient(id)
+  if (!existingRecipient) throw error(404, `recipient with ID ${id} does not exist`)
 
-  return validationErrors
-}
-
-function isValidRecipient(recipient: Partial<Recipient>, isCreate = false): boolean {
-  if (!isCreate && !recipient.id) return false
-  if (!recipient.firstName) return false
-  if (!recipient.lastName) return false
-
-  // todo (cocowmn): are we still doing the "require assignedID OR location" validation?
-  return true
+  await deleteRecipient(id)
+  return new Response()
 }

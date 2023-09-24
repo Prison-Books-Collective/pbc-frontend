@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit'
-import { getStringParam } from '$util/db.js'
+import { getStringParam } from '$util/api'
 import { filterFacilities } from '.'
 
 export async function GET({ url }) {

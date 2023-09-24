@@ -1,22 +1,18 @@
+import { db, hibernateSequence } from '$data'
 import { eq, like } from 'drizzle-orm'
-import type { MySqlColumn } from 'drizzle-orm/mysql-core'
+import type { MySqlColumn, MySqlTable } from 'drizzle-orm/mysql-core'
 
 export function fuzzyCompare(field: MySqlColumn, value: string, exact: boolean = false) {
   return exact ? eq(field, value) : like(field, `%${value}%`)
 }
 
-export function getSearchParam(url: URL, param: string) {
-  const value = url.searchParams.get(param)
-  if (value === 'null') return undefined
-  return value
-}
-
-export function getStringParam(url: URL, param: string): string | undefined {
-  const value = getSearchParam(url, param)
-  return value ? String(value) : undefined
-}
-
-export function getNumberParam(url: URL, param: string): number | undefined {
-  const value = getSearchParam(url, param)
-  return value ? Number(value) : undefined
+export async function createWithAutoID(table: MySqlTable, insertRow: any) {
+  return db.transaction(async (tx) => {
+    const sequence = await tx.select().from(hibernateSequence)
+    const nextID = sequence[0].nextVal
+    const insertRowWithID = { ...insertRow, id: nextID }
+    await db.insert(table).values(insertRowWithID)
+    await tx.update(hibernateSequence).set({ nextVal: nextID + 1 })
+    return insertRowWithID
+  })
 }

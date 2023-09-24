@@ -1,17 +1,6 @@
 import type { PackageContent } from '$db/types'
 
-export type {
-  Facility,
-  HibernateSequence,
-  Note,
-  PackageContent,
-  Recipient,
-  RecipientSpecialRequests,
-  Shipment,
-  ShipmentContent,
-  ShipmentNotes,
-  SpecialRequest,
-} from '$db/types'
+export * from '$db/types'
 
 export interface Book extends PackageContent {
   type: 'book'
