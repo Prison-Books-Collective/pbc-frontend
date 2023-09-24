@@ -1,7 +1,6 @@
-import { error, json } from '@sveltejs/kit'
-import { db, recipient } from '$data'
+import { json } from '@sveltejs/kit'
+import { getAllRecipients } from '.'
 
-export async function GET({ url }) {
-  const result = await db.select().from(recipient)
-  return json(result)
+export async function GET() {
+  return json(await getAllRecipients())
 }
