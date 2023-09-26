@@ -12,7 +12,7 @@
     <img
       src={loadingImage}
       data-role="loading-image"
-      alt="content loading, netwwork request in progress"
+      alt="content loading, network request in progress"
     />
 
     {#each Object.keys($$slots) as _}

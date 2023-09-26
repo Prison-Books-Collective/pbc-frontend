@@ -34,6 +34,8 @@ module.exports = {
     'svelte/valid-compile': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@svelte/a11y-click-events-have-key-events': 'off',
+    'a11y-no-noninteractive-element-interactions': 'off',
+    'svelte/no-at-html-tags': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn', // or "error"
       {

@@ -1,5 +1,3 @@
-import { lowerCase } from 'lodash'
-
 export function envInt(variableName: string, variableValue: string) {
   try {
     if (!variableValue) throw new Error('no value was provided')

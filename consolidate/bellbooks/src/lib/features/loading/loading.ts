@@ -24,6 +24,13 @@ export class LoadingController extends Store<boolean> {
     this.set(false)
   }
 
+  public async displayWhile<ReturnType>(callback: () => Promise<ReturnType>): Promise<ReturnType> {
+    this.start()
+    const result = await callback()
+    this.end()
+    return result
+  }
+
   public isLoading(): boolean {
     return this.getLatest()
   }
