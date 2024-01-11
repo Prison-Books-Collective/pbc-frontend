@@ -30,13 +30,11 @@
       </a>
     </FeatureGate>
 
-    <FeatureGate gate="add special requests">
-      <a href="/admin/special-requests">
-        <article class="list-item">
-          <h2>Create & Manage Special Requests</h2>
-        </article>
-      </a>
-    </FeatureGate>
+    <a href="/admin/special-requests">
+      <article class="list-item">
+        <h2>Create & Manage Special Requests</h2>
+      </article>
+    </a>
   </section>
 </main>
 
