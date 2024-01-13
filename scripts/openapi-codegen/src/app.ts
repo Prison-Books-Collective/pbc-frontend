@@ -72,6 +72,9 @@ function parse$Ref(value: string): string {
 
 function bufferModels() {
   outputBuffer = 'export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }\n'
+  outputBuffer += `export type ForeignKey<Entity extends ${interfaceNames.join(
+    ' | ',
+  )}> = Required<Pick<Entity, 'id'>> & Partial<Entity>\n`
 
   const componentsInterface = source!.statements.find(
     (statement) =>
@@ -90,12 +93,16 @@ function bufferModels() {
           node.forEachChild((node) => {
             const components = node.getText(source).split(':')
             const name = components.shift()
-            const declaration = components
+            let declaration = components
               .join(':')
               .trim()
               .replace(/components\["schemas"\]\["(\w+)"\]/gi, '$1')
               .replaceAll(/ {2,}/g, '  ')
               .replaceAll(/^  \}/gm, '}')
+            declaration = declaration.replaceAll(
+              new RegExp(`([^<"])(${interfaceNames.join('|')})`, 'g'),
+              '$1ForeignKey<$2>',
+            )
             const type = `export type ${name} = ${declaration}`.replaceAll(';', '')
             outputBuffer += `\n${type}\n`
           })
@@ -106,11 +113,7 @@ function bufferModels() {
 }
 
 function bufferEndpoints() {
-<<<<<<< HEAD
   outputBuffer = `import type {\n`
-=======
-  outputBuffer = `import {\n`
->>>>>>> e75fc75 (add script to build fetch methods from backend's openapi json)
   interfaceNames.forEach((name) => (outputBuffer += `  ${name},\n`))
   outputBuffer += `} from './models'\n\n`
   outputBuffer += `type Fetch = (input: URL | RequestInfo, init?: RequestInit) => Promise<Response>\n\n`
