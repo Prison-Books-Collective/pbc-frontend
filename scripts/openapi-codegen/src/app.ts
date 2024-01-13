@@ -25,7 +25,7 @@ type EndpointData = {
 const apiBaseURL = apidocs.servers[0].url
 const interfaceNames = Object.keys(apidocs.components.schemas)
 
-const outputDirectory = join('dist', 'api')
+const outputDirectory = join('..', '..', 'src', 'lib', 'api')
 const outputModelsFile = 'models.ts'
 const outputEndpointsFile = 'endpoints.ts'
 const outputIndexFile = 'index.ts'

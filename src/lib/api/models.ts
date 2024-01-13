@@ -1,4 +1,15 @@
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+export type ForeignKey<
+  Entity extends
+    | Book
+    | Facility
+    | Note
+    | PackageContent
+    | Recipient
+    | Shipment
+    | SpecialRequest
+    | Zine,
+> = Required<Pick<Entity, 'id'>> & Partial<Entity>
 
 export type Book = WithRequired<
   {
@@ -45,9 +56,9 @@ export type Recipient = {
   middleName?: string
   lastName: string
   assignedId?: string
-  facility?: Facility
-  shipments?: Shipment[]
-  specialRequests?: SpecialRequest[]
+  facility?: ForeignKey<Facility>
+  shipments?: ForeignKey<Shipment>[]
+  specialRequests?: ForeignKey<SpecialRequest>[]
 }
 
 export type Shipment = {
@@ -55,10 +66,10 @@ export type Shipment = {
   id?: number
   /** Format: date */
   date?: string
-  facility?: Facility
-  recipient?: Recipient
-  notes?: Note[]
-  content?: (Book | Zine)[]
+  facility?: ForeignKey<Facility>
+  recipient?: ForeignKey<Recipient>
+  notes?: ForeignKey<Note>[]
+  content?: (ForeignKey<Book> | ForeignKey<Zine>)[]
 }
 
 export type SpecialRequest = {
@@ -81,7 +92,7 @@ export type SpecialRequest = {
     | 'OTHER'
   /** @enum {string} */
   status?: 'OPEN' | 'COMPLETED' | 'CANCELLED'
-  recipient?: Recipient
+  recipient?: ForeignKey<Recipient>
 }
 
 export type Zine = WithRequired<

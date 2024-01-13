@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import type {
-=======
-import {
->>>>>>> b81fd30 (add $api import shortcut, add generated services to src/lib/api)
   Book,
   Facility,
   Note,
