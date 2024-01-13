@@ -1,0 +1,16 @@
+{
+  "name": "openapi-codegen",
+  "module": "src/app.ts",
+  "type": "module",
+  "scripts": {
+    "start": "openapi-typescript src/openapi/openapi.json --output src/openapi/openapi.ts && bun src/app.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "openapi-typescript": "^6.7.3",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

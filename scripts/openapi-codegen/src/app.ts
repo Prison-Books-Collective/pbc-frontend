@@ -106,7 +106,11 @@ function bufferModels() {
 }
 
 function bufferEndpoints() {
+<<<<<<< HEAD
   outputBuffer = `import type {\n`
+=======
+  outputBuffer = `import {\n`
+>>>>>>> e75fc75 (add script to build fetch methods from backend's openapi json)
   interfaceNames.forEach((name) => (outputBuffer += `  ${name},\n`))
   outputBuffer += `} from './models'\n\n`
   outputBuffer += `type Fetch = (input: URL | RequestInfo, init?: RequestInit) => Promise<Response>\n\n`
