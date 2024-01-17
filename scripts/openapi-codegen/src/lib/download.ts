@@ -3,13 +3,13 @@ import type { OpenAPI3 } from 'openapi-typescript'
 
 import { saveFile, validateOpenAPI3Schema } from './util'
 
-export type DownloadOptions = {
-  local?: boolean
-  remote?: boolean
-  url?: string
-  output?: string
-  dryrun?: boolean
-}
+export type DownloadOptions = Partial<{
+  local: boolean
+  remote: boolean
+  url: string
+  output: string
+  dryrun: boolean
+}>
 
 function normalizeDownloadOptions(options: DownloadOptions): Required<DownloadOptions> {
   const dryrun = options.dryrun ?? false
@@ -30,7 +30,7 @@ function normalizeDownloadOptions(options: DownloadOptions): Required<DownloadOp
   return { local, remote, output, url, dryrun } satisfies DownloadOptions
 }
 
-export async function downloadOpenAPISpec(options: DownloadOptions) {
+export async function download(options: DownloadOptions) {
   const { url, output, dryrun } = normalizeDownloadOptions(options)
 
   let jsonContent: unknown

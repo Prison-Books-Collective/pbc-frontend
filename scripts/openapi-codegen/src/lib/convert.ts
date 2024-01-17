@@ -1,11 +1,11 @@
 import openapiTS, { type OpenAPI3 } from 'openapi-typescript'
 import { readSchemaFromDisk, saveFile } from './util'
 
-export type ConvertOptions = {
-  input?: string
-  output?: string
-  dryrun?: boolean
-}
+export type ConvertOptions = Partial<{
+  input: string
+  output: string
+  dryrun: boolean
+}>
 
 function normalizeConvertOptions(options: ConvertOptions): Required<ConvertOptions> {
   const dryrun = options.dryrun ?? false

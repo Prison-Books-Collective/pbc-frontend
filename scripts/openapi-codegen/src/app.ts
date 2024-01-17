@@ -25,8 +25,8 @@ program
   )
   .option('-d, --dryrun', '[Test] Attempt download but do not save to disk', false)
   .action(async (options: DownloadOptions) => {
-    const { downloadOpenAPISpec } = await import('./lib/download')
-    await downloadOpenAPISpec(options)
+    const { download } = await import('./lib/download')
+    await download(options)
   })
 
 program
