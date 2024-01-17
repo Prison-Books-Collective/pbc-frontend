@@ -1,3 +1,4 @@
+/** @type { import("eslint").Linter.Config } */
 module.exports = {
   root: true,
   extends: [
@@ -30,7 +31,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'no-unused-vars': 'off',
     'svelte/valid-compile': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@svelte/a11y-click-events-have-key-events': 'off',

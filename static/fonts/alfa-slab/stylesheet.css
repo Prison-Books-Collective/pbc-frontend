@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'Alfa Slab';
-  src: url('alfaslabone-regular-webfont.woff2') format('woff2'),
+  src:
+    url('alfaslabone-regular-webfont.woff2') format('woff2'),
     url('alfaslabone-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;

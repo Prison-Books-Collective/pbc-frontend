@@ -43,8 +43,8 @@ export const stringify = (p: Package) => {
 		${p.zines?.map((z) => `${z.threeLetterCode} ${z.title}`).join(' ') || ''}
 		${inmate?.id || ''}
 		${inmate?.firstName || ''} ${inmate?.middleInitial ? inmate?.middleInitial + ' ' : ''}${
-    inmate?.lastName || ''
-  }
+      inmate?.lastName || ''
+    }
 		${inmate?.location || ''}
 	`
     .replace(/(\s+)/, '')

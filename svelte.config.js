@@ -1,4 +1,4 @@
-import { vitePreprocess } from '@sveltejs/kit/vite'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import appengine from 'svelte-adapter-appengine'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -12,19 +12,20 @@ const config = {
     // If your environment is not supported or you settled on a specific environment, switch out the adapter.
     // See https://kit.svelte.dev/docs/adapters for more information about adapters.
     adapter: appengine(),
-  },
 
-  onwarn: (warning, handler) => {
-    if (warning.code.startsWith('a11y-click-events-have-key-events')) {
-      return
-    }
-    if (warning.message.includes(`'_' is defined but never used`)) {
-      return
-    }
-    if (warning.message.includes(`has unused export property 'data'`)) {
-      return
-    }
-    handler(warning)
+    alias: {
+      $api: './src/lib/api',
+      $assets: './src/lib/assets',
+      $components: './src/lib/components',
+      $features: './src/lib/features',
+      $util: './src/lib/util',
+
+      // TODO @cocowmn: all aliases below this line should be deleted once they are no longer in use
+      $data: './src/lib/data',
+      $models: './src/lib/models',
+      $services: './src/lib/services',
+      $stores: './src/lib/stores',
+    },
   },
 }
 

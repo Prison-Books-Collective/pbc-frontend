@@ -3,7 +3,7 @@
   import type { Book } from '$models/pbc/shipment'
   import { createShipment } from '$lib/data/shipment.data'
   import { books, createBook } from '$lib/data/book.data'
-  import { isEmpty } from 'lodash'
+  import isEmpty from 'lodash/isEmpty'
 
   enum DISPLAY_FORM {
     WITH_ISBN,
@@ -228,7 +228,9 @@
     cursor: pointer;
 
     box-shadow: 0px 0px 10px rgba(0 0 0 / 0.3);
-    transition: background-color 0.3s, color 0.3s;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
   }
 
   .search-result:hover {

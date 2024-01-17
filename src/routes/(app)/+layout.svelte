@@ -1,4 +1,6 @@
 <script lang="ts">
+  import '$lib/assets/styles/styles.scss'
+
   import logo from '$assets/pbc-logo-small.png'
   import logoText from '$assets/pbc-text.svg'
   import home from '$assets/icons/home.png'

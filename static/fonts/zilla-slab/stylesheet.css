@@ -1,7 +1,8 @@
 /* lightregular */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-light-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-light-webfont.woff2') format('woff2'),
     url('zillaslab-light-webfont.woff') format('woff');
   font-weight: 300;
   font-style: normal;
@@ -10,7 +11,8 @@
 /* lightitalic */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-lightitalic-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-lightitalic-webfont.woff2') format('woff2'),
     url('zillaslab-lightitalic-webfont.woff') format('woff');
   font-weight: 300;
   font-style: italic;
@@ -19,7 +21,8 @@
 /* regular */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-regular-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-regular-webfont.woff2') format('woff2'),
     url('zillaslab-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
@@ -28,7 +31,8 @@
 /* italic */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-italic-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-italic-webfont.woff2') format('woff2'),
     url('zillaslab-italic-webfont.woff') format('woff');
   font-weight: normal;
   font-style: italic;
@@ -37,7 +41,8 @@
 /* medium */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-medium-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-medium-webfont.woff2') format('woff2'),
     url('zillaslab-medium-webfont.woff') format('woff');
   font-weight: 500;
   font-style: normal;
@@ -46,7 +51,8 @@
 /* mediumitalic */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-mediumitalic-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-mediumitalic-webfont.woff2') format('woff2'),
     url('zillaslab-mediumitalic-webfont.woff') format('woff');
   font-weight: 500;
   font-style: italic;
@@ -55,7 +61,8 @@
 /* semibold */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-semibold-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-semibold-webfont.woff2') format('woff2'),
     url('zillaslab-semibold-webfont.woff') format('woff');
   font-weight: 600;
   font-style: normal;
@@ -64,7 +71,8 @@
 /* semibolditalic */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-semibolditalic-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-semibolditalic-webfont.woff2') format('woff2'),
     url('zillaslab-semibolditalic-webfont.woff') format('woff');
   font-weight: 600;
   font-style: italic;
@@ -73,7 +81,8 @@
 /* bold */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-bold-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-bold-webfont.woff2') format('woff2'),
     url('zillaslab-bold-webfont.woff') format('woff');
   font-weight: 700;
   font-style: normal;
@@ -82,7 +91,8 @@
 /* bolditalic */
 @font-face {
   font-family: 'Zilla Slab';
-  src: url('zillaslab-bolditalic-webfont.woff2') format('woff2'),
+  src:
+    url('zillaslab-bolditalic-webfont.woff2') format('woff2'),
     url('zillaslab-bolditalic-webfont.woff') format('woff');
   font-weight: 700;
   font-style: italic;

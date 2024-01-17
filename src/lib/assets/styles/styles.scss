@@ -1,5 +1,6 @@
 @import url('./colors.scss');
-@import url('./fonts.css');
+@import url('./fonts.scss');
+@import url('./forms.scss');
 
 @media not print {
   *,
@@ -171,7 +172,9 @@ img.focus-on-hover:hover {
   opacity: 0;
   background-color: var(--color-text-link);
 
-  transition: transform 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.5s ease-in-out;
   transform: scale(0);
   transform-origin: right;
 }

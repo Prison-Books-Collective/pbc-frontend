@@ -6,7 +6,7 @@
 
   import { ZineService } from '$services/pbc/zine.service'
   import { loading } from '$stores/loading'
-  import { isEmpty } from 'lodash'
+  import isEmpty from 'lodash/isEmpty'
   import type { Zine } from '$models/pbc/shipment'
 
   let expandIndex: number | null = null
