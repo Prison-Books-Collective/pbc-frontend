@@ -15,7 +15,7 @@ function normalizeConvertOptions(options: ConvertOptions): Required<ConvertOptio
   return { input, output, dryrun } satisfies ConvertOptions
 }
 
-export async function convert(options: ConvertOptions) {
+export async function convertAndSave(options: ConvertOptions) {
   const { input, output, dryrun } = normalizeConvertOptions(options)
 
   let openAPISchema: OpenAPI3

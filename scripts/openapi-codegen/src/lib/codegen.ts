@@ -38,7 +38,22 @@ function normalizeCodegenOptions(options: CodegenOptions): Required<CodegenOptio
   return { output, schema, types, dryrun } satisfies CodegenOptions
 }
 
-export async function codegen(options: CodegenOptions) {
+export function codegen(
+  schema: OpenAPI3,
+  typescript: string,
+): { models: string; endpoints: string; index: string } {
+  const sourceFile = ts.createSourceFile('in-memory.ts', typescript, ts.ScriptTarget.ES2022)
+  const interfaces = Object.keys(schema.components!.schemas!)
+
+  const models = codegenModels({ sourceFile, interfaces })
+  const endpoints = codegenEndpoints({ schema, interfaces, url: schema.servers!.at(0)!.url })
+  const index =
+    ['models', 'endpoints'].map((filename) => `export * from './${filename}'`).join('\n') + '\n'
+
+  return { models, endpoints, index }
+}
+
+export async function codegenAndSave(options: CodegenOptions) {
   const { output, schema: schemaPath, types: typesPath, dryrun } = normalizeCodegenOptions(options)
 
   let schema: Awaited<ReturnType<typeof readSchemaFromDisk>>
@@ -355,10 +370,10 @@ function codegenEndpointMethod(endpoint: EndpointData) {
     hasQuery && hasVariables
       ? `{ query, path }`
       : hasQuery
-      ? `{ query }`
-      : hasVariables
-      ? `{ path }`
-      : null
+        ? `{ query }`
+        : hasVariables
+          ? `{ path }`
+          : null
 
   const declareURL = !!pathOptions
     ? [
@@ -392,11 +407,11 @@ function codegenEndpointMethod(endpoint: EndpointData) {
           `    console.error(\`received error while fetching url("\${ url }") with data(\${ JSON.stringify(body) })\`, error)`,
         ]
       : hasBody
-      ? [
-          `    if(body) console.error(\`received error while fetching url("\${ url }") with data(\${ JSON.stringify(body) })\`, error)`,
-          `    else console.error(\`received error while fetching url: \${ url }\`, error)`,
-        ]
-      : [`    console.error(\`received error while fetching url: \${ url }\`, error)`]),
+        ? [
+            `    if(body) console.error(\`received error while fetching url("\${ url }") with data(\${ JSON.stringify(body) })\`, error)`,
+            `    else console.error(\`received error while fetching url: \${ url }\`, error)`,
+          ]
+        : [`    console.error(\`received error while fetching url: \${ url }\`, error)`]),
     `    return undefined`,
     `  }`,
     `}`,
