@@ -3,14 +3,20 @@
   "module": "src/app.ts",
   "type": "module",
   "scripts": {
-    "start": "openapi-typescript src/openapi/openapi.json --output src/openapi/openapi.ts && bun src/app.ts"
+    "local": "npx bun src/app.ts download && npx bun src/app.ts convert && npx bun src/app.ts codegen --output ../../src/lib/api",
+    "local:test": "npx bun src/app.ts download && npx bun src/app.ts convert && npx bun src/app.ts codegen",
+    "remote": "npx bun src/app.ts download --remote && npx bun src/app.ts convert && npx bun src/app.ts codegen --output ../../src/lib/api",
+    "remote:test": "npx bun src/app.ts download --remote && npx bun src/app.ts convert && npx bun src/app.ts codegen"
   },
   "devDependencies": {
-    "bun-types": "latest",
+    "@types/node-fetch": "^2.6.11",
+    "bun": "^1.0.23",
+    "bun-types": "latest"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "node-fetch": "^3.3.2",
     "openapi-typescript": "^6.7.3",
     "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
   }
 }
