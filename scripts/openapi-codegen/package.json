@@ -4,14 +4,15 @@
   "module": "src/app.ts",
   "main": "build/app.js",
   "bin": {
-    "openapi-codegen": "./build/app.js"
+    "bellbooks-openapi-codegen": "./build/app.js"
   },
   "scripts": {
-    "build": "npx tsc && npx tsc-alias",
-    "local": "npx bun src/app.ts download-and-generate --output ../../src/lib/api",
-    "local:test": "npx bun src/app.ts download-and-generate --dryrun",
-    "remote": "npx bun src/app.ts download-and-generate --url https://bellbooks-backend.ue.r.appspot.com --output ../../src/lib/api",
-    "remote:test": "npx bun src/app.ts download-and-generate --url https://bellbooks-backend.ue.r.appspot.com --dryrun"
+    "build": "npm run clean && npx tsc && npx tsc-alias",
+    "clean": "rm -rf build dist src/openapi",
+    "local": "npx bun src/app.ts --local --output=../../src/lib/api",
+    "local:test": "npx bun src/app.ts --local --dry-run",
+    "remote": "npx bun src/app.ts --remote --output=../../src/lib/api",
+    "remote:test": "npx bun src/app.ts --remote --dry-run"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.6.11",

@@ -1,4 +1,4 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
 import { join } from 'path'
 import type { OpenAPI3 } from 'openapi-typescript'
 
@@ -282,7 +282,9 @@ function codegenEndpoints({
 
   const endpoints = parseEndpoints(schema)
   const endpointMethods = endpoints.map(codegenEndpointMethod)
-  endpointMethods.forEach((method) => (buffer += method + '\n\n'))
+  endpointMethods.forEach(
+    (method, index) => (buffer += method + (index === endpointMethods.length - 1 ? '\n' : '\n\n')),
+  )
 
   return buffer
 }
