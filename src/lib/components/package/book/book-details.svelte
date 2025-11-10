@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
-  import { focusedBook } from '$stores/book'
-  import type { Book } from '$models/pbc/shipment'
-  import { isEmpty } from '$util/strings'
-  import { createShipment } from '$lib/data/shipment.data'
   import { createBook } from '$lib/data/book.data'
+  import { createShipment } from '$lib/data/shipment.data'
+  import type { Book } from '$models/pbc/shipment'
+  import { focusedBook } from '$stores/book'
+  import { isDefined } from '$util/null'
+  import { isEmpty } from '$util/strings'
+  import { createEventDispatcher } from 'svelte'
 
   const dispatch = createEventDispatcher()
 
@@ -21,6 +22,7 @@
   let newAuthor: string
 
   $: mode = VALID_MODE.DISPLAY
+  $: isDisplayable = isDefined($createBook) && Object.keys($createBook).length > 0
 
   const addBookClicked = () => {
     createShipment.addContent('book', $createBook)
@@ -59,7 +61,7 @@
   }
 </script>
 
-{#if mode === VALID_MODE.DISPLAY}
+{#if mode === VALID_MODE.DISPLAY && isDisplayable}
   <section class="book-flow">
     <p>
       We found a book that matched
@@ -127,11 +129,11 @@
   </form>
 {/if}
 
-{#if mode === VALID_MODE.CREATE && isbn && !$focusedBook.needsAuthorAssistance}
+{#if mode === VALID_MODE.CREATE || !isDisplayable}
   <form class="book-flow" on:submit|preventDefault={() => editAndAdd(newAuthor, newTitle, isbn)}>
     <p>
       We could not find the book with
-      <strong>ISBN# {$focusedBook.isbn10 || $focusedBook.isbn13}</strong>
+      <strong>ISBN# {$focusedBook.isbn10 ?? $focusedBook.isbn13 ?? isbn}</strong>
       in our database. Please add the title and author of the book and add it to the package.
     </p>
 
