@@ -1,4 +1,4 @@
-@import url('./colors.scss');
+@import url('./colors.css');
 @import url('./fonts.css');
 
 :is(label, button, input, textarea, table, th, tr, td) {
