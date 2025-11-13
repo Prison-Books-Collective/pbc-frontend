@@ -27,6 +27,7 @@
     "eslint-plugin-svelte": "^2.26.0",
     "lodash": "^4.17.21",
     "prettier": "^2.8.0",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-svelte": "^2.8.1",
     "sass": "^1.49.9",
     "svelte": "^3.54.0",
