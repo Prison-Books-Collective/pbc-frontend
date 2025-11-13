@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && sed -i '' '/runtime: nodejs16/s//runtime: nodejs20/' build/app.yaml",
+    "clean": "rm -rf build",
     "preview": "vite preview",
     "test": "playwright test",
     "test:unit": "vitest",
