@@ -1,7 +1,7 @@
-import { BASE_PBC_URI } from '.'
 import type { Package } from '$models/pbc/package'
-import { METHOD_GET, uriQueryJoin } from '$util/web'
 import type { Shipment } from '$models/pbc/shipment'
+import { METHOD_GET, uriQueryJoin } from '$util/web'
+import { BASE_PBC_URI } from '.'
 
 export class PackageService {
   public static readonly URI_GET_PACKAGE = (packageId: number) =>

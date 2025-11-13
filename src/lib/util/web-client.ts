@@ -1,6 +1,6 @@
-import { CONTENT_TYPE_JSON, METHOD_GET, HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_DELETE } from './web'
-import type { QueryParamMap } from './web'
 import { ERROR_STRATEGY, ErrorStrategy } from './app-config'
+import type { QueryParamMap } from './web'
+import { CONTENT_TYPE_JSON, HTTP_DELETE, HTTP_GET, HTTP_POST, HTTP_PUT, METHOD_GET } from './web'
 
 export type HTTPMethod = typeof HTTP_GET | typeof HTTP_POST | typeof HTTP_PUT | typeof HTTP_DELETE
 export type HTTPStatus = number | string // ex: 200, 201, 200s, 400s

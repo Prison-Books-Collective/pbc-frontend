@@ -1,5 +1,5 @@
-import { getQueryParam } from '$util/web'
 import { HomepageSearch } from '$util/routing'
+import { getQueryParam } from '$util/web'
 
 export function load({ url }) {
   const mode = getQueryParam(url, 'search mode', 'search', 'mode') || HomepageSearch.ID

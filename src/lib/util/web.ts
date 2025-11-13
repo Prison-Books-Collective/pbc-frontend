@@ -60,13 +60,13 @@ export const getQueryParam = (url: URL, paramName: string, ...aliases: string[])
   return null
 }
 
+export { WebClient } from './web-client'
 export type {
-  HTTPMethod,
-  HTTPStatus,
-  HTTPError,
-  HTTPResponse,
-  HTTPFetchOptions,
   Endpoint,
   EndpointMap,
+  HTTPError,
+  HTTPFetchOptions,
+  HTTPMethod,
+  HTTPResponse,
+  HTTPStatus,
 } from './web-client'
-export { WebClient } from './web-client'

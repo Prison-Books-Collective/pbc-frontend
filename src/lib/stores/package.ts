@@ -1,3 +1,10 @@
+import type { Facility } from '$models/pbc/facility'
+import type { Recipient } from '$models/pbc/recipient'
+import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
+import { PackageService } from '$services/pbc/package.service'
+import { ShipmentService } from '$services/pbc/shipment.service'
+import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
+import { formatDate } from '$util/time'
 import {
   writable,
   type Subscriber,
@@ -5,13 +12,6 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import type { Book, Note, Shipment, Zine } from '$models/pbc/shipment'
-import type { Facility } from '$models/pbc/facility'
-import { PackageService } from '$services/pbc/package.service'
-import { focusedInmate, type FocusedInmateStore } from '$stores/inmate'
-import { formatDate } from '$util/time'
-import { ShipmentService } from '$services/pbc/shipment.service'
-import type { Recipient } from '$models/pbc/recipient'
 
 interface LocalStorageShipment extends Shipment {
   existsInDatabase?: boolean

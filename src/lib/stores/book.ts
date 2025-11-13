@@ -1,3 +1,5 @@
+import type { Book } from '$models/pbc/shipment'
+import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 import {
   writable,
   type Subscriber,
@@ -5,8 +7,6 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import type { Book } from '$models/pbc/shipment'
-import { BookService, isNoISBNBook } from '$services/pbc/book.service'
 
 export interface LocalStorageBook extends Book {
   [additionalFields: string]: any

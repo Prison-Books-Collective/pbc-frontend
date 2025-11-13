@@ -1,3 +1,5 @@
+import type { Zine } from '$models/pbc/shipment'
+import { ZineService } from '$services/pbc/zine.service'
 import {
   writable,
   type Subscriber,
@@ -5,8 +7,6 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import type { Zine } from '$models/pbc/shipment'
-import { ZineService } from '$services/pbc/zine.service'
 
 export class ZineStore implements Writable<Zine[]> {
   constructor() {

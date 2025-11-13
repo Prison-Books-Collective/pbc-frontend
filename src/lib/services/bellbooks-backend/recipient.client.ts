@@ -1,9 +1,9 @@
 import { createURI } from '.'
 
-import { HTTP_GET, HTTP_POST, HTTP_PUT, WebClient } from '$util/web'
-import type { EndpointMap } from '$util/web'
 import type { Recipient } from '$models/pbc/recipient'
 import type { Shipment } from '$models/pbc/shipment'
+import type { EndpointMap } from '$util/web'
+import { HTTP_GET, HTTP_POST, HTTP_PUT, WebClient } from '$util/web'
 
 export const RecipientClientEndpoints = Object.freeze({
   GET_RECIPIENT_BY_ASSIGNED_ID: {

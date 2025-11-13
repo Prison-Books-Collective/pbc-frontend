@@ -1,4 +1,5 @@
-import { BASE_PBC_URI } from '.'
+import type { NewZine } from '$models/pbc/newZine'
+import type { Zine } from '$models/pbc/shipment'
 import {
   CONTENT_TYPE_JSON,
   METHOD_DELETE,
@@ -7,8 +8,7 @@ import {
   METHOD_PUT,
   uriQueryJoin,
 } from '$util/web'
-import type { Zine } from '$models/pbc/shipment'
-import type { NewZine } from '$models/pbc/newZine'
+import { BASE_PBC_URI } from '.'
 
 export class ZineService {
   public static readonly URI_GET_ZINES = `${BASE_PBC_URI}/getAllZines`

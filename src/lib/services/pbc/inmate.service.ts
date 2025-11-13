@@ -1,7 +1,7 @@
-import { BASE_PBC_URI } from '.'
 import type { Facility } from '$models/pbc/facility'
 import type { Inmate } from '$models/pbc/inmate'
 import { METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
+import { BASE_PBC_URI } from '.'
 
 export class InmateService {
   public static readonly URI_GET_INMATE = (inmateId: string) =>

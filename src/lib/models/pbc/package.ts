@@ -1,9 +1,9 @@
+import { RecipientService } from '$services/pbc/recipient.service'
 import type { Alert } from './alert'
-import type { Book, Shipment } from './shipment'
 import type { Facility } from './facility'
 import type { Inmate } from './inmate'
+import type { Book, Shipment } from './shipment'
 import type { Zine } from './zine'
-import { RecipientService } from '$services/pbc/recipient.service'
 
 export interface Package {
   id: number

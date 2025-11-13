@@ -1,12 +1,12 @@
 import { goto } from '$app/navigation'
 
+import { recipient } from '$lib/data/recipient.data'
 import { RecipientService } from '$services/pbc/recipient.service'
 import { loading } from '$stores/loading'
 import { ERROR_MESSAGE_SERVER_COMMUNICATION } from '$util/error'
 import { isEmpty } from '$util/strings'
 import { delay } from '$util/time'
 import { uriQueryJoin } from '$util/web'
-import { recipient } from '$lib/data/recipient.data'
 
 import type { Recipient } from '$models/pbc/recipient'
 import type { Shipment } from '$models/pbc/shipment'

@@ -1,3 +1,8 @@
+import type { Inmate } from '$models/pbc/inmate'
+import type { Recipient } from '$models/pbc/recipient'
+import { InmateService } from '$services/pbc/inmate.service'
+import { RecipientService } from '$services/pbc/recipient.service'
+import { isEmpty } from '$util/strings'
 import {
   writable,
   type Subscriber,
@@ -5,11 +10,6 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import type { Inmate } from '$models/pbc/inmate'
-import { InmateService } from '$services/pbc/inmate.service'
-import { isEmpty } from '$util/strings'
-import type { Recipient } from '$models/pbc/recipient'
-import { RecipientService } from '$services/pbc/recipient.service'
 
 type LocalStorageRecipient = Recipient
 

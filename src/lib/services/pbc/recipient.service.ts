@@ -1,8 +1,8 @@
 import { BASE_PBC_URI } from '.'
 // import type { Facility } from '$models/pbc/facility'
+import type { Facility } from '$models/pbc/facility'
 import type { Recipient } from '$models/pbc/recipient'
 import { CONTENT_TYPE_JSON, METHOD_GET, METHOD_POST, METHOD_PUT, uriQueryJoin } from '$util/web'
-import type { Facility } from '$models/pbc/facility'
 
 export class RecipientService {
   public static readonly URI_GET_RECIPIENT_BY_ASSIGNED_ID = (assignedId: string) =>

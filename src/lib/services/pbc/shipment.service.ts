@@ -1,13 +1,13 @@
-import { BASE_PBC_URI } from '.'
 import type { Note, Shipment } from '$models/pbc/shipment'
 import {
   CONTENT_TYPE_JSON,
+  METHOD_DELETE,
   METHOD_GET,
   METHOD_POST,
-  METHOD_DELETE,
   METHOD_PUT,
   uriQueryJoin,
 } from '$util/web'
+import { BASE_PBC_URI } from '.'
 
 const removeExistsInDatabaseTag = (shipment: Shipment) => {
   if (shipment['existsInDatabase'] != null) {

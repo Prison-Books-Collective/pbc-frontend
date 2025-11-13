@@ -1,3 +1,5 @@
+import type { Facility } from '$models/pbc/facility'
+import { FacilityService } from '$services/pbc/facility.service'
 import {
   writable,
   type Subscriber,
@@ -5,8 +7,6 @@ import {
   type Updater,
   type Writable,
 } from 'svelte/store'
-import type { Facility } from '$models/pbc/facility'
-import { FacilityService } from '$services/pbc/facility.service'
 
 export class FacilityStore implements Writable<Facility[]> {
   constructor() {

@@ -1,4 +1,5 @@
-import { BASE_PBC_URI } from '.'
+import { INVALID_FACILITY, type Facility } from '$models/pbc/facility'
+import { isEmpty } from '$util/strings'
 import {
   CONTENT_TYPE_JSON,
   METHOD_DELETE,
@@ -7,8 +8,7 @@ import {
   METHOD_PUT,
   uriQueryJoin,
 } from '$util/web'
-import { INVALID_FACILITY, type Facility } from '$models/pbc/facility'
-import { isEmpty } from '$util/strings'
+import { BASE_PBC_URI } from '.'
 
 export class FacilityService {
   public static readonly URI_GET_FACILITIES = `${BASE_PBC_URI}/getAllFacilities`
