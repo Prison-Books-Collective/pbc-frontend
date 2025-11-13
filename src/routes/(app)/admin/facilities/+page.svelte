@@ -1,14 +1,13 @@
 <script lang="ts">
   import { fly } from 'svelte/transition'
 
-  import { facilities } from '$stores/facility'
   import trashIcon from '$assets/icons/trash.png'
+  import { facilities } from '$stores/facility'
 
+  import { type Facility, State } from '$models/pbc/facility'
   import { FacilityService } from '$services/pbc/facility.service'
   import { loading } from '$stores/loading'
   import { isEmpty } from 'lodash'
-  import { type Facility, State } from '$models/pbc/facility'
-  import Facility from '$components/facility/facility.svelte'
 
   let expandIndex: number | null = null
 
@@ -39,13 +38,7 @@
   }
 
   const shouldDisableSubmit = (facility: Omit<Facility, 'id'>) => {
-    return (
-      isEmpty(facility.name) ||
-      isEmpty(facility.city) ||
-      isEmpty(facility.street) ||
-      isEmpty(facility.zip) ||
-      (facility.state !== State.NC && facility.state !== State.AL)
-    )
+    return isEmpty(facility.name) || (facility.state !== State.NC && facility.state !== State.AL)
   }
 
   const updateFacility = async (facility: Facility | Omit<Facility, 'id'>) => {
@@ -169,7 +162,7 @@
           <section class="form-controls">
             <button type="button" on:click={() => toggleExpand(-1)}>Cancel</button>
             <button type="submit" class="success" disabled={shouldDisableSubmit(inputFacility)}>
-              Update
+              Create
             </button>
           </section>
         </form>
